@@ -1076,6 +1076,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/byId/{animalId}/treatments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdTreatments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdTreatments"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/earTags": {
         parameters: {
             query?: never;
@@ -1122,6 +1138,86 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/v1/drugs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Drugs"];
+        put?: never;
+        post: operations["PostV1Drugs"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Drugs"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/drugs/byId/{drugId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1DrugsByIdDrugId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1DrugsByIdDrugId"];
+        options?: never;
+        head: operations["HeadV1DrugsByIdDrugId"];
+        patch: operations["PatchV1DrugsByIdDrugId"];
+        trace?: never;
+    };
+    "/v1/drugs/byId/{drugId}/inUse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1DrugsByIdDrugIdInUse"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1DrugsByIdDrugIdInUse"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/treatments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Treatments"];
+        put?: never;
+        post: operations["PostV1Treatments"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Treatments"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/treatments/byId/{treatmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1TreatmentsByIdTreatmentId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1TreatmentsByIdTreatmentId"];
+        options?: never;
+        head: operations["HeadV1TreatmentsByIdTreatmentId"];
+        patch: operations["PatchV1TreatmentsByIdTreatmentId"];
         trace?: never;
     };
     "/v1/contacts": {
@@ -4403,7 +4499,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4436,7 +4532,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4464,7 +4560,7 @@ export interface components {
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            dateOfBirth: string;
+            dateOfBirth?: string;
             earTagId?: string;
             motherId?: string;
             fatherId?: string;
@@ -4490,7 +4586,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4523,7 +4619,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4551,7 +4647,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4580,7 +4676,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4609,7 +4705,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4638,7 +4734,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4670,7 +4766,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4727,7 +4823,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4812,6 +4908,56 @@ export interface components {
                 count: number;
             };
         };
+        GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    drug: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        notes: string | null;
+                        drugTreatment: {
+                            id: string;
+                            drugId: string;
+                            /** @enum {string} */
+                            animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                            dosePerKg: number;
+                            milkWaitingDays: number;
+                            meatWaitingDays: number;
+                        }[];
+                    };
+                }[];
+                count: number;
+            };
+        };
         GetV1EarTagsPositiveResponse: {
             data: {
                 result: {
@@ -4830,7 +4976,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         earTag: {
                             id: string;
@@ -4881,6 +5027,371 @@ export interface components {
                 deletedCount: number;
                 skippedAssigned: string[];
             };
+        };
+        GetV1DrugsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    notes: string | null;
+                    drugTreatment: {
+                        id: string;
+                        drugId: string;
+                        /** @enum {string} */
+                        animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        dosePerKg: number;
+                        milkWaitingDays: number;
+                        meatWaitingDays: number;
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        PostV1DrugsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PostV1DrugsRequestBody: {
+            name: string;
+            notes?: string;
+            drugTreatment: {
+                /** @enum {string} */
+                animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                dosePerKg: number;
+                milkWaitingDays: number;
+                meatWaitingDays: number;
+            }[];
+        };
+        GetV1DrugsByIdDrugIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PatchV1DrugsByIdDrugIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PatchV1DrugsByIdDrugIdRequestBody: {
+            name?: string;
+            notes?: string;
+            drugTreatment?: {
+                /** @enum {string} */
+                animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                dosePerKg: number;
+                milkWaitingDays: number;
+                meatWaitingDays: number;
+            }[];
+        };
+        DeleteV1DrugsByIdDrugIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1DrugsByIdDrugIdInUsePositiveResponse: {
+            data: {
+                inUse: boolean;
+            };
+        };
+        GetV1TreatmentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    animal: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        /** @enum {string} */
+                        sex: "male" | "female";
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dateOfBirth: string | null;
+                        earTagId: string | null;
+                        earTag: {
+                            id: string;
+                            farmId: string;
+                            number: string;
+                        } | null;
+                        motherId: string | null;
+                        fatherId: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dateOfDeath: string | null;
+                        /** @enum {string|null} */
+                        deathReason: "died" | "slaughtered" | null;
+                    };
+                    drug: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        notes: string | null;
+                        drugTreatment: {
+                            id: string;
+                            drugId: string;
+                            /** @enum {string} */
+                            animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                            dosePerKg: number;
+                            milkWaitingDays: number;
+                            meatWaitingDays: number;
+                        }[];
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1TreatmentsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PostV1TreatmentsRequestBody: {
+            animalId: string;
+            drugId: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            name: string;
+            reason: string;
+            notes?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            milkUsableDate?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            meatUsableDate?: string;
+        };
+        GetV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+                animal: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    /** @enum {string} */
+                    sex: "male" | "female";
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfBirth: string | null;
+                    earTagId: string | null;
+                    earTag: {
+                        id: string;
+                        farmId: string;
+                        number: string;
+                    } | null;
+                    motherId: string | null;
+                    fatherId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfDeath: string | null;
+                    /** @enum {string|null} */
+                    deathReason: "died" | "slaughtered" | null;
+                };
+                drug: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    notes: string | null;
+                    drugTreatment: {
+                        id: string;
+                        drugId: string;
+                        /** @enum {string} */
+                        animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        dosePerKg: number;
+                        milkWaitingDays: number;
+                        meatWaitingDays: number;
+                    }[];
+                };
+            };
+        };
+        PatchV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PatchV1TreatmentsByIdTreatmentIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            name?: string;
+            reason?: string;
+            notes?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            milkUsableDate?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            meatUsableDate?: string;
+        };
+        DeleteV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1ContactsPositiveResponse: {
             data: {
@@ -4992,7 +5503,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -5157,7 +5668,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -5939,7 +6450,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -6065,7 +6576,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     motherId: string | null;
                     fatherId: string | null;
@@ -11429,6 +11940,66 @@ export interface operations {
             };
         };
     };
+    GetV1AnimalsByIdAnimalIdTreatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/treatments Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdTreatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/treatments Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1EarTags: {
         parameters: {
             query?: never;
@@ -11595,6 +12166,500 @@ export interface operations {
                 };
             };
             /** @description DELETE /v1/earTags/range Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/drugs Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1DrugsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1DrugsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/drugs/byId/:drugId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1DrugsByIdDrugIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1DrugsByIdDrugIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/drugs/byId/:drugId/inUse Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs/byId/:drugId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsByIdDrugIdInUsePositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs/byId/:drugId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1DrugsByIdDrugIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/drugs/byId/:drugId/inUse Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs/byId/:drugId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs/byId/:drugId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1TreatmentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/treatments Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1TreatmentsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1TreatmentsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/treatments/byId/:treatmentId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1TreatmentsByIdTreatmentIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/treatments/byId/:treatmentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
