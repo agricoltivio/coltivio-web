@@ -102,3 +102,19 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "fulfilled",
   "cancelled",
 ];
+
+// Drug types
+export type Drug =
+  components["schemas"]["GetV1DrugsPositiveResponse"]["data"]["result"][number];
+
+export type DrugTreatment = Drug["drugTreatment"][number];
+
+// Treatment types
+export type Treatment =
+  components["schemas"]["GetV1TreatmentsPositiveResponse"]["data"]["result"][number];
+
+export type TreatmentDetail =
+  components["schemas"]["GetV1TreatmentsByIdTreatmentIdPositiveResponse"]["data"];
+
+export type AnimalTreatment =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"]["data"]["result"][number];

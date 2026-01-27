@@ -72,7 +72,9 @@ function Animals() {
                 <TableCell className="font-medium">{animal.name}</TableCell>
                 <TableCell>{t(`animals.types.${animal.type}`)}</TableCell>
                 <TableCell>{animal.earTag?.number}</TableCell>
-                <TableCell>{formatDate(animal.dateOfBirth)}</TableCell>
+                <TableCell>
+                  {animal.dateOfBirth ? formatDate(animal.dateOfBirth) : "-"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

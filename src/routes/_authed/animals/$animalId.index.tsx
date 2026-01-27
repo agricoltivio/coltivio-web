@@ -16,6 +16,7 @@ import {
   CardTitle,
   CardAction,
 } from "@/components/ui/card";
+import { Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -176,7 +177,9 @@ function AnimalDetailPage() {
               />
               <DetailItem
                 label={t("animals.dateOfBirth")}
-                value={formatDate(animal.dateOfBirth)}
+                value={
+                  animal.dateOfBirth ? formatDate(animal.dateOfBirth) : "-"
+                }
               />
               <DetailItem
                 label={t("animals.earTag")}
@@ -291,7 +294,9 @@ function AnimalDetailPage() {
                         {t(`animals.sexOptions.${child.sex}`)}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {formatDate(child.dateOfBirth)}
+                        {child.dateOfBirth
+                          ? formatDate(child.dateOfBirth)
+                          : "-"}
                       </TableCell>
                       {showDeceasedChildren && (
                         <TableCell className="text-muted-foreground">
@@ -307,6 +312,82 @@ function AnimalDetailPage() {
             ) : (
               <div className="py-6 text-center text-muted-foreground">
                 {t("animals.noChildren")}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Treatments Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("treatments.title")}</CardTitle>
+            <CardAction>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  navigate({
+                    to: "/treatments/create",
+                    search: {
+                      animalId: animal.id,
+                      returnTo: `/animals/${animal.id}`,
+                    },
+                  })
+                }
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                {t("treatments.addTreatment")}
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            {animal.treatments && animal.treatments.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("treatments.date")}</TableHead>
+                    <TableHead>{t("treatments.name")}</TableHead>
+                    <TableHead>{t("treatments.reason")}</TableHead>
+                    <TableHead>{t("treatments.milkUsableDate")}</TableHead>
+                    <TableHead>{t("treatments.meatUsableDate")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {animal.treatments.map((treatment) => (
+                    <TableRow
+                      key={treatment.id}
+                      className="cursor-pointer"
+                      onClick={() =>
+                        navigate({
+                          to: "/treatments/$treatmentId",
+                          params: { treatmentId: treatment.id },
+                        })
+                      }
+                    >
+                      <TableCell>{formatDate(treatment.date)}</TableCell>
+                      <TableCell className="font-medium">
+                        {treatment.name}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {treatment.reason}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {treatment.milkUsableDate
+                          ? formatDate(treatment.milkUsableDate)
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {treatment.meatUsableDate
+                          ? formatDate(treatment.meatUsableDate)
+                          : "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="py-6 text-center text-muted-foreground">
+                {t("treatments.noTreatments")}
               </div>
             )}
           </CardContent>

@@ -16,6 +16,7 @@ import {
   NotebookPen,
   NotepadText,
   Package,
+  Pill,
   Settings,
   ShoppingCart,
   Syringe,
@@ -92,6 +93,20 @@ export function AppSidebar() {
                     to="/animals/turnout-journal"
                   >
                     <NotebookPen /> Auslaufsjournal
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/drugs"
+                  >
+                    <Pill /> Medikamente
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -18,29 +18,36 @@ import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sp
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
 import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
 import { Route as AuthedOrdersIndexRouteImport } from './routes/_authed/orders/index'
+import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/index'
 import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contacts/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
+import { Route as AuthedTreatmentsCreateRouteImport } from './routes/_authed/treatments/create'
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
 import { Route as AuthedProductsCreateRouteImport } from './routes/_authed/products/create'
 import { Route as AuthedPaymentsCreateRouteImport } from './routes/_authed/payments/create'
 import { Route as AuthedOrdersCreateRouteImport } from './routes/_authed/orders/create'
+import { Route as AuthedDrugsCreateRouteImport } from './routes/_authed/drugs/create'
 import { Route as AuthedContactsCreateRouteImport } from './routes/_authed/contacts/create'
 import { Route as AuthedAnimalsTurnoutJournalRouteImport } from './routes/_authed/animals/turnout-journal'
 import { Route as AuthedAnimalsTreatmentsJournalRouteImport } from './routes/_authed/animals/treatments-journal'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
+import { Route as AuthedTreatmentsTreatmentIdIndexRouteImport } from './routes/_authed/treatments/$treatmentId.index'
 import { Route as AuthedSponsorshipsProgramsIndexRouteImport } from './routes/_authed/sponsorships/programs/index'
 import { Route as AuthedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.index'
 import { Route as AuthedProductsProductIdIndexRouteImport } from './routes/_authed/products/$productId.index'
 import { Route as AuthedPaymentsPaymentIdIndexRouteImport } from './routes/_authed/payments/$paymentId.index'
 import { Route as AuthedOrdersOrderIdIndexRouteImport } from './routes/_authed/orders/$orderId.index'
+import { Route as AuthedDrugsDrugIdIndexRouteImport } from './routes/_authed/drugs/$drugId.index'
 import { Route as AuthedContactsContactIdIndexRouteImport } from './routes/_authed/contacts/$contactId.index'
 import { Route as AuthedAnimalsAnimalIdIndexRouteImport } from './routes/_authed/animals/$animalId.index'
+import { Route as AuthedTreatmentsTreatmentIdEditRouteImport } from './routes/_authed/treatments/$treatmentId.edit'
 import { Route as AuthedSponsorshipsProgramsCreateRouteImport } from './routes/_authed/sponsorships/programs/create'
 import { Route as AuthedSponsorshipsSponsorshipIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.edit'
 import { Route as AuthedProductsProductIdEditRouteImport } from './routes/_authed/products/$productId.edit'
 import { Route as AuthedPaymentsPaymentIdEditRouteImport } from './routes/_authed/payments/$paymentId.edit'
 import { Route as AuthedOrdersOrderIdEditRouteImport } from './routes/_authed/orders/$orderId.edit'
+import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drugs/$drugId.edit'
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsAnimalIdEditRouteImport } from './routes/_authed/animals/$animalId.edit'
 import { Route as AuthedSponsorshipsProgramsProgramIdIndexRouteImport } from './routes/_authed/sponsorships/programs/$programId.index'
@@ -90,6 +97,11 @@ const AuthedOrdersIndexRoute = AuthedOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedDrugsIndexRoute = AuthedDrugsIndexRouteImport.update({
+  id: '/drugs/',
+  path: '/drugs/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedContactsIndexRoute = AuthedContactsIndexRouteImport.update({
   id: '/contacts/',
   path: '/contacts/',
@@ -98,6 +110,11 @@ const AuthedContactsIndexRoute = AuthedContactsIndexRouteImport.update({
 const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
   path: '/animals/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedTreatmentsCreateRoute = AuthedTreatmentsCreateRouteImport.update({
+  id: '/treatments/create',
+  path: '/treatments/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedSponsorshipsCreateRoute =
@@ -119,6 +136,11 @@ const AuthedPaymentsCreateRoute = AuthedPaymentsCreateRouteImport.update({
 const AuthedOrdersCreateRoute = AuthedOrdersCreateRouteImport.update({
   id: '/orders/create',
   path: '/orders/create',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedDrugsCreateRoute = AuthedDrugsCreateRouteImport.update({
+  id: '/drugs/create',
+  path: '/drugs/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedContactsCreateRoute = AuthedContactsCreateRouteImport.update({
@@ -148,6 +170,12 @@ const AuthedAnimalsCreateRoute = AuthedAnimalsCreateRouteImport.update({
   path: '/animals/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedTreatmentsTreatmentIdIndexRoute =
+  AuthedTreatmentsTreatmentIdIndexRouteImport.update({
+    id: '/treatments/$treatmentId/',
+    path: '/treatments/$treatmentId/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedSponsorshipsProgramsIndexRoute =
   AuthedSponsorshipsProgramsIndexRouteImport.update({
     id: '/sponsorships/programs/',
@@ -178,6 +206,11 @@ const AuthedOrdersOrderIdIndexRoute =
     path: '/orders/$orderId/',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedDrugsDrugIdIndexRoute = AuthedDrugsDrugIdIndexRouteImport.update({
+  id: '/drugs/$drugId/',
+  path: '/drugs/$drugId/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedContactsContactIdIndexRoute =
   AuthedContactsContactIdIndexRouteImport.update({
     id: '/contacts/$contactId/',
@@ -188,6 +221,12 @@ const AuthedAnimalsAnimalIdIndexRoute =
   AuthedAnimalsAnimalIdIndexRouteImport.update({
     id: '/animals/$animalId/',
     path: '/animals/$animalId/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedTreatmentsTreatmentIdEditRoute =
+  AuthedTreatmentsTreatmentIdEditRouteImport.update({
+    id: '/treatments/$treatmentId/edit',
+    path: '/treatments/$treatmentId/edit',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedSponsorshipsProgramsCreateRoute =
@@ -217,6 +256,11 @@ const AuthedPaymentsPaymentIdEditRoute =
 const AuthedOrdersOrderIdEditRoute = AuthedOrdersOrderIdEditRouteImport.update({
   id: '/orders/$orderId/edit',
   path: '/orders/$orderId/edit',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedDrugsDrugIdEditRoute = AuthedDrugsDrugIdEditRouteImport.update({
+  id: '/drugs/$drugId/edit',
+  path: '/drugs/$drugId/edit',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedContactsContactIdEditRoute =
@@ -254,30 +298,37 @@ export interface FileRoutesByFullPath {
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
+  '/drugs/create': typeof AuthedDrugsCreateRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
   '/contacts/': typeof AuthedContactsIndexRoute
+  '/drugs/': typeof AuthedDrugsIndexRoute
   '/orders/': typeof AuthedOrdersIndexRoute
   '/payments/': typeof AuthedPaymentsIndexRoute
   '/products/': typeof AuthedProductsIndexRoute
   '/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
+  '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
   '/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
+  '/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
   '/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
@@ -291,30 +342,37 @@ export interface FileRoutesByTo {
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
+  '/drugs/create': typeof AuthedDrugsCreateRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/animals': typeof AuthedAnimalsIndexRoute
   '/contacts': typeof AuthedContactsIndexRoute
+  '/drugs': typeof AuthedDrugsIndexRoute
   '/orders': typeof AuthedOrdersIndexRoute
   '/payments': typeof AuthedPaymentsIndexRoute
   '/products': typeof AuthedProductsIndexRoute
   '/sponsorships': typeof AuthedSponsorshipsIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
+  '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/animals/$animalId': typeof AuthedAnimalsAnimalIdIndexRoute
   '/contacts/$contactId': typeof AuthedContactsContactIdIndexRoute
+  '/drugs/$drugId': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId': typeof AuthedOrdersOrderIdIndexRoute
   '/payments/$paymentId': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/treatments/$treatmentId': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/sponsorships/programs/$programId': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
@@ -330,30 +388,37 @@ export interface FileRoutesById {
   '/_authed/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/_authed/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/_authed/contacts/create': typeof AuthedContactsCreateRoute
+  '/_authed/drugs/create': typeof AuthedDrugsCreateRoute
   '/_authed/orders/create': typeof AuthedOrdersCreateRoute
   '/_authed/payments/create': typeof AuthedPaymentsCreateRoute
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/_authed/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
   '/_authed/contacts/': typeof AuthedContactsIndexRoute
+  '/_authed/drugs/': typeof AuthedDrugsIndexRoute
   '/_authed/orders/': typeof AuthedOrdersIndexRoute
   '/_authed/payments/': typeof AuthedPaymentsIndexRoute
   '/_authed/products/': typeof AuthedProductsIndexRoute
   '/_authed/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/_authed/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
+  '/_authed/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/_authed/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/_authed/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/_authed/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/_authed/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/_authed/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/_authed/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/_authed/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
   '/_authed/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
+  '/_authed/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/_authed/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
   '/_authed/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/_authed/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/_authed/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/_authed/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/_authed/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/_authed/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
@@ -369,30 +434,37 @@ export interface FileRouteTypes {
     | '/animals/treatments-journal'
     | '/animals/turnout-journal'
     | '/contacts/create'
+    | '/drugs/create'
     | '/orders/create'
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
+    | '/treatments/create'
     | '/animals/'
     | '/contacts/'
+    | '/drugs/'
     | '/orders/'
     | '/payments/'
     | '/products/'
     | '/sponsorships/'
     | '/animals/$animalId/edit'
     | '/contacts/$contactId/edit'
+    | '/drugs/$drugId/edit'
     | '/orders/$orderId/edit'
     | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
+    | '/treatments/$treatmentId/edit'
     | '/animals/$animalId/'
     | '/contacts/$contactId/'
+    | '/drugs/$drugId/'
     | '/orders/$orderId/'
     | '/payments/$paymentId/'
     | '/products/$productId/'
     | '/sponsorships/$sponsorshipId/'
     | '/sponsorships/programs/'
+    | '/treatments/$treatmentId/'
     | '/sponsorships/programs/$programId/edit'
     | '/sponsorships/programs/$programId/'
   fileRoutesByTo: FileRoutesByTo
@@ -406,30 +478,37 @@ export interface FileRouteTypes {
     | '/animals/treatments-journal'
     | '/animals/turnout-journal'
     | '/contacts/create'
+    | '/drugs/create'
     | '/orders/create'
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
+    | '/treatments/create'
     | '/animals'
     | '/contacts'
+    | '/drugs'
     | '/orders'
     | '/payments'
     | '/products'
     | '/sponsorships'
     | '/animals/$animalId/edit'
     | '/contacts/$contactId/edit'
+    | '/drugs/$drugId/edit'
     | '/orders/$orderId/edit'
     | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
+    | '/treatments/$treatmentId/edit'
     | '/animals/$animalId'
     | '/contacts/$contactId'
+    | '/drugs/$drugId'
     | '/orders/$orderId'
     | '/payments/$paymentId'
     | '/products/$productId'
     | '/sponsorships/$sponsorshipId'
     | '/sponsorships/programs'
+    | '/treatments/$treatmentId'
     | '/sponsorships/programs/$programId/edit'
     | '/sponsorships/programs/$programId'
   id:
@@ -444,30 +523,37 @@ export interface FileRouteTypes {
     | '/_authed/animals/treatments-journal'
     | '/_authed/animals/turnout-journal'
     | '/_authed/contacts/create'
+    | '/_authed/drugs/create'
     | '/_authed/orders/create'
     | '/_authed/payments/create'
     | '/_authed/products/create'
     | '/_authed/sponsorships/create'
+    | '/_authed/treatments/create'
     | '/_authed/animals/'
     | '/_authed/contacts/'
+    | '/_authed/drugs/'
     | '/_authed/orders/'
     | '/_authed/payments/'
     | '/_authed/products/'
     | '/_authed/sponsorships/'
     | '/_authed/animals/$animalId/edit'
     | '/_authed/contacts/$contactId/edit'
+    | '/_authed/drugs/$drugId/edit'
     | '/_authed/orders/$orderId/edit'
     | '/_authed/payments/$paymentId/edit'
     | '/_authed/products/$productId/edit'
     | '/_authed/sponsorships/$sponsorshipId/edit'
     | '/_authed/sponsorships/programs/create'
+    | '/_authed/treatments/$treatmentId/edit'
     | '/_authed/animals/$animalId/'
     | '/_authed/contacts/$contactId/'
+    | '/_authed/drugs/$drugId/'
     | '/_authed/orders/$orderId/'
     | '/_authed/payments/$paymentId/'
     | '/_authed/products/$productId/'
     | '/_authed/sponsorships/$sponsorshipId/'
     | '/_authed/sponsorships/programs/'
+    | '/_authed/treatments/$treatmentId/'
     | '/_authed/sponsorships/programs/$programId/edit'
     | '/_authed/sponsorships/programs/$programId/'
   fileRoutesById: FileRoutesById
@@ -542,6 +628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrdersIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/drugs/': {
+      id: '/_authed/drugs/'
+      path: '/drugs'
+      fullPath: '/drugs/'
+      preLoaderRoute: typeof AuthedDrugsIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/contacts/': {
       id: '/_authed/contacts/'
       path: '/contacts'
@@ -554,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/animals'
       fullPath: '/animals/'
       preLoaderRoute: typeof AuthedAnimalsIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/treatments/create': {
+      id: '/_authed/treatments/create'
+      path: '/treatments/create'
+      fullPath: '/treatments/create'
+      preLoaderRoute: typeof AuthedTreatmentsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/create': {
@@ -582,6 +682,13 @@ declare module '@tanstack/react-router' {
       path: '/orders/create'
       fullPath: '/orders/create'
       preLoaderRoute: typeof AuthedOrdersCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/drugs/create': {
+      id: '/_authed/drugs/create'
+      path: '/drugs/create'
+      fullPath: '/drugs/create'
+      preLoaderRoute: typeof AuthedDrugsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/contacts/create': {
@@ -619,6 +726,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/treatments/$treatmentId/': {
+      id: '/_authed/treatments/$treatmentId/'
+      path: '/treatments/$treatmentId'
+      fullPath: '/treatments/$treatmentId/'
+      preLoaderRoute: typeof AuthedTreatmentsTreatmentIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/sponsorships/programs/': {
       id: '/_authed/sponsorships/programs/'
       path: '/sponsorships/programs'
@@ -654,6 +768,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrdersOrderIdIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/drugs/$drugId/': {
+      id: '/_authed/drugs/$drugId/'
+      path: '/drugs/$drugId'
+      fullPath: '/drugs/$drugId/'
+      preLoaderRoute: typeof AuthedDrugsDrugIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/contacts/$contactId/': {
       id: '/_authed/contacts/$contactId/'
       path: '/contacts/$contactId'
@@ -666,6 +787,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/$animalId'
       fullPath: '/animals/$animalId/'
       preLoaderRoute: typeof AuthedAnimalsAnimalIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/treatments/$treatmentId/edit': {
+      id: '/_authed/treatments/$treatmentId/edit'
+      path: '/treatments/$treatmentId/edit'
+      fullPath: '/treatments/$treatmentId/edit'
+      preLoaderRoute: typeof AuthedTreatmentsTreatmentIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/programs/create': {
@@ -701,6 +829,13 @@ declare module '@tanstack/react-router' {
       path: '/orders/$orderId/edit'
       fullPath: '/orders/$orderId/edit'
       preLoaderRoute: typeof AuthedOrdersOrderIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/drugs/$drugId/edit': {
+      id: '/_authed/drugs/$drugId/edit'
+      path: '/drugs/$drugId/edit'
+      fullPath: '/drugs/$drugId/edit'
+      preLoaderRoute: typeof AuthedDrugsDrugIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/contacts/$contactId/edit': {
@@ -743,30 +878,37 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
   AuthedAnimalsTurnoutJournalRoute: typeof AuthedAnimalsTurnoutJournalRoute
   AuthedContactsCreateRoute: typeof AuthedContactsCreateRoute
+  AuthedDrugsCreateRoute: typeof AuthedDrugsCreateRoute
   AuthedOrdersCreateRoute: typeof AuthedOrdersCreateRoute
   AuthedPaymentsCreateRoute: typeof AuthedPaymentsCreateRoute
   AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
   AuthedSponsorshipsCreateRoute: typeof AuthedSponsorshipsCreateRoute
+  AuthedTreatmentsCreateRoute: typeof AuthedTreatmentsCreateRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
   AuthedContactsIndexRoute: typeof AuthedContactsIndexRoute
+  AuthedDrugsIndexRoute: typeof AuthedDrugsIndexRoute
   AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
   AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
   AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
   AuthedSponsorshipsIndexRoute: typeof AuthedSponsorshipsIndexRoute
   AuthedAnimalsAnimalIdEditRoute: typeof AuthedAnimalsAnimalIdEditRoute
   AuthedContactsContactIdEditRoute: typeof AuthedContactsContactIdEditRoute
+  AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
   AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
   AuthedPaymentsPaymentIdEditRoute: typeof AuthedPaymentsPaymentIdEditRoute
   AuthedProductsProductIdEditRoute: typeof AuthedProductsProductIdEditRoute
   AuthedSponsorshipsSponsorshipIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdEditRoute
   AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
+  AuthedTreatmentsTreatmentIdEditRoute: typeof AuthedTreatmentsTreatmentIdEditRoute
   AuthedAnimalsAnimalIdIndexRoute: typeof AuthedAnimalsAnimalIdIndexRoute
   AuthedContactsContactIdIndexRoute: typeof AuthedContactsContactIdIndexRoute
+  AuthedDrugsDrugIdIndexRoute: typeof AuthedDrugsDrugIdIndexRoute
   AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
   AuthedPaymentsPaymentIdIndexRoute: typeof AuthedPaymentsPaymentIdIndexRoute
   AuthedProductsProductIdIndexRoute: typeof AuthedProductsProductIdIndexRoute
   AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
+  AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
   AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
@@ -780,32 +922,39 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
   AuthedAnimalsTurnoutJournalRoute: AuthedAnimalsTurnoutJournalRoute,
   AuthedContactsCreateRoute: AuthedContactsCreateRoute,
+  AuthedDrugsCreateRoute: AuthedDrugsCreateRoute,
   AuthedOrdersCreateRoute: AuthedOrdersCreateRoute,
   AuthedPaymentsCreateRoute: AuthedPaymentsCreateRoute,
   AuthedProductsCreateRoute: AuthedProductsCreateRoute,
   AuthedSponsorshipsCreateRoute: AuthedSponsorshipsCreateRoute,
+  AuthedTreatmentsCreateRoute: AuthedTreatmentsCreateRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
   AuthedContactsIndexRoute: AuthedContactsIndexRoute,
+  AuthedDrugsIndexRoute: AuthedDrugsIndexRoute,
   AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
   AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
   AuthedProductsIndexRoute: AuthedProductsIndexRoute,
   AuthedSponsorshipsIndexRoute: AuthedSponsorshipsIndexRoute,
   AuthedAnimalsAnimalIdEditRoute: AuthedAnimalsAnimalIdEditRoute,
   AuthedContactsContactIdEditRoute: AuthedContactsContactIdEditRoute,
+  AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,
   AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
   AuthedPaymentsPaymentIdEditRoute: AuthedPaymentsPaymentIdEditRoute,
   AuthedProductsProductIdEditRoute: AuthedProductsProductIdEditRoute,
   AuthedSponsorshipsSponsorshipIdEditRoute:
     AuthedSponsorshipsSponsorshipIdEditRoute,
   AuthedSponsorshipsProgramsCreateRoute: AuthedSponsorshipsProgramsCreateRoute,
+  AuthedTreatmentsTreatmentIdEditRoute: AuthedTreatmentsTreatmentIdEditRoute,
   AuthedAnimalsAnimalIdIndexRoute: AuthedAnimalsAnimalIdIndexRoute,
   AuthedContactsContactIdIndexRoute: AuthedContactsContactIdIndexRoute,
+  AuthedDrugsDrugIdIndexRoute: AuthedDrugsDrugIdIndexRoute,
   AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,
   AuthedPaymentsPaymentIdIndexRoute: AuthedPaymentsPaymentIdIndexRoute,
   AuthedProductsProductIdIndexRoute: AuthedProductsProductIdIndexRoute,
   AuthedSponsorshipsSponsorshipIdIndexRoute:
     AuthedSponsorshipsSponsorshipIdIndexRoute,
   AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
+  AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
   AuthedSponsorshipsProgramsProgramIdEditRoute:
     AuthedSponsorshipsProgramsProgramIdEditRoute,
   AuthedSponsorshipsProgramsProgramIdIndexRoute:

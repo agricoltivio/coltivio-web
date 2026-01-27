@@ -1012,6 +1012,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/living": {
         parameters: {
             query?: never;
@@ -4572,6 +4588,28 @@ export interface components {
             /** @enum {string} */
             deathReason?: "died" | "slaughtered";
         };
+        PostV1AnimalsImportPositiveResponse: {
+            data: {
+                skipped: {
+                    row: number;
+                    earTagNumber: string | null;
+                    name: string | null;
+                    reason: string;
+                }[];
+                summary: {
+                    totalRows: number;
+                    imported: number;
+                    skipped: number;
+                };
+            };
+        };
+        PostV1AnimalsImportRequestBody: {
+            /** Format: binary */
+            file: string;
+            /** @enum {string} */
+            type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+            skipHeaderRow?: string;
+        };
         GetV1AnimalsLivingPositiveResponse: {
             data: {
                 result: {
@@ -4751,6 +4789,36 @@ export interface components {
                     /** @enum {string|null} */
                     deathReason: "died" | "slaughtered" | null;
                 }[];
+                treatments: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                }[];
             };
         };
         PatchV1AnimalsByIdAnimalIdPositiveResponse: {
@@ -4914,7 +4982,7 @@ export interface components {
                     id: string;
                     farmId: string;
                     animalId: string;
-                    drugId: string;
+                    drugId: string | null;
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -4953,7 +5021,7 @@ export interface components {
                             milkWaitingDays: number;
                             meatWaitingDays: number;
                         }[];
-                    };
+                    } | null;
                 }[];
                 count: number;
             };
@@ -5135,7 +5203,7 @@ export interface components {
                     id: string;
                     farmId: string;
                     animalId: string;
-                    drugId: string;
+                    drugId: string | null;
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5203,7 +5271,7 @@ export interface components {
                             milkWaitingDays: number;
                             meatWaitingDays: number;
                         }[];
-                    };
+                    } | null;
                 }[];
                 count: number;
             };
@@ -5213,7 +5281,7 @@ export interface components {
                 id: string;
                 farmId: string;
                 animalId: string;
-                drugId: string;
+                drugId: string | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5242,7 +5310,7 @@ export interface components {
         };
         PostV1TreatmentsRequestBody: {
             animalId: string;
-            drugId: string;
+            drugId: string | null;
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5255,19 +5323,19 @@ export interface components {
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            milkUsableDate?: string;
+            milkUsableDate: string | null;
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            meatUsableDate?: string;
+            meatUsableDate: string | null;
         };
         GetV1TreatmentsByIdTreatmentIdPositiveResponse: {
             data: {
                 id: string;
                 farmId: string;
                 animalId: string;
-                drugId: string;
+                drugId: string | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5335,7 +5403,7 @@ export interface components {
                         milkWaitingDays: number;
                         meatWaitingDays: number;
                     }[];
-                };
+                } | null;
             };
         };
         PatchV1TreatmentsByIdTreatmentIdPositiveResponse: {
@@ -5343,7 +5411,7 @@ export interface components {
                 id: string;
                 farmId: string;
                 animalId: string;
-                drugId: string;
+                drugId: string | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5371,6 +5439,8 @@ export interface components {
             };
         };
         PatchV1TreatmentsByIdTreatmentIdRequestBody: {
+            animalId?: string;
+            drugId: string | null;
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -5383,12 +5453,12 @@ export interface components {
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            milkUsableDate?: string;
+            milkUsableDate: string | null;
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            meatUsableDate?: string;
+            meatUsableDate: string | null;
         };
         DeleteV1TreatmentsByIdTreatmentIdPositiveResponse: {
             data: Record<string, never>;
@@ -11631,6 +11701,40 @@ export interface operations {
             };
         };
     };
+    PostV1AnimalsImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/import Request body */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PostV1AnimalsImportRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/import Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsImportPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/import Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     GetV1AnimalsLiving: {
         parameters: {
             query?: never;
@@ -12644,7 +12748,7 @@ export interface operations {
             cookie?: never;
         };
         /** @description PATCH /v1/treatments/byId/:treatmentId Request body */
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["PatchV1TreatmentsByIdTreatmentIdRequestBody"];
             };

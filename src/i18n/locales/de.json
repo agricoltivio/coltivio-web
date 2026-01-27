@@ -220,5 +220,40 @@
       "fulfilled": "Ausgeliefert",
       "cancelled": "Storniert"
     }
+  },
+  "treatments": {
+    "title": "Behandlungen",
+    "createTreatment": "Behandlung erstellen",
+    "editTreatment": "Behandlung bearbeiten",
+    "treatmentDetails": "Behandlungsdetails",
+    "addTreatment": "Behandlung hinzufügen",
+    "animal": "Tier",
+    "date": "Datum",
+    "name": "Name",
+    "reason": "Grund",
+    "drug": "Medikament",
+    "notes": "Notizen",
+    "milkUsableDate": "Milch verwendbar ab",
+    "meatUsableDate": "Fleisch verwendbar ab",
+    "waitingDates": "Wartefristen",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Behandlung löschen möchten?",
+    "noTreatments": "Keine Behandlungen"
+  },
+  "drugs": {
+    "title": "Medikamente",
+    "createDrug": "Medikament erstellen",
+    "editDrug": "Medikament bearbeiten",
+    "drugDetails": "Medikamentdetails",
+    "name": "Name",
+    "notes": "Notizen",
+    "dosing": "Dosierung",
+    "noDosing": "Keine Dosierungsinformationen",
+    "addAnimalType": "Tierart hinzufügen",
+    "animalType": "Tierart",
+    "animalTypes": "Tierarten",
+    "dosePerKg": "Dosis pro kg",
+    "milkWaitingDays": "Wartetage Milch",
+    "meatWaitingDays": "Wartetage Fleisch",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Medikament löschen möchten?"
   }
 }

@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authed/animals/$animalId/edit")({
 // Build ear tag options, including current animal's ear tag if editing
 function buildEarTagOptions(
   available: AvailableEarTag[],
-  currentAnimal?: Animal
+  currentAnimal?: Animal,
 ): { value: string; label: string }[] {
   const options = available.map((earTag) => ({
     value: earTag.id,
@@ -45,7 +45,7 @@ function buildEarTagOptions(
 function buildParentOptions(
   animals: Animal[],
   excludeId: string | undefined,
-  sex: "male" | "female"
+  sex: "male" | "female",
 ): { value: string; label: string }[] {
   return animals
     .filter((animal) => animal.id !== excludeId && animal.sex === sex)
@@ -58,7 +58,9 @@ function formDataToApiBody(data: AnimalFormData) {
     name: data.name,
     type: data.type,
     sex: data.sex,
-    dateOfBirth: new Date(data.dateOfBirth).toISOString(),
+    dateOfBirth: data.dateOfBirth
+      ? new Date(data.dateOfBirth).toISOString()
+      : undefined,
     earTagId: data.earTagId || undefined,
     motherId: data.motherId || undefined,
     fatherId: data.fatherId || undefined,
@@ -85,7 +87,7 @@ function EditAnimal() {
   const motherOptions = buildParentOptions(
     allAnimals.result,
     animalId,
-    "female"
+    "female",
   );
   const fatherOptions = buildParentOptions(allAnimals.result, animalId, "male");
 

@@ -34,7 +34,9 @@ function formDataToApiBody(data: AnimalFormData) {
     name: data.name,
     type: data.type,
     sex: data.sex,
-    dateOfBirth: new Date(data.dateOfBirth).toISOString(),
+    dateOfBirth: data.dateOfBirth
+      ? new Date(data.dateOfBirth).toISOString()
+      : undefined,
     earTagId: data.earTagId || undefined,
     motherId: data.motherId || undefined,
     fatherId: data.fatherId || undefined,
