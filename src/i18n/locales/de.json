@@ -14,7 +14,12 @@
     "confirm": "Bestätigen",
     "back": "Zurück",
     "signOut": "Abmelden",
-    "noResults": "Keine Ergebnisse gefunden"
+    "noResults": "Keine Ergebnisse gefunden",
+    "close": "Schliessen",
+    "all": "Alle",
+    "rowsPerPage": "Zeilen pro Seite",
+    "showingOf": "{{showing}} von {{total}} angezeigt",
+    "pageOf": "Seite {{current}} von {{total}}"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -54,6 +59,15 @@
       "pig": "Schwein",
       "deer": "Hirsch"
     },
+    "typesPlural": {
+      "goat": "Ziegen",
+      "sheep": "Schafe",
+      "cow": "Kühe",
+      "horse": "Pferde",
+      "donkey": "Esel",
+      "pig": "Schweine",
+      "deer": "Hirsche"
+    },
     "deathReasons": {
       "died": "Gestorben",
       "slaughtered": "Geschlachtet"
@@ -62,7 +76,18 @@
     "sexOptions": {
       "male": "Männlich",
       "female": "Weiblich"
-    }
+    },
+    "import": "Importieren",
+    "importTitle": "Tiere importieren",
+    "importDescription": "Laden Sie eine Excel-Datei hoch, um Tiere zu importieren. Die Datei sollte Spalten für Ohrmarkennummer, Name, Geburtsdatum, Geschlecht, Mutter-Ohrmarke und Vater-Ohrmarke enthalten.",
+    "importFile": "Excel-Datei",
+    "skipHeaderRow": "Kopfzeile überspringen",
+    "importTotal": "Total Zeilen",
+    "importImported": "Importiert",
+    "importSkipped": "Übersprungen",
+    "importSkippedRows": "Übersprungene Zeilen",
+    "importRow": "Zeile",
+    "importReason": "Grund"
   },
   "earTags": {
     "title": "Ohrmarken",

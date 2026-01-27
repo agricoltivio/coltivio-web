@@ -1,19 +1,15 @@
+import { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ordersQueryOptions } from "@/api/orders.queries";
+import type { Order, OrderStatus } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
+import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import type { OrderStatus } from "@/api/types";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/orders/")({
   loader: ({ context: { queryClient } }) => {
@@ -46,52 +42,130 @@ function Orders() {
     return new Date(dateString).toLocaleDateString();
   }
 
+  const columns = useMemo<ColumnDef<Order>[]>(
+    () => [
+      {
+        accessorKey: "contact.firstName",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("orders.contact")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="font-medium">
+            {row.original.contact.firstName} {row.original.contact.lastName}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("orders.status")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const status = row.getValue("status") as OrderStatus;
+          return (
+            <Badge variant={getStatusVariant(status)}>
+              {t(`orders.statuses.${status}`)}
+            </Badge>
+          );
+        },
+      },
+      {
+        accessorKey: "orderDate",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("orders.orderDate")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => formatDate(row.getValue("orderDate")),
+      },
+      {
+        accessorKey: "shippingDate",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("orders.shippingDate")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const shippingDate = row.getValue("shippingDate") as string | null;
+          return (
+            <span className="text-muted-foreground">
+              {shippingDate ? formatDate(shippingDate) : "-"}
+            </span>
+          );
+        },
+      },
+    ],
+    [t],
+  );
+
+  const data = ordersQuery.data?.result ?? [];
+
   return (
     <PageContent title={t("orders.title")} showBackButton={false}>
-      <div className="flex-col">
-        <div className="flex justify-end">
-          <Button onClick={() => navigate({ to: "/orders/create" })}>
-            Erfassen
-          </Button>
-        </div>
-        <Table className="mt-3">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("orders.contact")}</TableHead>
-              <TableHead>{t("orders.status")}</TableHead>
-              <TableHead>{t("orders.orderDate")}</TableHead>
-              <TableHead>{t("orders.shippingDate")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ordersQuery.data?.result.map((order) => (
-              <TableRow
-                key={order.id}
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: "/orders/$orderId",
-                    params: { orderId: order.id },
-                  })
-                }
-              >
-                <TableCell>
-                  {order.contact.firstName} {order.contact.lastName}
-                </TableCell>
-                <TableCell>
-                  <Badge variant={getStatusVariant(order.status)}>
-                    {t(`orders.statuses.${order.status}`)}
-                  </Badge>
-                </TableCell>
-                <TableCell>{formatDate(order.orderDate)}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {order.shippingDate ? formatDate(order.shippingDate) : "-"}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => navigate({ to: "/orders/create" })}>
+          Erfassen
+        </Button>
       </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        onRowClick={(order) =>
+          navigate({
+            to: "/orders/$orderId",
+            params: { orderId: order.id },
+          })
+        }
+        globalFilterFn={(row, _columnId, filterValue) => {
+          const order = row.original;
+          const searchValue = filterValue.toLowerCase();
+          return (
+            order.contact.firstName.toLowerCase().includes(searchValue) ||
+            order.contact.lastName.toLowerCase().includes(searchValue)
+          );
+        }}
+        defaultSorting={[{ id: "orderDate", desc: true }]}
+      />
     </PageContent>
   );
 }

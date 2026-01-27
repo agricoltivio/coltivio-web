@@ -1,17 +1,14 @@
-import { sponsorshipProgramsQueryOptions } from "@/api/sponsorshipPrograms.queries";
-import { PageContent } from "@/components/PageContent";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { sponsorshipProgramsQueryOptions } from "@/api/sponsorshipPrograms.queries";
+import type { SponsorshipProgram } from "@/api/types";
+import { PageContent } from "@/components/PageContent";
+import { DataTable } from "@/components/DataTable";
+import { Button } from "@/components/ui/button";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/sponsorships/programs/")({
   loader: ({ context: { queryClient } }) => {
@@ -32,42 +29,76 @@ function SponsorshipPrograms() {
     }).format(amount);
   }
 
+  const columns = useMemo<ColumnDef<SponsorshipProgram>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorshipPrograms.name")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="font-medium">{row.getValue("name")}</span>
+        ),
+      },
+      {
+        accessorKey: "yearlyCost",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorshipPrograms.yearlyCost")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => formatCurrency(row.getValue("yearlyCost")),
+      },
+    ],
+    [t],
+  );
+
+  const data = programsQuery.data?.result ?? [];
+
   return (
     <PageContent title={t("sponsorshipPrograms.title")} showBackButton={false}>
-      <div className="flex-col">
-        <div className="flex justify-end">
-          <Button
-            onClick={() => navigate({ to: "/sponsorships/programs/create" })}
-          >
-            Erfassen
-          </Button>
-        </div>
-        <Table className="mt-3">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("sponsorshipPrograms.name")}</TableHead>
-              <TableHead>{t("sponsorshipPrograms.yearlyCost")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {programsQuery.data?.result.map((program) => (
-              <TableRow
-                key={program.id}
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: "/sponsorships/programs/$programId",
-                    params: { programId: program.id },
-                  })
-                }
-              >
-                <TableCell className="font-medium">{program.name}</TableCell>
-                <TableCell>{formatCurrency(program.yearlyCost)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="flex justify-end mb-4">
+        <Button
+          onClick={() => navigate({ to: "/sponsorships/programs/create" })}
+        >
+          Erfassen
+        </Button>
       </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        onRowClick={(program) =>
+          navigate({
+            to: "/sponsorships/programs/$programId",
+            params: { programId: program.id },
+          })
+        }
+        globalFilterFn={(row, _columnId, filterValue) => {
+          const program = row.original;
+          const searchValue = filterValue.toLowerCase();
+          return program.name.toLowerCase().includes(searchValue);
+        }}
+      />
     </PageContent>
   );
 }

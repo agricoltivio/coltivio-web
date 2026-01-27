@@ -1,26 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { MoreHorizontalIcon } from "lucide-react";
-import { paymentsQueryOptions } from "@/api/payments.queries";
 import { apiClient } from "@/api/client";
+import { paymentsQueryOptions } from "@/api/payments.queries";
+import type { Payment } from "@/api/types";
+import { DataTable } from "@/components/DataTable";
 import { PageContent } from "@/components/PageContent";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +14,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { type ColumnDef } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, MoreHorizontalIcon } from "lucide-react";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authed/payments/")({
   loader: ({ context: { queryClient } }) => {
@@ -70,98 +66,180 @@ function Payments() {
     }).format(amount);
   }
 
+  const columns = useMemo<ColumnDef<Payment>[]>(
+    () => [
+      {
+        accessorKey: "date",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("payments.date")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => formatDate(row.getValue("date")),
+      },
+      {
+        accessorKey: "contact.firstName",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("payments.contact")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="font-medium">
+            {row.original.contact.firstName} {row.original.contact.lastName}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "amount",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("payments.amount")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const payment = row.original;
+          return formatCurrency(payment.amount, payment.currency);
+        },
+      },
+      {
+        accessorKey: "method",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("payments.method")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="text-muted-foreground">
+            {t(`payments.methods.${row.getValue("method")}`)}
+          </span>
+        ),
+      },
+      {
+        id: "actions",
+        cell: ({ row }) => {
+          const payment = row.original;
+          return (
+            <div className="text-right" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="size-8">
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/payments/$paymentId/edit"
+                      params={{ paymentId: payment.id }}
+                    >
+                      {t("common.edit")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem variant="destructive">
+                        {t("common.delete")}
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          {t("common.confirm")}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t("payments.deleteConfirm")}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>
+                          {t("common.cancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(payment.id)}
+                        >
+                          {t("common.delete")}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+        enableSorting: false,
+      },
+    ],
+    [t, deleteMutation],
+  );
+
+  const data = paymentsQuery.data?.result ?? [];
+
   return (
     <PageContent title={t("payments.title")} showBackButton={false}>
-      <div className="flex-col">
-        <div className="flex justify-end">
-          <Button onClick={() => navigate({ to: "/payments/create" })}>
-            Erfassen
-          </Button>
-        </div>
-        <Table className="mt-3">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("payments.date")}</TableHead>
-              <TableHead>{t("payments.contact")}</TableHead>
-              <TableHead>{t("payments.amount")}</TableHead>
-              <TableHead>{t("payments.method")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paymentsQuery.data?.result.map((payment) => (
-              <TableRow
-                key={payment.id}
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: "/payments/$paymentId",
-                    params: { paymentId: payment.id },
-                  })
-                }
-              >
-                <TableCell>{formatDate(payment.date)}</TableCell>
-                <TableCell className="font-medium">
-                  {payment.contact.firstName} {payment.contact.lastName}
-                </TableCell>
-                <TableCell>
-                  {formatCurrency(payment.amount, payment.currency)}
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {t(`payments.methods.${payment.method}`)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="size-8">
-                        <MoreHorizontalIcon />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link
-                          to="/payments/$paymentId/edit"
-                          params={{ paymentId: payment.id }}
-                        >
-                          {t("common.edit")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <DropdownMenuItem variant="destructive">
-                            {t("common.delete")}
-                          </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              {t("common.confirm")}
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {t("payments.deleteConfirm")}
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>
-                              {t("common.cancel")}
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => deleteMutation.mutate(payment.id)}
-                            >
-                              {t("common.delete")}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => navigate({ to: "/payments/create" })}>
+          Erfassen
+        </Button>
       </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        onRowClick={(payment) =>
+          navigate({
+            to: "/payments/$paymentId",
+            params: { paymentId: payment.id },
+          })
+        }
+        globalFilterFn={(row, _columnId, filterValue) => {
+          const payment = row.original;
+          const searchValue = filterValue.toLowerCase();
+          return (
+            payment.contact.firstName.toLowerCase().includes(searchValue) ||
+            payment.contact.lastName.toLowerCase().includes(searchValue)
+          );
+        }}
+        defaultSorting={[{ id: "date", desc: true }]}
+      />
     </PageContent>
   );
 }

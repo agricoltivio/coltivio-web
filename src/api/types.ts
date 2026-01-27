@@ -52,6 +52,10 @@ export type SponsorshipProgram =
 
 // Payment types
 export type Payment =
+  components["schemas"]["GetV1PaymentsPositiveResponse"]["data"]["result"][number];
+
+// Payment without contact (for contact-specific queries)
+export type ContactPayment =
   components["schemas"]["GetV1ContactsByIdContactIdPaymentsPositiveResponse"]["data"]["result"][number];
 
 export type PaymentMethod = Payment["method"];

@@ -1,18 +1,15 @@
+import { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { productsQueryOptions } from "@/api/products.queries";
+import type { Product } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
+import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/products/")({
   loader: ({ context: { queryClient } }) => {
@@ -33,55 +30,120 @@ function Products() {
     }).format(amount);
   }
 
+  const columns = useMemo<ColumnDef<Product>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("products.name")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="font-medium">{row.getValue("name")}</span>
+        ),
+      },
+      {
+        accessorKey: "category",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("products.category")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => t(`products.categories.${row.getValue("category")}`),
+      },
+      {
+        accessorKey: "pricePerUnit",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("products.pricePerUnit")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const product = row.original;
+          return `${formatCurrency(product.pricePerUnit)} / ${t(`products.units.${product.unit}`)}`;
+        },
+      },
+      {
+        accessorKey: "active",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("orders.status")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const active = row.getValue("active") as boolean;
+          return (
+            <Badge variant={active ? "default" : "secondary"}>
+              {active ? t("products.active") : t("products.inactive")}
+            </Badge>
+          );
+        },
+      },
+    ],
+    [t],
+  );
+
+  const data = productsQuery.data?.result ?? [];
+
   return (
     <PageContent title={t("products.title")} showBackButton={false}>
-      <div className="flex-col">
-        <div className="flex justify-end">
-          <Button onClick={() => navigate({ to: "/products/create" })}>
-            Erfassen
-          </Button>
-        </div>
-        <Table className="mt-3">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("products.name")}</TableHead>
-              <TableHead>{t("products.category")}</TableHead>
-              <TableHead>{t("products.pricePerUnit")}</TableHead>
-              <TableHead>{t("orders.status")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {productsQuery.data?.result.map((product) => (
-              <TableRow
-                key={product.id}
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: "/products/$productId",
-                    params: { productId: product.id },
-                  })
-                }
-              >
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {t(`products.categories.${product.category}`)}
-                </TableCell>
-                <TableCell>
-                  {formatCurrency(product.pricePerUnit)} /{" "}
-                  {t(`products.units.${product.unit}`)}
-                </TableCell>
-                <TableCell>
-                  <Badge variant={product.active ? "default" : "secondary"}>
-                    {product.active
-                      ? t("products.active")
-                      : t("products.inactive")}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => navigate({ to: "/products/create" })}>
+          Erfassen
+        </Button>
       </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        onRowClick={(product) =>
+          navigate({
+            to: "/products/$productId",
+            params: { productId: product.id },
+          })
+        }
+        globalFilterFn={(row, _columnId, filterValue) => {
+          const product = row.original;
+          const searchValue = filterValue.toLowerCase();
+          return product.name.toLowerCase().includes(searchValue);
+        }}
+      />
     </PageContent>
   );
 }

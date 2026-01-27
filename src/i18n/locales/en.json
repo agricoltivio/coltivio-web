@@ -14,7 +14,12 @@
     "confirm": "Confirm",
     "back": "Back",
     "signOut": "Sign Out",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "close": "Close",
+    "all": "All",
+    "rowsPerPage": "Rows per page",
+    "showingOf": "Showing {{showing}} of {{total}}",
+    "pageOf": "Page {{current}} of {{total}}"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -54,6 +59,15 @@
       "pig": "Pig",
       "deer": "Deer"
     },
+    "typesPlural": {
+      "goat": "Goats",
+      "sheep": "Sheep",
+      "cow": "Cows",
+      "horse": "Horses",
+      "donkey": "Donkeys",
+      "pig": "Pigs",
+      "deer": "Deer"
+    },
     "deathReasons": {
       "died": "Died",
       "slaughtered": "Slaughtered"
@@ -62,7 +76,18 @@
     "sexOptions": {
       "male": "Male",
       "female": "Female"
-    }
+    },
+    "import": "Import",
+    "importTitle": "Import Animals",
+    "importDescription": "Upload an Excel file to import animals. The file should contain columns for ear tag number, name, date of birth, sex, mother ear tag, and father ear tag.",
+    "importFile": "Excel File",
+    "skipHeaderRow": "Skip header row",
+    "importTotal": "Total Rows",
+    "importImported": "Imported",
+    "importSkipped": "Skipped",
+    "importSkippedRows": "Skipped Rows",
+    "importRow": "Row",
+    "importReason": "Reason"
   },
   "earTags": {
     "title": "Ear Tags",

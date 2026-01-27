@@ -1,18 +1,15 @@
-import { sponsorshipsQueryOptions } from "@/api/sponsorships.queries";
-import { PageContent } from "@/components/PageContent";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { sponsorshipsQueryOptions } from "@/api/sponsorships.queries";
+import type { Sponsorship } from "@/api/types";
+import { PageContent } from "@/components/PageContent";
+import { DataTable } from "@/components/DataTable";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/sponsorships/")({
   loader: ({ context: { queryClient } }) => {
@@ -35,56 +32,133 @@ function Sponsorships() {
     return new Date(sponsorship.endDate) > new Date();
   }
 
+  const columns = useMemo<ColumnDef<Sponsorship>[]>(
+    () => [
+      {
+        accessorKey: "contact.firstName",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorships.contact")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => (
+          <span className="font-medium">
+            {row.original.contact.firstName} {row.original.contact.lastName}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "animal.name",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorships.animal")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => row.original.animal.name,
+      },
+      {
+        accessorKey: "startDate",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorships.startDate")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => formatDate(row.getValue("startDate")),
+      },
+      {
+        accessorKey: "endDate",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorships.endDate")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const endDate = row.getValue("endDate") as string | null;
+          return endDate ? formatDate(endDate) : "-";
+        },
+      },
+      {
+        id: "status",
+        header: "Status",
+        cell: ({ row }) => {
+          const active = isActive(row.original);
+          return (
+            <Badge variant={active ? "default" : "secondary"}>
+              {active ? t("sponsorships.active") : t("sponsorships.ended")}
+            </Badge>
+          );
+        },
+        enableSorting: false,
+      },
+    ],
+    [t],
+  );
+
+  const data = sponsorshipsQuery.data?.result ?? [];
+
   return (
     <PageContent title={t("sponsorships.title")} showBackButton={false}>
-      <div className="flex-col">
-        <div className="flex justify-end">
-          <Button onClick={() => navigate({ to: "/sponsorships/create" })}>
-            Erfassen
-          </Button>
-        </div>
-        <Table className="mt-3">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("sponsorships.contact")}</TableHead>
-              <TableHead>{t("sponsorships.animal")}</TableHead>
-              <TableHead>{t("sponsorships.startDate")}</TableHead>
-              <TableHead>{t("sponsorships.endDate")}</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sponsorshipsQuery.data?.result.map((sponsorship) => (
-              <TableRow
-                key={sponsorship.id}
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate({
-                    to: "/sponsorships/$sponsorshipId",
-                    params: { sponsorshipId: sponsorship.id },
-                  })
-                }
-              >
-                <TableCell className="font-medium">
-                  {sponsorship.contact.firstName} {sponsorship.contact.lastName}
-                </TableCell>
-                <TableCell>{sponsorship.animal.name}</TableCell>
-                <TableCell>{formatDate(sponsorship.startDate)}</TableCell>
-                <TableCell>
-                  {sponsorship.endDate ? formatDate(sponsorship.endDate) : "-"}
-                </TableCell>
-                <TableCell>
-                  {isActive(sponsorship) ? (
-                    <Badge variant="default">{t("sponsorships.active")}</Badge>
-                  ) : (
-                    <Badge variant="secondary">{t("sponsorships.ended")}</Badge>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => navigate({ to: "/sponsorships/create" })}>
+          Erfassen
+        </Button>
       </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        onRowClick={(sponsorship) =>
+          navigate({
+            to: "/sponsorships/$sponsorshipId",
+            params: { sponsorshipId: sponsorship.id },
+          })
+        }
+        globalFilterFn={(row, _columnId, filterValue) => {
+          const sponsorship = row.original;
+          const searchValue = filterValue.toLowerCase();
+          return (
+            sponsorship.contact.firstName.toLowerCase().includes(searchValue) ||
+            sponsorship.contact.lastName.toLowerCase().includes(searchValue) ||
+            sponsorship.animal.name.toLowerCase().includes(searchValue)
+          );
+        }}
+        defaultSorting={[{ id: "startDate", desc: true }]}
+      />
     </PageContent>
   );
 }
