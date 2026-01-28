@@ -1556,6 +1556,86 @@ export interface paths {
         patch: operations["PatchV1SponsorshipsByIdSponsorshipId"];
         trace?: never;
     };
+    "/v1/animalGroups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalGroups"];
+        put?: never;
+        post: operations["PostV1AnimalGroups"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalGroups"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animalGroups/byId/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalGroupsByIdGroupId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalGroupsByIdGroupId"];
+        options?: never;
+        head: operations["HeadV1AnimalGroupsByIdGroupId"];
+        patch: operations["PatchV1AnimalGroupsByIdGroupId"];
+        trace?: never;
+    };
+    "/v1/outdoorJournal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournal"];
+        put?: never;
+        post: operations["PostV1OutdoorJournal"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OutdoorJournal"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/outdoorJournal/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournalByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1OutdoorJournalByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1OutdoorJournalByIdEntryId"];
+        patch: operations["PatchV1OutdoorJournalByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/outdoorJournal/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournalCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OutdoorJournalCalendar"];
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -6726,6 +6806,209 @@ export interface components {
         };
         DeleteV1SponsorshipsByIdSponsorshipIdPositiveResponse: {
             data: Record<string, never>;
+        };
+        GetV1AnimalGroupsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                }[];
+                count: number;
+            };
+        };
+        PostV1AnimalGroupsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PostV1AnimalGroupsRequestBody: {
+            name: string;
+            description?: string;
+        };
+        GetV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PatchV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PatchV1AnimalGroupsByIdGroupIdRequestBody: {
+            name?: string;
+            description?: string;
+        };
+        DeleteV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1OutdoorJournalPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalGroupId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalGroup: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1OutdoorJournalPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PostV1OutdoorJournalRequestBody: {
+            animalGroupId: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate: string;
+            animalCount: number;
+        };
+        GetV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PatchV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PatchV1OutdoorJournalByIdEntryIdRequestBody: {
+            animalGroupId?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate?: string;
+            animalCount?: number;
+        };
+        DeleteV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1OutdoorJournalCalendarPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalGroupId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalGroup: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                    };
+                }[];
+                count: number;
+            };
         };
     };
     responses: never;
@@ -14458,6 +14741,504 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
                 };
+            };
+        };
+    };
+    GetV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalGroupsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animalGroups Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalGroupsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalGroupsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animalGroups/byId/:groupId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalGroupsByIdGroupIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/outdoorJournal Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1OutdoorJournalRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OutdoorJournalPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/outdoorJournal/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1OutdoorJournalByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1OutdoorJournalCalendar: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal/calendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalCalendarPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal/calendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournalCalendar: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal/calendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal/calendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

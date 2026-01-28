@@ -97,9 +97,10 @@
     "status": "Status",
     "assigned": "Zugewiesen",
     "available": "Verfügbar",
+    "prefix": "Präfix",
     "fromNumber": "Von Nummer",
     "toNumber": "Bis Nummer",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Ohrmarkenbereich löschen möchten?",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Ohrmarke löschen möchten?",
     "deleteWarning": "Ohrmarken, die Tieren zugewiesen sind, werden übersprungen.",
     "skippedAssigned": "{{count}} Ohrmarken wurden übersprungen, da sie Tieren zugewiesen sind."
   },
