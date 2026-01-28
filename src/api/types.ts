@@ -122,3 +122,14 @@ export type TreatmentDetail =
 
 export type AnimalTreatment =
   components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"]["data"]["result"][number];
+
+// Animal Group types
+export type AnimalGroup =
+  components["schemas"]["GetV1AnimalGroupsPositiveResponse"]["data"]["result"][number];
+
+// Outdoor Journal types
+export type OutdoorJournalEntry =
+  components["schemas"]["GetV1OutdoorJournalPositiveResponse"]["data"]["result"][number];
+
+export type OutdoorJournalCalendarEntry =
+  components["schemas"]["GetV1OutdoorJournalCalendarPositiveResponse"]["data"]["result"][number];

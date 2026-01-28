@@ -106,12 +106,36 @@
   },
   "auth": {
     "signIn": "Anmelden",
+    "signUp": "Registrieren",
     "email": "E-Mail",
     "password": "Passwort",
-    "signingIn": "Anmeldung läuft..."
+    "confirmPassword": "Passwort bestätigen",
+    "signingIn": "Anmeldung läuft...",
+    "signingUp": "Registrierung läuft...",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Bereits ein Konto?",
+    "resetPassword": "Passwort zurücksetzen",
+    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "sendResetLink": "Link senden",
+    "sending": "Senden...",
+    "resetLinkSent": "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihre E-Mails.",
+    "backToLogin": "Zurück zur Anmeldung",
+    "newPassword": "Neues Passwort",
+    "setNewPassword": "Neues Passwort setzen",
+    "settingPassword": "Passwort wird gesetzt...",
+    "passwordUpdated": "Passwort erfolgreich aktualisiert!",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "signUpSuccess": "Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu bestätigen."
   },
   "dashboard": {
     "welcome": "Hallo {{name}}, {{farmName}}"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "account": "Konto",
+    "loggedInAs": "Angemeldet als"
   },
   "contacts": {
     "title": "Kontakte",
@@ -281,5 +305,30 @@
     "milkWaitingDays": "Wartetage Milch",
     "meatWaitingDays": "Wartetage Fleisch",
     "deleteConfirm": "Sind Sie sicher, dass Sie dieses Medikament löschen möchten?"
+  },
+  "turnoutJournal": {
+    "title": "Auslaufjournal",
+    "calendar": "Kalender",
+    "entries": "Einträge",
+    "addEntry": "Eintrag hinzufügen",
+    "editEntry": "Eintrag bearbeiten",
+    "animalGroup": "Tiergruppe",
+    "animalGroups": "Tiergruppen",
+    "startDate": "Von",
+    "endDate": "Bis",
+    "animalCount": "Anzahl Tiere",
+    "noEntries": "Keine Einträge",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
+    "manageGroups": "Gruppen verwalten",
+    "addGroup": "Gruppe hinzufügen",
+    "editGroup": "Gruppe bearbeiten",
+    "groupName": "Name",
+    "groupDescription": "Beschreibung",
+    "deleteGroupConfirm": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?",
+    "noGroups": "Noch keine Tiergruppen definiert",
+    "month": "Monat",
+    "year": "Jahr",
+    "previousMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat"
   }
 }

@@ -14,7 +14,10 @@ export interface SupabaseAuthState {
   loading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<SupabaseAuthState | undefined>(undefined);
@@ -55,11 +58,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? new Error(error.message) : null };
   }
 
+  async function signUp(email: string, password: string) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    return { error: error ? new Error(error.message) : null };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
   }
 
-  const value = { user, session, loading, signIn, signOut, isAuthenticated };
+  async function resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error ? new Error(error.message) : null };
+  }
+
+  async function updatePassword(password: string) {
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error ? new Error(error.message) : null };
+  }
+
+  const value = {
+    user,
+    session,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    isAuthenticated,
+    resetPassword,
+    updatePassword,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

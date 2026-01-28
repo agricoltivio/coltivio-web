@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -104,12 +104,12 @@ export function LoginForm({
                       <FieldLabel htmlFor="password">
                         {t("auth.password")}
                       </FieldLabel>
-                      <a
-                        href="#"
+                      <Link
+                        to="/forgot-password"
                         className="ml-auto text-sm underline-offset-2 hover:underline"
                       >
-                        Forgot your password?
-                      </a>
+                        {t("auth.forgotPassword")}
+                      </Link>
                     </div>
                     <Input {...field} id="password" type="password" required />
                     {fieldState.invalid && (
@@ -117,7 +117,7 @@ export function LoginForm({
                     )}
                   </Field>
                 )}
-              />{" "}
+              />
               {serverError && (
                 <p className="text-sm text-destructive">{serverError}</p>
               )}
@@ -127,11 +127,19 @@ export function LoginForm({
                   disabled={form.formState.isSubmitting}
                   className="w-full"
                 >
-                  Login
+                  {form.formState.isSubmitting
+                    ? t("auth.signingIn")
+                    : t("auth.signIn")}
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <a href="#">Sign up</a>
+                {t("auth.noAccount")}{" "}
+                <Link
+                  to="/register"
+                  className="underline-offset-2 hover:underline"
+                >
+                  {t("auth.signUp")}
+                </Link>
               </FieldDescription>
             </FieldGroup>
           </form>

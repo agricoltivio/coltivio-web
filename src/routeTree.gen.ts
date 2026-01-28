@@ -9,11 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
 import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
@@ -53,9 +57,24 @@ import { Route as AuthedAnimalsAnimalIdEditRouteImport } from './routes/_authed/
 import { Route as AuthedSponsorshipsProgramsProgramIdIndexRouteImport } from './routes/_authed/sponsorships/programs/$programId.index'
 import { Route as AuthedSponsorshipsProgramsProgramIdEditRouteImport } from './routes/_authed/sponsorships/programs/$programId.edit'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedRouteRoute = AuthedRouteRouteImport.update({
@@ -75,6 +94,11 @@ const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
 const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedAccountRoute = AuthedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedSponsorshipsIndexRoute = AuthedSponsorshipsIndexRouteImport.update({
@@ -290,7 +314,11 @@ const AuthedSponsorshipsProgramsProgramIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
@@ -333,7 +361,11 @@ export interface FileRoutesByFullPath {
   '/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
   '/': typeof AuthedIndexRoute
@@ -379,7 +411,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authed': typeof AuthedRouteRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
   '/_authed/': typeof AuthedIndexRoute
@@ -426,7 +462,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/register'
+    | '/reset-password'
+    | '/account'
     | '/dashboard'
     | '/settings'
     | '/animals/create'
@@ -469,7 +509,11 @@ export interface FileRouteTypes {
     | '/sponsorships/programs/$programId/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/forgot-password'
     | '/login'
+    | '/register'
+    | '/reset-password'
+    | '/account'
     | '/dashboard'
     | '/settings'
     | '/'
@@ -514,7 +558,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authed'
+    | '/forgot-password'
     | '/login'
+    | '/register'
+    | '/reset-password'
+    | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
     | '/_authed/'
@@ -560,16 +608,40 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authed': {
@@ -598,6 +670,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthedDashboardRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/account': {
+      id: '/_authed/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthedAccountRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/': {
@@ -870,6 +949,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthedRouteRouteChildren {
+  AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
@@ -914,6 +994,7 @@ interface AuthedRouteRouteChildren {
 }
 
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
+  AuthedAccountRoute: AuthedAccountRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedIndexRoute: AuthedIndexRoute,
@@ -967,7 +1048,10 @@ const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   AuthedRouteRoute: AuthedRouteRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

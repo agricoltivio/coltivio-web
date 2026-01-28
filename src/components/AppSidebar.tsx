@@ -234,7 +234,7 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
-                    to="/contacts"
+                    to="/account"
                   >
                     <User /> Account
                   </Link>
