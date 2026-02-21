@@ -1012,6 +1012,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/living": {
         parameters: {
             query?: never;
@@ -1076,6 +1092,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/byId/{animalId}/treatments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdTreatments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdTreatments"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/earTags": {
         parameters: {
             query?: never;
@@ -1122,6 +1154,86 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/v1/drugs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Drugs"];
+        put?: never;
+        post: operations["PostV1Drugs"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Drugs"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/drugs/byId/{drugId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1DrugsByIdDrugId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1DrugsByIdDrugId"];
+        options?: never;
+        head: operations["HeadV1DrugsByIdDrugId"];
+        patch: operations["PatchV1DrugsByIdDrugId"];
+        trace?: never;
+    };
+    "/v1/drugs/byId/{drugId}/inUse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1DrugsByIdDrugIdInUse"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1DrugsByIdDrugIdInUse"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/treatments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Treatments"];
+        put?: never;
+        post: operations["PostV1Treatments"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Treatments"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/treatments/byId/{treatmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1TreatmentsByIdTreatmentId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1TreatmentsByIdTreatmentId"];
+        options?: never;
+        head: operations["HeadV1TreatmentsByIdTreatmentId"];
+        patch: operations["PatchV1TreatmentsByIdTreatmentId"];
         trace?: never;
     };
     "/v1/contacts": {
@@ -1442,6 +1554,86 @@ export interface paths {
         options?: never;
         head: operations["HeadV1SponsorshipsByIdSponsorshipId"];
         patch: operations["PatchV1SponsorshipsByIdSponsorshipId"];
+        trace?: never;
+    };
+    "/v1/animalGroups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalGroups"];
+        put?: never;
+        post: operations["PostV1AnimalGroups"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalGroups"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animalGroups/byId/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalGroupsByIdGroupId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalGroupsByIdGroupId"];
+        options?: never;
+        head: operations["HeadV1AnimalGroupsByIdGroupId"];
+        patch: operations["PatchV1AnimalGroupsByIdGroupId"];
+        trace?: never;
+    };
+    "/v1/outdoorJournal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournal"];
+        put?: never;
+        post: operations["PostV1OutdoorJournal"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OutdoorJournal"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/outdoorJournal/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournalByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1OutdoorJournalByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1OutdoorJournalByIdEntryId"];
+        patch: operations["PatchV1OutdoorJournalByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/outdoorJournal/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OutdoorJournalCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OutdoorJournalCalendar"];
+        patch?: never;
         trace?: never;
     };
 }
@@ -4403,7 +4595,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4436,7 +4628,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4464,7 +4656,7 @@ export interface components {
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            dateOfBirth: string;
+            dateOfBirth?: string;
             earTagId?: string;
             motherId?: string;
             fatherId?: string;
@@ -4475,6 +4667,28 @@ export interface components {
             dateOfDeath?: string;
             /** @enum {string} */
             deathReason?: "died" | "slaughtered";
+        };
+        PostV1AnimalsImportPositiveResponse: {
+            data: {
+                skipped: {
+                    row: number;
+                    earTagNumber: string | null;
+                    name: string | null;
+                    reason: string;
+                }[];
+                summary: {
+                    totalRows: number;
+                    imported: number;
+                    skipped: number;
+                };
+            };
+        };
+        PostV1AnimalsImportRequestBody: {
+            /** Format: binary */
+            file: string;
+            /** @enum {string} */
+            type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+            skipHeaderRow?: string;
         };
         GetV1AnimalsLivingPositiveResponse: {
             data: {
@@ -4490,7 +4704,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4523,7 +4737,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4551,7 +4765,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4580,7 +4794,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4609,7 +4823,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4638,7 +4852,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4655,6 +4869,36 @@ export interface components {
                     /** @enum {string|null} */
                     deathReason: "died" | "slaughtered" | null;
                 }[];
+                treatments: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                }[];
             };
         };
         PatchV1AnimalsByIdAnimalIdPositiveResponse: {
@@ -4670,7 +4914,7 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
-                dateOfBirth: string;
+                dateOfBirth: string | null;
                 earTagId: string | null;
                 earTag: {
                     id: string;
@@ -4727,7 +4971,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     earTag: {
                         id: string;
@@ -4812,6 +5056,56 @@ export interface components {
                 count: number;
             };
         };
+        GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    drug: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        notes: string | null;
+                        drugTreatment: {
+                            id: string;
+                            drugId: string;
+                            /** @enum {string} */
+                            animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                            dosePerKg: number;
+                            milkWaitingDays: number;
+                            meatWaitingDays: number;
+                        }[];
+                    } | null;
+                }[];
+                count: number;
+            };
+        };
         GetV1EarTagsPositiveResponse: {
             data: {
                 result: {
@@ -4830,7 +5124,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         earTag: {
                             id: string;
@@ -4881,6 +5175,373 @@ export interface components {
                 deletedCount: number;
                 skippedAssigned: string[];
             };
+        };
+        GetV1DrugsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    notes: string | null;
+                    drugTreatment: {
+                        id: string;
+                        drugId: string;
+                        /** @enum {string} */
+                        animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        dosePerKg: number;
+                        milkWaitingDays: number;
+                        meatWaitingDays: number;
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        PostV1DrugsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PostV1DrugsRequestBody: {
+            name: string;
+            notes?: string;
+            drugTreatment: {
+                /** @enum {string} */
+                animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                dosePerKg: number;
+                milkWaitingDays: number;
+                meatWaitingDays: number;
+            }[];
+        };
+        GetV1DrugsByIdDrugIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PatchV1DrugsByIdDrugIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                notes: string | null;
+                drugTreatment: {
+                    id: string;
+                    drugId: string;
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    dosePerKg: number;
+                    milkWaitingDays: number;
+                    meatWaitingDays: number;
+                }[];
+            };
+        };
+        PatchV1DrugsByIdDrugIdRequestBody: {
+            name?: string;
+            notes?: string;
+            drugTreatment?: {
+                /** @enum {string} */
+                animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                dosePerKg: number;
+                milkWaitingDays: number;
+                meatWaitingDays: number;
+            }[];
+        };
+        DeleteV1DrugsByIdDrugIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1DrugsByIdDrugIdInUsePositiveResponse: {
+            data: {
+                inUse: boolean;
+            };
+        };
+        GetV1TreatmentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    drugId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    name: string;
+                    reason: string;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    milkUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    meatUsableDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    animal: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        /** @enum {string} */
+                        sex: "male" | "female";
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dateOfBirth: string | null;
+                        earTagId: string | null;
+                        earTag: {
+                            id: string;
+                            farmId: string;
+                            number: string;
+                        } | null;
+                        motherId: string | null;
+                        fatherId: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dateOfDeath: string | null;
+                        /** @enum {string|null} */
+                        deathReason: "died" | "slaughtered" | null;
+                    };
+                    drug: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        notes: string | null;
+                        drugTreatment: {
+                            id: string;
+                            drugId: string;
+                            /** @enum {string} */
+                            animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                            dosePerKg: number;
+                            milkWaitingDays: number;
+                            meatWaitingDays: number;
+                        }[];
+                    } | null;
+                }[];
+                count: number;
+            };
+        };
+        PostV1TreatmentsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PostV1TreatmentsRequestBody: {
+            animalId: string;
+            drugId: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            name: string;
+            reason: string;
+            notes?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            milkUsableDate: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            meatUsableDate: string | null;
+        };
+        GetV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+                animal: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    /** @enum {string} */
+                    sex: "male" | "female";
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfBirth: string | null;
+                    earTagId: string | null;
+                    earTag: {
+                        id: string;
+                        farmId: string;
+                        number: string;
+                    } | null;
+                    motherId: string | null;
+                    fatherId: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfDeath: string | null;
+                    /** @enum {string|null} */
+                    deathReason: "died" | "slaughtered" | null;
+                };
+                drug: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    notes: string | null;
+                    drugTreatment: {
+                        id: string;
+                        drugId: string;
+                        /** @enum {string} */
+                        animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        dosePerKg: number;
+                        milkWaitingDays: number;
+                        meatWaitingDays: number;
+                    }[];
+                } | null;
+            };
+        };
+        PatchV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                drugId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                name: string;
+                reason: string;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                milkUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                meatUsableDate: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PatchV1TreatmentsByIdTreatmentIdRequestBody: {
+            animalId?: string;
+            drugId: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            name?: string;
+            reason?: string;
+            notes?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            milkUsableDate: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            meatUsableDate: string | null;
+        };
+        DeleteV1TreatmentsByIdTreatmentIdPositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1ContactsPositiveResponse: {
             data: {
@@ -4992,7 +5653,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -5157,7 +5818,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -5939,7 +6600,7 @@ export interface components {
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
-                        dateOfBirth: string;
+                        dateOfBirth: string | null;
                         earTagId: string | null;
                         motherId: string | null;
                         fatherId: string | null;
@@ -6065,7 +6726,7 @@ export interface components {
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
-                    dateOfBirth: string;
+                    dateOfBirth: string | null;
                     earTagId: string | null;
                     motherId: string | null;
                     fatherId: string | null;
@@ -6145,6 +6806,209 @@ export interface components {
         };
         DeleteV1SponsorshipsByIdSponsorshipIdPositiveResponse: {
             data: Record<string, never>;
+        };
+        GetV1AnimalGroupsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                }[];
+                count: number;
+            };
+        };
+        PostV1AnimalGroupsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PostV1AnimalGroupsRequestBody: {
+            name: string;
+            description?: string;
+        };
+        GetV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PatchV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+            };
+        };
+        PatchV1AnimalGroupsByIdGroupIdRequestBody: {
+            name?: string;
+            description?: string;
+        };
+        DeleteV1AnimalGroupsByIdGroupIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1OutdoorJournalPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalGroupId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalGroup: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1OutdoorJournalPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PostV1OutdoorJournalRequestBody: {
+            animalGroupId: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate: string;
+            animalCount: number;
+        };
+        GetV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PatchV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalGroupId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                animalCount: number;
+                animalGroup: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                };
+            };
+        };
+        PatchV1OutdoorJournalByIdEntryIdRequestBody: {
+            animalGroupId?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate?: string;
+            animalCount?: number;
+        };
+        DeleteV1OutdoorJournalByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1OutdoorJournalCalendarPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalGroupId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalGroup: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                    };
+                }[];
+                count: number;
+            };
         };
     };
     responses: never;
@@ -11120,6 +11984,40 @@ export interface operations {
             };
         };
     };
+    PostV1AnimalsImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/import Request body */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PostV1AnimalsImportRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/import Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsImportPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/import Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     GetV1AnimalsLiving: {
         parameters: {
             query?: never;
@@ -11429,6 +12327,66 @@ export interface operations {
             };
         };
     };
+    GetV1AnimalsByIdAnimalIdTreatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/treatments Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdTreatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/treatments Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1EarTags: {
         parameters: {
             query?: never;
@@ -11595,6 +12553,500 @@ export interface operations {
                 };
             };
             /** @description DELETE /v1/earTags/range Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/drugs Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1DrugsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1DrugsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Drugs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1DrugsByIdDrugId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/drugs/byId/:drugId Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/drugs/byId/:drugId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1DrugsByIdDrugIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/drugs/byId/:drugId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1DrugsByIdDrugIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/drugs/byId/:drugId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1DrugsByIdDrugIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/drugs/byId/:drugId/inUse Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/drugs/byId/:drugId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DrugsByIdDrugIdInUsePositiveResponse"];
+                };
+            };
+            /** @description GET /v1/drugs/byId/:drugId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1DrugsByIdDrugIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/drugs/byId/:drugId/inUse Parameter */
+                drugId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/drugs/byId/:drugId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/drugs/byId/:drugId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1TreatmentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/treatments Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1TreatmentsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1TreatmentsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Treatments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/treatments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/treatments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/treatments/byId/:treatmentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1TreatmentsByIdTreatmentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/treatments/byId/:treatmentId Parameter */
+                treatmentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/treatments/byId/:treatmentId Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchV1TreatmentsByIdTreatmentIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/treatments/byId/:treatmentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1TreatmentsByIdTreatmentIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/treatments/byId/:treatmentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -13289,6 +14741,504 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
                 };
+            };
+        };
+    };
+    GetV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalGroupsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animalGroups Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalGroupsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalGroupsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animalGroups Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animalGroups Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1AnimalGroupsByIdGroupId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animalGroups/byId/:groupId Parameter */
+                groupId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animalGroups/byId/:groupId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalGroupsByIdGroupIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animalGroups/byId/:groupId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalGroupsByIdGroupIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animalGroups/byId/:groupId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/outdoorJournal Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1OutdoorJournalRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OutdoorJournalPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1OutdoorJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/outdoorJournal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/outdoorJournal/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1OutdoorJournalByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/outdoorJournal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1OutdoorJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/outdoorJournal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1OutdoorJournalCalendar: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/outdoorJournal/calendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OutdoorJournalCalendarPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/outdoorJournal/calendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OutdoorJournalCalendar: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to: components["schemas"]["GetV1CropProtectionApplicationsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/outdoorJournal/calendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/outdoorJournal/calendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

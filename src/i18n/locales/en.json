@@ -14,7 +14,12 @@
     "confirm": "Confirm",
     "back": "Back",
     "signOut": "Sign Out",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "close": "Close",
+    "all": "All",
+    "rowsPerPage": "Rows per page",
+    "showingOf": "Showing {{showing}} of {{total}}",
+    "pageOf": "Page {{current}} of {{total}}"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -54,6 +59,15 @@
       "pig": "Pig",
       "deer": "Deer"
     },
+    "typesPlural": {
+      "goat": "Goats",
+      "sheep": "Sheep",
+      "cow": "Cows",
+      "horse": "Horses",
+      "donkey": "Donkeys",
+      "pig": "Pigs",
+      "deer": "Deer"
+    },
     "deathReasons": {
       "died": "Died",
       "slaughtered": "Slaughtered"
@@ -62,7 +76,18 @@
     "sexOptions": {
       "male": "Male",
       "female": "Female"
-    }
+    },
+    "import": "Import",
+    "importTitle": "Import Animals",
+    "importDescription": "Upload an Excel file to import animals. The file should contain columns for ear tag number, name, date of birth, sex, mother ear tag, and father ear tag.",
+    "importFile": "Excel File",
+    "skipHeaderRow": "Skip header row",
+    "importTotal": "Total Rows",
+    "importImported": "Imported",
+    "importSkipped": "Skipped",
+    "importSkippedRows": "Skipped Rows",
+    "importRow": "Row",
+    "importReason": "Reason"
   },
   "earTags": {
     "title": "Ear Tags",
@@ -72,20 +97,45 @@
     "status": "Status",
     "assigned": "Assigned",
     "available": "Available",
+    "prefix": "Prefix",
     "fromNumber": "From Number",
     "toNumber": "To Number",
-    "deleteConfirm": "Are you sure you want to delete this ear tag range?",
+    "deleteConfirm": "Are you sure you want to delete this ear tag?",
     "deleteWarning": "Ear tags assigned to animals will be skipped.",
     "skippedAssigned": "{{count}} ear tags were skipped because they are assigned to animals."
   },
   "auth": {
     "signIn": "Sign In",
+    "signUp": "Sign Up",
     "email": "Email",
     "password": "Password",
-    "signingIn": "Signing in..."
+    "confirmPassword": "Confirm Password",
+    "signingIn": "Signing in...",
+    "signingUp": "Signing up...",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "resetPassword": "Reset Password",
+    "resetPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+    "sendResetLink": "Send Reset Link",
+    "sending": "Sending...",
+    "resetLinkSent": "Password reset link sent! Check your email.",
+    "backToLogin": "Back to login",
+    "newPassword": "New Password",
+    "setNewPassword": "Set New Password",
+    "settingPassword": "Setting password...",
+    "passwordUpdated": "Password updated successfully!",
+    "passwordMismatch": "Passwords do not match",
+    "signUpSuccess": "Registration successful! Please check your email to confirm your account."
   },
   "dashboard": {
     "welcome": "Hello {{name}}, {{farmName}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "account": "Account",
+    "loggedInAs": "Logged in as"
   },
   "contacts": {
     "title": "Contacts",
@@ -220,5 +270,65 @@
       "fulfilled": "Fulfilled",
       "cancelled": "Cancelled"
     }
+  },
+  "treatments": {
+    "title": "Treatments",
+    "createTreatment": "Create Treatment",
+    "editTreatment": "Edit Treatment",
+    "treatmentDetails": "Treatment Details",
+    "addTreatment": "Add Treatment",
+    "animal": "Animal",
+    "date": "Date",
+    "name": "Name",
+    "reason": "Reason",
+    "drug": "Drug",
+    "notes": "Notes",
+    "milkUsableDate": "Milk Usable Date",
+    "meatUsableDate": "Meat Usable Date",
+    "waitingDates": "Waiting Dates",
+    "deleteConfirm": "Are you sure you want to delete this treatment?",
+    "noTreatments": "No treatments"
+  },
+  "drugs": {
+    "title": "Drugs",
+    "createDrug": "Create Drug",
+    "editDrug": "Edit Drug",
+    "drugDetails": "Drug Details",
+    "name": "Name",
+    "notes": "Notes",
+    "dosing": "Dosing",
+    "noDosing": "No dosing information",
+    "addAnimalType": "Add Animal Type",
+    "animalType": "Animal Type",
+    "animalTypes": "Animal Types",
+    "dosePerKg": "Dose per kg",
+    "milkWaitingDays": "Milk Waiting Days",
+    "meatWaitingDays": "Meat Waiting Days",
+    "deleteConfirm": "Are you sure you want to delete this drug?"
+  },
+  "turnoutJournal": {
+    "title": "Turnout Journal",
+    "calendar": "Calendar",
+    "entries": "Entries",
+    "addEntry": "Add Entry",
+    "editEntry": "Edit Entry",
+    "animalGroup": "Animal Group",
+    "animalGroups": "Animal Groups",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "animalCount": "Animal Count",
+    "noEntries": "No entries",
+    "deleteConfirm": "Are you sure you want to delete this entry?",
+    "manageGroups": "Manage Groups",
+    "addGroup": "Add Group",
+    "editGroup": "Edit Group",
+    "groupName": "Name",
+    "groupDescription": "Description",
+    "deleteGroupConfirm": "Are you sure you want to delete this group?",
+    "noGroups": "No animal groups defined yet",
+    "month": "Month",
+    "year": "Year",
+    "previousMonth": "Previous Month",
+    "nextMonth": "Next Month"
   }
 }

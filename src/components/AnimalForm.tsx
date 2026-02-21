@@ -33,7 +33,7 @@ export interface AnimalFormData {
   name: string;
   type: AnimalType;
   sex: AnimalSex;
-  dateOfBirth: string;
+  dateOfBirth: string | null;
   earTagId: string | null;
   motherId: string | null;
   fatherId: string | null;
@@ -69,7 +69,9 @@ export function AnimalForm({
             name: animal.name,
             type: animal.type,
             sex: animal.sex,
-            dateOfBirth: animal.dateOfBirth.split("T")[0],
+            dateOfBirth: animal.dateOfBirth
+              ? animal.dateOfBirth.split("T")[0]
+              : null,
             earTagId: animal.earTagId,
             motherId: animal.motherId,
             fatherId: animal.fatherId,
@@ -203,11 +205,7 @@ export function AnimalForm({
           <FieldLabel htmlFor="dateOfBirth">
             {t("animals.dateOfBirth")} *
           </FieldLabel>
-          <Input
-            id="dateOfBirth"
-            type="date"
-            {...register("dateOfBirth", { required: true })}
-          />
+          <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} />
         </Field>
         <Field>
           <FieldLabel htmlFor="dateOfDeath">

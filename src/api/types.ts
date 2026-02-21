@@ -52,6 +52,10 @@ export type SponsorshipProgram =
 
 // Payment types
 export type Payment =
+  components["schemas"]["GetV1PaymentsPositiveResponse"]["data"]["result"][number];
+
+// Payment without contact (for contact-specific queries)
+export type ContactPayment =
   components["schemas"]["GetV1ContactsByIdContactIdPaymentsPositiveResponse"]["data"]["result"][number];
 
 export type PaymentMethod = Payment["method"];
@@ -102,3 +106,30 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "fulfilled",
   "cancelled",
 ];
+
+// Drug types
+export type Drug =
+  components["schemas"]["GetV1DrugsPositiveResponse"]["data"]["result"][number];
+
+export type DrugTreatment = Drug["drugTreatment"][number];
+
+// Treatment types
+export type Treatment =
+  components["schemas"]["GetV1TreatmentsPositiveResponse"]["data"]["result"][number];
+
+export type TreatmentDetail =
+  components["schemas"]["GetV1TreatmentsByIdTreatmentIdPositiveResponse"]["data"];
+
+export type AnimalTreatment =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"]["data"]["result"][number];
+
+// Animal Group types
+export type AnimalGroup =
+  components["schemas"]["GetV1AnimalGroupsPositiveResponse"]["data"]["result"][number];
+
+// Outdoor Journal types
+export type OutdoorJournalEntry =
+  components["schemas"]["GetV1OutdoorJournalPositiveResponse"]["data"]["result"][number];
+
+export type OutdoorJournalCalendarEntry =
+  components["schemas"]["GetV1OutdoorJournalCalendarPositiveResponse"]["data"]["result"][number];

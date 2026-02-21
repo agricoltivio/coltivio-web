@@ -14,7 +14,12 @@
     "confirm": "Bestätigen",
     "back": "Zurück",
     "signOut": "Abmelden",
-    "noResults": "Keine Ergebnisse gefunden"
+    "noResults": "Keine Ergebnisse gefunden",
+    "close": "Schliessen",
+    "all": "Alle",
+    "rowsPerPage": "Zeilen pro Seite",
+    "showingOf": "{{showing}} von {{total}} angezeigt",
+    "pageOf": "Seite {{current}} von {{total}}"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -54,6 +59,15 @@
       "pig": "Schwein",
       "deer": "Hirsch"
     },
+    "typesPlural": {
+      "goat": "Ziegen",
+      "sheep": "Schafe",
+      "cow": "Kühe",
+      "horse": "Pferde",
+      "donkey": "Esel",
+      "pig": "Schweine",
+      "deer": "Hirsche"
+    },
     "deathReasons": {
       "died": "Gestorben",
       "slaughtered": "Geschlachtet"
@@ -62,7 +76,18 @@
     "sexOptions": {
       "male": "Männlich",
       "female": "Weiblich"
-    }
+    },
+    "import": "Importieren",
+    "importTitle": "Tiere importieren",
+    "importDescription": "Laden Sie eine Excel-Datei hoch, um Tiere zu importieren. Die Datei sollte Spalten für Ohrmarkennummer, Name, Geburtsdatum, Geschlecht, Mutter-Ohrmarke und Vater-Ohrmarke enthalten.",
+    "importFile": "Excel-Datei",
+    "skipHeaderRow": "Kopfzeile überspringen",
+    "importTotal": "Total Zeilen",
+    "importImported": "Importiert",
+    "importSkipped": "Übersprungen",
+    "importSkippedRows": "Übersprungene Zeilen",
+    "importRow": "Zeile",
+    "importReason": "Grund"
   },
   "earTags": {
     "title": "Ohrmarken",
@@ -72,20 +97,45 @@
     "status": "Status",
     "assigned": "Zugewiesen",
     "available": "Verfügbar",
+    "prefix": "Präfix",
     "fromNumber": "Von Nummer",
     "toNumber": "Bis Nummer",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Ohrmarkenbereich löschen möchten?",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Ohrmarke löschen möchten?",
     "deleteWarning": "Ohrmarken, die Tieren zugewiesen sind, werden übersprungen.",
     "skippedAssigned": "{{count}} Ohrmarken wurden übersprungen, da sie Tieren zugewiesen sind."
   },
   "auth": {
     "signIn": "Anmelden",
+    "signUp": "Registrieren",
     "email": "E-Mail",
     "password": "Passwort",
-    "signingIn": "Anmeldung läuft..."
+    "confirmPassword": "Passwort bestätigen",
+    "signingIn": "Anmeldung läuft...",
+    "signingUp": "Registrierung läuft...",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Bereits ein Konto?",
+    "resetPassword": "Passwort zurücksetzen",
+    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "sendResetLink": "Link senden",
+    "sending": "Senden...",
+    "resetLinkSent": "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihre E-Mails.",
+    "backToLogin": "Zurück zur Anmeldung",
+    "newPassword": "Neues Passwort",
+    "setNewPassword": "Neues Passwort setzen",
+    "settingPassword": "Passwort wird gesetzt...",
+    "passwordUpdated": "Passwort erfolgreich aktualisiert!",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "signUpSuccess": "Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu bestätigen."
   },
   "dashboard": {
     "welcome": "Hallo {{name}}, {{farmName}}"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "account": "Konto",
+    "loggedInAs": "Angemeldet als"
   },
   "contacts": {
     "title": "Kontakte",
@@ -220,5 +270,65 @@
       "fulfilled": "Ausgeliefert",
       "cancelled": "Storniert"
     }
+  },
+  "treatments": {
+    "title": "Behandlungen",
+    "createTreatment": "Behandlung erstellen",
+    "editTreatment": "Behandlung bearbeiten",
+    "treatmentDetails": "Behandlungsdetails",
+    "addTreatment": "Behandlung hinzufügen",
+    "animal": "Tier",
+    "date": "Datum",
+    "name": "Name",
+    "reason": "Grund",
+    "drug": "Medikament",
+    "notes": "Notizen",
+    "milkUsableDate": "Milch verwendbar ab",
+    "meatUsableDate": "Fleisch verwendbar ab",
+    "waitingDates": "Wartefristen",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Behandlung löschen möchten?",
+    "noTreatments": "Keine Behandlungen"
+  },
+  "drugs": {
+    "title": "Medikamente",
+    "createDrug": "Medikament erstellen",
+    "editDrug": "Medikament bearbeiten",
+    "drugDetails": "Medikamentdetails",
+    "name": "Name",
+    "notes": "Notizen",
+    "dosing": "Dosierung",
+    "noDosing": "Keine Dosierungsinformationen",
+    "addAnimalType": "Tierart hinzufügen",
+    "animalType": "Tierart",
+    "animalTypes": "Tierarten",
+    "dosePerKg": "Dosis pro kg",
+    "milkWaitingDays": "Wartetage Milch",
+    "meatWaitingDays": "Wartetage Fleisch",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Medikament löschen möchten?"
+  },
+  "turnoutJournal": {
+    "title": "Auslaufjournal",
+    "calendar": "Kalender",
+    "entries": "Einträge",
+    "addEntry": "Eintrag hinzufügen",
+    "editEntry": "Eintrag bearbeiten",
+    "animalGroup": "Tiergruppe",
+    "animalGroups": "Tiergruppen",
+    "startDate": "Von",
+    "endDate": "Bis",
+    "animalCount": "Anzahl Tiere",
+    "noEntries": "Keine Einträge",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
+    "manageGroups": "Gruppen verwalten",
+    "addGroup": "Gruppe hinzufügen",
+    "editGroup": "Gruppe bearbeiten",
+    "groupName": "Name",
+    "groupDescription": "Beschreibung",
+    "deleteGroupConfirm": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?",
+    "noGroups": "Noch keine Tiergruppen definiert",
+    "month": "Monat",
+    "year": "Jahr",
+    "previousMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat"
   }
 }
