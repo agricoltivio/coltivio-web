@@ -330,5 +330,150 @@
     "year": "Jahr",
     "previousMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat"
+  },
+  "landing": {
+    "nav": {
+      "openApp": "App öffnen"
+    },
+    "hero": {
+      "headline": "Hofverwaltung,\nvon Bauern entwickelt.",
+      "sub": "Open-Source Software für kleine und mittlere Betriebe. Keine Investoren, kein Lock-in — nur Werkzeuge, die wirklich funktionieren.",
+      "testPhase": "Die App befindet sich derzeit in einer Testphase — probiere sie aus und gib uns dein Feedback.",
+      "ctaIos": "iOS TestFlight ↗",
+      "ctaAndroid": "Android Beta"
+    },
+    "story": {
+      "headline": "Papierkram? Excel-Chaos? Nachtragen am Abend?",
+      "founders": "Curdin und Sarah, Berglandwirt:innen, standen täglich vor der Herausforderung: zu viel Dokumentationsaufwand, zu wenig Zeit und keine passende digitale Lösung für Kleinbetriebe.",
+      "problem": "Die bestehende Software war kompliziert, oft nur am PC nutzbar – nicht praxistauglich für den Alltag auf dem Hof. Die Lösung war klar: Eine einfache, mobile und effiziente App muss her.",
+      "born": "So entstand Coltivio – die Open-Source-App, die Betriebsdokumentation erleichtert und Zeit spart.",
+      "ossTitle": "Offen, unabhängig und gemeinsam entwickelt",
+      "oss": "Coltivio ist Open Source – das bedeutet, dass nicht nur Landwirt:innen profitieren, sondern auch Entwickler:innen aktiv zur Weiterentwicklung beitragen können. Die App wächst so kontinuierlich, unabhängig und praxisnah, basierend auf den echten Bedürfnissen der Landwirtschaft.",
+      "data": "Datensicherheit hat höchste Priorität. Alle Daten werden ausschliesslich auf Servern innerhalb der EU gespeichert und unterliegen den strengen Datenschutzrichtlinien der DSGVO. Da der Quellcode offen einsehbar ist, bleibt Coltivio transparent und überprüfbar – jede:r kann nachvollziehen, wie die Software funktioniert.",
+      "funding": "Anstatt auf teure Lizenzen setzen wir auf eine gemeinschaftliche Finanzierung durch freiwillige Beiträge. Jede Unterstützung trägt dazu bei, Coltivio weiterzuentwickeln und für alle Landwirt:innen frei zugänglich zu halten."
+    },
+    "mission": {
+      "title": "Unsere Mission",
+      "independent": {
+        "title": "Unabhängig & gemeinnützig",
+        "body": "Keine Investoren, kein Risikokapital. Gebaut für Bauern, nicht für Aktionäre."
+      },
+      "community": {
+        "title": "Von der Gemeinschaft getragen",
+        "body": "Von Bauern für Bauern. Jede Funktion entstand aus echter Felderfahrung."
+      },
+      "openSource": {
+        "title": "Open Source",
+        "body": "Transparent, prüfbar und kopierbar. Deine Daten, deine Software."
+      }
+    },
+    "fieldwork": {
+      "title": "Feldarbeit",
+      "sub": "Dein Hof in der Hosentasche — Die Mobile App",
+      "plots": {
+        "title": "Flächenverwaltung",
+        "desc": "Automatische Erfassung deiner Flächen. Passe sie nach deinen Bedürfnissen an — aufteilen, zusammenführen oder neu einzeichnen, ganz wie du es brauchst."
+      },
+      "calendar": {
+        "title": "Feldkalender",
+        "desc": "Eine einheitliche Übersicht aller geplanten und erledigten Feldarbeiten."
+      },
+      "protection": {
+        "title": "Fruchtfolgeplanung",
+        "desc": "Plane deine Fruchtfolgen ganz einfach mit wiederkehrenden Mustern, automatischer Erkennung von Konflikten und Wartezeiten — und sieh das Ergebnis in Echtzeit im Kalender."
+      },
+      "harvest": {
+        "title": "Feldarbeiten",
+        "desc": "Erfasse deine Feldarbeiten in wenigen Schritten. Pflügen, Düngeraustrag, Pflanzenschutz oder Ernte — alles sofort erfasst."
+      },
+      "export": {
+        "title": "Export",
+        "desc": "Exportiere den Feldkalender für die nächste Kontrolle als optimiertes Excel-File."
+      }
+    },
+    "animals": {
+      "title": "Tierhaltung",
+      "sub": "Vollständige Tierverfolgung in der Hosentasche.",
+      "import": {
+        "title": "Tierbestand",
+        "desc": "Dein ganzer Tierbestand im Überblick. Erstelle Herden mit Auslauf und Weidezeiten. Import der Tiere mittels Tierlisten-Export aus TVD."
+      },
+      "treatments": {
+        "title": "Behandlungsjournal",
+        "desc": "Vollständiges Medikamentenprotokoll pro Tier: Präparat, Dosis, Grund und Tierarzt. Milch- und Fleischwartezeiten werden automatisch berechnet und mit Absetzfristen angezeigt."
+      },
+      "herds": {
+        "title": "Herden & Pläne",
+        "desc": "Tiere flexibel in Gruppen für Fütterung, Zucht oder Weidegang einteilen. Trächtigkeiten, erwartete Geburten und Fütterungspläne für die gesamte Herde im Überblick."
+      },
+      "turnout": {
+        "title": "Auslaufjournal",
+        "desc": "Automatisch generiertes Auslaufjournal basierend auf definierten Herden. Einmal konfiguriert und vergessen."
+      },
+      "export": {
+        "title": "Export für Kontrollen",
+        "desc": "Strukturierte Exporte für offizielle Tierkontrollen: Behandlungsprotokoll, Bestandslisten und Auslaufjournal im exakt geforderten Format der Schweizer Behörden."
+      }
+    },
+    "customize": {
+      "headline": "Auf deinen Alltag zugeschnitten — nicht umgekehrt",
+      "sub": "Zeit ist knapp auf dem Hof. Coltivio hält sich im Hintergrund — einmal einrichten, den Rest vergessen.",
+      "speedDial": {
+        "title": "4 Schnellzugriff-Aktionen",
+        "desc": "Speichere die vier Aktionen, die du am häufigsten nutzt als Schnellzugriffe auf deinen Homescreen. Erfasse sofort einer Behandlung, Ernte oder Düngeraustrag."
+      },
+      "modules": {
+        "title": "Nur anzeigen, was du brauchst",
+        "desc": "Zeige nur die Funktionen an, welche du brauchst. Kein Pflanzenschutz? Kein Problem, einfach ausblenden. Dich interessiert vor allem die Ernte? Ok, schiebe sie ganz nach oben in der Liste. Ganz nach deinen Bedürfnissen."
+      },
+      "dashboard": {
+        "title": "Dein Dashboard, deine Wahl",
+        "desc": "Wähle, welche Übersichtskacheln auf deinem Dashboard erscheinen — die wichtigsten Informationen immer im Blick."
+      },
+      "noNoise": {
+        "title": "Kein Ballast",
+        "desc": "Jede Funktion muss ihren Platz verdienen. Wir liefern nur, was Landwirt:innen wirklich nutzen — nichts mehr."
+      }
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "sub": "Bleib auf dem Laufenden. Wir informieren dich über neue Funktionen, Updates und alles rund um Coltivio.",
+      "placeholder": "deine@email.ch",
+      "cta": "Anmelden",
+      "success": "Danke! Du erhältst in Kürze eine Bestätigungs-E-Mail.",
+      "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "demo": {
+      "title": "Sieh es in Aktion"
+    },
+    "webapp": {
+      "label": "Wenn das Handy nicht das richtige Werkzeug ist — Die Web App",
+      "title": "Die Desktop-Ergänzung",
+      "body": "Gleiche Daten, grösserer Bildschirm.",
+      "contacts": {
+        "title": "Kontaktverwaltung",
+        "desc": "Verwalte alle Hofkontakte. Füge Labels hinzu, um zu wissen, wer sich für ein Fleischpaket interessiert oder bei der Ernte helfen möchte."
+      },
+      "orders": {
+        "title": "Einfaches Bestellbuch",
+        "desc": "Erfasse Bestellungen von deinen Kontakten und verfolge, ob sie geliefert und bezahlt wurden."
+      },
+      "sponsorships": {
+        "title": "Patenschaftsverwaltung",
+        "desc": "Verwalte deine Tierpatenschaften auf einen Blick: Wer ist Pate welches Tieres, welches Modell läuft — und ist die Zahlung eingegangen? Sende personalisierte Newsletter direkt an alle Paten."
+      }
+    },
+    "oss": {
+      "title": "Open Source",
+      "body": "Offen gebaut. Mitmachen, forken oder einfach nutzen. Keine Bedingungen.",
+      "github": "Auf GitHub ansehen"
+    },
+    "footer": {
+      "tagline": "Open-Source Hofverwaltung",
+      "openApp": "App öffnen",
+      "github": "GitHub",
+      "iosBeta": "iOS Beta",
+      "androidBeta": "Android Beta"
+    }
   }
 }

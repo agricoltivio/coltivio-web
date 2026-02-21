@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
-import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
@@ -67,9 +70,19 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImprintRoute = ImprintRouteImport.update({
+  id: '/imprint',
+  path: '/imprint',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -77,14 +90,19 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataDeletionRoute = DataDeletionRouteImport.update({
+  id: '/data-deletion',
+  path: '/data-deletion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthedRouteRoute = AuthedRouteRouteImport.update({
   id: '/_authed',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthedIndexRoute = AuthedIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
   id: '/settings',
@@ -313,9 +331,12 @@ const AuthedSponsorshipsProgramsProgramIdEditRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthedIndexRoute
+  '/': typeof IndexRoute
+  '/data-deletion': typeof DataDeletionRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/imprint': typeof ImprintRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/account': typeof AuthedAccountRoute
@@ -361,14 +382,17 @@ export interface FileRoutesByFullPath {
   '/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/data-deletion': typeof DataDeletionRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/imprint': typeof ImprintRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
-  '/': typeof AuthedIndexRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
@@ -410,15 +434,18 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authed': typeof AuthedRouteRouteWithChildren
+  '/data-deletion': typeof DataDeletionRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/imprint': typeof ImprintRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
-  '/_authed/': typeof AuthedIndexRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
@@ -462,8 +489,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/data-deletion'
     | '/forgot-password'
+    | '/imprint'
     | '/login'
+    | '/privacy'
     | '/register'
     | '/reset-password'
     | '/account'
@@ -509,14 +539,17 @@ export interface FileRouteTypes {
     | '/sponsorships/programs/$programId/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
+    | '/data-deletion'
     | '/forgot-password'
+    | '/imprint'
     | '/login'
+    | '/privacy'
     | '/register'
     | '/reset-password'
     | '/account'
     | '/dashboard'
     | '/settings'
-    | '/'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/treatments-journal'
@@ -557,15 +590,18 @@ export interface FileRouteTypes {
     | '/sponsorships/programs/$programId'
   id:
     | '__root__'
+    | '/'
     | '/_authed'
+    | '/data-deletion'
     | '/forgot-password'
+    | '/imprint'
     | '/login'
+    | '/privacy'
     | '/register'
     | '/reset-password'
     | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
-    | '/_authed/'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/treatments-journal'
@@ -607,9 +643,13 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
+  DataDeletionRoute: typeof DataDeletionRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  ImprintRoute: typeof ImprintRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
@@ -630,11 +670,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/imprint': {
+      id: '/imprint'
+      path: '/imprint'
+      fullPath: '/imprint'
+      preLoaderRoute: typeof ImprintRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -644,6 +698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data-deletion': {
+      id: '/data-deletion'
+      path: '/data-deletion'
+      fullPath: '/data-deletion'
+      preLoaderRoute: typeof DataDeletionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed': {
       id: '/_authed'
       path: ''
@@ -651,12 +712,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authed/': {
-      id: '/_authed/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthedIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authed/settings': {
       id: '/_authed/settings'
@@ -952,7 +1013,6 @@ interface AuthedRouteRouteChildren {
   AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
-  AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
@@ -997,7 +1057,6 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAccountRoute: AuthedAccountRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
-  AuthedIndexRoute: AuthedIndexRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
@@ -1047,9 +1106,13 @@ const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthedRouteRoute: AuthedRouteRouteWithChildren,
+  DataDeletionRoute: DataDeletionRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  ImprintRoute: ImprintRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
