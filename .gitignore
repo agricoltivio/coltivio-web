@@ -4,7 +4,14 @@ dist
 dist-ssr
 *.local
 count.txt
+
+# Environment files — never commit real credentials
 .env
+.env.*
+!.env.example
+
+# Tooling caches
+.astro
 .nitro
 .tanstack
 .wrangler
