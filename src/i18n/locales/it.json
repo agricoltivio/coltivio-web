@@ -1,0 +1,139 @@
+{
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "create": "Crea",
+    "search": "Cerca",
+    "actions": "Azioni",
+    "yes": "Sì",
+    "no": "No",
+    "confirm": "Conferma",
+    "back": "Indietro",
+    "signOut": "Esci",
+    "noResults": "Nessun risultato",
+    "close": "Chiudi",
+    "all": "Tutti",
+    "rowsPerPage": "Righe per pagina",
+    "showingOf": "{{showing}} di {{total}}",
+    "pageOf": "Pagina {{current}} di {{total}}"
+  },
+  "landing": {
+    "nav": {
+      "openApp": "Apri App"
+    },
+    "hero": {
+      "headline": "Gestione agricola,\nfatta da agricoltori.",
+      "sub": "Software open source e senza scopo di lucro per piccole e medie aziende agricole. Nessun investitore, nessun lock-in — solo strumenti che funzionano davvero.",
+      "testPhase": "L'app è attualmente in fase di test — provala e condividi il tuo feedback.",
+      "ctaIos": "iOS TestFlight ↗",
+      "ctaAndroid": "Android Beta"
+    },
+    "story": {
+      "headline": "Burocrazia? Caos Excel? Aggiornare tutto la sera?",
+      "founders": "Curdin e Sarah, agricoltori di montagna, affrontavano ogni giorno la stessa sfida: troppa documentazione, troppo poco tempo e nessun strumento digitale adatto alla realtà di una piccola azienda agricola.",
+      "problem": "Il software esistente era complicato, spesso utilizzabile solo su PC — non pratico per la vita quotidiana in fattoria. La soluzione era evidente: bisognava costruire un'app semplice, mobile ed efficiente.",
+      "born": "Così è nato Coltivio — l'app open source che semplifica la documentazione agricola, fa risparmiare tempo e mette in rete gli agricoltori.",
+      "ossTitle": "Aperto, indipendente e sviluppato insieme",
+      "oss": "Coltivio è open source — il che significa che non solo gli agricoltori beneficiano del progetto, ma anche gli sviluppatori possono contribuire attivamente alla sua crescita. L'app evolve continuamente, in modo indipendente e vicino alle reali esigenze agricole.",
+      "data": "La sicurezza dei dati è la massima priorità. Tutti i dati sono archiviati esclusivamente su server all'interno dell'UE e soggetti alle rigide normative GDPR. Poiché il codice sorgente è pubblicamente visibile, Coltivio rimane trasparente e verificabile — chiunque può vedere esattamente come funziona.",
+      "funding": "Invece di costose licenze, ci affidiamo a un finanziamento comunitario tramite contributi volontari. Ogni sostegno aiuta a far crescere Coltivio e a mantenerlo liberamente accessibile a tutti gli agricoltori."
+    },
+    "mission": {
+      "title": "La Nostra Missione",
+      "independent": {
+        "title": "Indipendente & Non-Profit",
+        "body": "Nessun investitore, nessun capitale di rischio. Costruito per servire gli agricoltori, non gli azionisti."
+      },
+      "community": {
+        "title": "Guidato dalla Comunità",
+        "body": "Fatto da agricoltori, per agricoltori. Ogni funzione nasce dall'esperienza sul campo."
+      },
+      "openSource": {
+        "title": "Open Source",
+        "body": "Trasparente, verificabile e duplicabile. I tuoi dati, il tuo software."
+      }
+    },
+    "fieldwork": {
+      "title": "Lavoro in Campo",
+      "sub": "Il tuo podere in tasca — L'App Mobile",
+      "plots": { "title": "Gestione delle superfici", "desc": "Acquisizione automatica delle tue superfici. Adattale alle tue esigenze — dividile, uniscile o disegnane di nuove, esattamente come ti serve." },
+      "calendar": { "title": "Calendario di campo", "desc": "Una panoramica unificata di tutte le attività di campo pianificate e completate." },
+      "protection": { "title": "Pianificazione della rotazione colturale", "desc": "Pianifica le rotazioni colturali con facilità usando schemi ricorrenti, rilevamento automatico di conflitti e violazioni dei tempi di attesa — e vedi il risultato in tempo reale nel calendario." },
+      "harvest": { "title": "Attività di campo", "desc": "Registra le tue attività di campo in pochi passi — aratura, spargimento di fertilizzanti, protezione delle colture o raccolta, tutto catturato immediatamente sul posto." },
+      "export": { "title": "Esportazione", "desc": "Esporta il calendario dei campi come file Excel ottimizzato, pronto per la tua prossima ispezione ufficiale." }
+    },
+    "animals": {
+      "title": "Zootecnia",
+      "sub": "Tracciamento completo del bestiame in tasca.",
+      "import": { "title": "Patrimonio zootecnico", "desc": "Tutto il tuo bestiame a colpo d'occhio. Crea mandrie con uscite e tempi di pascolo definiti. Importa gli animali tramite l'esportazione delle liste animali da TVD." },
+      "treatments": { "title": "Giornale trattamenti", "desc": "Registro completo dei farmaci per animale: prodotto, dose, motivo e veterinario. I periodi di attesa (Absetzfristen) per latte e carne vengono calcolati automaticamente con avvisi prima della scadenza." },
+      "herds": { "title": "Mandrie & Piani", "desc": "Organizza gli animali in gruppi flessibili per alimentazione, riproduzione o pascolo. Tieni traccia di cicli riproduttivi, parti attesi e piani di alimentazione per l'intera mandria." },
+      "turnout": { "title": "Giornale di pascolo", "desc": "Giornale di pascolo generato automaticamente in base alle mandrie configurate. Configuralo una volta e lascia fare all'app." },
+      "export": { "title": "Esporta per controlli", "desc": "Export strutturati per le ispezioni ufficiali del bestiame — storico trattamenti, liste di mandria e registri di pascolo nel formato esatto richiesto dalle autorità svizzere." }
+    },
+    "customize": {
+      "headline": "Pensato per la tua giornata — non il contrario",
+      "sub": "Il tempo è prezioso in fattoria. Coltivio rimane in secondo piano — configuralo una volta per adattarsi al tuo flusso di lavoro e dimentica il resto.",
+      "speedDial": {
+        "title": "4 azioni rapide",
+        "desc": "Salva le quattro azioni più usate come scorciatoie nella schermata principale. Registra immediatamente un trattamento, un raccolto o una distribuzione di fertilizzante."
+      },
+      "modules": {
+        "title": "Mostra solo ciò che ti serve",
+        "desc": "Mostra solo le funzioni di cui hai bisogno. Nessuna protezione delle colture? Nascondila semplicemente. Il raccolto è la tua priorità? Spostalo in cima alla lista. Tutto adattato alle tue esigenze."
+      },
+      "dashboard": {
+        "title": "La tua dashboard, a modo tuo",
+        "desc": "Scegli quali schede appaiono sulla dashboard così le informazioni più importanti sono sempre in primo piano."
+      },
+      "noNoise": {
+        "title": "Zero superfluo",
+        "desc": "Ogni funzione deve guadagnarsi il suo posto. Includiamo solo ciò che gli agricoltori usano davvero — niente di più."
+      }
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "sub": "Rimani aggiornato. Ti terremo informato su nuove funzionalità, aggiornamenti e tutto ciò che riguarda Coltivio.",
+      "placeholder": "tua@email.ch",
+      "cta": "Iscriviti",
+      "success": "Grazie! Riceverai a breve un'email di conferma.",
+      "error": "Qualcosa è andato storto. Riprova."
+    },
+    "demo": {
+      "title": "Guardalo in azione"
+    },
+    "webapp": {
+      "label": "Quando il telefono non è lo strumento giusto — L'app Web",
+      "title": "Il Compagno Desktop",
+      "body": "Stessi dati, schermo più grande.",
+      "contacts": {
+        "title": "Gestione contatti",
+        "desc": "Gestisci tutti i tuoi contatti agricoli. Aggiungi etichette per ricordare chi è interessato a un pacco di carne o vuole aiutare durante il raccolto."
+      },
+      "orders": {
+        "title": "Registro ordini semplice",
+        "desc": "Aggiungi ordini dai tuoi contatti e traccia se sono stati consegnati e pagati."
+      },
+      "sponsorships": {
+        "title": "Gestione sponsorizzazioni",
+        "desc": "Gestisci le tue sponsorizzazioni animali a colpo d'occhio: chi sponsorizza quale animale, quale piano è attivo — e il pagamento è arrivato? Invia newsletter personalizzate direttamente a tutti gli sponsor."
+      }
+    },
+    "oss": {
+      "title": "Open Source",
+      "body": "Costruito all'aperto. Contribuisci, forkalo o usalo. Senza vincoli.",
+      "github": "Vedi su GitHub"
+    },
+    "footer": {
+      "tagline": "Gestione agricola open source",
+      "openApp": "Apri App",
+      "github": "GitHub",
+      "iosBeta": "iOS Beta",
+      "androidBeta": "Android Beta"
+    }
+  }
+}

@@ -306,6 +306,121 @@
     "meatWaitingDays": "Meat Waiting Days",
     "deleteConfirm": "Are you sure you want to delete this drug?"
   },
+  "landing": {
+    "nav": {
+      "openApp": "Open App"
+    },
+    "hero": {
+      "headline": "Farm Management,\nBuilt by Farmers.",
+      "sub": "Open source, non-profit software for small and medium farms. No investors, no lock-in — just tools that actually work.",
+      "testPhase": "The app is currently in a test phase — try it out and share your feedback.",
+      "ctaIos": "iOS TestFlight ↗",
+      "ctaAndroid": "Android Beta"
+    },
+    "story": {
+      "headline": "Paperwork? Excel chaos? Catching up in the evening?",
+      "founders": "Curdin and Sarah, mountain farmers, faced the same challenge every day: too much documentation, too little time, and no digital tool that actually fit the reality of a small farm.",
+      "problem": "Existing software was complicated, mostly desktop-only — not practical for daily life on the farm. The answer was obvious: a simple, mobile, and efficient app had to be built.",
+      "born": "That's how Coltivio came to be — the open-source app that makes farm documentation easier, saves time, and connects farmers.",
+      "ossTitle": "Open, independent, and built together",
+      "oss": "Coltivio is open source — which means not only farmers benefit, but developers can actively contribute to its growth. The app evolves continuously, independently, and close to real farming needs.",
+      "data": "Data security is the top priority. All data is stored exclusively on servers within the EU and subject to strict GDPR regulations. Because the source code is publicly visible, Coltivio stays transparent and verifiable — anyone can see exactly how it works.",
+      "funding": "Instead of expensive licenses, we rely on community funding through voluntary contributions. Every bit of support helps keep Coltivio growing and freely accessible to all farmers."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "independent": {
+        "title": "Independent & Non-Profit",
+        "body": "No investors, no VC money. Built to serve farmers, not shareholders."
+      },
+      "community": {
+        "title": "Community Driven",
+        "body": "Built by farmers, for farmers. Every feature comes from real field experience."
+      },
+      "openSource": {
+        "title": "Open Source",
+        "body": "Transparent, auditable, and forkable. Your data, your software."
+      }
+    },
+    "fieldwork": {
+      "title": "Field Work",
+      "sub": "Your Farm in Your Pocket — The Mobile App",
+      "plots": { "title": "Plot Management", "desc": "Automatic capture of your plots. Adjust them to your needs — split, merge or draw new ones, exactly as you need it." },
+      "calendar": { "title": "Field Calendar", "desc": "A unified timeline of every planned and completed field activity." },
+      "protection": { "title": "Crop Rotation Planning", "desc": "Plan your crop rotations with ease using recurring patterns, conflict and waiting time violation detection, and see the result in real time in the calendar." },
+      "harvest": { "title": "Field Activities", "desc": "Log your field activities in just a few steps — ploughing, fertiliser spreading, crop protection or harvest, all captured on the spot." },
+      "export": { "title": "Export", "desc": "Export the field calendar as an optimised Excel file, ready for your next official inspection." }
+    },
+    "animals": {
+      "title": "Animal Husbandry",
+      "sub": "Full livestock tracking in your pocket.",
+      "import": { "title": "Livestock Overview", "desc": "Your entire livestock at a glance. Create herds with defined turnout and grazing times. Import animals from a TVD herd list export." },
+      "treatments": { "title": "Treatments Journal", "desc": "A complete medication log per animal: drug, dose, reason, and vet. Milk and meat withdrawal periods (Absetzfristen) are tracked automatically, with alerts before deadlines pass." },
+      "herds": { "title": "Herds & Schedules", "desc": "Organise animals into flexible groups for feeding, breeding, or pasture rotation. Track breeding cycles, expected births, and feeding plans across the whole herd." },
+      "turnout": { "title": "Turnout Journal", "desc": "Automatically generated turnout journal based on your configured herds. Set it up once and let it run." },
+      "export": { "title": "Export for Checks", "desc": "One-tap structured exports for official livestock inspections — treatment history, herd lists, and turnout records formatted exactly as required by Swiss authorities." }
+    },
+    "customize": {
+      "headline": "Built Around Your Day, Not the Other Way Around",
+      "sub": "Time is scarce on a farm. Coltivio is designed to stay out of your way — configure it once to fit your workflow and forget about the rest.",
+      "speedDial": {
+        "title": "4 Speed Dial Actions",
+        "desc": "Save the four actions you use most as shortcuts on your home screen. Instantly log a treatment, harvest, or fertiliser application."
+      },
+      "modules": {
+        "title": "Show Only What You Need",
+        "desc": "Show only the features you need. No crop protection? Just hide it. Harvest is what matters most? Move it to the top of the list. Fully tailored to your needs."
+      },
+      "dashboard": {
+        "title": "Your Dashboard, Your Way",
+        "desc": "Choose which overview cards appear on your dashboard so the most important information is always front and centre."
+      },
+      "noNoise": {
+        "title": "Zero Bloat",
+        "desc": "Every feature has to earn its place. We ship only what farmers actually use — nothing more."
+      }
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "sub": "Stay in the loop. We'll keep you updated on new features, releases, and everything Coltivio.",
+      "placeholder": "your@email.com",
+      "cta": "Subscribe",
+      "success": "Thanks! You'll receive a confirmation email shortly.",
+      "error": "Something went wrong. Please try again."
+    },
+    "demo": {
+      "title": "See It in Action"
+    },
+    "webapp": {
+      "label": "When the Phone Isn't the Right Tool — The Web App",
+      "title": "The Desktop Companion",
+      "body": "Same data, bigger screen.",
+      "contacts": {
+        "title": "Contact Management",
+        "desc": "Manage all your farm contacts. Add labels to remember who's interested in a meat package or wants to help during harvest."
+      },
+      "orders": {
+        "title": "Simple Order Book",
+        "desc": "Add orders from your contacts and track whether they've been delivered and paid."
+      },
+      "sponsorships": {
+        "title": "Sponsorship Management",
+        "desc": "Manage your animal sponsorships at a glance: who sponsors which animal, which plan is active — and has the payment come in? Send personalised newsletters directly to all sponsors."
+      }
+    },
+    "oss": {
+      "title": "Open Source",
+      "body": "Built in the open. Contribute, fork, or just use it. No strings attached.",
+      "github": "View on GitHub"
+    },
+    "footer": {
+      "tagline": "Open source farm management",
+      "openApp": "Open App",
+      "github": "GitHub",
+      "iosBeta": "iOS Beta",
+      "androidBeta": "Android Beta"
+    }
+  },
   "turnoutJournal": {
     "title": "Turnout Journal",
     "calendar": "Calendar",
