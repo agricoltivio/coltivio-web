@@ -1,0 +1,14 @@
+---
+import Base from '@/layouts/Base.astro'
+import Landing from '@/components/Landing.astro'
+import { getTranslations } from '@/i18n/translations'
+
+const lang = 'de'
+const tr = getTranslations(lang)
+const title = 'Coltivio – Hofverwaltung, von Bauern entwickelt'
+const description = tr.hero.sub
+---
+
+<Base lang={lang} title={title} description={description}>
+  <Landing tr={tr} lang={lang} />
+</Base>

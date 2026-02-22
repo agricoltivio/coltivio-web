@@ -1,3 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
+# The web app is private — block all crawlers.
+# The landing site (coltivio.ch) overrides this via its own robots.txt endpoint.
 User-agent: *
-Disallow:
+Disallow: /

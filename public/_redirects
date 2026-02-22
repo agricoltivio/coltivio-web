@@ -1,0 +1,2 @@
+# SPA catch-all: serve index.html for any path Cloudflare Pages cannot find
+/* /index.html 200

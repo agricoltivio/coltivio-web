@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro'
+import Landing from '@/components/Landing.astro'
+import { getTranslations } from '@/i18n/translations'
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'fr' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'en' } },
+  ]
+}
+
+const { lang } = Astro.params
+const tr = getTranslations(lang)
+
+const titles: Record<string, string> = {
+  fr: 'Coltivio – Gestion agricole, créée par des agriculteurs',
+  it: 'Coltivio – Gestione agricola, fatta da agricoltori',
+  en: 'Coltivio – Farm Management, Built by Farmers',
+}
+---
+
+<Base lang={lang} title={titles[lang] ?? 'Coltivio'} description={tr.hero.sub}>
+  <Landing tr={tr} lang={lang} />
+</Base>
