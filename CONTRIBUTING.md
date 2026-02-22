@@ -31,9 +31,6 @@ cp .env.example .env
 # Web app — http://localhost:4000
 pnpm dev
 
-# Landing page — http://localhost:4321
-pnpm --filter coltivio-landing dev
-
 # Run tests
 pnpm test
 
@@ -53,13 +50,7 @@ coltivio-web/
 │   ├── api/             # openapi-fetch client + generated types
 │   ├── i18n/locales/    # App translations (de, fr, it, en)
 │   └── context/         # Supabase auth context
-├── landing/             # Astro landing site (coltivio.ch)
-│   └── src/
-│       ├── pages/       # index.astro + [lang]/index.astro
-│       ├── components/  # Landing.astro, NewsletterForm, LanguageSwitcher
-│       ├── layouts/     # Base.astro (HTML shell + SEO)
-│       └── i18n/        # Landing translations
-└── public/              # Shared static assets (logo, screenshots, etc.)
+└── public/              # Static assets (logo, screenshots, etc.)
 ```
 
 ## Code style
@@ -71,7 +62,7 @@ coltivio-web/
 
 ## Adding translations
 
-Translations for the web app are in `src/i18n/locales/{de,fr,it,en}.json`. Landing translations are in `landing/src/i18n/translations.ts`. Please add entries for all four languages when adding new strings, or mark missing ones with a `// TODO` comment.
+Translations are in `src/i18n/locales/{de,fr,it,en}.json`. Please add entries for all four languages when adding new strings, or mark missing ones with a `// TODO` comment.
 
 ## Submitting a PR
 
@@ -81,35 +72,3 @@ Translations for the web app are in `src/i18n/locales/{de,fr,it,en}.json`. Landi
 4. Open a PR with a clear description of what and why
 
 PRs are merged with **squash merge** — commit history on your branch doesn't matter, only the PR title and description do.
-
-## Deployment (maintainers)
-
-First-time Cloudflare Pages setup:
-
-```sh
-wrangler login
-wrangler pages project create coltivio-app
-wrangler pages project create coltivio-landing
-# Then add custom domains in the CF Pages dashboard
-```
-
-Create production env files (gitignored):
-
-```sh
-# .env.production
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
-VITE_API_URL=...
-
-# landing/.env.production
-PUBLIC_API_URL=...
-PUBLIC_APP_URL=...
-```
-
-Deploy:
-
-```sh
-pnpm deploy          # both
-pnpm deploy:app      # app only
-pnpm deploy:landing  # landing only
-```

@@ -10,8 +10,7 @@
     "test": "vitest run",
     "generate:api-types": "openapi-typescript openapi.json -o src/api/schema.d.ts",
     "deploy:app": "pnpm build && wrangler pages deploy dist --project-name=coltivio-app",
-    "deploy:landing": "pnpm --filter coltivio-landing build && wrangler pages deploy landing/dist --project-name=coltivio-landing",
-    "deploy": "pnpm deploy:app && pnpm deploy:landing"
+    "deploy": "pnpm build && wrangler pages deploy dist --project-name=coltivio-app"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
