@@ -5,9 +5,13 @@
   "scripts": {
     "dev": "vite --port 4000",
     "build": "vite build && tsc",
+    "build:cf": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "generate:api-types": "openapi-typescript openapi.json -o src/api/schema.d.ts"
+    "generate:api-types": "openapi-typescript openapi.json -o src/api/schema.d.ts",
+    "deploy:app": "pnpm build && wrangler pages deploy dist --project-name=coltivio-app",
+    "deploy:landing": "pnpm --filter coltivio-landing build && wrangler pages deploy landing/dist --project-name=coltivio-landing",
+    "deploy": "pnpm deploy:app && pnpm deploy:landing"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
@@ -84,6 +88,7 @@
     "typescript": "^5.7.2",
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
-    "web-vitals": "^5.1.0"
+    "web-vitals": "^5.1.0",
+    "wrangler": "^4.67.0"
   }
 }

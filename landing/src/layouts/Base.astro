@@ -1,0 +1,58 @@
+---
+import '../styles/global.css'
+
+interface Props {
+  lang: string
+  title: string
+  description: string
+  canonicalUrl?: string
+}
+
+const { lang, title, description, canonicalUrl = Astro.url.href } = Astro.props
+const ogImage = 'https://coltivio.ch/og-image.png'
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Coltivio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <!-- Alternate language links for SEO -->
+    <link rel="alternate" hreflang="de" href="https://coltivio.ch/" />
+    <link rel="alternate" hreflang="fr" href="https://coltivio.ch/fr" />
+    <link rel="alternate" hreflang="it" href="https://coltivio.ch/it" />
+    <link rel="alternate" hreflang="en" href="https://coltivio.ch/en" />
+    <link rel="alternate" hreflang="x-default" href="https://coltivio.ch/" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Coltivio",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "iOS, Android, Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
+      "description": "Open source farm management app for small and medium farms. Built by farmers, for farmers.",
+      "url": "https://coltivio.ch",
+      "author": { "@type": "Organization", "name": "Coltivio", "url": "https://coltivio.ch" },
+      "license": "https://opensource.org/licenses/MIT",
+      "downloadUrl": "https://testflight.apple.com/join/placeholder",
+    })} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
