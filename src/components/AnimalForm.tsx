@@ -5,11 +5,14 @@ import {
   ANIMAL_TYPES,
   ANIMAL_SEX_OPTIONS,
   DEATH_REASONS,
-  type Animal,
+  type AnimalDetail,
   type AnimalType,
   type AnimalSex,
+  type AnimalUsage,
   type DeathReason,
 } from "@/api/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
@@ -39,12 +42,14 @@ export interface AnimalFormData {
   fatherId: string | null;
   dateOfDeath: string | null;
   deathReason: DeathReason | null;
+  registered: boolean;
+  usage: AnimalUsage;
 }
 
 type ComboboxOption = { value: string; label: string };
 
 export interface AnimalFormProps {
-  animal?: Animal;
+  animal?: AnimalDetail;
   earTagOptions: ComboboxOption[];
   motherOptions: ComboboxOption[];
   fatherOptions: ComboboxOption[];
@@ -79,6 +84,8 @@ export function AnimalForm({
               ? animal.dateOfDeath.split("T")[0]
               : null,
             deathReason: animal.deathReason,
+            registered: animal.registered,
+            usage: animal.usage,
           }
         : {
             name: "",
@@ -90,6 +97,8 @@ export function AnimalForm({
             fatherId: null,
             dateOfDeath: null,
             deathReason: null,
+            registered: false,
+            usage: "other" as AnimalUsage,
           },
     });
 
@@ -198,7 +207,42 @@ export function AnimalForm({
           />
         </Field>
 
-        {/* Date of Birth */}
+        {/* Usage */}
+        <Field className="max-w-40">
+          <FieldLabel htmlFor="usage">{t("animals.usage")} *</FieldLabel>
+          <Controller
+            name="usage"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="usage" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="milk">{t("animals.usageOptions.milk")}</SelectItem>
+                  <SelectItem value="other">{t("animals.usageOptions.other")}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+      </FieldGroup>
+      <FieldGroup className="flex-row mt-7">
+        <Field className="flex flex-row items-center gap-2 pt-6">
+          <Controller
+            name="registered"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="registered"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="registered">{t("animals.registered")}</Label>
+        </Field>
       </FieldGroup>
       <FieldGroup className="flex-row mt-7">
         <Field>

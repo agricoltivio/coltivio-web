@@ -127,6 +127,11 @@ function DrugDetailPage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <DetailItem label={t("drugs.name")} value={drug.name} />
+              <DetailItem label={t("drugs.receivedFrom")} value={drug.receivedFrom} />
+              <DetailItem
+                label={t("drugs.criticalAntibiotic")}
+                value={drug.criticalAntibiotic ? t("common.yes") : t("common.no")}
+              />
               <DetailItem label={t("drugs.notes")} value={drug.notes || "-"} />
             </div>
           </CardContent>
@@ -143,9 +148,12 @@ function DrugDetailPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("drugs.animalType")}</TableHead>
-                    <TableHead>{t("drugs.dosePerKg")}</TableHead>
+                    <TableHead>{t("drugs.doseValue")}</TableHead>
+                    <TableHead>{t("drugs.doseUnit")}</TableHead>
+                    <TableHead>{t("drugs.dosePerUnit")}</TableHead>
                     <TableHead>{t("drugs.milkWaitingDays")}</TableHead>
                     <TableHead>{t("drugs.meatWaitingDays")}</TableHead>
+                    <TableHead>{t("drugs.organsWaitingDays")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -154,9 +162,12 @@ function DrugDetailPage() {
                       <TableCell>
                         {t(`animals.types.${dt.animalType}`)}
                       </TableCell>
-                      <TableCell>{dt.dosePerKg}</TableCell>
+                      <TableCell>{dt.doseValue}</TableCell>
+                      <TableCell>{dt.doseUnit}</TableCell>
+                      <TableCell>{dt.dosePerUnit}</TableCell>
                       <TableCell>{dt.milkWaitingDays}</TableCell>
                       <TableCell>{dt.meatWaitingDays}</TableCell>
+                      <TableCell>{dt.organsWaitingDays}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

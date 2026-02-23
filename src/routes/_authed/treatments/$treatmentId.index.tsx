@@ -126,29 +126,25 @@ function TreatmentDetailPage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <DetailItem
-                label={t("treatments.animal")}
-                value={
-                  <Link
-                    className="hover:underline text-blue-600 hover:text-blue-800"
-                    to="/animals/$animalId"
-                    params={{ animalId: treatment.animal.id }}
-                  >
-                    {treatment.animal.name}
-                  </Link>
-                }
+                label={t("treatments.animals")}
+                value={treatment.animals.map((a) => a.name).join(", ") || "-"}
               />
               <DetailItem
-                label={t("treatments.date")}
-                value={formatDate(treatment.date)}
+                label={t("treatments.startDate")}
+                value={formatDate(treatment.startDate)}
+              />
+              <DetailItem
+                label={t("treatments.endDate")}
+                value={formatDate(treatment.endDate)}
               />
               <DetailItem label={t("treatments.name")} value={treatment.name} />
               <DetailItem
-                label={t("treatments.reason")}
-                value={treatment.reason}
-              />
-              <DetailItem
                 label={t("treatments.drug")}
                 value={treatment.drug?.name || "-"}
+              />
+              <DetailItem
+                label={t("treatments.criticalAntibiotic")}
+                value={treatment.criticalAntibiotic ? t("common.yes") : t("common.no")}
               />
               <DetailItem
                 label={t("treatments.notes")}
@@ -173,6 +169,10 @@ function TreatmentDetailPage() {
                 <DetailItem
                   label={t("treatments.meatUsableDate")}
                   value={formatDate(treatment.meatUsableDate)}
+                />
+                <DetailItem
+                  label={t("treatments.organsUsableDate")}
+                  value={formatDate(treatment.organsUsableDate)}
                 />
               </div>
             </CardContent>

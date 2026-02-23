@@ -32,21 +32,3 @@ export const treatmentQueryOptions = (treatmentId: string) => {
   });
 };
 
-export const animalTreatmentsQueryOptions = (animalId: string) => {
-  return queryOptions({
-    queryKey: ["animals", animalId, "treatments"],
-    queryFn: async () => {
-      const response = await apiClient.GET(
-        "/v1/animals/byId/{animalId}/treatments",
-        {
-          params: { path: { animalId } },
-        },
-      );
-      if (response.error) {
-        throw new Error("Failed to fetch animal treatments");
-      }
-      return response.data.data;
-    },
-    enabled: !!animalId,
-  });
-};

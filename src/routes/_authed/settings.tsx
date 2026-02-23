@@ -1,5 +1,4 @@
 import { PageContent } from "@/components/PageContent";
-import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   Select,
@@ -8,11 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/settings")({
   component: Settings,
@@ -20,8 +17,6 @@ export const Route = createFileRoute("/_authed/settings")({
 
 function Settings() {
   const { t, i18n } = useTranslation();
-  const { auth } = Route.useRouteContext();
-  const navigate = useNavigate();
   const [language, setLanguage] = useState(i18n.language);
 
   function changeLanguage(lang: string) {

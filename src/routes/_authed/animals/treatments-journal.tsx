@@ -30,14 +30,14 @@ function TreatmentsJournal() {
   const columns = useMemo<ColumnDef<Treatment>[]>(
     () => [
       {
-        accessorKey: "date",
+        accessorKey: "startDate",
         header: ({ column }) => (
           <Button
             variant="ghost"
             className="p-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {t("treatments.date")}
+            {t("treatments.startDate")}
             {column.getIsSorted() === "asc" ? (
               <ArrowUp className="ml-2 h-4 w-4" />
             ) : (
@@ -45,17 +45,17 @@ function TreatmentsJournal() {
             )}
           </Button>
         ),
-        cell: ({ row }) => formatDate(row.getValue("date")),
+        cell: ({ row }) => formatDate(row.getValue("startDate")),
       },
       {
-        accessorKey: "animal.name",
+        id: "animals",
         header: ({ column }) => (
           <Button
             variant="ghost"
             className="p-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            {t("treatments.animal")}
+            {t("treatments.animals")}
             {column.getIsSorted() === "asc" ? (
               <ArrowUp className="ml-2 h-4 w-4" />
             ) : (
@@ -64,7 +64,9 @@ function TreatmentsJournal() {
           </Button>
         ),
         cell: ({ row }) => (
-          <span className="font-medium">{row.original.animal.name}</span>
+          <span className="font-medium">
+            {row.original.animals.map((a) => a.name).join(", ")}
+          </span>
         ),
       },
       {
@@ -84,16 +86,6 @@ function TreatmentsJournal() {
           </Button>
         ),
         cell: ({ row }) => row.getValue("name"),
-      },
-      {
-        accessorKey: "reason",
-        header: t("treatments.reason"),
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">
-            {row.getValue("reason")}
-          </span>
-        ),
-        enableSorting: false,
       },
       {
         accessorKey: "drug.name",
@@ -175,12 +167,12 @@ function TreatmentsJournal() {
           const treatment = row.original;
           const searchValue = filterValue.toLowerCase();
           return (
-            treatment.animal.name.toLowerCase().includes(searchValue) ||
+            treatment.animals.some((a) => a.name.toLowerCase().includes(searchValue)) ||
             treatment.name.toLowerCase().includes(searchValue) ||
             (treatment.drug?.name?.toLowerCase().includes(searchValue) ?? false)
           );
         }}
-        defaultSorting={[{ id: "date", desc: true }]}
+        defaultSorting={[{ id: "startDate", desc: true }]}
       />
     </PageContent>
   );

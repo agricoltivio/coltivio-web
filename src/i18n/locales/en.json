@@ -45,6 +45,12 @@
     "children": "Children",
     "showDeceased": "Show deceased",
     "livingOnly": "Living only",
+    "registered": "Registered",
+    "usage": "Usage",
+    "usageOptions": {
+      "milk": "Milk",
+      "other": "Other"
+    },
     "noEarTag": "No ear tag",
     "noMother": "Unknown",
     "noFather": "Unknown",
@@ -278,14 +284,19 @@
     "treatmentDetails": "Treatment Details",
     "addTreatment": "Add Treatment",
     "animal": "Animal",
-    "date": "Date",
+    "animals": "Animals",
+    "startDate": "From",
+    "endDate": "To",
     "name": "Name",
     "reason": "Reason",
     "drug": "Drug",
     "notes": "Notes",
     "milkUsableDate": "Milk Usable Date",
     "meatUsableDate": "Meat Usable Date",
+    "organsUsableDate": "Organs Usable Date",
     "waitingDates": "Waiting Dates",
+    "criticalAntibiotic": "Critical Antibiotic",
+    "antibiogramAvailable": "Antibiogram Available",
     "deleteConfirm": "Are you sure you want to delete this treatment?",
     "noTreatments": "No treatments"
   },
@@ -301,9 +312,14 @@
     "addAnimalType": "Add Animal Type",
     "animalType": "Animal Type",
     "animalTypes": "Animal Types",
-    "dosePerKg": "Dose per kg",
+    "doseValue": "Dose",
+    "doseUnit": "Unit",
+    "dosePerUnit": "Per",
     "milkWaitingDays": "Milk Waiting Days",
     "meatWaitingDays": "Meat Waiting Days",
+    "organsWaitingDays": "Organs Waiting Days",
+    "criticalAntibiotic": "Critical Antibiotic",
+    "receivedFrom": "Received From",
     "deleteConfirm": "Are you sure you want to delete this drug?"
   },
   "landing": {
@@ -421,6 +437,40 @@
       "androidBeta": "Android Beta"
     }
   },
+  "herds": {
+    "title": "Herds",
+    "addHerd": "Add Herd",
+    "editHerd": "Edit Herd",
+    "name": "Name",
+    "animalCount": "Animal Count",
+    "animals": "Animals",
+    "noHerds": "No herds defined yet",
+    "noAnimals": "No animals in this herd",
+    "deleteConfirm": "Are you sure you want to delete this herd?",
+    "outdoorSchedules": "Outdoor Schedules",
+    "addSchedule": "Add Schedule",
+    "editSchedule": "Edit Schedule",
+    "noSchedules": "No schedules",
+    "scheduleType": "Type",
+    "scheduleTypes": {
+      "pasture": "Pasture",
+      "exercise_yard": "Exercise Yard"
+    },
+    "startDate": "From",
+    "endDate": "To",
+    "notes": "Notes",
+    "recurring": "Recurring",
+    "recurrence": "Recurrence",
+    "frequency": "Frequency",
+    "interval": "Interval",
+    "until": "Until",
+    "frequencies": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "deleteScheduleConfirm": "Are you sure you want to delete this schedule?"
+  },
   "turnoutJournal": {
     "title": "Turnout Journal",
     "calendar": "Calendar",
@@ -444,6 +494,123 @@
     "month": "Month",
     "year": "Year",
     "previousMonth": "Previous Month",
-    "nextMonth": "Next Month"
+    "nextMonth": "Next Month",
+    "animals": "Animals",
+    "manageHerds": "Manage Herds",
+    "uncategorizedCount": "{{count}} animal not assigned to any group"
+  },
+  "fieldCalendar": {
+    "plots": {
+      "title": "Plots",
+      "create": "Create plot",
+      "edit": "Edit plot",
+      "plot": "Plot",
+      "selectPlot": "Select plot",
+      "size": "Area",
+      "usage": "Usage code",
+      "cuttingDate": "Cutting date",
+      "currentCrop": "Current crop"
+    },
+    "cropRotations": {
+      "title": "Crop Rotations",
+      "create": "Create crop rotation",
+      "edit": "Edit crop rotation",
+      "crop": "Crop",
+      "selectCrop": "Select crop",
+      "fromDate": "From",
+      "toDate": "To",
+      "sowingDate": "Sowing date"
+    },
+    "tillages": {
+      "title": "Tillages",
+      "create": "Create tillage",
+      "edit": "Edit tillage",
+      "date": "Date",
+      "action": "Action",
+      "customAction": "Custom action",
+      "size": "Area",
+      "notes": "Notes",
+      "actions": {
+        "plowing": "Plowing",
+        "tilling": "Tilling",
+        "harrowing": "Harrowing",
+        "rolling": "Rolling",
+        "rotavating": "Rotavating",
+        "weed_harrowing": "Weed harrowing",
+        "hoeing": "Hoeing",
+        "flame_weeding": "Flame weeding",
+        "custom": "Custom"
+      }
+    },
+    "harvests": {
+      "title": "Harvests",
+      "create": "Record harvest",
+      "date": "Date",
+      "crop": "Crop",
+      "amount": "Amount",
+      "unit": "Unit",
+      "numberOfUnits": "Number of units",
+      "kilosPerUnit": "Kg per unit",
+      "conservationMethod": "Conservation method",
+      "units": {
+        "load": "Load",
+        "square_bale": "Square bale",
+        "round_bale": "Round bale",
+        "crate": "Crate",
+        "total_amount": "Total amount",
+        "other": "Other"
+      },
+      "conservationMethods": {
+        "dried": "Dried",
+        "silage": "Silage",
+        "haylage": "Haylage",
+        "other": "Other",
+        "none": "None"
+      }
+    },
+    "fertilizerApplications": {
+      "title": "Fertilizer Applications",
+      "create": "Record fertilizer application",
+      "date": "Date",
+      "fertilizer": "Fertilizer",
+      "selectFertilizer": "Select fertilizer",
+      "unit": "Unit",
+      "amountPerUnit": "Amount per unit",
+      "method": "Application method",
+      "units": {
+        "load": "Load",
+        "bag": "Bag",
+        "total_amount": "Total amount",
+        "amount_per_hectare": "Per hectare",
+        "other": "Other"
+      },
+      "methods": {
+        "spray": "Spraying",
+        "spread": "Spreading",
+        "other": "Other"
+      }
+    },
+    "cropProtectionApplications": {
+      "title": "Crop Protection",
+      "create": "Record application",
+      "edit": "Edit application",
+      "date": "Date/Time",
+      "product": "Product",
+      "selectProduct": "Select product",
+      "method": "Application method",
+      "methods": {
+        "spraying": "Spraying",
+        "misting": "Misting",
+        "broadcasting": "Broadcasting",
+        "injecting": "Injecting",
+        "other": "Other"
+      }
+    },
+    "timeline": {
+      "years": "Years",
+      "months": "Months",
+      "weeks": "Weeks",
+      "today": "Today"
+    }
   }
 }

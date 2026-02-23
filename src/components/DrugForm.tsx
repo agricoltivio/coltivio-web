@@ -12,18 +12,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
+
+type DoseUnit = "tablet" | "capsule" | "patch" | "dose" | "mg" | "mcg" | "g" | "ml" | "drop";
+type DosePerUnit = "kg" | "animal" | "day" | "total_amount";
 
 interface DrugTreatmentFormData {
   animalType: AnimalType;
-  dosePerKg: number;
+  doseValue: number;
+  doseUnit: DoseUnit;
+  dosePerUnit: DosePerUnit;
   milkWaitingDays: number;
   meatWaitingDays: number;
+  organsWaitingDays: number;
 }
 
 export interface DrugFormData {
   name: string;
   notes: string | null;
+  criticalAntibiotic: boolean;
+  receivedFrom: string;
   drugTreatment: DrugTreatmentFormData[];
 }
 
@@ -33,6 +43,9 @@ export interface DrugFormProps {
   isSubmitting?: boolean;
 }
 
+const DOSE_UNITS: DoseUnit[] = ["tablet", "capsule", "patch", "dose", "mg", "mcg", "g", "ml", "drop"];
+const DOSE_PER_UNITS: DosePerUnit[] = ["kg", "animal", "day", "total_amount"];
+
 export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps) {
   const { t } = useTranslation();
 
@@ -41,16 +54,23 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
       ? {
           name: drug.name,
           notes: drug.notes,
+          criticalAntibiotic: drug.criticalAntibiotic,
+          receivedFrom: drug.receivedFrom,
           drugTreatment: drug.drugTreatment.map((dt) => ({
             animalType: dt.animalType,
-            dosePerKg: dt.dosePerKg,
+            doseValue: dt.doseValue,
+            doseUnit: dt.doseUnit,
+            dosePerUnit: dt.dosePerUnit,
             milkWaitingDays: dt.milkWaitingDays,
             meatWaitingDays: dt.meatWaitingDays,
+            organsWaitingDays: dt.organsWaitingDays,
           })),
         }
       : {
           name: "",
           notes: null,
+          criticalAntibiotic: false,
+          receivedFrom: "",
           drugTreatment: [],
         },
   });
@@ -62,7 +82,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
 
   const watchedTreatments = watch("drugTreatment");
 
-  // Get animal types that are already used so we can filter them from the dropdown
+  // Get animal types already used to filter the dropdown
   const usedAnimalTypes = watchedTreatments.map((dt) => dt.animalType);
   const availableAnimalTypes = ANIMAL_TYPES.filter(
     (type) => !usedAnimalTypes.includes(type),
@@ -72,17 +92,20 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
     if (availableAnimalTypes.length > 0) {
       append({
         animalType: availableAnimalTypes[0],
-        dosePerKg: 0,
+        doseValue: 0,
+        doseUnit: "mg",
+        dosePerUnit: "kg",
         milkWaitingDays: 0,
         meatWaitingDays: 0,
+        organsWaitingDays: 0,
       });
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
-      {/* Row 1: name */}
-      <FieldGroup>
+      {/* Row 1: name + criticalAntibiotic */}
+      <FieldGroup className="flex-row">
         <Field>
           <FieldLabel htmlFor="name">{t("drugs.name")} *</FieldLabel>
           <Input
@@ -91,9 +114,35 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
             {...register("name", { required: true })}
           />
         </Field>
+        <Field className="flex flex-row items-center gap-2 pt-6 shrink-0">
+          <Controller
+            name="criticalAntibiotic"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="criticalAntibiotic"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="criticalAntibiotic">{t("drugs.criticalAntibiotic")}</Label>
+        </Field>
       </FieldGroup>
 
-      {/* Row 2: notes */}
+      {/* Row 2: receivedFrom */}
+      <FieldGroup className="mt-7">
+        <Field>
+          <FieldLabel htmlFor="receivedFrom">{t("drugs.receivedFrom")} *</FieldLabel>
+          <Input
+            id="receivedFrom"
+            type="text"
+            {...register("receivedFrom", { required: true })}
+          />
+        </Field>
+      </FieldGroup>
+
+      {/* Row 3: notes */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="notes">{t("drugs.notes")}</FieldLabel>
@@ -127,7 +176,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-end p-4 border rounded-md"
+                className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_auto] gap-3 items-end p-4 border rounded-md"
               >
                 <Field>
                   <FieldLabel htmlFor={`drugTreatment.${index}.animalType`}>
@@ -149,7 +198,6 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {/* Show current value plus available types */}
                           {ANIMAL_TYPES.filter(
                             (type) =>
                               type === selectField.value ||
@@ -165,17 +213,71 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor={`drugTreatment.${index}.dosePerKg`}>
-                    {t("drugs.dosePerKg")}
+                  <FieldLabel htmlFor={`drugTreatment.${index}.doseValue`}>
+                    {t("drugs.doseValue")}
                   </FieldLabel>
                   <Input
-                    id={`drugTreatment.${index}.dosePerKg`}
+                    id={`drugTreatment.${index}.doseValue`}
                     type="number"
                     step="0.01"
-                    {...register(`drugTreatment.${index}.dosePerKg`, {
+                    {...register(`drugTreatment.${index}.doseValue`, {
                       required: true,
                       valueAsNumber: true,
                     })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`drugTreatment.${index}.doseUnit`}>
+                    {t("drugs.doseUnit")}
+                  </FieldLabel>
+                  <Controller
+                    name={`drugTreatment.${index}.doseUnit`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: selectField }) => (
+                      <Select
+                        value={selectField.value}
+                        onValueChange={selectField.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DOSE_UNITS.map((unit) => (
+                            <SelectItem key={unit} value={unit}>
+                              {unit}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`drugTreatment.${index}.dosePerUnit`}>
+                    {t("drugs.dosePerUnit")}
+                  </FieldLabel>
+                  <Controller
+                    name={`drugTreatment.${index}.dosePerUnit`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: selectField }) => (
+                      <Select
+                        value={selectField.value}
+                        onValueChange={selectField.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DOSE_PER_UNITS.map((perUnit) => (
+                            <SelectItem key={perUnit} value={perUnit}>
+                              {perUnit}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
                 </Field>
                 <Field>
@@ -199,6 +301,19 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
                     id={`drugTreatment.${index}.meatWaitingDays`}
                     type="number"
                     {...register(`drugTreatment.${index}.meatWaitingDays`, {
+                      required: true,
+                      valueAsNumber: true,
+                    })}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`drugTreatment.${index}.organsWaitingDays`}>
+                    {t("drugs.organsWaitingDays")}
+                  </FieldLabel>
+                  <Input
+                    id={`drugTreatment.${index}.organsWaitingDays`}
+                    type="number"
+                    {...register(`drugTreatment.${index}.organsWaitingDays`, {
                       required: true,
                       valueAsNumber: true,
                     })}

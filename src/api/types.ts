@@ -8,6 +8,9 @@ export type AnimalType = Animal["type"];
 export type AnimalSex = Animal["sex"];
 export type DeathReason = NonNullable<Animal["deathReason"]>;
 
+export type AnimalDetail =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdPositiveResponse"]["data"];
+
 export const ANIMAL_TYPES: AnimalType[] = [
   "goat",
   "sheep",
@@ -120,16 +123,54 @@ export type Treatment =
 export type TreatmentDetail =
   components["schemas"]["GetV1TreatmentsByIdTreatmentIdPositiveResponse"]["data"];
 
-export type AnimalTreatment =
-  components["schemas"]["GetV1AnimalsByIdAnimalIdTreatmentsPositiveResponse"]["data"]["result"][number];
+// Field calendar types
+export type Plot =
+  components["schemas"]["GetV1PlotsPositiveResponse"]["data"]["result"][number];
 
-// Animal Group types
-export type AnimalGroup =
-  components["schemas"]["GetV1AnimalGroupsPositiveResponse"]["data"]["result"][number];
+export type PlotDetail =
+  components["schemas"]["GetV1PlotsByIdPlotIdPositiveResponse"]["data"];
+
+export type CropRotation =
+  components["schemas"]["GetV1CropRotationsPositiveResponse"]["data"]["result"][number];
+
+export type Tillage =
+  components["schemas"]["GetV1TillagesPositiveResponse"]["data"]["result"][number];
+
+export type Harvest =
+  components["schemas"]["GetV1HarvestsPositiveResponse"]["data"]["result"][number];
+
+export type FertilizerApplication =
+  components["schemas"]["GetV1FertilizerApplicationsPositiveResponse"]["data"]["result"][number];
+
+export type CropProtectionApplication =
+  components["schemas"]["GetV1CropProtectionApplicationsPositiveResponse"]["data"]["result"][number];
+
+export type Crop =
+  components["schemas"]["GetV1CropsPositiveResponse"]["data"]["result"][number];
+
+export type Fertilizer =
+  components["schemas"]["GetV1FertilizersPositiveResponse"]["data"]["result"][number];
+
+export type TillageAction = Tillage["action"];
+
+export const TILLAGE_ACTIONS: TillageAction[] = [
+  "plowing",
+  "tilling",
+  "harrowing",
+  "rolling",
+  "rotavating",
+  "weed_harrowing",
+  "hoeing",
+  "flame_weeding",
+  "custom",
+];
+
+// Herd types
+export type Herd =
+  components["schemas"]["GetV1AnimalsHerdsPositiveResponse"]["data"]["result"][number];
 
 // Outdoor Journal types
-export type OutdoorJournalEntry =
-  components["schemas"]["GetV1OutdoorJournalPositiveResponse"]["data"]["result"][number];
+export type OutdoorJournalData =
+  components["schemas"]["GetV1AnimalsOutdoorJournalPositiveResponse"]["data"];
 
-export type OutdoorJournalCalendarEntry =
-  components["schemas"]["GetV1OutdoorJournalCalendarPositiveResponse"]["data"]["result"][number];
+export type AnimalUsage = Animal["usage"];

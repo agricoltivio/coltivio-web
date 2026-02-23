@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+
 interface LoginFormData {
   email: string;
   password: string;
@@ -38,8 +39,6 @@ export function LoginForm({
   const { t } = useTranslation();
   const [serverError, setServerError] = useState<string | null>(null);
   const { auth } = Route.useRouteContext();
-  const { redirect } = Route.useSearch();
-  const navigate = Route.useNavigate();
 
   const form = useForm<LoginFormData>({
     defaultValues: {
@@ -51,12 +50,11 @@ export function LoginForm({
   async function onSubmit(data: LoginFormData) {
     setServerError(null);
     const { error } = await auth.signIn(data.email, data.password);
-
     if (error) {
       setServerError(error.message);
-    } else {
-      navigate({ to: redirect, search: true });
     }
+    // On success: onAuthStateChange → isAuthenticated=true → App's useEffect
+    // calls router.invalidate() → beforeLoad redirects to search.redirect.
   }
   return (
     <div

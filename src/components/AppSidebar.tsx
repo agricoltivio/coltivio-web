@@ -12,17 +12,23 @@ import {
 import { Link } from "@tanstack/react-router";
 import {
   CreditCard,
+  Droplets,
   HeartHandshake,
+  Layers,
+  Map,
   NotebookPen,
   NotepadText,
   Package,
   Pill,
+  RefreshCw,
   Settings,
+  Shield,
   ShoppingCart,
   Syringe,
   Tag,
   User,
   Users,
+  Wheat,
 } from "lucide-react";
 
 export function AppSidebar() {
@@ -93,6 +99,20 @@ export function AppSidebar() {
                     to="/animals/turnout-journal"
                   >
                     <NotebookPen /> Auslaufsjournal
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/animals/herds"
+                  >
+                    <Users /> Herden
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -217,6 +237,97 @@ export function AppSidebar() {
                     to="/payments"
                   >
                     <CreditCard /> Zahlungen
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Feldkalender</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/plots"
+                  >
+                    <Map /> Parzellen
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crop-rotations"
+                  >
+                    <RefreshCw /> Fruchtfolge
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/tillages"
+                  >
+                    <Layers /> Bodenbearbeitung
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/fertilizer-applications"
+                  >
+                    <Droplets /> Düngung
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crop-protection-applications"
+                  >
+                    <Shield /> Pflanzenschutz
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/harvests"
+                  >
+                    <Wheat /> Ernte
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
