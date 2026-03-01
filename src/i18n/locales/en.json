@@ -285,6 +285,7 @@
     "addTreatment": "Add Treatment",
     "animal": "Animal",
     "animals": "Animals",
+    "selectAnimals": "Select animals",
     "startDate": "From",
     "endDate": "To",
     "name": "Name",
@@ -361,20 +362,50 @@
     "fieldwork": {
       "title": "Field Work",
       "sub": "Your Farm in Your Pocket — The Mobile App",
-      "plots": { "title": "Plot Management", "desc": "Automatic capture of your plots. Adjust them to your needs — split, merge or draw new ones, exactly as you need it." },
-      "calendar": { "title": "Field Calendar", "desc": "A unified timeline of every planned and completed field activity." },
-      "protection": { "title": "Crop Rotation Planning", "desc": "Plan your crop rotations with ease using recurring patterns, conflict and waiting time violation detection, and see the result in real time in the calendar." },
-      "harvest": { "title": "Field Activities", "desc": "Log your field activities in just a few steps — ploughing, fertiliser spreading, crop protection or harvest, all captured on the spot." },
-      "export": { "title": "Export", "desc": "Export the field calendar as an optimised Excel file, ready for your next official inspection." }
+      "plots": {
+        "title": "Plot Management",
+        "desc": "Automatic capture of your plots. Adjust them to your needs — split, merge or draw new ones, exactly as you need it."
+      },
+      "calendar": {
+        "title": "Field Calendar",
+        "desc": "A unified timeline of every planned and completed field activity."
+      },
+      "protection": {
+        "title": "Crop Rotation Planning",
+        "desc": "Plan your crop rotations with ease using recurring patterns, conflict and waiting time violation detection, and see the result in real time in the calendar."
+      },
+      "harvest": {
+        "title": "Field Activities",
+        "desc": "Log your field activities in just a few steps — ploughing, fertiliser spreading, crop protection or harvest, all captured on the spot."
+      },
+      "export": {
+        "title": "Export",
+        "desc": "Export the field calendar as an optimised Excel file, ready for your next official inspection."
+      }
     },
     "animals": {
       "title": "Animal Husbandry",
       "sub": "Full livestock tracking in your pocket.",
-      "import": { "title": "Livestock Overview", "desc": "Your entire livestock at a glance. Create herds with defined turnout and grazing times. Import animals from a TVD herd list export." },
-      "treatments": { "title": "Treatments Journal", "desc": "A complete medication log per animal: drug, dose, reason, and vet. Milk and meat withdrawal periods (Absetzfristen) are tracked automatically, with alerts before deadlines pass." },
-      "herds": { "title": "Herds & Schedules", "desc": "Organise animals into flexible groups for feeding, breeding, or pasture rotation. Track breeding cycles, expected births, and feeding plans across the whole herd." },
-      "turnout": { "title": "Turnout Journal", "desc": "Automatically generated turnout journal based on your configured herds. Set it up once and let it run." },
-      "export": { "title": "Export for Checks", "desc": "One-tap structured exports for official livestock inspections — treatment history, herd lists, and turnout records formatted exactly as required by Swiss authorities." }
+      "import": {
+        "title": "Livestock Overview",
+        "desc": "Your entire livestock at a glance. Create herds with defined turnout and grazing times. Import animals from a TVD herd list export."
+      },
+      "treatments": {
+        "title": "Treatments Journal",
+        "desc": "A complete medication log per animal: drug, dose, reason, and vet. Milk and meat withdrawal periods (Absetzfristen) are tracked automatically, with alerts before deadlines pass."
+      },
+      "herds": {
+        "title": "Herds & Schedules",
+        "desc": "Organise animals into flexible groups for feeding, breeding, or pasture rotation. Track breeding cycles, expected births, and feeding plans across the whole herd."
+      },
+      "turnout": {
+        "title": "Turnout Journal",
+        "desc": "Automatically generated turnout journal based on your configured herds. Set it up once and let it run."
+      },
+      "export": {
+        "title": "Export for Checks",
+        "desc": "One-tap structured exports for official livestock inspections — treatment history, herd lists, and turnout records formatted exactly as required by Swiss authorities."
+      }
     },
     "customize": {
       "headline": "Built Around Your Day, Not the Other Way Around",

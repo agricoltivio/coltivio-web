@@ -104,8 +104,8 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
-      {/* Row 1: name + criticalAntibiotic */}
-      <FieldGroup className="flex-row">
+      {/* Row 1: name */}
+      <FieldGroup>
         <Field>
           <FieldLabel htmlFor="name">{t("drugs.name")} *</FieldLabel>
           <Input
@@ -114,7 +114,11 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
             {...register("name", { required: true })}
           />
         </Field>
-        <Field className="flex flex-row items-center gap-2 pt-6 shrink-0">
+      </FieldGroup>
+
+      {/* Row 2: criticalAntibiotic */}
+      <FieldGroup className="mt-7">
+        <Field className="flex flex-row items-center gap-2">
           <Controller
             name="criticalAntibiotic"
             control={control}
@@ -130,7 +134,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
         </Field>
       </FieldGroup>
 
-      {/* Row 2: receivedFrom */}
+      {/* receivedFrom */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="receivedFrom">{t("drugs.receivedFrom")} *</FieldLabel>
@@ -142,7 +146,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
         </Field>
       </FieldGroup>
 
-      {/* Row 3: notes */}
+      {/* notes */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="notes">{t("drugs.notes")}</FieldLabel>

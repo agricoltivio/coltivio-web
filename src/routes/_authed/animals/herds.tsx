@@ -124,11 +124,13 @@ function HerdsPage() {
         herd={null}
       />
 
-      <HerdFormDialog
-        open={!!editHerd}
-        onOpenChange={(open) => !open && setEditHerd(null)}
-        herd={editHerd}
-      />
+      {editHerd && (
+        <HerdFormDialog
+          open={true}
+          onOpenChange={(open) => !open && setEditHerd(null)}
+          herd={editHerd}
+        />
+      )}
 
       <DeleteHerdDialog
         herd={deleteHerd}
@@ -152,18 +154,10 @@ function HerdFormDialog({
   const animalsQuery = useQuery(animalsQueryOptions());
   const allAnimals = animalsQuery.data?.result ?? [];
 
-  const [name, setName] = useState("");
-  const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[]>([]);
-
-  function resetForm() {
-    if (herd) {
-      setName(herd.name);
-      setSelectedAnimalIds(herd.animals.map((a) => a.id));
-    } else {
-      setName("");
-      setSelectedAnimalIds([]);
-    }
-  }
+  const [name, setName] = useState(herd?.name ?? "");
+  const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[]>(
+    () => herd?.animals.map((a) => a.id) ?? [],
+  );
 
   const createMutation = useMutation({
     mutationFn: async (data: { name: string; animalIds: string[] }) => {
@@ -198,11 +192,6 @@ function HerdFormDialog({
     },
   });
 
-  function handleOpenChange(isOpen: boolean) {
-    if (isOpen) resetForm();
-    onOpenChange(isOpen);
-  }
-
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = { name, animalIds: selectedAnimalIds };
@@ -224,7 +213,7 @@ function HerdFormDialog({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -271,7 +260,7 @@ function HerdFormDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => handleOpenChange(false)}
+              onClick={() => onOpenChange(false)}
             >
               {t("common.cancel")}
             </Button>

@@ -285,6 +285,7 @@
     "addTreatment": "Aggiungi trattamento",
     "animal": "Animale",
     "animals": "Animali",
+    "selectAnimals": "Seleziona animali",
     "startDate": "Dal",
     "endDate": "Al",
     "name": "Nome",
@@ -423,20 +424,50 @@
     "fieldwork": {
       "title": "Lavoro in Campo",
       "sub": "Il tuo podere in tasca — L'App Mobile",
-      "plots": { "title": "Gestione delle superfici", "desc": "Acquisizione automatica delle tue superfici. Adattale alle tue esigenze — dividile, uniscile o disegnane di nuove, esattamente come ti serve." },
-      "calendar": { "title": "Calendario di campo", "desc": "Una panoramica unificata di tutte le attività di campo pianificate e completate." },
-      "protection": { "title": "Pianificazione della rotazione colturale", "desc": "Pianifica le rotazioni colturali con facilità usando schemi ricorrenti, rilevamento automatico di conflitti e violazioni dei tempi di attesa — e vedi il risultato in tempo reale nel calendario." },
-      "harvest": { "title": "Attività di campo", "desc": "Registra le tue attività di campo in pochi passi — aratura, spargimento di fertilizzanti, protezione delle colture o raccolta, tutto catturato immediatamente sul posto." },
-      "export": { "title": "Esportazione", "desc": "Esporta il calendario dei campi come file Excel ottimizzato, pronto per la tua prossima ispezione ufficiale." }
+      "plots": {
+        "title": "Gestione delle superfici",
+        "desc": "Acquisizione automatica delle tue superfici. Adattale alle tue esigenze — dividile, uniscile o disegnane di nuove, esattamente come ti serve."
+      },
+      "calendar": {
+        "title": "Calendario di campo",
+        "desc": "Una panoramica unificata di tutte le attività di campo pianificate e completate."
+      },
+      "protection": {
+        "title": "Pianificazione della rotazione colturale",
+        "desc": "Pianifica le rotazioni colturali con facilità usando schemi ricorrenti, rilevamento automatico di conflitti e violazioni dei tempi di attesa — e vedi il risultato in tempo reale nel calendario."
+      },
+      "harvest": {
+        "title": "Attività di campo",
+        "desc": "Registra le tue attività di campo in pochi passi — aratura, spargimento di fertilizzanti, protezione delle colture o raccolta, tutto catturato immediatamente sul posto."
+      },
+      "export": {
+        "title": "Esportazione",
+        "desc": "Esporta il calendario dei campi come file Excel ottimizzato, pronto per la tua prossima ispezione ufficiale."
+      }
     },
     "animals": {
       "title": "Zootecnia",
       "sub": "Tracciamento completo del bestiame in tasca.",
-      "import": { "title": "Patrimonio zootecnico", "desc": "Tutto il tuo bestiame a colpo d'occhio. Crea mandrie con uscite e tempi di pascolo definiti. Importa gli animali tramite l'esportazione delle liste animali da TVD." },
-      "treatments": { "title": "Giornale trattamenti", "desc": "Registro completo dei farmaci per animale: prodotto, dose, motivo e veterinario. I periodi di attesa (Absetzfristen) per latte e carne vengono calcolati automaticamente con avvisi prima della scadenza." },
-      "herds": { "title": "Mandrie & Piani", "desc": "Organizza gli animali in gruppi flessibili per alimentazione, riproduzione o pascolo. Tieni traccia di cicli riproduttivi, parti attesi e piani di alimentazione per l'intera mandria." },
-      "turnout": { "title": "Giornale di pascolo", "desc": "Giornale di pascolo generato automaticamente in base alle mandrie configurate. Configuralo una volta e lascia fare all'app." },
-      "export": { "title": "Esporta per controlli", "desc": "Export strutturati per le ispezioni ufficiali del bestiame — storico trattamenti, liste di mandria e registri di pascolo nel formato esatto richiesto dalle autorità svizzere." }
+      "import": {
+        "title": "Patrimonio zootecnico",
+        "desc": "Tutto il tuo bestiame a colpo d'occhio. Crea mandrie con uscite e tempi di pascolo definiti. Importa gli animali tramite l'esportazione delle liste animali da TVD."
+      },
+      "treatments": {
+        "title": "Giornale trattamenti",
+        "desc": "Registro completo dei farmaci per animale: prodotto, dose, motivo e veterinario. I periodi di attesa (Absetzfristen) per latte e carne vengono calcolati automaticamente con avvisi prima della scadenza."
+      },
+      "herds": {
+        "title": "Mandrie & Piani",
+        "desc": "Organizza gli animali in gruppi flessibili per alimentazione, riproduzione o pascolo. Tieni traccia di cicli riproduttivi, parti attesi e piani di alimentazione per l'intera mandria."
+      },
+      "turnout": {
+        "title": "Giornale di pascolo",
+        "desc": "Giornale di pascolo generato automaticamente in base alle mandrie configurate. Configuralo una volta e lascia fare all'app."
+      },
+      "export": {
+        "title": "Esporta per controlli",
+        "desc": "Export strutturati per le ispezioni ufficiali del bestiame — storico trattamenti, liste di mandria e registri di pascolo nel formato esatto richiesto dalle autorità svizzere."
+      }
     },
     "customize": {
       "headline": "Pensato per la tua giornata — non il contrario",

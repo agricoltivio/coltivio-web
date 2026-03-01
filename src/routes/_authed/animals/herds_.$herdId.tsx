@@ -218,15 +218,19 @@ function HerdDetailPage() {
         </Card>
       </div>
 
-      <ScheduleFormDialog
-        open={scheduleDialogOpen}
-        onOpenChange={(open) => {
-          setScheduleDialogOpen(open);
-          if (!open) setEditSchedule(null);
-        }}
-        herdId={herdId}
-        schedule={editSchedule}
-      />
+      {scheduleDialogOpen && (
+        <ScheduleFormDialog
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) {
+              setScheduleDialogOpen(false);
+              setEditSchedule(null);
+            }
+          }}
+          herdId={herdId}
+          schedule={editSchedule}
+        />
+      )}
 
       <DeleteScheduleDialog
         schedule={deleteSchedule}
@@ -262,38 +266,14 @@ function ScheduleFormDialog({
     } | null;
   };
 
-  const [scheduleType, setScheduleType] = useState<OutdoorScheduleType>("pasture");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [notes, setNotes] = useState("");
-  const [hasRecurrence, setHasRecurrence] = useState(false);
-  const [recurrenceFrequency, setRecurrenceFrequency] = useState<"weekly" | "monthly" | "yearly">("weekly");
-  const [recurrenceInterval, setRecurrenceInterval] = useState("1");
-  const [recurrenceUntil, setRecurrenceUntil] = useState("");
-
-  function resetForm() {
-    if (schedule) {
-      setScheduleType(schedule.type);
-      setStartDate(schedule.startDate.split("T")[0]);
-      setEndDate(schedule.endDate ? schedule.endDate.split("T")[0] : "");
-      setNotes(schedule.notes ?? "");
-      setHasRecurrence(!!schedule.recurrence);
-      if (schedule.recurrence) {
-        setRecurrenceFrequency(schedule.recurrence.frequency);
-        setRecurrenceInterval(String(schedule.recurrence.interval));
-        setRecurrenceUntil(schedule.recurrence.until ?? "");
-      }
-    } else {
-      setScheduleType("pasture");
-      setStartDate("");
-      setEndDate("");
-      setNotes("");
-      setHasRecurrence(false);
-      setRecurrenceFrequency("weekly");
-      setRecurrenceInterval("1");
-      setRecurrenceUntil("");
-    }
-  }
+  const [scheduleType, setScheduleType] = useState<OutdoorScheduleType>(schedule?.type ?? "pasture");
+  const [startDate, setStartDate] = useState(schedule?.startDate ? schedule.startDate.split("T")[0] : "");
+  const [endDate, setEndDate] = useState(schedule?.endDate ? schedule.endDate.split("T")[0] : "");
+  const [notes, setNotes] = useState(schedule?.notes ?? "");
+  const [hasRecurrence, setHasRecurrence] = useState(!!schedule?.recurrence);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState<"weekly" | "monthly" | "yearly">(schedule?.recurrence?.frequency ?? "weekly");
+  const [recurrenceInterval, setRecurrenceInterval] = useState(schedule?.recurrence ? String(schedule.recurrence.interval) : "1");
+  const [recurrenceUntil, setRecurrenceUntil] = useState(schedule?.recurrence?.until ? schedule.recurrence.until.split("T")[0] : "");
 
   const createMutation = useMutation({
     mutationFn: async (body: ScheduleBody) => {
@@ -332,11 +312,6 @@ function ScheduleFormDialog({
     },
   });
 
-  function handleOpenChange(isOpen: boolean) {
-    if (isOpen) resetForm();
-    onOpenChange(isOpen);
-  }
-
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const body: ScheduleBody = {
@@ -362,7 +337,7 @@ function ScheduleFormDialog({
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -480,7 +455,7 @@ function ScheduleFormDialog({
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={!startDate || isPending}>

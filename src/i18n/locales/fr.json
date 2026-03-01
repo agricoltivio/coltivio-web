@@ -285,6 +285,7 @@
     "addTreatment": "Ajouter un traitement",
     "animal": "Animal",
     "animals": "Animaux",
+    "selectAnimals": "Sélectionner des animaux",
     "startDate": "Du",
     "endDate": "Au",
     "name": "Nom",
@@ -423,20 +424,50 @@
     "fieldwork": {
       "title": "Travaux des Champs",
       "sub": "Votre exploitation dans votre poche — L'App Mobile",
-      "plots": { "title": "Gestion des surfaces", "desc": "Saisie automatique de vos surfaces. Adaptez-les à vos besoins — divisez, fusionnez ou dessinez de nouvelles parcelles, exactement comme il vous faut." },
-      "calendar": { "title": "Calendrier des champs", "desc": "Une vue d'ensemble unifiée de toutes les activités de terrain planifiées et réalisées." },
-      "protection": { "title": "Planification de la rotation des cultures", "desc": "Planifiez vos rotations culturales facilement grâce aux schémas récurrents, la détection automatique des conflits et des violations des délais d'attente — et visualisez le résultat en temps réel dans le calendrier." },
-      "harvest": { "title": "Travaux des champs", "desc": "Enregistrez vos travaux des champs en quelques étapes — labour, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place." },
-      "export": { "title": "Export", "desc": "Exportez le calendrier des champs sous forme de fichier Excel optimisé, prêt pour votre prochaine inspection officielle." }
+      "plots": {
+        "title": "Gestion des surfaces",
+        "desc": "Saisie automatique de vos surfaces. Adaptez-les à vos besoins — divisez, fusionnez ou dessinez de nouvelles parcelles, exactement comme il vous faut."
+      },
+      "calendar": {
+        "title": "Calendrier des champs",
+        "desc": "Une vue d'ensemble unifiée de toutes les activités de terrain planifiées et réalisées."
+      },
+      "protection": {
+        "title": "Planification de la rotation des cultures",
+        "desc": "Planifiez vos rotations culturales facilement grâce aux schémas récurrents, la détection automatique des conflits et des violations des délais d'attente — et visualisez le résultat en temps réel dans le calendrier."
+      },
+      "harvest": {
+        "title": "Travaux des champs",
+        "desc": "Enregistrez vos travaux des champs en quelques étapes — labour, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place."
+      },
+      "export": {
+        "title": "Export",
+        "desc": "Exportez le calendrier des champs sous forme de fichier Excel optimisé, prêt pour votre prochaine inspection officielle."
+      }
     },
     "animals": {
       "title": "Élevage",
       "sub": "Suivi complet du cheptel dans votre poche.",
-      "import": { "title": "Cheptel", "desc": "Tout votre cheptel en un coup d'œil. Créez des troupeaux avec des sorties et des temps de pâturage définis. Importez les animaux via l'export des listes animaux depuis TVD." },
-      "treatments": { "title": "Journal des traitements", "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente (Absetzfristen) lait et viande sont calculés automatiquement avec alertes avant expiration." },
-      "herds": { "title": "Troupeaux & Plannings", "desc": "Organisez les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suivez les cycles de reproduction, les mises bas attendues et les plans d'alimentation sur tout le troupeau." },
-      "turnout": { "title": "Journal de pâturage", "desc": "Journal de pâturage généré automatiquement en fonction des troupeaux configurés. Configurez-le une fois et oubliez-le." },
-      "export": { "title": "Export pour contrôles", "desc": "Exports structurés pour les inspections officielles du cheptel — historique des traitements, listes de troupeaux et registres de pâturage dans le format exact exigé par les autorités suisses." }
+      "import": {
+        "title": "Cheptel",
+        "desc": "Tout votre cheptel en un coup d'œil. Créez des troupeaux avec des sorties et des temps de pâturage définis. Importez les animaux via l'export des listes animaux depuis TVD."
+      },
+      "treatments": {
+        "title": "Journal des traitements",
+        "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente (Absetzfristen) lait et viande sont calculés automatiquement avec alertes avant expiration."
+      },
+      "herds": {
+        "title": "Troupeaux & Plannings",
+        "desc": "Organisez les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suivez les cycles de reproduction, les mises bas attendues et les plans d'alimentation sur tout le troupeau."
+      },
+      "turnout": {
+        "title": "Journal de pâturage",
+        "desc": "Journal de pâturage généré automatiquement en fonction des troupeaux configurés. Configurez-le une fois et oubliez-le."
+      },
+      "export": {
+        "title": "Export pour contrôles",
+        "desc": "Exports structurés pour les inspections officielles du cheptel — historique des traitements, listes de troupeaux et registres de pâturage dans le format exact exigé par les autorités suisses."
+      }
     },
     "customize": {
       "headline": "Conçu autour de votre journée — pas l'inverse",

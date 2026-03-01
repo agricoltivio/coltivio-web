@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Combobox,
   ComboboxInput,
@@ -92,7 +93,6 @@ export function TreatmentForm({
   const watchedAnimalIds = watch("animalIds");
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
-  const watchedCriticalAntibiotic = watch("criticalAntibiotic");
 
   // Auto-calculate usable dates when drug or startDate changes
   useEffect(() => {
@@ -138,46 +138,26 @@ export function TreatmentForm({
 
   const showWaitingDates = !!watchedDrugId;
 
-  function toggleAnimalId(animalId: string, currentIds: string[]) {
-    if (currentIds.includes(animalId)) {
-      setValue("animalIds", currentIds.filter((id) => id !== animalId));
-    } else {
-      setValue("animalIds", [...currentIds, animalId]);
-    }
-  }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
       {/* Animals multi-select */}
       <FieldGroup>
         <Field>
           <FieldLabel>{t("treatments.animals")} *</FieldLabel>
-          <div className="border rounded-md p-3 space-y-2 max-h-48 overflow-y-auto">
-            {animalOptions.length === 0 ? (
-              <span className="text-sm text-muted-foreground">{t("common.noResults")}</span>
-            ) : (
-              animalOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-2">
-                  <Controller
-                    name="animalIds"
-                    control={control}
-                    render={({ field }) => (
-                      <Checkbox
-                        id={`animal-${option.value}`}
-                        checked={field.value.includes(option.value)}
-                        onCheckedChange={() =>
-                          toggleAnimalId(option.value, field.value)
-                        }
-                      />
-                    )}
-                  />
-                  <Label htmlFor={`animal-${option.value}`} className="font-normal cursor-pointer">
-                    {option.label}
-                  </Label>
-                </div>
-              ))
+          <Controller
+            name="animalIds"
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                options={animalOptions}
+                value={field.value}
+                onValueChange={field.onChange}
+                placeholder={t("treatments.selectAnimals")}
+                searchPlaceholder={t("common.search")}
+                emptyText={t("common.noResults")}
+              />
             )}
-          </div>
+          />
         </Field>
       </FieldGroup>
 
@@ -302,22 +282,20 @@ export function TreatmentForm({
           />
           <Label htmlFor="criticalAntibiotic">{t("treatments.criticalAntibiotic")}</Label>
         </Field>
-        {watchedCriticalAntibiotic && (
-          <Field className="flex flex-row items-center gap-2">
-            <Controller
-              name="antibiogramAvailable"
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  id="antibiogramAvailable"
-                  checked={field.value}
-                  onCheckedChange={(checked) => field.onChange(checked === true)}
-                />
-              )}
-            />
-            <Label htmlFor="antibiogramAvailable">{t("treatments.antibiogramAvailable")}</Label>
-          </Field>
-        )}
+        <Field className="flex flex-row items-center gap-2">
+          <Controller
+            name="antibiogramAvailable"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="antibiogramAvailable"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="antibiogramAvailable">{t("treatments.antibiogramAvailable")}</Label>
+        </Field>
       </FieldGroup>
 
       {/* Notes */}
