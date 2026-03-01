@@ -45,6 +45,12 @@
     "children": "Discendenti",
     "showDeceased": "Mostra deceduti",
     "livingOnly": "Solo viventi",
+    "registered": "Registrato",
+    "usage": "Utilizzo",
+    "usageOptions": {
+      "milk": "Latte",
+      "other": "Altro"
+    },
     "noEarTag": "Nessun marchio",
     "noMother": "Sconosciuta",
     "noFather": "Sconosciuto",
@@ -278,14 +284,19 @@
     "treatmentDetails": "Dettagli trattamento",
     "addTreatment": "Aggiungi trattamento",
     "animal": "Animale",
-    "date": "Data",
+    "animals": "Animali",
+    "startDate": "Dal",
+    "endDate": "Al",
     "name": "Nome",
     "reason": "Motivo",
     "drug": "Farmaco",
     "notes": "Note",
     "milkUsableDate": "Latte utilizzabile dal",
     "meatUsableDate": "Carne utilizzabile dal",
+    "organsUsableDate": "Organi utilizzabili dal",
     "waitingDates": "Periodi di attesa",
+    "criticalAntibiotic": "Antibiotico critico",
+    "antibiogramAvailable": "Antibiogramma disponibile",
     "deleteConfirm": "Sei sicuro di voler eliminare questo trattamento?",
     "noTreatments": "Nessun trattamento"
   },
@@ -301,10 +312,49 @@
     "addAnimalType": "Aggiungi specie",
     "animalType": "Specie",
     "animalTypes": "Specie",
-    "dosePerKg": "Dose per kg",
+    "doseValue": "Dose",
+    "doseUnit": "Unità",
+    "dosePerUnit": "Per",
     "milkWaitingDays": "Giorni attesa latte",
     "meatWaitingDays": "Giorni attesa carne",
+    "organsWaitingDays": "Giorni attesa organi",
+    "criticalAntibiotic": "Antibiotico critico",
+    "receivedFrom": "Ricevuto da",
     "deleteConfirm": "Sei sicuro di voler eliminare questo farmaco?"
+  },
+  "herds": {
+    "title": "Mandrie",
+    "addHerd": "Aggiungi mandria",
+    "editHerd": "Modifica mandria",
+    "name": "Nome",
+    "animalCount": "Numero animali",
+    "animals": "Animali",
+    "noHerds": "Nessuna mandria definita",
+    "noAnimals": "Nessun animale in questa mandria",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa mandria?",
+    "outdoorSchedules": "Piani di uscita",
+    "addSchedule": "Aggiungi piano",
+    "editSchedule": "Modifica piano",
+    "noSchedules": "Nessun piano",
+    "scheduleType": "Tipo",
+    "scheduleTypes": {
+      "pasture": "Pascolo",
+      "exercise_yard": "Paddock"
+    },
+    "startDate": "Dal",
+    "endDate": "Al",
+    "notes": "Note",
+    "recurring": "Ricorrente",
+    "recurrence": "Ricorrenza",
+    "frequency": "Frequenza",
+    "interval": "Intervallo",
+    "until": "Fino a",
+    "frequencies": {
+      "weekly": "Settimanale",
+      "monthly": "Mensile",
+      "yearly": "Annuale"
+    },
+    "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?"
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",
@@ -329,7 +379,10 @@
     "month": "Mese",
     "year": "Anno",
     "previousMonth": "Mese precedente",
-    "nextMonth": "Mese successivo"
+    "nextMonth": "Mese successivo",
+    "animals": "Animali",
+    "manageHerds": "Gestisci mandrie",
+    "uncategorizedCount": "{{count}} animale non assegnato a nessun gruppo"
   },
   "landing": {
     "nav": {

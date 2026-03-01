@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,18 @@ export function CropRotationTimeline({
   );
 
   const todayX = getTodayX(timelineStart, pxPerDay);
+
+  // Scroll to today on initial mount
+  useEffect(() => {
+    if (!scrollAreaRef.current) return;
+    const todayOffset = getTodayX(timelineStart, pxPerDay);
+    const containerWidth = scrollAreaRef.current.clientWidth;
+    scrollAreaRef.current.scrollLeft = Math.max(0, todayOffset - containerWidth / 2);
+    if (headerScrollRef.current) {
+      headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Sync horizontal scroll between header and body
   const handleBodyScroll = useCallback(() => {
@@ -113,7 +125,7 @@ export function CropRotationTimeline({
                 .filter((line) => line.isMajor && line.label)
                 .map((line, i) => (
                   <div
-                    key={i}
+                    key={`header-${i}`}
                     className="absolute top-0 bottom-0 flex items-center border-l border-border px-1"
                     style={{ left: line.x }}
                   >
@@ -166,7 +178,7 @@ export function CropRotationTimeline({
               {/* Grid lines */}
               {timelineData.gridLines.map((line, i) => (
                 <div
-                  key={i}
+                  key={`gridline-${i}`}
                   className={`absolute top-0 bottom-0 border-l ${line.isMajor ? "border-border" : "border-border/30"}`}
                   style={{ left: line.x }}
                 />

@@ -35,7 +35,16 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>Coltivio</SidebarHeader>
-      <SidebarContent>
+      <SidebarContent
+        onFocusCapture={(e) => {
+          // Prevent the browser from auto-scrolling the sidebar when a link is focused on click
+          const el = e.currentTarget;
+          const savedScroll = el.scrollTop;
+          requestAnimationFrame(() => {
+            el.scrollTop = savedScroll;
+          });
+        }}
+      >
         <SidebarGroup>
           <SidebarGroupLabel>Tierhaltung</SidebarGroupLabel>
           <SidebarGroupContent>
