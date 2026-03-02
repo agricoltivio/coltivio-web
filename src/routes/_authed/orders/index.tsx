@@ -134,6 +134,28 @@ function Orders() {
           );
         },
       },
+      {
+        id: "products",
+        header: t("orders.products"),
+        cell: ({ row }) => {
+          // Aggregate quantities per product name
+          const productCounts = new Map<string, number>();
+          for (const item of row.original.items) {
+            productCounts.set(
+              item.product.name,
+              (productCounts.get(item.product.name) ?? 0) + item.quantity,
+            );
+          }
+          const entries = Array.from(productCounts.entries());
+          if (entries.length === 0)
+            return <span className="text-muted-foreground">-</span>;
+          return (
+            <span>
+              {entries.map(([name, qty]) => `${name} (${qty})`).join(", ")}
+            </span>
+          );
+        },
+      },
     ],
     [t],
   );

@@ -25,6 +25,7 @@ function formDataToApiBody(data: OrderFormData) {
       ? new Date(data.shippingDate).toISOString()
       : undefined,
     notes: data.notes || undefined,
+    status: data.confirmed ? ("confirmed" as const) : undefined,
     items: data.items.filter((item) => item.productId),
   };
 }
@@ -70,6 +71,7 @@ function CreateOrder() {
         productOptions={productOptions}
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}
+        showConfirmedCheckbox
       />
     </PageContent>
   );

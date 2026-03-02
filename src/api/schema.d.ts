@@ -7144,6 +7144,26 @@ export interface components {
                         preferredCommunication: "email" | "phone" | "whatsapp" | null;
                         labels: string[];
                     };
+                    items: {
+                        id: string;
+                        farmId: string;
+                        orderId: string;
+                        productId: string;
+                        quantity: number;
+                        unitPrice: number;
+                        product: {
+                            id: string;
+                            farmId: string;
+                            name: string;
+                            /** @enum {string} */
+                            category: "meat" | "vegetables" | "dairy" | "eggs" | "other";
+                            /** @enum {string} */
+                            unit: "kg" | "g" | "piece" | "bunch" | "liter";
+                            pricePerUnit: number;
+                            description: string | null;
+                            active: boolean;
+                        };
+                    }[];
                 }[];
                 count: number;
             };
@@ -7232,6 +7252,8 @@ export interface components {
              */
             shippingDate?: string;
             notes?: string;
+            /** @enum {string} */
+            status?: "pending" | "confirmed";
             items: {
                 productId: string;
                 quantity: number;

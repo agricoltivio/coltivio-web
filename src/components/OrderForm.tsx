@@ -4,6 +4,7 @@ import { PlusIcon, TrashIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import {
   Combobox,
@@ -21,6 +22,7 @@ export interface OrderFormData {
   orderDate: string;
   shippingDate: string | null;
   notes: string | null;
+  confirmed: boolean;
   items: { productId: string; quantity: number }[];
 }
 
@@ -29,6 +31,7 @@ export interface OrderFormProps {
   productOptions: ComboboxOption[];
   onSubmit: (data: OrderFormData) => void;
   isSubmitting?: boolean;
+  showConfirmedCheckbox?: boolean;
   defaultValues?: {
     contactId?: string;
     orderDate?: string;
@@ -42,6 +45,7 @@ export function OrderForm({
   productOptions,
   onSubmit,
   isSubmitting = false,
+  showConfirmedCheckbox = false,
   defaultValues,
 }: OrderFormProps) {
   const { t } = useTranslation();
@@ -52,6 +56,7 @@ export function OrderForm({
       orderDate: defaultValues?.orderDate || new Date().toISOString().split("T")[0],
       shippingDate: defaultValues?.shippingDate || null,
       notes: defaultValues?.notes || null,
+      confirmed: false,
       items: [{ productId: "", quantity: 1 }],
     },
   });
@@ -122,6 +127,27 @@ export function OrderForm({
           <Textarea id="notes" rows={3} {...register("notes")} />
         </Field>
       </FieldGroup>
+
+      {/* Row 4: confirmed checkbox (only shown on create) */}
+      {showConfirmedCheckbox && (
+        <FieldGroup className="mt-7">
+          <Field>
+            <Controller
+              name="confirmed"
+              control={control}
+              render={({ field }) => (
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                  <span className="text-sm">{t("orders.createAsConfirmed")}</span>
+                </label>
+              )}
+            />
+          </Field>
+        </FieldGroup>
+      )}
 
       {/* Line Items Section */}
       <div className="mt-7 border-t pt-6">

@@ -290,6 +290,8 @@
     "addItem": "Position hinzufügen",
     "noItems": "Keine Positionen",
     "deleteConfirm": "Sind Sie sicher, dass Sie diese Bestellung löschen möchten?",
+    "products": "Produkte",
+    "createAsConfirmed": "Als bestätigt erfassen",
     "confirm": "Bestätigen",
     "fulfill": "Ausliefern",
     "cancel": "Stornieren",

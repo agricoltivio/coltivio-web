@@ -290,6 +290,8 @@
     "addItem": "Aggiungi articolo",
     "noItems": "Nessun articolo",
     "deleteConfirm": "Sei sicuro di voler eliminare questo ordine?",
+    "products": "Prodotti",
+    "createAsConfirmed": "Crea come confermato",
     "confirm": "Conferma",
     "fulfill": "Consegna",
     "cancel": "Annulla",

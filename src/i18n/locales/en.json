@@ -290,6 +290,8 @@
     "addItem": "Add Item",
     "noItems": "No items",
     "deleteConfirm": "Are you sure you want to delete this order?",
+    "products": "Products",
+    "createAsConfirmed": "Create as confirmed",
     "confirm": "Confirm",
     "fulfill": "Fulfill",
     "cancel": "Cancel",
