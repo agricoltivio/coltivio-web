@@ -2404,6 +2404,15 @@ export interface components {
                             additionalNotes: string | null;
                         } | null;
                     };
+                    recurrence: {
+                        id: string;
+                        interval: number;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        until: string | null;
+                    } | null;
                 }[];
                 count: number;
             };
@@ -4182,6 +4191,15 @@ export interface components {
                         additionalNotes: string | null;
                     } | null;
                 };
+                recurrence: {
+                    id: string;
+                    interval: number;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    until: string | null;
+                } | null;
             };
         };
         DeleteV1CropRotationsByIdRotationIdPositiveResponse: {

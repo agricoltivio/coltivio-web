@@ -19,8 +19,8 @@ export const Route = createFileRoute("/_authed/field-calendar/crop-rotations")({
   validateSearch: searchSchema,
   loader: ({ context: { queryClient } }) => {
     const year = new Date().getFullYear();
-    const fromDate = new Date(year - 5, 0, 1).toISOString();
-    const toDate = new Date(year + 5, 11, 31, 23, 59, 59).toISOString();
+    const fromDate = new Date(year - 10, 0, 1).toISOString();
+    const toDate = new Date(year + 25, 11, 31, 23, 59, 59).toISOString();
     queryClient.ensureQueryData(cropRotationsQueryOptions(fromDate, toDate));
     queryClient.ensureQueryData(plotsQueryOptions());
   },
@@ -34,8 +34,8 @@ function CropRotations() {
   const [zoom, setZoom] = useState<ZoomLevel>("months");
 
   const currentYear = new Date().getFullYear();
-  const timelineStart = new Date(currentYear - 5, 0, 1);
-  const timelineEnd = new Date(currentYear + 5, 11, 31, 23, 59, 59);
+  const timelineStart = new Date(currentYear - 10, 0, 1);
+  const timelineEnd = new Date(currentYear + 25, 11, 31, 23, 59, 59);
 
   const fromDate = timelineStart.toISOString();
   const toDate = timelineEnd.toISOString();

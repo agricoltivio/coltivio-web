@@ -603,7 +603,10 @@
       "selectCrop": "Seleziona coltura",
       "fromDate": "Dal",
       "toDate": "Al",
-      "sowingDate": "Data di semina"
+      "sowingDate": "Data di semina",
+      "repeatEveryPrefix": "Ogni",
+      "repeatEverySuffix": "anni",
+      "repeatUntil": "Fino al"
     },
     "tillages": {
       "title": "Lavorazione del suolo",

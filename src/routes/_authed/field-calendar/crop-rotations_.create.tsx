@@ -38,7 +38,8 @@ type FormData = {
   cropId: string;
   fromDate: string;
   toDate: string;
-  sowingDate: string;
+  repeatEveryYears: string;
+  repeatUntil: string;
 };
 
 function CreateCropRotation() {
@@ -56,12 +57,15 @@ function CreateCropRotation() {
       cropId: "",
       fromDate: "",
       toDate: "",
-      sowingDate: "",
+      repeatEveryYears: "",
+      repeatUntil: "",
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
+      const repeatYears = parseInt(data.repeatEveryYears) || 0;
+
       const response = await apiClient.POST(
         "/v1/cropRotations/batch/byPlot",
         {
@@ -72,9 +76,12 @@ function CreateCropRotation() {
                 cropId: data.cropId,
                 fromDate: new Date(data.fromDate).toISOString(),
                 toDate: new Date(data.toDate).toISOString(),
-                sowingDate: data.sowingDate
-                  ? new Date(data.sowingDate).toISOString()
-                  : undefined,
+                ...(repeatYears > 0 && {
+                  recurrence: {
+                    interval: repeatYears,
+                    ...(data.repeatUntil && { until: new Date(data.repeatUntil).toISOString() }),
+                  },
+                }),
               },
             ],
           },
@@ -95,6 +102,7 @@ function CreateCropRotation() {
   const crops = cropsQuery.data?.result ?? [];
   const watchedPlotId = watch("plotId");
   const watchedCropId = watch("cropId");
+  const watchedRepeatYears = parseInt(watch("repeatEveryYears")) || 0;
 
   return (
     <PageContent
@@ -154,10 +162,18 @@ function CreateCropRotation() {
           <Input type="date" {...register("toDate", { required: true })} />
         </div>
 
-        <div className="space-y-1">
-          <Label>{t("fieldCalendar.cropRotations.sowingDate")}</Label>
-          <Input type="date" {...register("sowingDate")} />
+        <div className="flex items-center gap-2">
+          <span className="text-sm whitespace-nowrap">{t("fieldCalendar.cropRotations.repeatEveryPrefix")}</span>
+          <Input type="number" min="0" step="1" placeholder="0" className="w-20" {...register("repeatEveryYears")} />
+          <span className="text-sm whitespace-nowrap">{t("fieldCalendar.cropRotations.repeatEverySuffix")}</span>
         </div>
+
+        {watchedRepeatYears > 0 && (
+          <div className="space-y-1">
+            <Label>{t("fieldCalendar.cropRotations.repeatUntil")}</Label>
+            <Input type="date" {...register("repeatUntil")} />
+          </div>
+        )}
 
         <div className="flex gap-2 pt-2">
           <Button

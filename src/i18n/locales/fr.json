@@ -603,7 +603,10 @@
       "selectCrop": "Sélectionner une culture",
       "fromDate": "De",
       "toDate": "À",
-      "sowingDate": "Date de semis"
+      "sowingDate": "Date de semis",
+      "repeatEveryPrefix": "Répéter tous les",
+      "repeatEverySuffix": "ans",
+      "repeatUntil": "Jusqu'au"
     },
     "tillages": {
       "title": "Travail du sol",

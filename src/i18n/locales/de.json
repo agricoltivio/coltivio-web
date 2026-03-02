@@ -593,17 +593,20 @@
       "size": "Fläche",
       "usage": "Nutzungscode",
       "cuttingDate": "Schnittzeitpunkt",
-      "currentCrop": "Aktuelle Frucht"
+      "currentCrop": "Aktuelle Kultur"
     },
     "cropRotations": {
       "title": "Fruchtfolge",
       "create": "Fruchtfolge erstellen",
       "edit": "Fruchtfolge bearbeiten",
-      "crop": "Frucht",
-      "selectCrop": "Frucht auswählen",
+      "crop": "Kultur",
+      "selectCrop": "Kultur auswählen",
       "fromDate": "Von",
       "toDate": "Bis",
-      "sowingDate": "Aussaatdatum"
+      "sowingDate": "Aussaatdatum",
+      "repeatEveryPrefix": "Alle",
+      "repeatEverySuffix": "Jahre",
+      "repeatUntil": "Bis"
     },
     "tillages": {
       "title": "Bodenbearbeitung",

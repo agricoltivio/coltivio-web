@@ -32,7 +32,8 @@ type FormData = {
   cropId: string;
   fromDate: string;
   toDate: string;
-  sowingDate: string;
+  repeatEveryYears: string;
+  repeatUntil: string;
 };
 
 function toDateInput(iso: string | null | undefined): string {
@@ -55,7 +56,8 @@ function EditCropRotation() {
       cropId: "",
       fromDate: "",
       toDate: "",
-      sowingDate: "",
+      repeatEveryYears: "",
+      repeatUntil: "",
     },
   });
 
@@ -65,28 +67,30 @@ function EditCropRotation() {
         cropId: rotation.cropId,
         fromDate: toDateInput(rotation.fromDate),
         toDate: toDateInput(rotation.toDate),
-        sowingDate: toDateInput(rotation.sowingDate),
+        repeatEveryYears: rotation.recurrence ? String(rotation.recurrence.interval) : "",
+        repeatUntil: toDateInput(rotation.recurrence?.until),
       });
     }
   }, [rotation, reset]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
+      const repeatYears = parseInt(data.repeatEveryYears) || 0;
+
       const response = await apiClient.PATCH(
         "/v1/cropRotations/byId/{rotationId}",
         {
           params: { path: { rotationId } },
           body: {
             cropId: data.cropId || undefined,
-            fromDate: data.fromDate
-              ? new Date(data.fromDate).toISOString()
-              : undefined,
-            toDate: data.toDate
-              ? new Date(data.toDate).toISOString()
-              : undefined,
-            sowingDate: data.sowingDate
-              ? new Date(data.sowingDate).toISOString()
-              : undefined,
+            fromDate: data.fromDate ? new Date(data.fromDate).toISOString() : undefined,
+            toDate: data.toDate ? new Date(data.toDate).toISOString() : undefined,
+            recurrence: repeatYears > 0
+              ? {
+                  interval: repeatYears,
+                  ...(data.repeatUntil && { until: new Date(data.repeatUntil).toISOString() }),
+                }
+              : null,
           },
         },
       );
@@ -103,6 +107,7 @@ function EditCropRotation() {
 
   const crops = cropsQuery.data?.result ?? [];
   const watchedCropId = watch("cropId");
+  const watchedRepeatYears = parseInt(watch("repeatEveryYears")) || 0;
 
   return (
     <PageContent
@@ -143,10 +148,18 @@ function EditCropRotation() {
           <Input type="date" {...register("toDate")} />
         </div>
 
-        <div className="space-y-1">
-          <Label>{t("fieldCalendar.cropRotations.sowingDate")}</Label>
-          <Input type="date" {...register("sowingDate")} />
+        <div className="flex items-center gap-2">
+          <span className="text-sm whitespace-nowrap">{t("fieldCalendar.cropRotations.repeatEveryPrefix")}</span>
+          <Input type="number" min="0" step="1" placeholder="0" className="w-20" {...register("repeatEveryYears")} />
+          <span className="text-sm whitespace-nowrap">{t("fieldCalendar.cropRotations.repeatEverySuffix")}</span>
         </div>
+
+        {watchedRepeatYears > 0 && (
+          <div className="space-y-1">
+            <Label>{t("fieldCalendar.cropRotations.repeatUntil")}</Label>
+            <Input type="date" {...register("repeatUntil")} />
+          </div>
+        )}
 
         <div className="flex gap-2 pt-2">
           <Button type="submit" disabled={updateMutation.isPending}>

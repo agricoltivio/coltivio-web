@@ -39,6 +39,8 @@ export function CropRotationTimeline({
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const headerScrollRef = useRef<HTMLDivElement>(null);
   const leftColumnRef = useRef<HTMLDivElement>(null);
+  // Stores the center date before a zoom change so we can restore scroll after re-render
+  const centerDateRef = useRef<Date | null>(null);
 
   const pxPerDay = getScaleForZoomLevel(zoom);
 
@@ -63,6 +65,20 @@ export function CropRotationTimeline({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // After zoom changes, restore scroll so the same date stays centered
+  useEffect(() => {
+    if (!scrollAreaRef.current || !centerDateRef.current) return;
+    const newPxPerDay = getScaleForZoomLevel(zoom);
+    const centerDays = (centerDateRef.current.getTime() - timelineStart.getTime()) / (1000 * 60 * 60 * 24);
+    const newScrollLeft = Math.max(0, centerDays * newPxPerDay - scrollAreaRef.current.clientWidth / 2);
+    scrollAreaRef.current.scrollLeft = newScrollLeft;
+    if (headerScrollRef.current) {
+      headerScrollRef.current.scrollLeft = newScrollLeft;
+    }
+    centerDateRef.current = null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoom]);
 
   // Sync horizontal scroll to header and vertical scroll to the left name column.
   // The left column uses overflow-hidden so it clips without its own scrollbar,
@@ -97,7 +113,14 @@ export function CropRotationTimeline({
           type="single"
           value={zoom}
           onValueChange={(value) => {
-            if (value) onZoomChange(value as ZoomLevel);
+            if (!value) return;
+            // Capture current center date so the zoom-change effect can restore scroll
+            if (scrollAreaRef.current) {
+              const centerX = scrollAreaRef.current.scrollLeft + scrollAreaRef.current.clientWidth / 2;
+              const centerDays = centerX / pxPerDay;
+              centerDateRef.current = new Date(timelineStart.getTime() + centerDays * 24 * 60 * 60 * 1000);
+            }
+            onZoomChange(value as ZoomLevel);
           }}
         >
           <ToggleGroupItem value="years">{t("fieldCalendar.timeline.years")}</ToggleGroupItem>

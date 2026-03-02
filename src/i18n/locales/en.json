@@ -603,7 +603,10 @@
       "selectCrop": "Select crop",
       "fromDate": "From",
       "toDate": "To",
-      "sowingDate": "Sowing date"
+      "sowingDate": "Sowing date",
+      "repeatEveryPrefix": "Repeats every",
+      "repeatEverySuffix": "years",
+      "repeatUntil": "Until"
     },
     "tillages": {
       "title": "Tillages",
