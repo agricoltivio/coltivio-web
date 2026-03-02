@@ -2,6 +2,8 @@
   "name": "coltivio-web",
   "private": true,
   "type": "module",
+  "license": "AGPL-3.0-only",
+  "author": "Coltivio",
   "scripts": {
     "dev": "vite --port 4000",
     "build": "vite build && tsc",
