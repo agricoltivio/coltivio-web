@@ -73,7 +73,7 @@ function Payments() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("payments.date")}
@@ -91,7 +91,7 @@ function Payments() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("payments.contact")}
@@ -113,7 +113,7 @@ function Payments() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("payments.amount")}
@@ -134,7 +134,7 @@ function Payments() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("payments.method")}

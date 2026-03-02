@@ -39,7 +39,7 @@ function Sponsorships() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("sponsorships.contact")}
@@ -61,7 +61,7 @@ function Sponsorships() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("sponsorships.program")}
@@ -79,7 +79,7 @@ function Sponsorships() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("sponsorships.animal")}
@@ -97,7 +97,7 @@ function Sponsorships() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("sponsorships.startDate")}
@@ -115,7 +115,7 @@ function Sponsorships() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("sponsorships.endDate")}

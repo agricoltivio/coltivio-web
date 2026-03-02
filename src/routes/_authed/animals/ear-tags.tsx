@@ -113,7 +113,7 @@ function EarTags() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("earTags.number")}
@@ -133,7 +133,7 @@ function EarTags() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("earTags.status")}

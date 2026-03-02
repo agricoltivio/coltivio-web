@@ -30,7 +30,7 @@ function Contacts() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("contacts.fullName")}
@@ -52,7 +52,7 @@ function Contacts() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("contacts.city")}
@@ -70,7 +70,7 @@ function Contacts() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("contacts.phone")}
@@ -88,7 +88,7 @@ function Contacts() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("contacts.email")}

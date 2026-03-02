@@ -34,7 +34,7 @@ function TreatmentsJournal() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("treatments.startDate")}
@@ -52,7 +52,7 @@ function TreatmentsJournal() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("treatments.animals")}
@@ -74,7 +74,7 @@ function TreatmentsJournal() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("treatments.name")}
@@ -102,7 +102,7 @@ function TreatmentsJournal() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("treatments.milkUsableDate")}
@@ -124,7 +124,7 @@ function TreatmentsJournal() {
         header: ({ column }) => (
           <Button
             variant="ghost"
-            className="p-0 hover:bg-transparent justify-start"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("treatments.meatUsableDate")}
