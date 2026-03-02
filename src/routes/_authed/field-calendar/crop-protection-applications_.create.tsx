@@ -137,7 +137,7 @@ function CreateCropProtectionApplication() {
             plots: [
               {
                 plotId: data.plotId,
-                numberOfUnits: parseInt(data.numberOfUnits),
+                numberOfUnits: parseFloat(data.numberOfUnits),
                 geometry: plot.geometry,
                 size: plot.size,
               },
@@ -151,28 +151,35 @@ function CreateCropProtectionApplication() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cropProtectionApplications"] });
+      queryClient.invalidateQueries({
+        queryKey: ["cropProtectionApplications"],
+      });
       navigate({ to: "/field-calendar/crop-protection-applications" });
     },
   });
 
   const createPresetMutation = useMutation({
     mutationFn: async (name: string) => {
-      const response = await apiClient.POST("/v1/cropProtectionApplications/presets", {
-        body: {
-          name,
-          method: watchedMethod,
-          unit: watchedUnit,
-          amountPerUnit: parseFloat(watchedAmountPerUnit),
+      const response = await apiClient.POST(
+        "/v1/cropProtectionApplications/presets",
+        {
+          body: {
+            name,
+            method: watchedMethod,
+            unit: watchedUnit,
+            amountPerUnit: parseFloat(watchedAmountPerUnit),
+          },
         },
-      });
+      );
       if (response.error) {
         throw new Error("Failed to create crop protection preset");
       }
       return response.data.data;
     },
     onSuccess: (preset: CropProtectionApplicationPreset) => {
-      queryClient.invalidateQueries({ queryKey: ["cropProtectionApplications", "presets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["cropProtectionApplications", "presets"],
+      });
       setSelectedPresetId(preset.id);
       setNewPresetName("");
       setSavePresetOpen(false);
@@ -190,7 +197,9 @@ function CreateCropProtectionApplication() {
       }
     },
     onSuccess: (_data, deletedPresetId) => {
-      queryClient.invalidateQueries({ queryKey: ["cropProtectionApplications", "presets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["cropProtectionApplications", "presets"],
+      });
       if (selectedPresetId === deletedPresetId) {
         setSelectedPresetId(null);
       }
@@ -207,7 +216,10 @@ function CreateCropProtectionApplication() {
   const watchedUnit = watch("unit");
   const watchedAmountPerUnit = watch("amountPerUnit");
 
-  const plotOptions: PlotOption[] = plots.map((p) => ({ value: p.id, label: p.name }));
+  const plotOptions: PlotOption[] = plots.map((p) => ({
+    value: p.id,
+    label: p.name,
+  }));
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -260,7 +272,9 @@ function CreateCropProtectionApplication() {
           </div>
 
           <div className="space-y-1 flex-1 min-w-[180px]">
-            <Label>{t("fieldCalendar.cropProtectionApplications.product")}</Label>
+            <Label>
+              {t("fieldCalendar.cropProtectionApplications.product")}
+            </Label>
             <Select
               value={watchedProductId}
               onValueChange={(v) => setValue("productId", v)}
@@ -294,7 +308,9 @@ function CreateCropProtectionApplication() {
                 onValueChange={(v) => applyPreset(v)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                  <SelectValue
+                    placeholder={t("fieldCalendar.presets.select")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {presets.length === 0 ? (
@@ -404,11 +420,7 @@ function CreateCropProtectionApplication() {
           </div>
           <div className="space-y-1">
             <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
-            <Input
-              type="number"
-              min={1}
-              {...register("numberOfUnits", { required: true })}
-            />
+            <Input {...register("numberOfUnits", { required: true })} />
           </div>
         </div>
 

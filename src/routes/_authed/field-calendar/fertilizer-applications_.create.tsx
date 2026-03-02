@@ -9,7 +9,10 @@ import { apiClient } from "@/api/client";
 import { fertilizerApplicationPresetsQueryOptions } from "@/api/fertilizerApplications.queries";
 import { fertilizersQueryOptions } from "@/api/fertilizers.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
-import type { FertilizerApplication, FertilizerApplicationPreset } from "@/api/types";
+import type {
+  FertilizerApplication,
+  FertilizerApplicationPreset,
+} from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import {
@@ -124,7 +127,7 @@ function CreateFertilizerApplication() {
           plots: [
             {
               plotId: data.plotId,
-              numberOfUnits: parseInt(data.numberOfUnits),
+              numberOfUnits: parseFloat(data.numberOfUnits),
               geometry: plot.geometry,
               size: plot.size,
             },
@@ -145,22 +148,27 @@ function CreateFertilizerApplication() {
 
   const createPresetMutation = useMutation({
     mutationFn: async (name: string) => {
-      const response = await apiClient.POST("/v1/fertilizerApplications/presets", {
-        body: {
-          name,
-          fertilizerId: watchedFertilizerId,
-          unit: watchedUnit,
-          method: watchedMethod || undefined,
-          amountPerUnit: parseFloat(watchedAmountPerUnit),
+      const response = await apiClient.POST(
+        "/v1/fertilizerApplications/presets",
+        {
+          body: {
+            name,
+            fertilizerId: watchedFertilizerId,
+            unit: watchedUnit,
+            method: watchedMethod || undefined,
+            amountPerUnit: parseFloat(watchedAmountPerUnit),
+          },
         },
-      });
+      );
       if (response.error) {
         throw new Error("Failed to create fertilizer application preset");
       }
       return response.data.data;
     },
     onSuccess: (preset: FertilizerApplicationPreset) => {
-      queryClient.invalidateQueries({ queryKey: ["fertilizerApplications", "presets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["fertilizerApplications", "presets"],
+      });
       setSelectedPresetId(preset.id);
       setNewPresetName("");
       setSavePresetOpen(false);
@@ -178,7 +186,9 @@ function CreateFertilizerApplication() {
       }
     },
     onSuccess: (_data, deletedPresetId) => {
-      queryClient.invalidateQueries({ queryKey: ["fertilizerApplications", "presets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["fertilizerApplications", "presets"],
+      });
       if (selectedPresetId === deletedPresetId) {
         setSelectedPresetId(null);
       }
@@ -195,7 +205,10 @@ function CreateFertilizerApplication() {
   const watchedMethod = watch("method");
   const watchedAmountPerUnit = watch("amountPerUnit");
 
-  const plotOptions: PlotOption[] = plots.map((p) => ({ value: p.id, label: p.name }));
+  const plotOptions: PlotOption[] = plots.map((p) => ({
+    value: p.id,
+    label: p.name,
+  }));
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -256,7 +269,9 @@ function CreateFertilizerApplication() {
                 onValueChange={(v) => applyPreset(v)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                  <SelectValue
+                    placeholder={t("fieldCalendar.presets.select")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {presets.length === 0 ? (
@@ -285,14 +300,18 @@ function CreateFertilizerApplication() {
 
           {/* Fertilizer */}
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.fertilizer")}</Label>
+            <Label>
+              {t("fieldCalendar.fertilizerApplications.fertilizer")}
+            </Label>
             <Select
               value={watchedFertilizerId}
               onValueChange={(v) => setValue("fertilizerId", v)}
             >
               <SelectTrigger>
                 <SelectValue
-                  placeholder={t("fieldCalendar.fertilizerApplications.selectFertilizer")}
+                  placeholder={t(
+                    "fieldCalendar.fertilizerApplications.selectFertilizer",
+                  )}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -327,7 +346,9 @@ function CreateFertilizerApplication() {
 
           {/* Amount per unit */}
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+            <Label>
+              {t("fieldCalendar.fertilizerApplications.amountPerUnit")}
+            </Label>
             <Input
               type="number"
               min={0}
@@ -351,7 +372,9 @@ function CreateFertilizerApplication() {
               <SelectContent>
                 {FERTILIZER_METHODS.map((method) => (
                   <SelectItem key={method} value={method}>
-                    {t(`fieldCalendar.fertilizerApplications.methods.${method}`)}
+                    {t(
+                      `fieldCalendar.fertilizerApplications.methods.${method}`,
+                    )}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -379,11 +402,7 @@ function CreateFertilizerApplication() {
           </div>
           <div className="space-y-1">
             <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
-            <Input
-              type="number"
-              min={1}
-              {...register("numberOfUnits", { required: true })}
-            />
+            <Input {...register("numberOfUnits", { required: true })} />
           </div>
         </div>
 
@@ -475,7 +494,10 @@ function CreateFertilizerApplication() {
             </ul>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setManagePresetsOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setManagePresetsOpen(false)}
+            >
               {t("common.close")}
             </Button>
           </DialogFooter>

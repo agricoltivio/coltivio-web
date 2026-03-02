@@ -128,13 +128,15 @@ function CreateHarvest() {
           cropId: data.cropId,
           unit: data.unit,
           kilosPerUnit: parseFloat(data.kilosPerUnit),
-          harvestCount: data.harvestCount ? parseInt(data.harvestCount) : undefined,
+          harvestCount: data.harvestCount
+            ? parseInt(data.harvestCount)
+            : undefined,
           conservationMethod: data.conservationMethod || undefined,
           additionalNotes: data.additionalNotes || undefined,
           plots: [
             {
               plotId: data.plotId,
-              numberOfUnits: parseInt(data.numberOfUnits),
+              numberOfUnits: parseFloat(data.numberOfUnits),
               geometry: plot.geometry,
               size: plot.size,
             },
@@ -204,7 +206,10 @@ function CreateHarvest() {
   const watchedConservation = watch("conservationMethod");
   const watchedKilosPerUnit = watch("kilosPerUnit");
 
-  const plotOptions: PlotOption[] = plots.map((p) => ({ value: p.id, label: p.name }));
+  const plotOptions: PlotOption[] = plots.map((p) => ({
+    value: p.id,
+    label: p.name,
+  }));
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -261,7 +266,9 @@ function CreateHarvest() {
               onValueChange={(v) => setValue("cropId", v)}
             >
               <SelectTrigger>
-                <SelectValue placeholder={t("fieldCalendar.cropRotations.selectCrop")} />
+                <SelectValue
+                  placeholder={t("fieldCalendar.cropRotations.selectCrop")}
+                />
               </SelectTrigger>
               <SelectContent>
                 {crops.map((crop) => (
@@ -285,7 +292,9 @@ function CreateHarvest() {
                 onValueChange={(v) => applyPreset(v)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                  <SelectValue
+                    placeholder={t("fieldCalendar.presets.select")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {presets.length === 0 ? (
@@ -387,8 +396,7 @@ function CreateHarvest() {
           <div className="space-y-1">
             <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
             <Input
-              type="number"
-              min={1}
+              // type="number"
               {...register("numberOfUnits", { required: true })}
             />
           </div>
@@ -480,7 +488,10 @@ function CreateHarvest() {
             </ul>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setManagePresetsOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setManagePresetsOpen(false)}
+            >
               {t("common.close")}
             </Button>
           </DialogFooter>

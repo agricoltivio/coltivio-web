@@ -6,7 +6,10 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { cropProtectionApplicationsQueryOptions } from "@/api/cropProtectionApplications.queries";
 import { cropProtectionProductsQueryOptions } from "@/api/cropProtectionProducts.queries";
-import type { CropProtectionApplication, FertilizerApplication } from "@/api/types";
+import type {
+  CropProtectionApplication,
+  FertilizerApplication,
+} from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -111,7 +114,7 @@ function EditCropProtectionApplication() {
             method: data.method || undefined,
             unit: data.unit,
             amountPerUnit: parseFloat(data.amountPerUnit),
-            numberOfUnits: parseInt(data.numberOfUnits),
+            numberOfUnits: parseFloat(data.numberOfUnits),
             additionalNotes: data.additionalNotes || undefined,
           },
         },
@@ -122,7 +125,9 @@ function EditCropProtectionApplication() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cropProtectionApplications"] });
+      queryClient.invalidateQueries({
+        queryKey: ["cropProtectionApplications"],
+      });
       navigate({ to: "/field-calendar/crop-protection-applications" });
     },
   });
@@ -136,7 +141,9 @@ function EditCropProtectionApplication() {
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.edit")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/crop-protection-applications" })}
+      backTo={() =>
+        navigate({ to: "/field-calendar/crop-protection-applications" })
+      }
     >
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
@@ -223,7 +230,9 @@ function EditCropProtectionApplication() {
         </div>
 
         <div className="space-y-1">
-          <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+          <Label>
+            {t("fieldCalendar.fertilizerApplications.amountPerUnit")}
+          </Label>
           <Input
             type="number"
             min={0}
