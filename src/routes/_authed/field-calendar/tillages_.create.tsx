@@ -17,7 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import { Textarea } from "@/components/ui/textarea";
+
+type PlotOption = { value: string; label: string };
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -68,7 +78,8 @@ function CreateTillage() {
       const response = await apiClient.POST("/v1/tillages/batch", {
         body: {
           action: data.action,
-          customAction: data.action === "custom" ? data.customAction : undefined,
+          customAction:
+            data.action === "custom" ? data.customAction : undefined,
           date: new Date(data.date).toISOString(),
           additionalNotes: data.additionalNotes || undefined,
           plots: [
@@ -96,29 +107,46 @@ function CreateTillage() {
   const watchedPlotId = watch("plotId");
   const watchedAction = watch("action");
 
+  const plotOptions: PlotOption[] = plots.map((p) => ({
+    value: p.id,
+    label: `${p.name} - ${p.usage} (${p.size / 100}a) `,
+  }));
+
   return (
-    <PageContent title={t("fieldCalendar.tillages.create")} showBackButton backTo={() => navigate({ to: "/field-calendar/tillages" })}>
+    <PageContent
+      title={t("fieldCalendar.tillages.create")}
+      showBackButton
+      backTo={() => navigate({ to: "/field-calendar/tillages" })}
+    >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
         className="space-y-4 max-w-lg"
       >
         <div className="space-y-1">
           <Label>{t("fieldCalendar.plots.plot")}</Label>
-          <Select
-            value={watchedPlotId}
-            onValueChange={(v) => setValue("plotId", v)}
+          <Combobox
+            items={plotOptions}
+            itemToStringValue={(item: PlotOption) => item.label}
+            value={plotOptions.find((o) => o.value === watchedPlotId) ?? null}
+            onValueChange={(item: PlotOption | null) =>
+              setValue("plotId", item?.value ?? "")
+            }
           >
-            <SelectTrigger>
-              <SelectValue placeholder={t("fieldCalendar.plots.selectPlot")} />
-            </SelectTrigger>
-            <SelectContent>
-              {plots.map((plot) => (
-                <SelectItem key={plot.id} value={plot.id}>
-                  {plot.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <ComboboxInput
+              placeholder={t("fieldCalendar.plots.selectPlot")}
+              showClear={!!watchedPlotId}
+            />
+            <ComboboxContent>
+              <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
+              <ComboboxList>
+                {(option: PlotOption) => (
+                  <ComboboxItem key={option.value} value={option}>
+                    {option.label}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
 
         <div className="space-y-1">

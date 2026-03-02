@@ -208,7 +208,7 @@ function CreateHarvest() {
 
   const plotOptions: PlotOption[] = plots.map((p) => ({
     value: p.id,
-    label: p.name,
+    label: `${p.name} - ${p.usage} (${p.size / 100}a) `,
   }));
 
   function applyPreset(presetId: string) {
