@@ -155,7 +155,8 @@
     "settingPassword": "Impostazione password...",
     "passwordUpdated": "Password aggiornata con successo!",
     "passwordMismatch": "Le password non corrispondono",
-    "signUpSuccess": "Registrazione riuscita! Controlla la tua e-mail per confermare il tuo account."
+    "signUpSuccess": "Registrazione riuscita! Controlla la tua e-mail per confermare il tuo account.",
+    "signupViaApp": "I nuovi account possono essere creati solo tramite l'app iOS o Android."
   },
   "dashboard": {
     "welcome": "Ciao {{name}}, {{farmName}}"

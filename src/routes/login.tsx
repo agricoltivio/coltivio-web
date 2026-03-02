@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { createFileRoute, redirect, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -98,17 +98,9 @@ export function LoginForm({
                 rules={{ required: true }}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <div className="flex items-center">
-                      <FieldLabel htmlFor="password">
-                        {t("auth.password")}
-                      </FieldLabel>
-                      <Link
-                        to="/forgot-password"
-                        className="ml-auto text-sm underline-offset-2 hover:underline"
-                      >
-                        {t("auth.forgotPassword")}
-                      </Link>
-                    </div>
+                    <FieldLabel htmlFor="password">
+                      {t("auth.password")}
+                    </FieldLabel>
                     <Input {...field} id="password" type="password" required />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -131,13 +123,7 @@ export function LoginForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                {t("auth.noAccount")}{" "}
-                <Link
-                  to="/register"
-                  className="underline-offset-2 hover:underline"
-                >
-                  {t("auth.signUp")}
-                </Link>
+                {t("auth.signupViaApp")}
               </FieldDescription>
             </FieldGroup>
           </form>

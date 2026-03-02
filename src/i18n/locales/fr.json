@@ -155,7 +155,8 @@
     "settingPassword": "Définition du mot de passe...",
     "passwordUpdated": "Mot de passe mis à jour avec succès !",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
-    "signUpSuccess": "Inscription réussie ! Veuillez vérifier vos e-mails pour confirmer votre compte."
+    "signUpSuccess": "Inscription réussie ! Veuillez vérifier vos e-mails pour confirmer votre compte.",
+    "signupViaApp": "Les nouveaux comptes ne peuvent être créés que via l'application iOS ou Android."
   },
   "dashboard": {
     "welcome": "Bonjour {{name}}, {{farmName}}"
