@@ -129,6 +129,10 @@ function DrugDetailPage() {
               <DetailItem label={t("drugs.name")} value={drug.name} />
               <DetailItem label={t("drugs.receivedFrom")} value={drug.receivedFrom} />
               <DetailItem
+                label={t("drugs.isAntibiotic")}
+                value={drug.isAntibiotic ? t("common.yes") : t("common.no")}
+              />
+              <DetailItem
                 label={t("drugs.criticalAntibiotic")}
                 value={drug.criticalAntibiotic ? t("common.yes") : t("common.no")}
               />

@@ -5361,6 +5361,7 @@ export interface components {
                     drugDosePerUnit: "kg" | "animal" | "day" | "total_amount" | null;
                     drugDoseValue: number | null;
                     drugReceivedFrom: string | null;
+                    isAntibiotic: boolean;
                     criticalAntibiotic: boolean;
                     antibiogramAvailable: boolean;
                     /**
@@ -6144,6 +6145,7 @@ export interface components {
                     farmId: string;
                     name: string;
                     notes: string | null;
+                    isAntibiotic: boolean;
                     criticalAntibiotic: boolean;
                     receivedFrom: string;
                     drugTreatment: {
@@ -6170,6 +6172,7 @@ export interface components {
                 farmId: string;
                 name: string;
                 notes: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 receivedFrom: string;
                 drugTreatment: {
@@ -6190,6 +6193,8 @@ export interface components {
         };
         PostV1DrugsRequestBody: {
             name: string;
+            /** @default false */
+            isAntibiotic: boolean;
             criticalAntibiotic: boolean;
             receivedFrom: string;
             notes?: string;
@@ -6212,6 +6217,7 @@ export interface components {
                 farmId: string;
                 name: string;
                 notes: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 receivedFrom: string;
                 drugTreatment: {
@@ -6236,6 +6242,7 @@ export interface components {
                 farmId: string;
                 name: string;
                 notes: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 receivedFrom: string;
                 drugTreatment: {
@@ -6256,6 +6263,8 @@ export interface components {
         };
         PatchV1DrugsByIdDrugIdRequestBody: {
             name?: string;
+            isAntibiotic?: boolean;
+            criticalAntibiotic?: boolean;
             notes?: string;
             drugTreatment?: {
                 /** @enum {string} */
@@ -6290,6 +6299,7 @@ export interface components {
                     drugDosePerUnit: "kg" | "animal" | "day" | "total_amount" | null;
                     drugDoseValue: number | null;
                     drugReceivedFrom: string | null;
+                    isAntibiotic: boolean;
                     criticalAntibiotic: boolean;
                     antibiogramAvailable: boolean;
                     /**
@@ -6363,6 +6373,7 @@ export interface components {
                         farmId: string;
                         name: string;
                         notes: string | null;
+                        isAntibiotic: boolean;
                         criticalAntibiotic: boolean;
                         receivedFrom: string;
                         drugTreatment: {
@@ -6395,6 +6406,7 @@ export interface components {
                 drugDosePerUnit: "kg" | "animal" | "day" | "total_amount" | null;
                 drugDoseValue: number | null;
                 drugReceivedFrom: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 antibiogramAvailable: boolean;
                 /**
@@ -6468,6 +6480,8 @@ export interface components {
             drugDosePerUnit?: "kg" | "animal" | "day" | "total_amount" | null;
             drugDoseValue?: number | null;
             drugReceivedFrom?: string | null;
+            /** @default false */
+            isAntibiotic: boolean;
             criticalAntibiotic: boolean;
             antibiogramAvailable: boolean;
         };
@@ -6482,6 +6496,7 @@ export interface components {
                 drugDosePerUnit: "kg" | "animal" | "day" | "total_amount" | null;
                 drugDoseValue: number | null;
                 drugReceivedFrom: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 antibiogramAvailable: boolean;
                 /**
@@ -6555,6 +6570,7 @@ export interface components {
                     farmId: string;
                     name: string;
                     notes: string | null;
+                    isAntibiotic: boolean;
                     criticalAntibiotic: boolean;
                     receivedFrom: string;
                     drugTreatment: {
@@ -6585,6 +6601,7 @@ export interface components {
                 drugDosePerUnit: "kg" | "animal" | "day" | "total_amount" | null;
                 drugDoseValue: number | null;
                 drugReceivedFrom: string | null;
+                isAntibiotic: boolean;
                 criticalAntibiotic: boolean;
                 antibiogramAvailable: boolean;
                 /**
@@ -6658,6 +6675,8 @@ export interface components {
             drugDosePerUnit?: "kg" | "animal" | "day" | "total_amount" | null;
             drugDoseValue?: number | null;
             drugReceivedFrom?: string | null;
+            /** @default false */
+            isAntibiotic: boolean;
             criticalAntibiotic?: boolean;
             antibiogramAvailable?: boolean;
         };

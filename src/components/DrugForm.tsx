@@ -32,6 +32,7 @@ interface DrugTreatmentFormData {
 export interface DrugFormData {
   name: string;
   notes: string | null;
+  isAntibiotic: boolean;
   criticalAntibiotic: boolean;
   receivedFrom: string;
   drugTreatment: DrugTreatmentFormData[];
@@ -54,6 +55,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
       ? {
           name: drug.name,
           notes: drug.notes,
+          isAntibiotic: drug.isAntibiotic,
           criticalAntibiotic: drug.criticalAntibiotic,
           receivedFrom: drug.receivedFrom,
           drugTreatment: drug.drugTreatment.map((dt) => ({
@@ -69,6 +71,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
       : {
           name: "",
           notes: null,
+          isAntibiotic: false,
           criticalAntibiotic: false,
           receivedFrom: "",
           drugTreatment: [],
@@ -116,8 +119,22 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
         </Field>
       </FieldGroup>
 
-      {/* Row 2: criticalAntibiotic */}
-      <FieldGroup className="mt-7">
+      {/* Row 2: isAntibiotic + criticalAntibiotic */}
+      <FieldGroup className="flex-row mt-7 gap-4">
+        <Field className="flex flex-row items-center gap-2">
+          <Controller
+            name="isAntibiotic"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="isAntibiotic"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="isAntibiotic">{t("drugs.isAntibiotic")}</Label>
+        </Field>
         <Field className="flex flex-row items-center gap-2">
           <Controller
             name="criticalAntibiotic"

@@ -37,8 +37,13 @@ function formDataToApiBody(data: TreatmentFormData) {
     organsUsableDate: data.organsUsableDate
       ? new Date(data.organsUsableDate).toISOString()
       : null,
+    isAntibiotic: data.isAntibiotic,
     criticalAntibiotic: data.criticalAntibiotic,
     antibiogramAvailable: data.antibiogramAvailable,
+    drugDoseValue: data.drugDoseValue ? Number(data.drugDoseValue) : null,
+    drugDoseUnit: data.drugDoseUnit,
+    drugDosePerUnit: data.drugDosePerUnit,
+    drugReceivedFrom: data.drugReceivedFrom || null,
   };
 }
 

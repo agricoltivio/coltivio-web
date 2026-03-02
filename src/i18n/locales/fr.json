@@ -326,10 +326,15 @@
     "meatUsableDate": "Viande utilisable à partir du",
     "organsUsableDate": "Organes utilisables à partir du",
     "waitingDates": "Délais d'attente",
+    "isAntibiotic": "Antibiotique",
     "criticalAntibiotic": "Antibiotique critique",
     "antibiogramAvailable": "Antibiogramme disponible",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce traitement ?",
-    "noTreatments": "Aucun traitement"
+    "noTreatments": "Aucun traitement",
+    "drugDoseValue": "Dose",
+    "drugDoseUnit": "Unité",
+    "drugDosePerUnit": "Par",
+    "drugReceivedFrom": "Reçu de"
   },
   "drugs": {
     "title": "Médicaments",
@@ -349,9 +354,27 @@
     "milkWaitingDays": "Jours d'attente lait",
     "meatWaitingDays": "Jours d'attente viande",
     "organsWaitingDays": "Jours d'attente organes",
+    "isAntibiotic": "Antibiotique",
     "criticalAntibiotic": "Antibiotique critique",
     "receivedFrom": "Obtenu auprès de",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce médicament ?"
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce médicament ?",
+    "doseUnits": {
+      "tablet": "Comprimé",
+      "capsule": "Gélule",
+      "patch": "Patch",
+      "dose": "Dose",
+      "mg": "mg",
+      "mcg": "mcg",
+      "g": "g",
+      "ml": "ml",
+      "drop": "Goutte"
+    },
+    "dosePerUnits": {
+      "kg": "kg",
+      "animal": "Animal",
+      "day": "Jour",
+      "total_amount": "Quantité totale"
+    }
   },
   "herds": {
     "title": "Troupeaux",

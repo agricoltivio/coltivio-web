@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import type { Treatment, Drug, Animal } from "@/api/types";
+import type { Treatment, Drug, Animal, DrugTreatment } from "@/api/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,8 +28,13 @@ export interface TreatmentFormData {
   milkUsableDate: string | null;
   meatUsableDate: string | null;
   organsUsableDate: string | null;
+  isAntibiotic: boolean;
   criticalAntibiotic: boolean;
   antibiogramAvailable: boolean;
+  drugDoseValue: string | null;
+  drugDoseUnit: DrugTreatment["doseUnit"] | null;
+  drugDosePerUnit: DrugTreatment["dosePerUnit"] | null;
+  drugReceivedFrom: string | null;
 }
 
 type ComboboxOption = { value: string; label: string };
@@ -59,54 +64,122 @@ export function TreatmentForm({
 }: TreatmentFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control, watch, setValue } =
-    useForm<TreatmentFormData>({
-      defaultValues: treatment
-        ? {
-            animalIds: treatment.animals.map((a) => a.id),
-            drugId: treatment.drugId,
-            startDate: treatment.startDate.split("T")[0],
-            endDate: treatment.endDate.split("T")[0],
-            name: treatment.name,
-            notes: treatment.notes,
-            milkUsableDate: treatment.milkUsableDate?.split("T")[0] || null,
-            meatUsableDate: treatment.meatUsableDate?.split("T")[0] || null,
-            organsUsableDate: treatment.organsUsableDate?.split("T")[0] || null,
-            criticalAntibiotic: treatment.criticalAntibiotic,
-            antibiogramAvailable: treatment.antibiogramAvailable,
-          }
-        : {
-            animalIds: initialDefaults?.animalIds || [],
-            drugId: null,
-            startDate: new Date().toISOString().split("T")[0],
-            endDate: new Date().toISOString().split("T")[0],
-            name: "",
-            notes: null,
-            milkUsableDate: null,
-            meatUsableDate: null,
-            organsUsableDate: null,
-            criticalAntibiotic: false,
-            antibiogramAvailable: false,
-          },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { dirtyFields },
+  } = useForm<TreatmentFormData>({
+    defaultValues: treatment
+      ? {
+          animalIds: treatment.animals.map((a) => a.id),
+          drugId: treatment.drugId,
+          startDate: treatment.startDate.split("T")[0],
+          endDate: treatment.endDate.split("T")[0],
+          name: treatment.name,
+          notes: treatment.notes,
+          milkUsableDate: treatment.milkUsableDate?.split("T")[0] || null,
+          meatUsableDate: treatment.meatUsableDate?.split("T")[0] || null,
+          organsUsableDate: treatment.organsUsableDate?.split("T")[0] || null,
+          isAntibiotic: treatment.isAntibiotic,
+          criticalAntibiotic: treatment.criticalAntibiotic,
+          antibiogramAvailable: treatment.antibiogramAvailable,
+          drugDoseValue: treatment.drugDoseValue != null ? String(treatment.drugDoseValue) : null,
+          drugDoseUnit: treatment.drugDoseUnit,
+          drugDosePerUnit: treatment.drugDosePerUnit,
+          drugReceivedFrom: treatment.drugReceivedFrom,
+        }
+      : {
+          animalIds: initialDefaults?.animalIds || [],
+          drugId: null,
+          startDate: new Date().toISOString().split("T")[0],
+          endDate: new Date().toISOString().split("T")[0],
+          name: "",
+          notes: null,
+          milkUsableDate: null,
+          meatUsableDate: null,
+          organsUsableDate: null,
+          isAntibiotic: false,
+          criticalAntibiotic: false,
+          antibiogramAvailable: false,
+          drugDoseValue: null,
+          drugDoseUnit: null,
+          drugDosePerUnit: null,
+          drugReceivedFrom: null,
+        },
+  });
 
   const watchedAnimalIds = watch("animalIds");
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
 
-  // Auto-calculate usable dates when drug or startDate changes
+  // Sync drug-derived fields when the user explicitly changes the drug (guarded by dirtyFields.drugId)
   useEffect(() => {
-    if (!watchedDrugId || !watchedStartDate || watchedAnimalIds.length === 0) return;
+    if (!dirtyFields.drugId) return;
 
-    const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
-    if (!selectedDrug) {
+    if (!watchedDrugId) {
+      // Drug was cleared — reset all drug-derived fields
+      setValue("isAntibiotic", false);
+      setValue("criticalAntibiotic", false);
+      setValue("drugReceivedFrom", null);
+      setValue("drugDoseValue", null);
+      setValue("drugDoseUnit", null);
+      setValue("drugDosePerUnit", null);
       setValue("milkUsableDate", null);
       setValue("meatUsableDate", null);
       setValue("organsUsableDate", null);
       return;
     }
 
-    // Use the first selected animal's type for drug dosing lookup
+    const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
+    if (!selectedDrug) return;
+
+    setValue("isAntibiotic", selectedDrug.isAntibiotic);
+    setValue("criticalAntibiotic", selectedDrug.criticalAntibiotic);
+    setValue("drugReceivedFrom", selectedDrug.receivedFrom ?? null);
+
+    // Use first selected animal's type for dosing lookup
+    const firstAnimal = animals.find((a) => a.id === watchedAnimalIds[0]);
+    if (!firstAnimal) return;
+
+    const drugTreatment = selectedDrug.drugTreatment.find(
+      (dt) => dt.animalType === firstAnimal.type,
+    );
+    if (!drugTreatment) return;
+
+    setValue("drugDoseValue", String(drugTreatment.doseValue));
+    setValue("drugDoseUnit", drugTreatment.doseUnit);
+    setValue("drugDosePerUnit", drugTreatment.dosePerUnit);
+
+    const startDate = new Date(watchedStartDate);
+    if (drugTreatment.milkWaitingDays > 0) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
+      setValue("milkUsableDate", d.toISOString().split("T")[0]);
+    }
+    if (drugTreatment.meatWaitingDays > 0) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
+      setValue("meatUsableDate", d.toISOString().split("T")[0]);
+    }
+    if (drugTreatment.organsWaitingDays > 0) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
+      setValue("organsUsableDate", d.toISOString().split("T")[0]);
+    }
+  }, [watchedDrugId, dirtyFields.drugId, watchedAnimalIds, watchedStartDate, drugs, animals, setValue]);
+
+  // Recalculate waiting dates when startDate changes (drug already selected, doesn't touch dose/antibiotic fields)
+  useEffect(() => {
+    if (!watchedDrugId || !watchedStartDate || watchedAnimalIds.length === 0) return;
+    // Skip if the drug field itself was just dirtied — the drug-sync effect handles dates too
+    if (dirtyFields.drugId) return;
+
+    const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
+    if (!selectedDrug) return;
+
     const firstAnimal = animals.find((a) => a.id === watchedAnimalIds[0]);
     if (!firstAnimal) return;
 
@@ -116,25 +189,22 @@ export function TreatmentForm({
     if (!drugTreatment) return;
 
     const startDate = new Date(watchedStartDate);
-
     if (drugTreatment.milkWaitingDays > 0) {
-      const milkDate = new Date(startDate);
-      milkDate.setDate(milkDate.getDate() + drugTreatment.milkWaitingDays);
-      setValue("milkUsableDate", milkDate.toISOString().split("T")[0]);
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
+      setValue("milkUsableDate", d.toISOString().split("T")[0]);
     }
-
     if (drugTreatment.meatWaitingDays > 0) {
-      const meatDate = new Date(startDate);
-      meatDate.setDate(meatDate.getDate() + drugTreatment.meatWaitingDays);
-      setValue("meatUsableDate", meatDate.toISOString().split("T")[0]);
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
+      setValue("meatUsableDate", d.toISOString().split("T")[0]);
     }
-
     if (drugTreatment.organsWaitingDays > 0) {
-      const organsDate = new Date(startDate);
-      organsDate.setDate(organsDate.getDate() + drugTreatment.organsWaitingDays);
-      setValue("organsUsableDate", organsDate.toISOString().split("T")[0]);
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
+      setValue("organsUsableDate", d.toISOString().split("T")[0]);
     }
-  }, [watchedDrugId, watchedStartDate, watchedAnimalIds, drugs, animals, setValue]);
+  }, [watchedStartDate, watchedDrugId, watchedAnimalIds, dirtyFields.drugId, drugs, animals, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 
@@ -230,44 +300,90 @@ export function TreatmentForm({
         </Field>
       </FieldGroup>
 
-      {/* Waiting dates (shown when drug is selected) */}
+      {/* Dose fields and waiting dates (shown when drug is selected) */}
       {showWaitingDates && (
-        <FieldGroup className="flex-row mt-7">
-          <Field>
-            <FieldLabel htmlFor="milkUsableDate">
-              {t("treatments.milkUsableDate")}
-            </FieldLabel>
-            <Input
-              id="milkUsableDate"
-              type="date"
-              {...register("milkUsableDate")}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="meatUsableDate">
-              {t("treatments.meatUsableDate")}
-            </FieldLabel>
-            <Input
-              id="meatUsableDate"
-              type="date"
-              {...register("meatUsableDate")}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="organsUsableDate">
-              {t("treatments.organsUsableDate")}
-            </FieldLabel>
-            <Input
-              id="organsUsableDate"
-              type="date"
-              {...register("organsUsableDate")}
-            />
-          </Field>
-        </FieldGroup>
+        <>
+          <FieldGroup className="flex-row mt-7">
+            <Field>
+              <FieldLabel htmlFor="drugDoseValue">{t("treatments.drugDoseValue")}</FieldLabel>
+              <Input id="drugDoseValue" type="number" step="any" {...register("drugDoseValue")} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="drugDoseUnit">{t("treatments.drugDoseUnit")}</FieldLabel>
+              <select id="drugDoseUnit" className="w-full border rounded px-3 py-2 text-sm" {...register("drugDoseUnit")}>
+                <option value="">-</option>
+                {(["tablet", "capsule", "patch", "dose", "mg", "mcg", "g", "ml", "drop"] as const).map((u) => (
+                  <option key={u} value={u}>{t(`drugs.doseUnits.${u}`)}</option>
+                ))}
+              </select>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="drugDosePerUnit">{t("treatments.drugDosePerUnit")}</FieldLabel>
+              <select id="drugDosePerUnit" className="w-full border rounded px-3 py-2 text-sm" {...register("drugDosePerUnit")}>
+                <option value="">-</option>
+                {(["kg", "animal", "day", "total_amount"] as const).map((u) => (
+                  <option key={u} value={u}>{t(`drugs.dosePerUnits.${u}`)}</option>
+                ))}
+              </select>
+            </Field>
+          </FieldGroup>
+          <FieldGroup className="mt-7">
+            <Field>
+              <FieldLabel htmlFor="drugReceivedFrom">{t("treatments.drugReceivedFrom")}</FieldLabel>
+              <Input id="drugReceivedFrom" type="text" {...register("drugReceivedFrom")} />
+            </Field>
+          </FieldGroup>
+          <FieldGroup className="flex-row mt-7">
+            <Field>
+              <FieldLabel htmlFor="milkUsableDate">
+                {t("treatments.milkUsableDate")}
+              </FieldLabel>
+              <Input
+                id="milkUsableDate"
+                type="date"
+                {...register("milkUsableDate")}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="meatUsableDate">
+                {t("treatments.meatUsableDate")}
+              </FieldLabel>
+              <Input
+                id="meatUsableDate"
+                type="date"
+                {...register("meatUsableDate")}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="organsUsableDate">
+                {t("treatments.organsUsableDate")}
+              </FieldLabel>
+              <Input
+                id="organsUsableDate"
+                type="date"
+                {...register("organsUsableDate")}
+              />
+            </Field>
+          </FieldGroup>
+        </>
       )}
 
-      {/* Critical antibiotic */}
+      {/* Antibiotic flags */}
       <FieldGroup className="flex-row mt-7 gap-4">
+        <Field className="flex flex-row items-center gap-2">
+          <Controller
+            name="isAntibiotic"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="isAntibiotic"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="isAntibiotic">{t("treatments.isAntibiotic")}</Label>
+        </Field>
         <Field className="flex flex-row items-center gap-2">
           <Controller
             name="criticalAntibiotic"

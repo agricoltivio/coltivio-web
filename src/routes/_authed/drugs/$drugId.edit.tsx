@@ -17,6 +17,8 @@ function formDataToApiBody(data: DrugFormData) {
   return {
     name: data.name,
     notes: data.notes || undefined,
+    isAntibiotic: data.isAntibiotic,
+    criticalAntibiotic: data.criticalAntibiotic,
     drugTreatment: data.drugTreatment,
   };
 }

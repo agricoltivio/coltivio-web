@@ -142,10 +142,30 @@ function TreatmentDetailPage() {
                 label={t("treatments.drug")}
                 value={treatment.drug?.name || "-"}
               />
+              {treatment.drugDoseValue != null && (
+                <DetailItem
+                  label={t("treatments.drugDoseValue")}
+                  value={[
+                    treatment.drugDoseValue,
+                    treatment.drugDoseUnit ? t(`drugs.doseUnits.${treatment.drugDoseUnit}`) : null,
+                    treatment.drugDosePerUnit ? `${t("treatments.drugDosePerUnit").toLowerCase()} ${t(`drugs.dosePerUnits.${treatment.drugDosePerUnit}`)}` : null,
+                  ].filter(Boolean).join(" ")}
+                />
+              )}
+              <DetailItem
+                label={t("treatments.isAntibiotic")}
+                value={treatment.isAntibiotic ? t("common.yes") : t("common.no")}
+              />
               <DetailItem
                 label={t("treatments.criticalAntibiotic")}
                 value={treatment.criticalAntibiotic ? t("common.yes") : t("common.no")}
               />
+              {treatment.drugReceivedFrom && (
+                <DetailItem
+                  label={t("treatments.drugReceivedFrom")}
+                  value={treatment.drugReceivedFrom}
+                />
+              )}
               <DetailItem
                 label={t("treatments.notes")}
                 value={treatment.notes || "-"}
