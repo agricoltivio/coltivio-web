@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { animalsQueryOptions, animalQueryOptions } from "@/api/animals.queries";
 import { availableEarTagsQueryOptions } from "@/api/earTags.queries";
-import { type Animal, type AvailableEarTag } from "@/api/types";
+import { type Animal, type AnimalDetail, type AvailableEarTag } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { AnimalForm, type AnimalFormData } from "@/components/AnimalForm";
 
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authed/animals/$animalId/edit")({
 // Build ear tag options, including current animal's ear tag if editing
 function buildEarTagOptions(
   available: AvailableEarTag[],
-  currentAnimal?: Animal,
+  currentAnimal?: AnimalDetail,
 ): { value: string; label: string }[] {
   const options = available.map((earTag) => ({
     value: earTag.id,
@@ -58,9 +58,7 @@ function formDataToApiBody(data: AnimalFormData) {
     name: data.name,
     type: data.type,
     sex: data.sex,
-    dateOfBirth: data.dateOfBirth
-      ? new Date(data.dateOfBirth).toISOString()
-      : undefined,
+    dateOfBirth: new Date(data.dateOfBirth || new Date()).toISOString(),
     earTagId: data.earTagId || undefined,
     motherId: data.motherId || undefined,
     fatherId: data.fatherId || undefined,
@@ -68,6 +66,8 @@ function formDataToApiBody(data: AnimalFormData) {
       ? new Date(data.dateOfDeath).toISOString()
       : undefined,
     deathReason: data.deathReason || undefined,
+    registered: data.registered,
+    usage: data.usage,
   };
 }
 

@@ -22,12 +22,35 @@
     "pageOf": "Seite {{current}} von {{total}}"
   },
   "nav": {
-    "dashboard": "Übersicht",
+    "groups": {
+      "livestock": "Tierhaltung",
+      "addressBook": "Adressbuch",
+      "sales": "Verkauf",
+      "sponsorships": "Gönnerschaften",
+      "accounting": "Buchhaltung",
+      "fieldCalendar": "Feldkalender",
+      "admin": "Admin"
+    },
     "animals": "Tiere",
     "earTags": "Ohrmarken",
+    "treatmentsJournal": "Behandlungsjournal",
+    "turnoutJournal": "Auslaufsjournal",
+    "herds": "Herden",
+    "drugs": "Medikamente",
     "contacts": "Kontakte",
+    "orders": "Bestellungen",
+    "products": "Produkte",
+    "sponsorshipPrograms": "Patenschaftstypen",
     "sponsorships": "Patenschaften",
-    "sponsorshipPrograms": "Patenschaftstypen"
+    "payments": "Zahlungen",
+    "plots": "Schläge",
+    "cropRotations": "Fruchtfolge",
+    "tillages": "Bodenbearbeitung",
+    "fertilizerApplications": "Düngung",
+    "cropProtectionApplications": "Pflanzenschutz",
+    "harvests": "Ernte",
+    "account": "Account",
+    "settings": "Einstellungen"
   },
   "animals": {
     "title": "Tiere",
@@ -45,6 +68,12 @@
     "children": "Nachkommen",
     "showDeceased": "Verstorbene anzeigen",
     "livingOnly": "Nur lebende",
+    "registered": "Registriert",
+    "usage": "Verwendung",
+    "usageOptions": {
+      "milk": "Milch",
+      "other": "Andere"
+    },
     "noEarTag": "Keine Ohrmarke",
     "noMother": "Unbekannt",
     "noFather": "Unbekannt",
@@ -278,14 +307,20 @@
     "treatmentDetails": "Behandlungsdetails",
     "addTreatment": "Behandlung hinzufügen",
     "animal": "Tier",
-    "date": "Datum",
+    "animals": "Tiere",
+    "selectAnimals": "Tiere auswählen",
+    "startDate": "Von",
+    "endDate": "Bis",
     "name": "Name",
     "reason": "Grund",
     "drug": "Medikament",
     "notes": "Notizen",
     "milkUsableDate": "Milch verwendbar ab",
     "meatUsableDate": "Fleisch verwendbar ab",
+    "organsUsableDate": "Organe verwendbar ab",
     "waitingDates": "Wartefristen",
+    "criticalAntibiotic": "Kritisches Antibiotikum",
+    "antibiogramAvailable": "Antibiogramm vorhanden",
     "deleteConfirm": "Sind Sie sicher, dass Sie diese Behandlung löschen möchten?",
     "noTreatments": "Keine Behandlungen"
   },
@@ -301,10 +336,49 @@
     "addAnimalType": "Tierart hinzufügen",
     "animalType": "Tierart",
     "animalTypes": "Tierarten",
-    "dosePerKg": "Dosis pro kg",
+    "doseValue": "Dosis",
+    "doseUnit": "Einheit",
+    "dosePerUnit": "Pro",
     "milkWaitingDays": "Wartetage Milch",
     "meatWaitingDays": "Wartetage Fleisch",
+    "organsWaitingDays": "Wartetage Organe",
+    "criticalAntibiotic": "Kritisches Antibiotikum",
+    "receivedFrom": "Bezugsquelle",
     "deleteConfirm": "Sind Sie sicher, dass Sie dieses Medikament löschen möchten?"
+  },
+  "herds": {
+    "title": "Herden",
+    "addHerd": "Herde hinzufügen",
+    "editHerd": "Herde bearbeiten",
+    "name": "Name",
+    "animalCount": "Anzahl Tiere",
+    "animals": "Tiere",
+    "noHerds": "Noch keine Herden definiert",
+    "noAnimals": "Keine Tiere in dieser Herde",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Herde löschen möchten?",
+    "outdoorSchedules": "Auslaufpläne",
+    "addSchedule": "Zeitplan hinzufügen",
+    "editSchedule": "Zeitplan bearbeiten",
+    "noSchedules": "Keine Zeitpläne",
+    "scheduleType": "Typ",
+    "scheduleTypes": {
+      "pasture": "Weide",
+      "exercise_yard": "Laufhof"
+    },
+    "startDate": "Von",
+    "endDate": "Bis",
+    "notes": "Notizen",
+    "recurring": "Wiederkehrend",
+    "recurrence": "Wiederholung",
+    "frequency": "Häufigkeit",
+    "interval": "Intervall",
+    "until": "Bis zu",
+    "frequencies": {
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich"
+    },
+    "deleteScheduleConfirm": "Sind Sie sicher, dass Sie diesen Zeitplan löschen möchten?"
   },
   "turnoutJournal": {
     "title": "Auslaufjournal",
@@ -329,7 +403,10 @@
     "month": "Monat",
     "year": "Jahr",
     "previousMonth": "Vorheriger Monat",
-    "nextMonth": "Nächster Monat"
+    "nextMonth": "Nächster Monat",
+    "animals": "Tiere",
+    "manageHerds": "Herden verwalten",
+    "uncategorizedCount": "{{count}} Tier keiner Gruppe zugeordnet"
   },
   "landing": {
     "nav": {
@@ -474,6 +551,120 @@
       "github": "GitHub",
       "iosBeta": "iOS Beta",
       "androidBeta": "Android Beta"
+    }
+  },
+  "fieldCalendar": {
+    "plots": {
+      "title": "Schläge",
+      "create": "Schlag erstellen",
+      "edit": "Schlag bearbeiten",
+      "plot": "Schlag",
+      "selectPlot": "Schlag auswählen",
+      "size": "Fläche",
+      "usage": "Nutzungscode",
+      "cuttingDate": "Schnittzeitpunkt",
+      "currentCrop": "Aktuelle Frucht"
+    },
+    "cropRotations": {
+      "title": "Fruchtfolge",
+      "create": "Fruchtfolge erstellen",
+      "edit": "Fruchtfolge bearbeiten",
+      "crop": "Frucht",
+      "selectCrop": "Frucht auswählen",
+      "fromDate": "Von",
+      "toDate": "Bis",
+      "sowingDate": "Aussaatdatum"
+    },
+    "tillages": {
+      "title": "Bodenbearbeitung",
+      "create": "Bodenbearbeitung erstellen",
+      "edit": "Bodenbearbeitung bearbeiten",
+      "date": "Datum",
+      "action": "Massnahme",
+      "customAction": "Eigene Massnahme",
+      "size": "Fläche",
+      "notes": "Bemerkungen",
+      "actions": {
+        "plowing": "Pflügen",
+        "tilling": "Eggen",
+        "harrowing": "Grubben",
+        "rolling": "Walzen",
+        "rotavating": "Fräsen",
+        "weed_harrowing": "Striegeln",
+        "hoeing": "Hacken",
+        "flame_weeding": "Abflammen",
+        "custom": "Sonstiges"
+      }
+    },
+    "harvests": {
+      "title": "Ernte",
+      "create": "Ernte erfassen",
+      "date": "Datum",
+      "crop": "Frucht",
+      "amount": "Menge",
+      "unit": "Einheit",
+      "numberOfUnits": "Anzahl Einheiten",
+      "kilosPerUnit": "kg pro Einheit",
+      "conservationMethod": "Konservierungsmethode",
+      "units": {
+        "load": "Fuder",
+        "square_bale": "Rechteckballen",
+        "round_bale": "Rundballen",
+        "crate": "Kiste",
+        "total_amount": "Gesamtmenge",
+        "other": "Sonstiges"
+      },
+      "conservationMethods": {
+        "dried": "Getrocknet",
+        "silage": "Silage",
+        "haylage": "Haylage",
+        "other": "Sonstiges",
+        "none": "Keine"
+      }
+    },
+    "fertilizerApplications": {
+      "title": "Düngung",
+      "create": "Düngung erfassen",
+      "date": "Datum",
+      "fertilizer": "Düngemittel",
+      "selectFertilizer": "Düngemittel auswählen",
+      "unit": "Einheit",
+      "amountPerUnit": "Menge pro Einheit",
+      "method": "Ausbringungsmethode",
+      "units": {
+        "load": "Fuder",
+        "bag": "Sack",
+        "total_amount": "Gesamtmenge",
+        "amount_per_hectare": "pro Hektare",
+        "other": "Sonstiges"
+      },
+      "methods": {
+        "spray": "Spritzen",
+        "spread": "Streuen",
+        "other": "Sonstiges"
+      }
+    },
+    "cropProtectionApplications": {
+      "title": "Pflanzenschutz",
+      "create": "Pflanzenschutz erfassen",
+      "edit": "Pflanzenschutz bearbeiten",
+      "date": "Datum/Zeit",
+      "product": "Produkt",
+      "selectProduct": "Produkt auswählen",
+      "method": "Ausbringungsmethode",
+      "methods": {
+        "spraying": "Spritzen",
+        "misting": "Nebeln",
+        "broadcasting": "Streuen",
+        "injecting": "Injizieren",
+        "other": "Sonstiges"
+      }
+    },
+    "timeline": {
+      "years": "Jahre",
+      "months": "Monate",
+      "weeks": "Wochen",
+      "today": "Heute"
     }
   }
 }

@@ -345,9 +345,8 @@ function AnimalDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t("treatments.date")}</TableHead>
+                    <TableHead>{t("treatments.startDate")}</TableHead>
                     <TableHead>{t("treatments.name")}</TableHead>
-                    <TableHead>{t("treatments.reason")}</TableHead>
                     <TableHead>{t("treatments.milkUsableDate")}</TableHead>
                     <TableHead>{t("treatments.meatUsableDate")}</TableHead>
                   </TableRow>
@@ -364,12 +363,9 @@ function AnimalDetailPage() {
                         })
                       }
                     >
-                      <TableCell>{formatDate(treatment.date)}</TableCell>
+                      <TableCell>{formatDate(treatment.startDate)}</TableCell>
                       <TableCell className="font-medium">
                         {treatment.name}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {treatment.reason}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {treatment.milkUsableDate

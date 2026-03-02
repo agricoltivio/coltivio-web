@@ -10,6 +10,9 @@ count.txt
 .env.*
 !.env.example
 
+# Native app locale reference files (local only, not part of the repo)
+locales_native_app/
+
 # Tooling caches
 .astro
 .nitro

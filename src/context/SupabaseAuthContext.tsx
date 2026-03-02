@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       setSession(initialSession);
       setUser(initialSession?.user ?? null);
-      setIsAuthenticated(!!session?.user);
+      setIsAuthenticated(!!initialSession?.user);
       setLoading(false);
     });
 
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user ?? null);
-      setIsAuthenticated(!!session?.user);
+      setIsAuthenticated(!!newSession?.user);
       setLoading(false);
     });
 

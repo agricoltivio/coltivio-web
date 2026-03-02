@@ -34,9 +34,7 @@ function formDataToApiBody(data: AnimalFormData) {
     name: data.name,
     type: data.type,
     sex: data.sex,
-    dateOfBirth: data.dateOfBirth
-      ? new Date(data.dateOfBirth).toISOString()
-      : undefined,
+    dateOfBirth: new Date(data.dateOfBirth || new Date()).toISOString(),
     earTagId: data.earTagId || undefined,
     motherId: data.motherId || undefined,
     fatherId: data.fatherId || undefined,
@@ -44,6 +42,8 @@ function formDataToApiBody(data: AnimalFormData) {
       ? new Date(data.dateOfDeath).toISOString()
       : undefined,
     deathReason: data.deathReason || undefined,
+    registered: data.registered,
+    usage: data.usage,
   };
 }
 

@@ -1,5 +1,5 @@
 import "./styles.css";
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -35,6 +35,13 @@ declare module "@tanstack/react-router" {
 
 function App() {
   const auth = useAuth();
+
+  // Whenever isAuthenticated changes (sign-in or sign-out), re-run beforeLoad
+  // on the current route so auth guards react to the new state.
+  useEffect(() => {
+    router.invalidate();
+  }, [auth.isAuthenticated]);
+
   if (auth.loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

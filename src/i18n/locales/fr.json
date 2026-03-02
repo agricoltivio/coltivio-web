@@ -21,6 +21,393 @@
     "showingOf": "{{showing}} sur {{total}}",
     "pageOf": "Page {{current}} sur {{total}}"
   },
+  "nav": {
+    "groups": {
+      "livestock": "Élevage",
+      "addressBook": "Carnet d'adresses",
+      "sales": "Ventes",
+      "sponsorships": "Parrainages",
+      "accounting": "Comptabilité",
+      "fieldCalendar": "Calendrier cultural",
+      "admin": "Administration"
+    },
+    "animals": "Animaux",
+    "earTags": "Boucles auriculaires",
+    "treatmentsJournal": "Journal des traitements",
+    "turnoutJournal": "Journal des sorties",
+    "herds": "Troupeaux",
+    "drugs": "Médicaments",
+    "contacts": "Contacts",
+    "orders": "Commandes",
+    "products": "Produits",
+    "sponsorshipPrograms": "Modèles de parrainage",
+    "sponsorships": "Parrainages",
+    "payments": "Paiements",
+    "plots": "Champs",
+    "cropRotations": "Rotations culturales",
+    "tillages": "Travaux du sol",
+    "fertilizerApplications": "Fertilisation",
+    "cropProtectionApplications": "Protection des cultures",
+    "harvests": "Récoltes",
+    "account": "Compte",
+    "settings": "Paramètres"
+  },
+  "animals": {
+    "title": "Animaux",
+    "createAnimal": "Créer un animal",
+    "editAnimal": "Modifier l'animal",
+    "animalDetails": "Détails de l'animal",
+    "name": "Nom",
+    "type": "Espèce",
+    "dateOfBirth": "Date de naissance",
+    "dateOfDeath": "Date de décès",
+    "deathReason": "Cause de décès",
+    "earTag": "Boucle d'oreille",
+    "mother": "Mère",
+    "father": "Père",
+    "children": "Descendants",
+    "showDeceased": "Afficher les décédés",
+    "livingOnly": "Vivants seulement",
+    "registered": "Enregistré",
+    "usage": "Utilisation",
+    "usageOptions": {
+      "milk": "Lait",
+      "other": "Autre"
+    },
+    "noEarTag": "Pas de boucle",
+    "noMother": "Inconnue",
+    "noFather": "Inconnu",
+    "noChildren": "Pas de descendants",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet animal ?",
+    "types": {
+      "goat": "Chèvre",
+      "sheep": "Mouton",
+      "cow": "Vache",
+      "horse": "Cheval",
+      "donkey": "Âne",
+      "pig": "Cochon",
+      "deer": "Cerf"
+    },
+    "typesPlural": {
+      "goat": "Chèvres",
+      "sheep": "Moutons",
+      "cow": "Vaches",
+      "horse": "Chevaux",
+      "donkey": "Ânes",
+      "pig": "Cochons",
+      "deer": "Cerfs"
+    },
+    "deathReasons": {
+      "died": "Mort naturelle",
+      "slaughtered": "Abattu"
+    },
+    "sex": "Sexe",
+    "sexOptions": {
+      "male": "Mâle",
+      "female": "Femelle"
+    },
+    "import": "Importer",
+    "importTitle": "Importer des animaux",
+    "importDescription": "Chargez un fichier Excel pour importer des animaux. Le fichier doit contenir des colonnes pour le numéro de boucle, le nom, la date de naissance, le sexe, la boucle de la mère et du père.",
+    "importFile": "Fichier Excel",
+    "skipHeaderRow": "Ignorer la ligne d'en-tête",
+    "importTotal": "Total lignes",
+    "importImported": "Importés",
+    "importSkipped": "Ignorés",
+    "importSkippedRows": "Lignes ignorées",
+    "importRow": "Ligne",
+    "importReason": "Raison"
+  },
+  "earTags": {
+    "title": "Boucles d'oreille",
+    "addRange": "Ajouter une plage",
+    "deleteRange": "Supprimer la plage",
+    "number": "Numéro",
+    "status": "Statut",
+    "assigned": "Attribuée",
+    "available": "Disponible",
+    "prefix": "Préfixe",
+    "fromNumber": "Du numéro",
+    "toNumber": "Au numéro",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette boucle ?",
+    "deleteWarning": "Les boucles attribuées à des animaux seront ignorées.",
+    "skippedAssigned": "{{count}} boucles ont été ignorées car elles sont attribuées à des animaux."
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "signingIn": "Connexion en cours...",
+    "signingUp": "Inscription en cours...",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà un compte ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resetPasswordDescription": "Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "sendResetLink": "Envoyer le lien",
+    "sending": "Envoi...",
+    "resetLinkSent": "Lien de réinitialisation envoyé ! Vérifiez vos e-mails.",
+    "backToLogin": "Retour à la connexion",
+    "newPassword": "Nouveau mot de passe",
+    "setNewPassword": "Définir un nouveau mot de passe",
+    "settingPassword": "Définition du mot de passe...",
+    "passwordUpdated": "Mot de passe mis à jour avec succès !",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "signUpSuccess": "Inscription réussie ! Veuillez vérifier vos e-mails pour confirmer votre compte."
+  },
+  "dashboard": {
+    "welcome": "Bonjour {{name}}, {{farmName}}"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "account": "Compte",
+    "loggedInAs": "Connecté en tant que"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "createContact": "Créer un contact",
+    "editContact": "Modifier le contact",
+    "contactDetails": "Détails du contact",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "fullName": "Nom",
+    "street": "Rue",
+    "city": "Ville",
+    "zip": "Code postal",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "preferredCommunication": "Communication préférée",
+    "labels": "Labels",
+    "noLabels": "Pas de labels",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce contact ?",
+    "payments": "Paiements",
+    "sponsorships": "Parrainages",
+    "orders": "Commandes",
+    "noPayments": "Aucun paiement",
+    "noSponsorships": "Aucun parrainage",
+    "noOrders": "Aucune commande",
+    "preferredCommunicationOptions": {
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "sponsorshipPrograms": {
+    "title": "Programmes de parrainage",
+    "createType": "Créer un type",
+    "editType": "Modifier le type",
+    "name": "Nom",
+    "description": "Description",
+    "yearlyCost": "Coût annuel",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce type de parrainage ?"
+  },
+  "sponsorships": {
+    "title": "Parrainages",
+    "createSponsorship": "Créer un parrainage",
+    "editSponsorship": "Modifier le parrainage",
+    "sponsorshipDetails": "Détails du parrainage",
+    "contact": "Contact",
+    "animal": "Animal",
+    "type": "Type",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "notes": "Notes",
+    "preferredCommunication": "Communication préférée",
+    "active": "Actif",
+    "ended": "Terminé",
+    "showEnded": "Afficher les terminés",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce parrainage ?",
+    "noSponsorships": "Aucun parrainage"
+  },
+  "payments": {
+    "title": "Paiements",
+    "addPayment": "Ajouter un paiement",
+    "editPayment": "Modifier le paiement",
+    "contact": "Contact",
+    "sponsorship": "Parrainage",
+    "order": "Commande",
+    "date": "Date",
+    "amount": "Montant",
+    "currency": "Devise",
+    "method": "Mode de paiement",
+    "notes": "Notes",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce paiement ?",
+    "noPayments": "Aucun paiement",
+    "methods": {
+      "cash": "Espèces",
+      "bank_transfer": "Virement bancaire",
+      "twint": "Twint",
+      "card": "Carte",
+      "other": "Autre"
+    }
+  },
+  "products": {
+    "title": "Produits",
+    "createProduct": "Créer un produit",
+    "editProduct": "Modifier le produit",
+    "name": "Nom",
+    "category": "Catégorie",
+    "unit": "Unité",
+    "pricePerUnit": "Prix par unité",
+    "stock": "Stock",
+    "description": "Description",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "categories": {
+      "meat": "Viande",
+      "vegetables": "Légumes",
+      "dairy": "Produits laitiers",
+      "eggs": "Œufs",
+      "other": "Autre"
+    },
+    "units": {
+      "kg": "kg",
+      "g": "g",
+      "piece": "Pièce",
+      "bunch": "Botte",
+      "liter": "Litre"
+    }
+  },
+  "orders": {
+    "title": "Commandes",
+    "createOrder": "Créer une commande",
+    "editOrder": "Modifier la commande",
+    "orderDetails": "Détails de la commande",
+    "contact": "Contact",
+    "orderDate": "Date de commande",
+    "shippingDate": "Date d'expédition",
+    "status": "Statut",
+    "notes": "Notes",
+    "items": "Articles",
+    "product": "Produit",
+    "quantity": "Quantité",
+    "unitPrice": "Prix unitaire",
+    "total": "Total",
+    "addItem": "Ajouter un article",
+    "noItems": "Aucun article",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette commande ?",
+    "confirm": "Confirmer",
+    "fulfill": "Livrer",
+    "cancel": "Annuler",
+    "statuses": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "fulfilled": "Livrée",
+      "cancelled": "Annulée"
+    }
+  },
+  "treatments": {
+    "title": "Traitements",
+    "createTreatment": "Créer un traitement",
+    "editTreatment": "Modifier le traitement",
+    "treatmentDetails": "Détails du traitement",
+    "addTreatment": "Ajouter un traitement",
+    "animal": "Animal",
+    "animals": "Animaux",
+    "selectAnimals": "Sélectionner des animaux",
+    "startDate": "Du",
+    "endDate": "Au",
+    "name": "Nom",
+    "reason": "Raison",
+    "drug": "Médicament",
+    "notes": "Notes",
+    "milkUsableDate": "Lait utilisable à partir du",
+    "meatUsableDate": "Viande utilisable à partir du",
+    "organsUsableDate": "Organes utilisables à partir du",
+    "waitingDates": "Délais d'attente",
+    "criticalAntibiotic": "Antibiotique critique",
+    "antibiogramAvailable": "Antibiogramme disponible",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce traitement ?",
+    "noTreatments": "Aucun traitement"
+  },
+  "drugs": {
+    "title": "Médicaments",
+    "createDrug": "Créer un médicament",
+    "editDrug": "Modifier le médicament",
+    "drugDetails": "Détails du médicament",
+    "name": "Nom",
+    "notes": "Notes",
+    "dosing": "Dosage",
+    "noDosing": "Aucune information de dosage",
+    "addAnimalType": "Ajouter une espèce",
+    "animalType": "Espèce",
+    "animalTypes": "Espèces",
+    "doseValue": "Dose",
+    "doseUnit": "Unité",
+    "dosePerUnit": "Par",
+    "milkWaitingDays": "Jours d'attente lait",
+    "meatWaitingDays": "Jours d'attente viande",
+    "organsWaitingDays": "Jours d'attente organes",
+    "criticalAntibiotic": "Antibiotique critique",
+    "receivedFrom": "Obtenu auprès de",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce médicament ?"
+  },
+  "herds": {
+    "title": "Troupeaux",
+    "addHerd": "Ajouter un troupeau",
+    "editHerd": "Modifier le troupeau",
+    "name": "Nom",
+    "animalCount": "Nombre d'animaux",
+    "animals": "Animaux",
+    "noHerds": "Aucun troupeau défini",
+    "noAnimals": "Aucun animal dans ce troupeau",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce troupeau ?",
+    "outdoorSchedules": "Plannings de sortie",
+    "addSchedule": "Ajouter un planning",
+    "editSchedule": "Modifier le planning",
+    "noSchedules": "Aucun planning",
+    "scheduleType": "Type",
+    "scheduleTypes": {
+      "pasture": "Pâturage",
+      "exercise_yard": "Cour d'exercice"
+    },
+    "startDate": "Du",
+    "endDate": "Au",
+    "notes": "Notes",
+    "recurring": "Récurrent",
+    "recurrence": "Récurrence",
+    "frequency": "Fréquence",
+    "interval": "Intervalle",
+    "until": "Jusqu'à",
+    "frequencies": {
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel",
+      "yearly": "Annuel"
+    },
+    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?"
+  },
+  "turnoutJournal": {
+    "title": "Journal de pâturage",
+    "calendar": "Calendrier",
+    "entries": "Entrées",
+    "addEntry": "Ajouter une entrée",
+    "editEntry": "Modifier l'entrée",
+    "animalGroup": "Groupe d'animaux",
+    "animalGroups": "Groupes d'animaux",
+    "startDate": "Du",
+    "endDate": "Au",
+    "animalCount": "Nombre d'animaux",
+    "noEntries": "Aucune entrée",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette entrée ?",
+    "manageGroups": "Gérer les groupes",
+    "addGroup": "Ajouter un groupe",
+    "editGroup": "Modifier le groupe",
+    "groupName": "Nom",
+    "groupDescription": "Description",
+    "deleteGroupConfirm": "Êtes-vous sûr de vouloir supprimer ce groupe ?",
+    "noGroups": "Aucun groupe d'animaux défini",
+    "month": "Mois",
+    "year": "Année",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "animals": "Animaux",
+    "manageHerds": "Gérer les troupeaux",
+    "uncategorizedCount": "{{count}} animal non assigné à un groupe"
+  },
   "landing": {
     "nav": {
       "openApp": "Ouvrir l'App"
@@ -60,20 +447,50 @@
     "fieldwork": {
       "title": "Travaux des Champs",
       "sub": "Votre exploitation dans votre poche — L'App Mobile",
-      "plots": { "title": "Gestion des surfaces", "desc": "Saisie automatique de vos surfaces. Adaptez-les à vos besoins — divisez, fusionnez ou dessinez de nouvelles parcelles, exactement comme il vous faut." },
-      "calendar": { "title": "Calendrier des champs", "desc": "Une vue d'ensemble unifiée de toutes les activités de terrain planifiées et réalisées." },
-      "protection": { "title": "Planification de la rotation des cultures", "desc": "Planifiez vos rotations culturales facilement grâce aux schémas récurrents, la détection automatique des conflits et des violations des délais d'attente — et visualisez le résultat en temps réel dans le calendrier." },
-      "harvest": { "title": "Travaux des champs", "desc": "Enregistrez vos travaux des champs en quelques étapes — labour, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place." },
-      "export": { "title": "Export", "desc": "Exportez le calendrier des champs sous forme de fichier Excel optimisé, prêt pour votre prochaine inspection officielle." }
+      "plots": {
+        "title": "Gestion des surfaces",
+        "desc": "Saisie automatique de vos surfaces. Adaptez-les à vos besoins — divisez, fusionnez ou dessinez de nouvelles parcelles, exactement comme il vous faut."
+      },
+      "calendar": {
+        "title": "Calendrier des champs",
+        "desc": "Une vue d'ensemble unifiée de toutes les activités de terrain planifiées et réalisées."
+      },
+      "protection": {
+        "title": "Planification de la rotation des cultures",
+        "desc": "Planifiez vos rotations culturales facilement grâce aux schémas récurrents, la détection automatique des conflits et des violations des délais d'attente — et visualisez le résultat en temps réel dans le calendrier."
+      },
+      "harvest": {
+        "title": "Travaux des champs",
+        "desc": "Enregistrez vos travaux des champs en quelques étapes — labour, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place."
+      },
+      "export": {
+        "title": "Export",
+        "desc": "Exportez le calendrier des champs sous forme de fichier Excel optimisé, prêt pour votre prochaine inspection officielle."
+      }
     },
     "animals": {
       "title": "Élevage",
       "sub": "Suivi complet du cheptel dans votre poche.",
-      "import": { "title": "Cheptel", "desc": "Tout votre cheptel en un coup d'œil. Créez des troupeaux avec des sorties et des temps de pâturage définis. Importez les animaux via l'export des listes animaux depuis TVD." },
-      "treatments": { "title": "Journal des traitements", "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente (Absetzfristen) lait et viande sont calculés automatiquement avec alertes avant expiration." },
-      "herds": { "title": "Troupeaux & Plannings", "desc": "Organisez les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suivez les cycles de reproduction, les mises bas attendues et les plans d'alimentation sur tout le troupeau." },
-      "turnout": { "title": "Journal de pâturage", "desc": "Journal de pâturage généré automatiquement en fonction des troupeaux configurés. Configurez-le une fois et oubliez-le." },
-      "export": { "title": "Export pour contrôles", "desc": "Exports structurés pour les inspections officielles du cheptel — historique des traitements, listes de troupeaux et registres de pâturage dans le format exact exigé par les autorités suisses." }
+      "import": {
+        "title": "Cheptel",
+        "desc": "Tout votre cheptel en un coup d'œil. Créez des troupeaux avec des sorties et des temps de pâturage définis. Importez les animaux via l'export des listes animaux depuis TVD."
+      },
+      "treatments": {
+        "title": "Journal des traitements",
+        "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente (Absetzfristen) lait et viande sont calculés automatiquement avec alertes avant expiration."
+      },
+      "herds": {
+        "title": "Troupeaux & Plannings",
+        "desc": "Organisez les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suivez les cycles de reproduction, les mises bas attendues et les plans d'alimentation sur tout le troupeau."
+      },
+      "turnout": {
+        "title": "Journal de pâturage",
+        "desc": "Journal de pâturage généré automatiquement en fonction des troupeaux configurés. Configurez-le une fois et oubliez-le."
+      },
+      "export": {
+        "title": "Export pour contrôles",
+        "desc": "Exports structurés pour les inspections officielles du cheptel — historique des traitements, listes de troupeaux et registres de pâturage dans le format exact exigé par les autorités suisses."
+      }
     },
     "customize": {
       "headline": "Conçu autour de votre journée — pas l'inverse",
@@ -134,6 +551,120 @@
       "github": "GitHub",
       "iosBeta": "iOS Bêta",
       "androidBeta": "Android Bêta"
+    }
+  },
+  "fieldCalendar": {
+    "plots": {
+      "title": "Champs",
+      "create": "Créer un champ",
+      "edit": "Modifier le champ",
+      "plot": "Champ",
+      "selectPlot": "Sélectionner un champ",
+      "size": "Surface",
+      "usage": "Code d'utilisation",
+      "cuttingDate": "Date de coupe",
+      "currentCrop": "Culture actuelle"
+    },
+    "cropRotations": {
+      "title": "Rotation des cultures",
+      "create": "Créer une rotation",
+      "edit": "Modifier la rotation",
+      "crop": "Culture",
+      "selectCrop": "Sélectionner une culture",
+      "fromDate": "De",
+      "toDate": "À",
+      "sowingDate": "Date de semis"
+    },
+    "tillages": {
+      "title": "Travail du sol",
+      "create": "Enregistrer un travail",
+      "edit": "Modifier le travail",
+      "date": "Date",
+      "action": "Action",
+      "customAction": "Action personnalisée",
+      "size": "Surface",
+      "notes": "Remarques",
+      "actions": {
+        "plowing": "Labour",
+        "tilling": "Travail du sol",
+        "harrowing": "Hersage",
+        "rolling": "Roulage",
+        "rotavating": "Fraisage",
+        "weed_harrowing": "Herse étrille",
+        "hoeing": "Binage",
+        "flame_weeding": "Désherbage thermique",
+        "custom": "Autre"
+      }
+    },
+    "harvests": {
+      "title": "Récoltes",
+      "create": "Enregistrer une récolte",
+      "date": "Date",
+      "crop": "Culture",
+      "amount": "Quantité",
+      "unit": "Unité",
+      "numberOfUnits": "Nombre d'unités",
+      "kilosPerUnit": "Kg par unité",
+      "conservationMethod": "Méthode de conservation",
+      "units": {
+        "load": "Chargement",
+        "square_bale": "Balle carrée",
+        "round_bale": "Balle ronde",
+        "crate": "Caisse",
+        "total_amount": "Quantité totale",
+        "other": "Autre"
+      },
+      "conservationMethods": {
+        "dried": "Séché",
+        "silage": "Ensilage",
+        "haylage": "Enrubannage",
+        "other": "Autre",
+        "none": "Aucun"
+      }
+    },
+    "fertilizerApplications": {
+      "title": "Fertilisation",
+      "create": "Enregistrer une fertilisation",
+      "date": "Date",
+      "fertilizer": "Engrais",
+      "selectFertilizer": "Sélectionner un engrais",
+      "unit": "Unité",
+      "amountPerUnit": "Quantité par unité",
+      "method": "Méthode d'application",
+      "units": {
+        "load": "Chargement",
+        "bag": "Sac",
+        "total_amount": "Quantité totale",
+        "amount_per_hectare": "Par hectare",
+        "other": "Autre"
+      },
+      "methods": {
+        "spray": "Pulvérisation",
+        "spread": "Épandage",
+        "other": "Autre"
+      }
+    },
+    "cropProtectionApplications": {
+      "title": "Protection des plantes",
+      "create": "Enregistrer une application",
+      "edit": "Modifier l'application",
+      "date": "Date/Heure",
+      "product": "Produit",
+      "selectProduct": "Sélectionner un produit",
+      "method": "Méthode d'application",
+      "methods": {
+        "spraying": "Pulvérisation",
+        "misting": "Brumisation",
+        "broadcasting": "Épandage",
+        "injecting": "Injection",
+        "other": "Autre"
+      }
+    },
+    "timeline": {
+      "years": "Années",
+      "months": "Mois",
+      "weeks": "Semaines",
+      "today": "Aujourd'hui"
     }
   }
 }

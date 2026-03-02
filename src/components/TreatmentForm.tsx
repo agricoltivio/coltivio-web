@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Combobox,
   ComboboxInput,
@@ -16,14 +19,17 @@ import {
 } from "@/components/ui/combobox";
 
 export interface TreatmentFormData {
-  animalId: string;
+  animalIds: string[];
   drugId: string | null;
-  date: string;
+  startDate: string;
+  endDate: string;
   name: string;
-  reason: string;
   notes: string | null;
   milkUsableDate: string | null;
   meatUsableDate: string | null;
+  organsUsableDate: string | null;
+  criticalAntibiotic: boolean;
+  antibiogramAvailable: boolean;
 }
 
 type ComboboxOption = { value: string; label: string };
@@ -37,7 +43,7 @@ export interface TreatmentFormProps {
   onSubmit: (data: TreatmentFormData) => void;
   isSubmitting?: boolean;
   defaultValues?: {
-    animalId?: string;
+    animalIds?: string[];
   };
 }
 
@@ -57,122 +63,125 @@ export function TreatmentForm({
     useForm<TreatmentFormData>({
       defaultValues: treatment
         ? {
-            animalId: treatment.animalId,
+            animalIds: treatment.animals.map((a) => a.id),
             drugId: treatment.drugId,
-            date: treatment.date.split("T")[0],
+            startDate: treatment.startDate.split("T")[0],
+            endDate: treatment.endDate.split("T")[0],
             name: treatment.name,
-            reason: treatment.reason,
             notes: treatment.notes,
             milkUsableDate: treatment.milkUsableDate?.split("T")[0] || null,
             meatUsableDate: treatment.meatUsableDate?.split("T")[0] || null,
+            organsUsableDate: treatment.organsUsableDate?.split("T")[0] || null,
+            criticalAntibiotic: treatment.criticalAntibiotic,
+            antibiogramAvailable: treatment.antibiogramAvailable,
           }
         : {
-            animalId: initialDefaults?.animalId || "",
+            animalIds: initialDefaults?.animalIds || [],
             drugId: null,
-            date: new Date().toISOString().split("T")[0],
+            startDate: new Date().toISOString().split("T")[0],
+            endDate: new Date().toISOString().split("T")[0],
             name: "",
-            reason: "",
             notes: null,
             milkUsableDate: null,
             meatUsableDate: null,
+            organsUsableDate: null,
+            criticalAntibiotic: false,
+            antibiogramAvailable: false,
           },
     });
 
-  const watchedAnimalId = watch("animalId");
+  const watchedAnimalIds = watch("animalIds");
   const watchedDrugId = watch("drugId");
-  const watchedDate = watch("date");
+  const watchedStartDate = watch("startDate");
 
-  // Auto-calculate milk and meat usable dates when drug or date changes
+  // Auto-calculate usable dates when drug or startDate changes
   useEffect(() => {
-    if (!watchedDrugId || !watchedDate || !watchedAnimalId) return;
+    if (!watchedDrugId || !watchedStartDate || watchedAnimalIds.length === 0) return;
 
-    // Find the selected drug
     const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
     if (!selectedDrug) {
       setValue("milkUsableDate", null);
       setValue("meatUsableDate", null);
+      setValue("organsUsableDate", null);
       return;
     }
 
-    // Find the selected animal's type
-    const selectedAnimal = animals.find((a) => a.id === watchedAnimalId);
-    if (!selectedAnimal) return;
+    // Use the first selected animal's type for drug dosing lookup
+    const firstAnimal = animals.find((a) => a.id === watchedAnimalIds[0]);
+    if (!firstAnimal) return;
 
-    // Find the drug treatment for this animal type
     const drugTreatment = selectedDrug.drugTreatment.find(
-      (dt) => dt.animalType === selectedAnimal.type,
+      (dt) => dt.animalType === firstAnimal.type,
     );
     if (!drugTreatment) return;
 
-    // Calculate dates
-    const treatmentDate = new Date(watchedDate);
+    const startDate = new Date(watchedStartDate);
 
     if (drugTreatment.milkWaitingDays > 0) {
-      const milkDate = new Date(treatmentDate);
+      const milkDate = new Date(startDate);
       milkDate.setDate(milkDate.getDate() + drugTreatment.milkWaitingDays);
       setValue("milkUsableDate", milkDate.toISOString().split("T")[0]);
     }
 
     if (drugTreatment.meatWaitingDays > 0) {
-      const meatDate = new Date(treatmentDate);
+      const meatDate = new Date(startDate);
       meatDate.setDate(meatDate.getDate() + drugTreatment.meatWaitingDays);
       setValue("meatUsableDate", meatDate.toISOString().split("T")[0]);
     }
-  }, [watchedDrugId, watchedDate, watchedAnimalId, drugs, animals, setValue]);
+
+    if (drugTreatment.organsWaitingDays > 0) {
+      const organsDate = new Date(startDate);
+      organsDate.setDate(organsDate.getDate() + drugTreatment.organsWaitingDays);
+      setValue("organsUsableDate", organsDate.toISOString().split("T")[0]);
+    }
+  }, [watchedDrugId, watchedStartDate, watchedAnimalIds, drugs, animals, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
-      {/* Row 1: animal */}
+      {/* Animals multi-select */}
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="animalId">{t("treatments.animal")} *</FieldLabel>
+          <FieldLabel>{t("treatments.animals")} *</FieldLabel>
           <Controller
-            name="animalId"
+            name="animalIds"
             control={control}
-            rules={{ required: true }}
             render={({ field }) => (
-              <Combobox
-                items={animalOptions}
-                itemToStringValue={(item: ComboboxOption) => item.label}
-                value={
-                  animalOptions.find((o) => o.value === field.value) || null
-                }
-                onValueChange={(item: ComboboxOption | null) =>
-                  field.onChange(item?.value || "")
-                }
-              >
-                <ComboboxInput id="animalId" placeholder="-" />
-                <ComboboxContent>
-                  <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
-                  <ComboboxList>
-                    {(option) => (
-                      <ComboboxItem key={option.value} value={option}>
-                        {option.label}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
+              <MultiSelect
+                options={animalOptions}
+                value={field.value}
+                onValueChange={field.onChange}
+                placeholder={t("treatments.selectAnimals")}
+                searchPlaceholder={t("common.search")}
+                emptyText={t("common.noResults")}
+              />
             )}
           />
         </Field>
       </FieldGroup>
 
-      {/* Row 2: date */}
-      <FieldGroup className="mt-7">
+      {/* Date range */}
+      <FieldGroup className="flex-row mt-7">
         <Field className="max-w-48">
-          <FieldLabel htmlFor="date">{t("treatments.date")} *</FieldLabel>
+          <FieldLabel htmlFor="startDate">{t("treatments.startDate")} *</FieldLabel>
           <Input
-            id="date"
+            id="startDate"
             type="date"
-            {...register("date", { required: true })}
+            {...register("startDate", { required: true })}
+          />
+        </Field>
+        <Field className="max-w-48">
+          <FieldLabel htmlFor="endDate">{t("treatments.endDate")} *</FieldLabel>
+          <Input
+            id="endDate"
+            type="date"
+            {...register("endDate", { required: true })}
           />
         </Field>
       </FieldGroup>
 
-      {/* Row 3: name */}
+      {/* Name */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="name">{t("treatments.name")} *</FieldLabel>
@@ -184,19 +193,7 @@ export function TreatmentForm({
         </Field>
       </FieldGroup>
 
-      {/* Row 4: reason */}
-      <FieldGroup className="mt-7">
-        <Field>
-          <FieldLabel htmlFor="reason">{t("treatments.reason")} *</FieldLabel>
-          <Input
-            id="reason"
-            type="text"
-            {...register("reason", { required: true })}
-          />
-        </Field>
-      </FieldGroup>
-
-      {/* Row 5: drug */}
+      {/* Drug */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="drugId">{t("treatments.drug")}</FieldLabel>
@@ -233,7 +230,7 @@ export function TreatmentForm({
         </Field>
       </FieldGroup>
 
-      {/* Row 6: waiting dates (shown when drug is selected) */}
+      {/* Waiting dates (shown when drug is selected) */}
       {showWaitingDates && (
         <FieldGroup className="flex-row mt-7">
           <Field>
@@ -256,10 +253,52 @@ export function TreatmentForm({
               {...register("meatUsableDate")}
             />
           </Field>
+          <Field>
+            <FieldLabel htmlFor="organsUsableDate">
+              {t("treatments.organsUsableDate")}
+            </FieldLabel>
+            <Input
+              id="organsUsableDate"
+              type="date"
+              {...register("organsUsableDate")}
+            />
+          </Field>
         </FieldGroup>
       )}
 
-      {/* Row 7: notes */}
+      {/* Critical antibiotic */}
+      <FieldGroup className="flex-row mt-7 gap-4">
+        <Field className="flex flex-row items-center gap-2">
+          <Controller
+            name="criticalAntibiotic"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="criticalAntibiotic"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="criticalAntibiotic">{t("treatments.criticalAntibiotic")}</Label>
+        </Field>
+        <Field className="flex flex-row items-center gap-2">
+          <Controller
+            name="antibiogramAvailable"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="antibiogramAvailable"
+                checked={field.value}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
+          <Label htmlFor="antibiogramAvailable">{t("treatments.antibiogramAvailable")}</Label>
+        </Field>
+      </FieldGroup>
+
+      {/* Notes */}
       <FieldGroup className="mt-7">
         <Field>
           <FieldLabel htmlFor="notes">{t("treatments.notes")}</FieldLabel>

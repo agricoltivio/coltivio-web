@@ -27,11 +27,11 @@ export const Route = createFileRoute("/_authed/treatments/create")({
 
 function formDataToApiBody(data: TreatmentFormData) {
   return {
-    animalId: data.animalId,
+    animalIds: data.animalIds,
     drugId: data.drugId,
-    date: new Date(data.date).toISOString(),
+    startDate: new Date(data.startDate).toISOString(),
+    endDate: new Date(data.endDate).toISOString(),
     name: data.name,
-    reason: data.reason,
     notes: data.notes || undefined,
     milkUsableDate: data.milkUsableDate
       ? new Date(data.milkUsableDate).toISOString()
@@ -39,6 +39,11 @@ function formDataToApiBody(data: TreatmentFormData) {
     meatUsableDate: data.meatUsableDate
       ? new Date(data.meatUsableDate).toISOString()
       : null,
+    organsUsableDate: data.organsUsableDate
+      ? new Date(data.organsUsableDate).toISOString()
+      : null,
+    criticalAntibiotic: data.criticalAntibiotic,
+    antibiogramAvailable: data.antibiogramAvailable,
   };
 }
 
@@ -91,7 +96,7 @@ function CreateTreatment() {
         animals={animalsQuery.data?.result || []}
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}
-        defaultValues={{ animalId }}
+        defaultValues={{ animalIds: animalId ? [animalId] : [] }}
       />
     </PageContent>
   );
