@@ -63,11 +63,19 @@ function TreatmentsJournal() {
             )}
           </Button>
         ),
-        cell: ({ row }) => (
-          <span className="font-medium">
-            {row.original.animals.map((a) => a.name).join(", ")}
-          </span>
-        ),
+        cell: ({ row }) => {
+          const animals = row.original.animals;
+          const visible = animals.slice(0, 2);
+          const overflow = animals.length - visible.length;
+          return (
+            <span className="font-medium">
+              {visible.map((a) => a.name).join(", ")}
+              {overflow > 0 && (
+                <span className="ml-1 text-xs text-muted-foreground">+{overflow}</span>
+              )}
+            </span>
+          );
+        },
       },
       {
         accessorKey: "name",
@@ -85,7 +93,9 @@ function TreatmentsJournal() {
             )}
           </Button>
         ),
-        cell: ({ row }) => row.getValue("name"),
+        cell: ({ row }) => (
+          <span className="block max-w-48 truncate">{row.getValue("name")}</span>
+        ),
       },
       {
         accessorKey: "drug.name",
