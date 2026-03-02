@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Layers } from "lucide-react";
+import { Home, Layers } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Map, { Layer, Marker, NavigationControl, Source } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
-import { z } from "zod";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
 import { PageContent } from "@/components/PageContent";
@@ -16,14 +15,21 @@ import { Button } from "@/components/ui/button";
 // Stable reference — changing mapStyle triggers map.setStyle() and wipes all layers.
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 
-const searchSchema = z.object({
-  lat: z.number().optional(),
-  lng: z.number().optional(),
-  zoom: z.number().optional(),
-});
+// sessionStorage key for persisting the map viewport across back-navigation.
+const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
+
+type SavedViewport = { lng: number; lat: number; zoom: number };
+
+function readSavedViewport(): SavedViewport | null {
+  try {
+    const raw = sessionStorage.getItem(VIEWPORT_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as SavedViewport) : null;
+  } catch {
+    return null;
+  }
+}
 
 export const Route = createFileRoute("/_authed/field-calendar/plots")({
-  validateSearch: searchSchema,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(plotsQueryOptions());
     queryClient.ensureQueryData(farmQueryOptions());
@@ -54,14 +60,12 @@ function computeCentroid(coordinates: number[][][][]): LatLngLiteral {
 function PlotsMap() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { lat, lng, zoom } = Route.useSearch();
-  const [selectedPlotId, setSelectedPlotId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<BaseLayer>("satellite");
   const mapRef = useRef<MapRef>(null);
-  // mapReady gates imperative source/layer operations and the farm centering
   const [mapReady, setMapReady] = useState(false);
-  // Ensure we only jump to farm location once (not on every re-render after farm loads)
   const hasCentered = useRef(false);
+  // Read once on mount — sessionStorage has the last viewport if user came back via back button.
+  const savedViewport = useMemo(() => readSavedViewport(), []);
 
   const farmQuery = useQuery(farmQueryOptions());
   const plotsQuery = useQuery(plotsQueryOptions());
@@ -73,10 +77,10 @@ function PlotsMap() {
     features: plots.map((plot) => ({
       type: "Feature",
       id: plot.id,
-      properties: { id: plot.id, selected: plot.id === selectedPlotId },
+      properties: { id: plot.id },
       geometry: plot.geometry,
     })),
-  }), [plots, selectedPlotId]);
+  }), [plots]);
 
   // Add plots source + layers imperatively once the map style has loaded.
   // The declarative <Source>/<Layer> approach fails when query data is already
@@ -94,34 +98,28 @@ function PlotsMap() {
       id: "plots-fill",
       type: "fill",
       source: "plots",
-      paint: {
-        "fill-color": ["case", ["==", ["get", "selected"], true], "#f97316", "#22c55e"],
-        "fill-opacity": 0.35,
-      },
+      paint: { "fill-color": "#4285F4", "fill-opacity": 0.5 },
     });
     map.addLayer({
       id: "plots-line",
       type: "line",
       source: "plots",
-      paint: {
-        "line-color": ["case", ["==", ["get", "selected"], true], "#ea580c", "#16a34a"],
-        "line-width": 2,
-      },
+      paint: { "line-color": "#ffffff", "line-width": 1 },
     });
   };
 
-  // Jump to farm location at zoom 17 once the map is ready and farm data has loaded,
-  // but only if the URL doesn't already have a saved viewport (i.e. user came back via back button).
+  // Jump to farm location at zoom 17 once ready — skipped if a saved viewport exists
+  // (meaning user returned via back button and we want to restore their last position).
   useEffect(() => {
-    if (!mapReady || !mapRef.current || !farm || hasCentered.current || lng !== undefined) return;
+    if (!mapReady || !mapRef.current || !farm || hasCentered.current || savedViewport) return;
     mapRef.current.jumpTo({
       center: [farm.location.coordinates[0], farm.location.coordinates[1]],
       zoom: 17,
     });
     hasCentered.current = true;
-  }, [mapReady, farm, lng]);
+  }, [mapReady, farm, savedViewport]);
 
-  // Push updated geojson into the source whenever plots or selected plot changes
+  // Push updated geojson into the source whenever plots change
   useEffect(() => {
     if (!mapReady || !mapRef.current) return;
     const source = mapRef.current.getMap().getSource("plots");
@@ -138,33 +136,29 @@ function PlotsMap() {
       >
         <Map
           ref={mapRef}
-          // If search params have a saved viewport (from a previous visit / back navigation),
-          // restore it. Otherwise start at Switzerland overview — farm jumpTo fires after load.
           initialViewState={{
-            longitude: lng ?? 8.2,
-            latitude: lat ?? 46.8,
-            zoom: zoom ?? 8,
+            longitude: savedViewport?.lng ?? 8.2,
+            latitude: savedViewport?.lat ?? 46.8,
+            zoom: savedViewport?.zoom ?? 8,
           }}
           mapStyle={EMPTY_MAP_STYLE}
           onLoad={handleMapLoad}
           onMoveEnd={(e) => {
-            // Write current viewport to search params (replace: true keeps one history entry)
-            // so that pressing back from plot details restores the exact viewport.
-            navigate({
-              search: {
-                lat: e.viewState.latitude,
+            // Keep sessionStorage in sync so pressing back restores the exact viewport.
+            sessionStorage.setItem(
+              VIEWPORT_STORAGE_KEY,
+              JSON.stringify({
                 lng: e.viewState.longitude,
+                lat: e.viewState.latitude,
                 zoom: e.viewState.zoom,
-              },
-              replace: true,
-            });
+              }),
+            );
           }}
           onClick={(e) => {
             const features = e.features ?? [];
             const hit = features.find((f) => f.layer?.id === "plots-fill");
             if (hit) {
               const plotId = hit.properties?.id as string;
-              setSelectedPlotId(plotId);
               navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } });
             }
           }}
@@ -201,12 +195,24 @@ function PlotsMap() {
             const centroid = computeCentroid(plot.geometry.coordinates);
             return (
               <Marker key={plot.id} longitude={centroid.lng} latitude={centroid.lat} anchor="center">
-                <div className="bg-white/80 rounded px-1 text-xs font-medium shadow border border-green-600 pointer-events-none">
+                <div className="bg-white/80 rounded px-1 text-xs font-medium shadow border border-gray-300 pointer-events-none">
                   {plot.name}
                 </div>
               </Marker>
             );
           })}
+
+          {farm && (
+            <Marker
+              longitude={farm.location.coordinates[0]}
+              latitude={farm.location.coordinates[1]}
+              anchor="center"
+            >
+              <div className="bg-white rounded-full p-1.5 shadow-md border border-gray-300 pointer-events-none">
+                <Home className="h-4 w-4 text-gray-700" />
+              </div>
+            </Marker>
+          )}
 
           <NavigationControl position="top-left" />
         </Map>

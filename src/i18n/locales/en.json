@@ -22,12 +22,35 @@
     "pageOf": "Page {{current}} of {{total}}"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "groups": {
+      "livestock": "Livestock",
+      "addressBook": "Address Book",
+      "sales": "Sales",
+      "sponsorships": "Sponsorships",
+      "accounting": "Accounting",
+      "fieldCalendar": "Field Calendar",
+      "admin": "Admin"
+    },
     "animals": "Animals",
     "earTags": "Ear Tags",
+    "treatmentsJournal": "Treatment Journal",
+    "turnoutJournal": "Turnout Journal",
+    "herds": "Herds",
+    "drugs": "Drugs",
     "contacts": "Contacts",
+    "orders": "Orders",
+    "products": "Products",
+    "sponsorshipPrograms": "Sponsorship Models",
     "sponsorships": "Sponsorships",
-    "sponsorshipPrograms": "Sponsorship Types"
+    "payments": "Payments",
+    "plots": "Plots",
+    "cropRotations": "Crop Rotations",
+    "tillages": "Tillages",
+    "fertilizerApplications": "Fertilization",
+    "cropProtectionApplications": "Crop Protection",
+    "harvests": "Harvests",
+    "account": "Account",
+    "settings": "Settings"
   },
   "animals": {
     "title": "Animals",

@@ -22,12 +22,35 @@
     "pageOf": "Pagina {{current}} di {{total}}"
   },
   "nav": {
-    "dashboard": "Panoramica",
+    "groups": {
+      "livestock": "Allevamento",
+      "addressBook": "Rubrica",
+      "sales": "Vendite",
+      "sponsorships": "Sponsorizzazioni",
+      "accounting": "Contabilità",
+      "fieldCalendar": "Calendario dei campi",
+      "admin": "Amministrazione"
+    },
     "animals": "Animali",
-    "earTags": "Marchi auricolari",
+    "earTags": "Marche auricolari",
+    "treatmentsJournal": "Diario dei trattamenti",
+    "turnoutJournal": "Diario delle uscite",
+    "herds": "Greggi",
+    "drugs": "Medicinali",
     "contacts": "Contatti",
+    "orders": "Ordini",
+    "products": "Prodotti",
+    "sponsorshipPrograms": "Modelli di sponsorizzazione",
     "sponsorships": "Sponsorizzazioni",
-    "sponsorshipPrograms": "Tipi di sponsorizzazione"
+    "payments": "Pagamenti",
+    "plots": "Campi",
+    "cropRotations": "Rotazioni colturali",
+    "tillages": "Lavorazioni del terreno",
+    "fertilizerApplications": "Concimazione",
+    "cropProtectionApplications": "Trattamenti fitosanitari",
+    "harvests": "Raccolti",
+    "account": "Account",
+    "settings": "Impostazioni"
   },
   "animals": {
     "title": "Animali",
@@ -532,11 +555,11 @@
   },
   "fieldCalendar": {
     "plots": {
-      "title": "Parcelle",
-      "create": "Crea parcella",
-      "edit": "Modifica parcella",
-      "plot": "Parcella",
-      "selectPlot": "Seleziona parcella",
+      "title": "Campi",
+      "create": "Crea campo",
+      "edit": "Modifica campo",
+      "plot": "Campo",
+      "selectPlot": "Seleziona campo",
       "size": "Superficie",
       "usage": "Codice utilizzo",
       "cuttingDate": "Data di taglio",

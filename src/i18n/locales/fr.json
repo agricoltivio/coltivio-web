@@ -22,12 +22,35 @@
     "pageOf": "Page {{current}} sur {{total}}"
   },
   "nav": {
-    "dashboard": "Tableau de bord",
+    "groups": {
+      "livestock": "Élevage",
+      "addressBook": "Carnet d'adresses",
+      "sales": "Ventes",
+      "sponsorships": "Parrainages",
+      "accounting": "Comptabilité",
+      "fieldCalendar": "Calendrier cultural",
+      "admin": "Administration"
+    },
     "animals": "Animaux",
-    "earTags": "Boucles d'oreille",
+    "earTags": "Boucles auriculaires",
+    "treatmentsJournal": "Journal des traitements",
+    "turnoutJournal": "Journal des sorties",
+    "herds": "Troupeaux",
+    "drugs": "Médicaments",
     "contacts": "Contacts",
+    "orders": "Commandes",
+    "products": "Produits",
+    "sponsorshipPrograms": "Modèles de parrainage",
     "sponsorships": "Parrainages",
-    "sponsorshipPrograms": "Programmes de parrainage"
+    "payments": "Paiements",
+    "plots": "Champs",
+    "cropRotations": "Rotations culturales",
+    "tillages": "Travaux du sol",
+    "fertilizerApplications": "Fertilisation",
+    "cropProtectionApplications": "Protection des cultures",
+    "harvests": "Récoltes",
+    "account": "Compte",
+    "settings": "Paramètres"
   },
   "animals": {
     "title": "Animaux",
@@ -532,11 +555,11 @@
   },
   "fieldCalendar": {
     "plots": {
-      "title": "Parcelles",
-      "create": "Créer une parcelle",
-      "edit": "Modifier la parcelle",
-      "plot": "Parcelle",
-      "selectPlot": "Sélectionner une parcelle",
+      "title": "Champs",
+      "create": "Créer un champ",
+      "edit": "Modifier le champ",
+      "plot": "Champ",
+      "selectPlot": "Sélectionner un champ",
       "size": "Surface",
       "usage": "Code d'utilisation",
       "cuttingDate": "Date de coupe",

@@ -191,10 +191,10 @@ function TurnoutJournal() {
       </div>
 
       {/* Uncategorized animals note */}
-      {(data?.uncategorizedAnimalCount ?? 0) > 0 && (
+      {(data?.uncategorizedAnimals.length ?? 0) > 0 && (
         <p className="mt-3 text-sm text-muted-foreground">
           {t("turnoutJournal.uncategorizedCount", {
-            count: data!.uncategorizedAnimalCount,
+            count: data!.uncategorizedAnimals.length,
           })}
         </p>
       )}

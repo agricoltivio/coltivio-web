@@ -22,12 +22,35 @@
     "pageOf": "Seite {{current}} von {{total}}"
   },
   "nav": {
-    "dashboard": "Übersicht",
+    "groups": {
+      "livestock": "Tierhaltung",
+      "addressBook": "Adressbuch",
+      "sales": "Verkauf",
+      "sponsorships": "Gönnerschaften",
+      "accounting": "Buchhaltung",
+      "fieldCalendar": "Feldkalender",
+      "admin": "Admin"
+    },
     "animals": "Tiere",
     "earTags": "Ohrmarken",
+    "treatmentsJournal": "Behandlungsjournal",
+    "turnoutJournal": "Auslaufsjournal",
+    "herds": "Herden",
+    "drugs": "Medikamente",
     "contacts": "Kontakte",
+    "orders": "Bestellungen",
+    "products": "Produkte",
+    "sponsorshipPrograms": "Patenschaftstypen",
     "sponsorships": "Patenschaften",
-    "sponsorshipPrograms": "Patenschaftstypen"
+    "payments": "Zahlungen",
+    "plots": "Schläge",
+    "cropRotations": "Fruchtfolge",
+    "tillages": "Bodenbearbeitung",
+    "fertilizerApplications": "Düngung",
+    "cropProtectionApplications": "Pflanzenschutz",
+    "harvests": "Ernte",
+    "account": "Account",
+    "settings": "Einstellungen"
   },
   "animals": {
     "title": "Tiere",
@@ -532,11 +555,11 @@
   },
   "fieldCalendar": {
     "plots": {
-      "title": "Parzellen",
-      "create": "Parzelle erstellen",
-      "edit": "Parzelle bearbeiten",
-      "plot": "Parzelle",
-      "selectPlot": "Parzelle auswählen",
+      "title": "Schläge",
+      "create": "Schlag erstellen",
+      "edit": "Schlag bearbeiten",
+      "plot": "Schlag",
+      "selectPlot": "Schlag auswählen",
       "size": "Fläche",
       "usage": "Nutzungscode",
       "cuttingDate": "Schnittzeitpunkt",

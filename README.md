@@ -17,7 +17,7 @@ Deployed at `app.coltivio.ch`. The landing page lives in [coltivio-landing](http
 
 ## Tech stack
 
-- **Web app:** React 19, TanStack Router, TanStack Query, Supabase, Tailwind CSS v4, shadcn/ui, Vite 7
+- **Web app:** React 19, TanStack Router, TanStack Query, Supabase, Tailwind CSS v4, shadcn/ui, MapLibre GL, Vite 7
 - **Auth & DB:** Supabase (PostgreSQL + Row Level Security)
 - **Deployment:** Cloudflare Pages
 

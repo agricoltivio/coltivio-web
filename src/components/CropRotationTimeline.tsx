@@ -38,6 +38,7 @@ export function CropRotationTimeline({
   const { t } = useTranslation();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const headerScrollRef = useRef<HTMLDivElement>(null);
+  const leftColumnRef = useRef<HTMLDivElement>(null);
 
   const pxPerDay = getScaleForZoomLevel(zoom);
 
@@ -63,10 +64,15 @@ export function CropRotationTimeline({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync horizontal scroll between header and body
+  // Sync horizontal scroll to header and vertical scroll to the left name column.
+  // The left column uses overflow-hidden so it clips without its own scrollbar,
+  // and we drive its scrollTop from here to keep names aligned with rows.
   const handleBodyScroll = useCallback(() => {
     if (headerScrollRef.current && scrollAreaRef.current) {
       headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+    }
+    if (leftColumnRef.current && scrollAreaRef.current) {
+      leftColumnRef.current.scrollTop = scrollAreaRef.current.scrollTop;
     }
   }, []);
 
@@ -140,9 +146,11 @@ export function CropRotationTimeline({
 
         {/* Body: fixed plot names + scrollable bars */}
         <div className="flex overflow-hidden" style={{ maxHeight: "60vh" }}>
-          {/* Fixed left column — plot names */}
+          {/* Fixed left column — plot names. overflow-hidden so it clips without
+              its own scrollbar; scrollTop is driven by handleBodyScroll. */}
           <div
-            className="shrink-0 border-r bg-background overflow-y-auto"
+            ref={leftColumnRef}
+            className="shrink-0 border-r bg-background overflow-hidden"
             style={{ width: LEFT_COLUMN_WIDTH }}
           >
             {timelineData.plots.map((plotData) => (
