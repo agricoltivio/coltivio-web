@@ -22,11 +22,11 @@ function AuthedLayout() {
     <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900">
       <SidebarProvider>
         {/* <div className="relative flex min-h-screen flex-col">
-        <main className="flex-1 container mx-auto px-4 py-8"> */}
+        <main className="flex-1 min-w-0 overflow-x-hidden container mx-auto px-4 py-8"> */}
         {/* <Navbar /> */}
         <AppSidebar />
 
-        <main className="flex-1 container mx-auto px-4 py-8">
+        <main className="flex-1 min-w-0 overflow-x-hidden container mx-auto px-4 py-8">
           <SidebarTrigger />
           <Outlet />
         </main>

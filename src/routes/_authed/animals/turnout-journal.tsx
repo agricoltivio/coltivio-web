@@ -144,7 +144,7 @@ function TurnoutJournal() {
           </div>
 
           {/* Scrollable timeline area */}
-          <div className="overflow-x-auto flex-1">
+          <div className="overflow-x-auto flex-1 min-w-0">
             <div style={{ width: timelineWidth }} className="relative">
               {/* Month headers */}
               <div className="flex h-8 border-b relative">

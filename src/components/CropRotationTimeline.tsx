@@ -196,7 +196,7 @@ export function CropRotationTimeline({
           {/* Scrollable body */}
           <div
             ref={scrollAreaRef}
-            className="flex-1 overflow-x-auto overflow-y-auto"
+            className="flex-1 min-w-0 overflow-x-auto overflow-y-auto"
             onScroll={handleBodyScroll}
           >
             <div
