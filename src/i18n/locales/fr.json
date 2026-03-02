@@ -603,6 +603,13 @@
         "custom": "Autre"
       }
     },
+    "presets": {
+      "select": "Sélectionner un modèle",
+      "manage": "Gérer les modèles",
+      "saveAs": "Enregistrer comme modèle",
+      "name": "Nom du modèle",
+      "noPresets": "Aucun modèle disponible"
+    },
     "harvests": {
       "title": "Récoltes",
       "create": "Enregistrer une récolte",

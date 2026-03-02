@@ -49,3 +49,16 @@ export const plotHarvestsQueryOptions = (plotId: string) => {
     },
   });
 };
+
+export const harvestPresetsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ["harvests", "presets"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/harvests/presets");
+      if (response.error) {
+        throw new Error("Failed to fetch harvest presets");
+      }
+      return response.data.data;
+    },
+  });
+};

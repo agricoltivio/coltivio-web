@@ -148,6 +148,15 @@ export type FertilizerApplication =
 export type CropProtectionApplication =
   components["schemas"]["GetV1CropProtectionApplicationsPositiveResponse"]["data"]["result"][number];
 
+export type HarvestPreset =
+  components["schemas"]["GetV1HarvestsPresetsPositiveResponse"]["data"]["result"][number];
+
+export type FertilizerApplicationPreset =
+  components["schemas"]["GetV1FertilizerApplicationsPresetsPositiveResponse"]["data"]["result"][number];
+
+export type CropProtectionApplicationPreset =
+  components["schemas"]["GetV1CropProtectionApplicationsPresetsPositiveResponse"]["data"]["result"][number];
+
 export type Crop =
   components["schemas"]["GetV1CropsPositiveResponse"]["data"]["result"][number];
 

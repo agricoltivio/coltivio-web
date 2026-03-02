@@ -31,3 +31,16 @@ export const plotFertilizerApplicationsQueryOptions = (plotId: string) => {
     },
   });
 };
+
+export const fertilizerApplicationPresetsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ["fertilizerApplications", "presets"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/fertilizerApplications/presets");
+      if (response.error) {
+        throw new Error("Failed to fetch fertilizer application presets");
+      }
+      return response.data.data;
+    },
+  });
+};

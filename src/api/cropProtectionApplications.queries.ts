@@ -31,3 +31,16 @@ export const plotCropProtectionApplicationsQueryOptions = (plotId: string) => {
     },
   });
 };
+
+export const cropProtectionApplicationPresetsQueryOptions = () => {
+  return queryOptions({
+    queryKey: ["cropProtectionApplications", "presets"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/cropProtectionApplications/presets");
+      if (response.error) {
+        throw new Error("Failed to fetch crop protection application presets");
+      }
+      return response.data.data;
+    },
+  });
+};

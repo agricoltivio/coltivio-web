@@ -603,6 +603,13 @@
         "custom": "Custom"
       }
     },
+    "presets": {
+      "select": "Select preset",
+      "manage": "Manage presets",
+      "saveAs": "Save as preset",
+      "name": "Preset name",
+      "noPresets": "No presets available"
+    },
     "harvests": {
       "title": "Harvests",
       "create": "Record harvest",

@@ -603,11 +603,18 @@
         "custom": "Sonstiges"
       }
     },
+    "presets": {
+      "select": "Vorlage auswählen",
+      "manage": "Vorlagen verwalten",
+      "saveAs": "Als Vorlage speichern",
+      "name": "Vorlagenname",
+      "noPresets": "Keine Vorlagen vorhanden"
+    },
     "harvests": {
       "title": "Ernte",
       "create": "Ernte erfassen",
       "date": "Datum",
-      "crop": "Frucht",
+      "crop": "Kultur",
       "amount": "Menge",
       "unit": "Einheit",
       "numberOfUnits": "Anzahl Einheiten",
