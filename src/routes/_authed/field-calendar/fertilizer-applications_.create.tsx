@@ -127,6 +127,7 @@ function CreateFertilizerApplication() {
     <PageContent
       title={t("fieldCalendar.fertilizerApplications.create")}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/fertilizer-applications" })}
     >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}

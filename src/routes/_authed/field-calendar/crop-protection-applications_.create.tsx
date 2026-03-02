@@ -136,6 +136,7 @@ function CreateCropProtectionApplication() {
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.create")}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/crop-protection-applications" })}
     >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}

@@ -88,7 +88,11 @@ function CreateTreatment() {
   }));
 
   return (
-    <PageContent title={t("treatments.createTreatment")} showBackButton>
+    <PageContent
+      title={t("treatments.createTreatment")}
+      showBackButton
+      backTo={() => navigate({ to: returnTo ?? "/animals/treatments-journal" })}
+    >
       <TreatmentForm
         animalOptions={animalOptions}
         drugOptions={drugOptions}

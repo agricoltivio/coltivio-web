@@ -134,7 +134,7 @@ function CreateHarvest() {
   const watchedConservation = watch("conservationMethod");
 
   return (
-    <PageContent title={t("fieldCalendar.harvests.create")} showBackButton>
+    <PageContent title={t("fieldCalendar.harvests.create")} showBackButton backTo={() => navigate({ to: "/field-calendar/harvests" })}>
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
         className="space-y-4 max-w-lg"

@@ -97,7 +97,7 @@ function CreateTillage() {
   const watchedAction = watch("action");
 
   return (
-    <PageContent title={t("fieldCalendar.tillages.create")} showBackButton>
+    <PageContent title={t("fieldCalendar.tillages.create")} showBackButton backTo={() => navigate({ to: "/field-calendar/tillages" })}>
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
         className="space-y-4 max-w-lg"

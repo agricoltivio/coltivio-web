@@ -75,7 +75,7 @@ function CreateSponsorship() {
   });
 
   return (
-    <PageContent title={t("sponsorships.createSponsorship")} showBackButton>
+    <PageContent title={t("sponsorships.createSponsorship")} showBackButton backTo={() => navigate({ to: "/sponsorships" })}>
       <SponsorshipForm
         contactOptions={contactOptions}
         animalOptions={animalOptions}

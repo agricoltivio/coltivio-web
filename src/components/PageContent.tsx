@@ -7,10 +7,12 @@ export function PageContent({
   title,
   children,
   showBackButton = true,
+  backTo,
 }: {
   title: string;
   children: React.ReactNode;
   showBackButton?: boolean;
+  backTo?: () => void;
 }) {
   const router = useRouter();
 
@@ -21,7 +23,7 @@ export function PageContent({
           className="cursor-pointer"
           variant="link"
           size="sm"
-          onClick={() => router.history.back()}
+          onClick={() => (backTo ? backTo() : router.history.back())}
         >
           <ArrowLeft /> zurück
         </Button>

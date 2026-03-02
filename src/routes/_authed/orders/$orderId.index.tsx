@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { orderQueryOptions } from "@/api/orders.queries";
@@ -41,6 +41,7 @@ function getStatusVariant(status: OrderStatus): "default" | "secondary" | "destr
 function OrderDetailPage() {
   const { t } = useTranslation();
   const { orderId } = Route.useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const orderQuery = useQuery(orderQueryOptions(orderId));
@@ -130,7 +131,7 @@ function OrderDetailPage() {
     cancelMutation.isPending;
 
   return (
-    <PageContent title={t("orders.orderDetails")} showBackButton>
+    <PageContent title={t("orders.orderDetails")} showBackButton backTo={() => navigate({ to: "/orders" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

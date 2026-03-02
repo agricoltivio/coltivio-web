@@ -45,7 +45,7 @@ function CreateContact() {
   });
 
   return (
-    <PageContent title={t("contacts.createContact")} showBackButton>
+    <PageContent title={t("contacts.createContact")} showBackButton backTo={() => navigate({ to: "/contacts" })}>
       <ContactForm
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}

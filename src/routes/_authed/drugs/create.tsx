@@ -41,7 +41,7 @@ function CreateDrug() {
   });
 
   return (
-    <PageContent title={t("drugs.createDrug")} showBackButton>
+    <PageContent title={t("drugs.createDrug")} showBackButton backTo={() => navigate({ to: "/drugs" })}>
       <DrugForm
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}

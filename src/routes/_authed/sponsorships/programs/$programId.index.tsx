@@ -85,7 +85,7 @@ function SponsorshipProgramDetailPage() {
   const sponsorshipProgram = typeQuery.data;
 
   return (
-    <PageContent title={sponsorshipProgram.name} showBackButton>
+    <PageContent title={sponsorshipProgram.name} showBackButton backTo={() => navigate({ to: "/sponsorships/programs" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">

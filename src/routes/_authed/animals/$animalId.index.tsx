@@ -114,7 +114,7 @@ function AnimalDetailPage() {
   const animal = animalQuery.data;
 
   return (
-    <PageContent title={animal.name} showBackButton>
+    <PageContent title={animal.name} showBackButton backTo={() => navigate({ to: "/animals" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">

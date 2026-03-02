@@ -63,7 +63,7 @@ function EditSponsorshipProgram() {
   });
 
   return (
-    <PageContent title={t("sponsorshipPrograms.editType")} showBackButton>
+    <PageContent title={t("sponsorshipPrograms.editType")} showBackButton backTo={() => navigate({ to: "/sponsorships/programs/$programId", params: { programId } })}>
       <SponsorshipProgramForm
         sponsorshipProgram={sponsorshipProgram}
         onSubmit={(data) => updateMutation.mutate(data)}

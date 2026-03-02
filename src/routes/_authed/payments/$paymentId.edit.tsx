@@ -91,7 +91,7 @@ function EditPayment() {
   });
 
   return (
-    <PageContent title={t("payments.editPayment")} showBackButton>
+    <PageContent title={t("payments.editPayment")} showBackButton backTo={() => navigate({ to: "/payments/$paymentId", params: { paymentId } })}>
       <PaymentForm
         payment={payment}
         contactOptions={contactOptions}

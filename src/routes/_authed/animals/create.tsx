@@ -82,7 +82,7 @@ function CreateAnimal() {
   });
 
   return (
-    <PageContent title={t("animals.createAnimal")} showBackButton>
+    <PageContent title={t("animals.createAnimal")} showBackButton backTo={() => navigate({ to: "/animals" })}>
       <AnimalForm
         earTagOptions={earTagOptions}
         motherOptions={motherOptions}

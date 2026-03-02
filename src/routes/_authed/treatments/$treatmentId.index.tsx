@@ -82,7 +82,7 @@ function TreatmentDetailPage() {
   const treatment = treatmentQuery.data;
 
   return (
-    <PageContent title={treatment.name} showBackButton>
+    <PageContent title={treatment.name} showBackButton backTo={() => navigate({ to: "/animals/treatments-journal" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">

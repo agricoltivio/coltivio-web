@@ -110,7 +110,7 @@ function EditAnimal() {
   });
 
   return (
-    <PageContent title={t("animals.editAnimal")} showBackButton>
+    <PageContent title={t("animals.editAnimal")} showBackButton backTo={() => navigate({ to: "/animals/$animalId", params: { animalId } })}>
       <AnimalForm
         animal={animal}
         earTagOptions={earTagOptions}

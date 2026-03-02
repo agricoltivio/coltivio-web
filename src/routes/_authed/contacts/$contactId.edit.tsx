@@ -54,7 +54,7 @@ function EditContact() {
   });
 
   return (
-    <PageContent title={t("contacts.editContact")} showBackButton>
+    <PageContent title={t("contacts.editContact")} showBackButton backTo={() => navigate({ to: "/contacts/$contactId", params: { contactId } })}>
       <ContactForm
         contact={contact}
         onSubmit={(data) => updateMutation.mutate(data)}

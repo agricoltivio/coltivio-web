@@ -136,6 +136,7 @@ function EditCropProtectionApplication() {
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.edit")}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/crop-protection-applications" })}
     >
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}

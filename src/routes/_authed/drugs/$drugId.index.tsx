@@ -81,7 +81,7 @@ function DrugDetailPage() {
   const canDelete = !inUseQuery.data?.inUse;
 
   return (
-    <PageContent title={drug.name} showBackButton>
+    <PageContent title={drug.name} showBackButton backTo={() => navigate({ to: "/drugs" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">

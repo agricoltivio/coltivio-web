@@ -42,7 +42,7 @@ function CreateSponsorshipProgram() {
   });
 
   return (
-    <PageContent title={t("sponsorshipPrograms.createType")} showBackButton>
+    <PageContent title={t("sponsorshipPrograms.createType")} showBackButton backTo={() => navigate({ to: "/sponsorships/programs" })}>
       <SponsorshipProgramForm
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}

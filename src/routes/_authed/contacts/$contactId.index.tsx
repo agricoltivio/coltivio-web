@@ -85,7 +85,7 @@ function ContactDetailPage() {
   const fullName = `${contact.firstName} ${contact.lastName}`;
 
   return (
-    <PageContent title={fullName} showBackButton>
+    <PageContent title={fullName} showBackButton backTo={() => navigate({ to: "/contacts" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

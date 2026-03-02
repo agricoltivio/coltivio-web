@@ -90,6 +90,7 @@ function Harvests() {
     <PageContent
       title={t("fieldCalendar.harvests.title")}
       showBackButton={!!plotId}
+      backTo={plotId ? () => navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
         <Button

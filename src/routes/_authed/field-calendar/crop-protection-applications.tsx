@@ -92,6 +92,7 @@ function CropProtectionApplications() {
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.title")}
       showBackButton={!!plotId}
+      backTo={plotId ? () => navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
         <Button

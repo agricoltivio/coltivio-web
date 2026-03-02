@@ -93,7 +93,7 @@ function EditTillage() {
   const watchedAction = watch("action");
 
   return (
-    <PageContent title={t("fieldCalendar.tillages.edit")} showBackButton>
+    <PageContent title={t("fieldCalendar.tillages.edit")} showBackButton backTo={() => navigate({ to: "/field-calendar/tillages" })}>
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
         className="space-y-4 max-w-lg"

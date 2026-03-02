@@ -65,7 +65,7 @@ function CreateOrder() {
   });
 
   return (
-    <PageContent title={t("orders.createOrder")} showBackButton>
+    <PageContent title={t("orders.createOrder")} showBackButton backTo={() => navigate({ to: "/orders" })}>
       <OrderForm
         contactOptions={contactOptions}
         productOptions={productOptions}

@@ -64,7 +64,7 @@ function EditOrder() {
   };
 
   return (
-    <PageContent title={t("orders.editOrder")} showBackButton>
+    <PageContent title={t("orders.editOrder")} showBackButton backTo={() => navigate({ to: "/orders/$orderId", params: { orderId } })}>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
         {/* Shipping date */}
         <FieldGroup>

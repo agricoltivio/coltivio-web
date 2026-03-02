@@ -100,6 +100,7 @@ function CreateCropRotation() {
     <PageContent
       title={t("fieldCalendar.cropRotations.create")}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/crop-rotations" })}
     >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}

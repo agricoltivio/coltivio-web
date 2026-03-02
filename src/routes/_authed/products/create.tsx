@@ -43,7 +43,7 @@ function CreateProduct() {
   });
 
   return (
-    <PageContent title={t("products.createProduct")} showBackButton>
+    <PageContent title={t("products.createProduct")} showBackButton backTo={() => navigate({ to: "/products" })}>
       <ProductForm
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}

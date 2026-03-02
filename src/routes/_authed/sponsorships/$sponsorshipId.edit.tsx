@@ -90,7 +90,7 @@ function EditSponsorship() {
   });
 
   return (
-    <PageContent title={t("sponsorships.editSponsorship")} showBackButton>
+    <PageContent title={t("sponsorships.editSponsorship")} showBackButton backTo={() => navigate({ to: "/sponsorships/$sponsorshipId", params: { sponsorshipId } })}>
       <SponsorshipForm
         sponsorship={sponsorship}
         contactOptions={contactOptions}

@@ -84,7 +84,7 @@ function EditTreatment() {
   }));
 
   return (
-    <PageContent title={t("treatments.editTreatment")} showBackButton>
+    <PageContent title={t("treatments.editTreatment")} showBackButton backTo={() => navigate({ to: "/treatments/$treatmentId", params: { treatmentId } })}>
       <TreatmentForm
         treatment={treatment}
         animalOptions={animalOptions}

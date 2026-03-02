@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { tillageQueryOptions } from "@/api/tillages.queries";
 import { PageContent } from "@/components/PageContent";
@@ -17,12 +17,13 @@ export const Route = createFileRoute(
 function TillageDetail() {
   const { t } = useTranslation();
   const { tillageId } = Route.useParams();
+  const navigate = useNavigate();
   const tillageQuery = useQuery(tillageQueryOptions(tillageId));
   const tillage = tillageQuery.data;
 
   if (!tillage) {
     return (
-      <PageContent title={t("common.loading")} showBackButton>
+      <PageContent title={t("common.loading")} showBackButton backTo={() => navigate({ to: "/field-calendar/tillages" })}>
         <p className="text-muted-foreground">{t("common.loading")}</p>
       </PageContent>
     );
@@ -37,6 +38,7 @@ function TillageDetail() {
     <PageContent
       title={`${actionLabel} – ${tillage.plot.name}`}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/tillages" })}
     >
       <div className="flex justify-end mb-6">
         <Button asChild variant="outline">

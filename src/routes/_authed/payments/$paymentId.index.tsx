@@ -83,7 +83,7 @@ function PaymentDetailPage() {
   const contactName = `${payment.contact.firstName} ${payment.contact.lastName}`;
 
   return (
-    <PageContent title={t("payments.title")} showBackButton>
+    <PageContent title={t("payments.title")} showBackButton backTo={() => navigate({ to: "/payments" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">

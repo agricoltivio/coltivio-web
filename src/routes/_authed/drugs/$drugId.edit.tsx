@@ -47,7 +47,7 @@ function EditDrug() {
   });
 
   return (
-    <PageContent title={t("drugs.editDrug")} showBackButton>
+    <PageContent title={t("drugs.editDrug")} showBackButton backTo={() => navigate({ to: "/drugs/$drugId", params: { drugId } })}>
       <DrugForm
         drug={drug}
         onSubmit={(data) => updateMutation.mutate(data)}

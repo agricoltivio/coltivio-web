@@ -89,7 +89,11 @@ function CreatePayment() {
   });
 
   return (
-    <PageContent title={t("payments.addPayment")} showBackButton>
+    <PageContent
+      title={t("payments.addPayment")}
+      showBackButton
+      backTo={() => navigate({ to: redirect ?? "/payments" })}
+    >
       <PaymentForm
         contactOptions={contactOptions}
         sponsorshipOptions={sponsorshipOptions}

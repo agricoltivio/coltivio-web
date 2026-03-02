@@ -79,7 +79,7 @@ function ProductDetailPage() {
   const product = productQuery.data;
 
   return (
-    <PageContent title={product.name} showBackButton>
+    <PageContent title={product.name} showBackButton backTo={() => navigate({ to: "/products" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

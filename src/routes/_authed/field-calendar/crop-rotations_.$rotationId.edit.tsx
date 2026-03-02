@@ -108,6 +108,7 @@ function EditCropRotation() {
     <PageContent
       title={t("fieldCalendar.cropRotations.edit")}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/crop-rotations" })}
     >
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}

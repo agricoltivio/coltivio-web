@@ -51,7 +51,7 @@ function EditProduct() {
   });
 
   return (
-    <PageContent title={t("products.editProduct")} showBackButton>
+    <PageContent title={t("products.editProduct")} showBackButton backTo={() => navigate({ to: "/products/$productId", params: { productId } })}>
       <ProductForm
         product={product}
         onSubmit={(data) => updateMutation.mutate(data)}

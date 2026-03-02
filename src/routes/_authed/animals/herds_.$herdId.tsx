@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { herdQueryOptions } from "@/api/herds.queries";
@@ -81,6 +81,7 @@ export const Route = createFileRoute("/_authed/animals/herds_/$herdId")({
 function HerdDetailPage() {
   const { t } = useTranslation();
   const { herdId } = Route.useParams();
+  const navigate = useNavigate();
   const herdQuery = useQuery(herdQueryOptions(herdId));
   const herd = herdQuery.data;
 
@@ -110,7 +111,7 @@ function HerdDetailPage() {
   }
 
   return (
-    <PageContent title={herd.name} showBackButton>
+    <PageContent title={herd.name} showBackButton backTo={() => navigate({ to: "/animals/herds" })}>
       <div className="space-y-6">
         {/* Animals card */}
         <Card>

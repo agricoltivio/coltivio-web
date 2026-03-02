@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { harvestQueryOptions } from "@/api/harvests.queries";
 import { PageContent } from "@/components/PageContent";
@@ -16,12 +16,13 @@ export const Route = createFileRoute(
 function HarvestDetail() {
   const { t } = useTranslation();
   const { harvestId } = Route.useParams();
+  const navigate = useNavigate();
   const harvestQuery = useQuery(harvestQueryOptions(harvestId));
   const harvest = harvestQuery.data;
 
   if (!harvest) {
     return (
-      <PageContent title={t("common.loading")} showBackButton>
+      <PageContent title={t("common.loading")} showBackButton backTo={() => navigate({ to: "/field-calendar/harvests" })}>
         <p className="text-muted-foreground">{t("common.loading")}</p>
       </PageContent>
     );
@@ -31,6 +32,7 @@ function HarvestDetail() {
     <PageContent
       title={`${harvest.crop.name} – ${harvest.plot.name}`}
       showBackButton
+      backTo={() => navigate({ to: "/field-calendar/harvests" })}
     >
       <div className="rounded-md border p-4 space-y-2">
         <div className="flex justify-between text-sm">

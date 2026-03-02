@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { plotQueryOptions } from "@/api/plots.queries";
 import { PageContent } from "@/components/PageContent";
@@ -23,12 +23,13 @@ export const Route = createFileRoute("/_authed/field-calendar/plots_/$plotId")({
 function PlotDetail() {
   const { t } = useTranslation();
   const { plotId } = Route.useParams();
+  const navigate = useNavigate();
   const plotQuery = useQuery(plotQueryOptions(plotId));
   const plot = plotQuery.data;
 
   if (!plot) {
     return (
-      <PageContent title={t("common.loading")} showBackButton>
+      <PageContent title={t("common.loading")} showBackButton backTo={() => navigate({ to: "/field-calendar/plots" })}>
         <p className="text-muted-foreground">{t("common.loading")}</p>
       </PageContent>
     );
@@ -68,7 +69,7 @@ function PlotDetail() {
   ] as const;
 
   return (
-    <PageContent title={plot.name} showBackButton>
+    <PageContent title={plot.name} showBackButton backTo={() => navigate({ to: "/field-calendar/plots" })}>
       {/* Plot info */}
       <div className="rounded-md border p-4 mb-6 space-y-2">
         <div className="flex justify-between text-sm">

@@ -95,7 +95,7 @@ function SponsorshipDetailPage() {
   const contactName = `${sponsorship.contact.firstName} ${sponsorship.contact.lastName}`;
 
   return (
-    <PageContent title={t("sponsorships.sponsorshipDetails")} showBackButton>
+    <PageContent title={t("sponsorships.sponsorshipDetails")} showBackButton backTo={() => navigate({ to: "/sponsorships" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
