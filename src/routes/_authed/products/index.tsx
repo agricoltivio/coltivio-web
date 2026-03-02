@@ -126,7 +126,7 @@ function Products() {
     <PageContent title={t("products.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
         <Button onClick={() => navigate({ to: "/products/create" })}>
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable

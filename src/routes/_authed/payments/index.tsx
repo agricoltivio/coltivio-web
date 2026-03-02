@@ -218,7 +218,7 @@ function Payments() {
     <PageContent title={t("payments.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
         <Button onClick={() => navigate({ to: "/payments/create" })}>
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable

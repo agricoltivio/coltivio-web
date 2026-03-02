@@ -128,7 +128,7 @@ function Contacts() {
     <PageContent title={t("contacts.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
         <Button onClick={() => navigate({ to: "/contacts/create" })}>
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable

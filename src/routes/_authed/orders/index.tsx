@@ -176,7 +176,7 @@ function Orders() {
     <PageContent title={t("orders.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
         <Button onClick={() => navigate({ to: "/orders/create" })}>
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable

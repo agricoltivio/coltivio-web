@@ -187,7 +187,7 @@ function Animals() {
           }}
         />
         <Button onClick={() => navigate({ to: "/animals/create" })}>
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable

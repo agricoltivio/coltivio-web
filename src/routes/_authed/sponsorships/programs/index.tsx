@@ -81,7 +81,7 @@ function SponsorshipPrograms() {
         <Button
           onClick={() => navigate({ to: "/sponsorships/programs/create" })}
         >
-          Erfassen
+          {t("common.create")}
         </Button>
       </div>
       <DataTable
