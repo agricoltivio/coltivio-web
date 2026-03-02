@@ -50,6 +50,9 @@ export const PREFERRED_COMMUNICATION_OPTIONS: PreferredCommunication[] = [
 export type Sponsorship =
   components["schemas"]["GetV1SponsorshipsPositiveResponse"]["data"]["result"][number];
 
+export type SponsorshipDetail =
+  components["schemas"]["GetV1SponsorshipsByIdSponsorshipIdPositiveResponse"]["data"];
+
 export type SponsorshipProgram =
   components["schemas"]["GetV1SponsorshipProgramsPositiveResponse"]["data"]["result"][number];
 

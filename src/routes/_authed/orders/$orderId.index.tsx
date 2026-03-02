@@ -125,6 +125,8 @@ function OrderDetailPage() {
     (sum, item) => sum + item.quantity * item.unitPrice,
     0
   );
+  const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
+  const isPaid = paidTotal >= itemsTotal && itemsTotal > 0;
   const isActionPending =
     confirmMutation.isPending ||
     fulfillMutation.isPending ||
@@ -137,6 +139,9 @@ function OrderDetailPage() {
         <div className="flex items-center gap-2">
           <Badge variant={getStatusVariant(order.status)}>
             {t(`orders.statuses.${order.status}`)}
+          </Badge>
+          <Badge variant={isPaid ? "default" : "destructive"}>
+            {isPaid ? t("orders.paid") : t("payments.outstanding")}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -322,6 +327,16 @@ function OrderDetailPage() {
                     </TableRow>
                   ))}
                 </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3} className="font-medium">
+                      {t("orders.paid")}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {formatCurrency(paidTotal)} / {formatCurrency(itemsTotal)}
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
               </Table>
             ) : (
               <div className="py-6 text-center text-muted-foreground">

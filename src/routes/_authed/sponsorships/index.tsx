@@ -57,6 +57,24 @@ function Sponsorships() {
         ),
       },
       {
+        accessorKey: "sponsorshipProgram.name",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("sponsorships.program")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => row.original.sponsorshipProgram.name,
+      },
+      {
         accessorKey: "animal.name",
         header: ({ column }) => (
           <Button
@@ -112,6 +130,16 @@ function Sponsorships() {
           const endDate = row.getValue("endDate") as string | null;
           return endDate ? formatDate(endDate) : "-";
         },
+      },
+      {
+        id: "paidThisYear",
+        header: t("sponsorships.paidThisYear"),
+        cell: ({ row }) => (
+          <Badge variant={row.original.paidThisYear ? "default" : "destructive"}>
+            {row.original.paidThisYear ? t("common.yes") : t("common.no")}
+          </Badge>
+        ),
+        enableSorting: false,
       },
       {
         id: "status",

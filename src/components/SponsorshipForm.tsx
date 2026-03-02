@@ -2,7 +2,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   PREFERRED_COMMUNICATION_OPTIONS,
-  type Sponsorship,
+  type SponsorshipDetail,
   type PreferredCommunication,
 } from "@/api/types";
 import { Input } from "@/components/ui/input";
@@ -38,7 +38,7 @@ export interface SponsorshipFormData {
 type ComboboxOption = { value: string; label: string };
 
 export interface SponsorshipFormProps {
-  sponsorship?: Sponsorship;
+  sponsorship?: SponsorshipDetail;
   contactOptions: ComboboxOption[];
   animalOptions: ComboboxOption[];
   typeOptions: ComboboxOption[];

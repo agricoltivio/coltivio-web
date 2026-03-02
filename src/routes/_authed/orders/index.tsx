@@ -135,6 +135,16 @@ function Orders() {
         },
       },
       {
+        id: "paid",
+        header: t("orders.paid"),
+        cell: ({ row }) => (
+          <Badge variant={row.original.paidInFull ? "default" : "destructive"}>
+            {row.original.paidInFull ? t("common.yes") : t("common.no")}
+          </Badge>
+        ),
+        enableSorting: false,
+      },
+      {
         id: "products",
         header: t("orders.products"),
         cell: ({ row }) => {

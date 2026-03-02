@@ -94,6 +94,13 @@ function SponsorshipDetailPage() {
   const sponsorship = sponsorshipQuery.data;
   const contactName = `${sponsorship.contact.firstName} ${sponsorship.contact.lastName}`;
 
+  const currentYear = new Date().getFullYear();
+  const paidThisYear = sponsorship.payments
+    .filter((p) => new Date(p.date).getFullYear() === currentYear)
+    .reduce((sum, p) => sum + p.amount, 0);
+  const yearlyCost = sponsorship.sponsorshipProgram.yearlyCost;
+  const isPaidThisYear = paidThisYear >= yearlyCost;
+
   return (
     <PageContent title={t("sponsorships.sponsorshipDetails")} showBackButton backTo={() => navigate({ to: "/sponsorships" })}>
       {/* Header actions */}
@@ -170,6 +177,23 @@ function SponsorshipDetailPage() {
                   >
                     {sponsorship.animal.name}
                   </Link>
+                }
+              />
+              <DetailItem
+                label={t("sponsorships.program")}
+                value={`${sponsorship.sponsorshipProgram.name} (${yearlyCost} CHF / ${t("sponsorships.year")})`}
+              />
+              <DetailItem
+                label={t("sponsorships.paidThisYear")}
+                value={
+                  <span className="flex items-center gap-2">
+                    <Badge variant={isPaidThisYear ? "default" : "destructive"}>
+                      {isPaidThisYear ? t("common.yes") : t("common.no")}
+                    </Badge>
+                    <span className="text-muted-foreground">
+                      {paidThisYear} / {yearlyCost} CHF
+                    </span>
+                  </span>
                 }
               />
               <DetailItem

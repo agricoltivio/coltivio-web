@@ -7164,6 +7164,24 @@ export interface components {
                             active: boolean;
                         };
                     }[];
+                    payments: {
+                        id: string;
+                        farmId: string;
+                        contactId: string;
+                        sponsorshipId: string | null;
+                        orderId: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        date: string;
+                        amount: number;
+                        currency: string;
+                        /** @enum {string} */
+                        method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+                        notes: string | null;
+                    }[];
+                    paidInFull: boolean;
                 }[];
                 count: number;
             };
@@ -7791,6 +7809,7 @@ export interface components {
                         description: string | null;
                         yearlyCost: number;
                     };
+                    paidThisYear: boolean;
                 }[];
                 count: number;
             };
