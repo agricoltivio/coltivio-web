@@ -26,31 +26,42 @@ type PlotComboboxProps = {
   id?: string;
 };
 
-export function PlotCombobox({ plots, value, onValueChange, id }: PlotComboboxProps) {
+export function PlotCombobox({
+  plots,
+  value,
+  onValueChange,
+  id,
+}: PlotComboboxProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
   const options: PlotOption[] = useMemo(
-    () => plots.map((p) => ({
-      value: p.id,
-      name: p.name,
-      localId: p.localId,
-      usage: p.usage,
-      size: p.size,
-    })),
+    () =>
+      plots.map((p) => ({
+        value: p.id,
+        name: p.name,
+        localId: p.localId,
+        usage: p.usage,
+        size: p.size,
+      })),
     [plots],
   );
 
   const fuse = useMemo(
-    () => new Fuse(options, {
-      keys: [
-        { name: "name", weight: 3 },
-        { name: "localId", weight: 2 },
-        { name: "usage", getFn: (o) => (o.usage != null ? String(o.usage) : ""), weight: 1 },
-      ],
-      threshold: 0.35,
-      ignoreLocation: true,
-    }),
+    () =>
+      new Fuse(options, {
+        keys: [
+          { name: "name", weight: 3 },
+          { name: "localId", weight: 2 },
+          {
+            name: "usage",
+            getFn: (o) => (o.usage != null ? String(o.usage) : ""),
+            weight: 1,
+          },
+        ],
+        threshold: 0.35,
+        ignoreLocation: true,
+      }),
     [options],
   );
 
@@ -66,25 +77,31 @@ export function PlotCombobox({ plots, value, onValueChange, id }: PlotComboboxPr
   return (
     <Combobox
       items={displayedOptions}
-      itemToStringValue={(item: PlotOption) => item.name}
       value={selectedOption}
       onValueChange={(item: PlotOption | null) => {
         onValueChange(item?.value ?? null);
-        setQuery("");
+        setQuery(item?.name ?? "");
       }}
       filter={() => true}
     >
       <ComboboxInput
         id={id}
-        placeholder="-"
+        placeholder={t("common.search")}
         showClear={!!value}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+        value={query}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setQuery(e.target.value)
+        }
       />
       <ComboboxContent>
         <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
         <ComboboxList>
           {(option: PlotOption) => (
-            <ComboboxItem key={option.value} value={option} className="flex-col items-start gap-0.5 py-2">
+            <ComboboxItem
+              key={option.value}
+              value={option}
+              className="flex-col items-start gap-0.5 py-2"
+            >
               <span className="font-medium">
                 {option.name} ({(option.size / 100).toFixed(0)}a)
               </span>
