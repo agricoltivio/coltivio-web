@@ -594,6 +594,7 @@
       "size": "Surface",
       "usage": "Code d'utilisation",
       "cuttingDate": "Date de coupe",
+      "localId": "Parcelle",
       "currentCrop": "Culture actuelle"
     },
     "cropRotations": {

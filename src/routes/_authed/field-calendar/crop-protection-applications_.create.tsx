@@ -16,14 +16,7 @@ import type {
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
+import { PlotCombobox } from "@/components/PlotCombobox";
 import {
   Dialog,
   DialogContent,
@@ -88,8 +81,6 @@ type FormData = {
   numberOfUnits: string;
   additionalNotes: string;
 };
-
-type PlotOption = { value: string; label: string };
 
 function CreateCropProtectionApplication() {
   const { t } = useTranslation();
@@ -216,10 +207,6 @@ function CreateCropProtectionApplication() {
   const watchedUnit = watch("unit");
   const watchedAmountPerUnit = watch("amountPerUnit");
 
-  const plotOptions: PlotOption[] = plots.map((p) => ({
-    value: p.id,
-    label: `${p.name} - ${p.usage} (${p.size / 100}a) `,
-  }));
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -246,29 +233,11 @@ function CreateCropProtectionApplication() {
         <div className="flex flex-wrap gap-4">
           <div className="space-y-1 flex-1 min-w-[180px]">
             <Label>{t("fieldCalendar.plots.plot")}</Label>
-            <Combobox
-              items={plotOptions}
-              itemToStringValue={(item: PlotOption) => item.label}
-              value={plotOptions.find((o) => o.value === watchedPlotId) ?? null}
-              onValueChange={(item: PlotOption | null) =>
-                setValue("plotId", item?.value ?? "")
-              }
-            >
-              <ComboboxInput
-                placeholder={t("fieldCalendar.plots.selectPlot")}
-                showClear={!!watchedPlotId}
-              />
-              <ComboboxContent>
-                <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
-                <ComboboxList>
-                  {(option: PlotOption) => (
-                    <ComboboxItem key={option.value} value={option}>
-                      {option.label}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
+            <PlotCombobox
+              plots={plots}
+              value={watchedPlotId || null}
+              onValueChange={(id) => setValue("plotId", id ?? "")}
+            />
           </div>
 
           <div className="space-y-1 flex-1 min-w-[180px]">

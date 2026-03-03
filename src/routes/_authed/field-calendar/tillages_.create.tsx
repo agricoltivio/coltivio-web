@@ -17,17 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
+import { PlotCombobox } from "@/components/PlotCombobox";
 import { Textarea } from "@/components/ui/textarea";
-
-type PlotOption = { value: string; label: string };
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -107,10 +98,6 @@ function CreateTillage() {
   const watchedPlotId = watch("plotId");
   const watchedAction = watch("action");
 
-  const plotOptions: PlotOption[] = plots.map((p) => ({
-    value: p.id,
-    label: `${p.name} - ${p.usage} (${p.size / 100}a) `,
-  }));
 
   return (
     <PageContent
@@ -124,29 +111,11 @@ function CreateTillage() {
       >
         <div className="space-y-1">
           <Label>{t("fieldCalendar.plots.plot")}</Label>
-          <Combobox
-            items={plotOptions}
-            itemToStringValue={(item: PlotOption) => item.label}
-            value={plotOptions.find((o) => o.value === watchedPlotId) ?? null}
-            onValueChange={(item: PlotOption | null) =>
-              setValue("plotId", item?.value ?? "")
-            }
-          >
-            <ComboboxInput
-              placeholder={t("fieldCalendar.plots.selectPlot")}
-              showClear={!!watchedPlotId}
-            />
-            <ComboboxContent>
-              <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
-              <ComboboxList>
-                {(option: PlotOption) => (
-                  <ComboboxItem key={option.value} value={option}>
-                    {option.label}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
+          <PlotCombobox
+            plots={plots}
+            value={watchedPlotId || null}
+            onValueChange={(id) => setValue("plotId", id ?? "")}
+          />
         </div>
 
         <div className="space-y-1">

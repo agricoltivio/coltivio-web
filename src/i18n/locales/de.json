@@ -594,6 +594,7 @@
       "size": "Fläche",
       "usage": "Nutzungscode",
       "cuttingDate": "Schnittzeitpunkt",
+      "localId": "Parzelle",
       "currentCrop": "Aktuelle Kultur"
     },
     "cropRotations": {

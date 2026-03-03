@@ -594,6 +594,7 @@
       "size": "Superficie",
       "usage": "Codice utilizzo",
       "cuttingDate": "Data di taglio",
+      "localId": "Particella",
       "currentCrop": "Coltura attuale"
     },
     "cropRotations": {

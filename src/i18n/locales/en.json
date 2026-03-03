@@ -594,6 +594,7 @@
       "size": "Area",
       "usage": "Usage code",
       "cuttingDate": "Cutting date",
+      "localId": "Parcel",
       "currentCrop": "Current crop"
     },
     "cropRotations": {
