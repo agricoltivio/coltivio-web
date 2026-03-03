@@ -1,4 +1,4 @@
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { useTranslation } from "react-i18next";
 import type { Plot } from "@/api/types";
@@ -28,6 +28,7 @@ type PlotComboboxProps = {
 
 export function PlotCombobox({ plots, value, onValueChange, id }: PlotComboboxProps) {
   const { t } = useTranslation();
+  const [query, setQuery] = useState("");
 
   const options: PlotOption[] = useMemo(
     () => plots.map((p) => ({
@@ -53,30 +54,32 @@ export function PlotCombobox({ plots, value, onValueChange, id }: PlotComboboxPr
     [options],
   );
 
-  // Cache Fuse results so we only search once per unique query string
-  const lastQuery = useRef<string>("");
-  const lastMatchedIds = useRef<Set<string>>(new Set());
-
-  const filterFn = useCallback((item: PlotOption, query: string) => {
-    if (!query) return true;
-    if (query !== lastQuery.current) {
-      lastQuery.current = query;
-      lastMatchedIds.current = new Set(fuse.search(query).map((r) => r.item.value));
-    }
-    return lastMatchedIds.current.has(item.value);
-  }, [fuse]);
+  // Pre-filter and pre-sort via Fuse so relevance ranking is preserved.
+  // base-ui's filter prop only does boolean inclusion and loses Fuse's ordering.
+  const displayedOptions = useMemo(
+    () => (query ? fuse.search(query).map((r) => r.item) : options),
+    [fuse, options, query],
+  );
 
   const selectedOption = options.find((o) => o.value === value) ?? null;
 
   return (
     <Combobox
-      items={options}
+      items={displayedOptions}
       itemToStringValue={(item: PlotOption) => item.name}
       value={selectedOption}
-      onValueChange={(item: PlotOption | null) => onValueChange(item?.value ?? null)}
-      filter={filterFn}
+      onValueChange={(item: PlotOption | null) => {
+        onValueChange(item?.value ?? null);
+        setQuery("");
+      }}
+      filter={() => true}
     >
-      <ComboboxInput id={id} placeholder="-" showClear={!!value} />
+      <ComboboxInput
+        id={id}
+        placeholder="-"
+        showClear={!!value}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+      />
       <ComboboxContent>
         <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
         <ComboboxList>
