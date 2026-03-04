@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -195,7 +195,6 @@ export const Route = createFileRoute(
 
 function PlanCropRotations() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { plotId } = Route.useParams();
