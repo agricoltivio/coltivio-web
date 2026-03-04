@@ -160,8 +160,39 @@ export type CropProtectionApplicationPreset =
 export type Crop =
   components["schemas"]["GetV1CropsPositiveResponse"]["data"]["result"][number];
 
+export type CropCategory = Crop["category"];
+
+export const CROP_CATEGORIES: CropCategory[] = [
+  "grass",
+  "grain",
+  "vegetable",
+  "fruit",
+  "other",
+];
+
+export type CropFamily =
+  components["schemas"]["GetV1CropsFamiliesPositiveResponse"]["data"]["result"][number];
+
 export type Fertilizer =
   components["schemas"]["GetV1FertilizersPositiveResponse"]["data"]["result"][number];
+
+export type FertilizerType = Fertilizer["type"];
+export type FertilizerUnit = Fertilizer["unit"];
+
+export const FERTILIZER_TYPES: FertilizerType[] = ["mineral", "organic"];
+export const FERTILIZER_UNITS: FertilizerUnit[] = ["l", "kg", "dt", "t"];
+
+export type CropProtectionProduct =
+  components["schemas"]["GetV1CropProtectionProductsPositiveResponse"]["data"]["result"][number];
+
+export type CropProtectionProductUnit = CropProtectionProduct["unit"];
+
+export const CROP_PROTECTION_PRODUCT_UNITS: CropProtectionProductUnit[] = [
+  "ml",
+  "l",
+  "g",
+  "kg",
+];
 
 export type TillageAction = Tillage["action"];
 

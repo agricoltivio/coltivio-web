@@ -19,7 +19,8 @@
     "all": "Alle",
     "rowsPerPage": "Zeilen pro Seite",
     "showingOf": "{{showing}} von {{total}} angezeigt",
-    "pageOf": "Seite {{current}} von {{total}}"
+    "pageOf": "Seite {{current}} von {{total}}",
+    "noSelection": "Keine Auswahl"
   },
   "nav": {
     "groups": {
@@ -50,7 +51,11 @@
     "cropProtectionApplications": "Pflanzenschutz",
     "harvests": "Ernte",
     "account": "Account",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "crops": "Kulturen",
+    "cropFamilies": "Kulturfamilien",
+    "fertilizers": "Düngemittel",
+    "cropProtectionProducts": "Pflanzenschutzmittel"
   },
   "animals": {
     "title": "Tiere",
@@ -721,5 +726,60 @@
       "weeks": "Wochen",
       "today": "Heute"
     }
+  },
+  "crops": {
+    "title": "Kulturen",
+    "createCrop": "Kultur erstellen",
+    "editCrop": "Kultur bearbeiten",
+    "cropDetails": "Kulturdetails",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Kultur löschen möchten?",
+    "name": "Name",
+    "category": "Kategorie",
+    "variety": "Sorte",
+    "family": "Familie",
+    "waitingTimeInYears": "Wartezeit (Jahre)",
+    "additionalNotes": "Zusätzliche Notizen",
+    "categories": {
+      "grass": "Gras",
+      "grain": "Getreide",
+      "vegetable": "Gemüse",
+      "fruit": "Obst",
+      "other": "Sonstiges"
+    }
+  },
+  "cropFamilies": {
+    "title": "Kulturfamilien",
+    "createCropFamily": "Kulturfamilie erstellen",
+    "editCropFamily": "Kulturfamilie bearbeiten",
+    "familyDetails": "Familiendetails",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Kulturfamilie löschen möchten?",
+    "name": "Name",
+    "waitingTimeInYears": "Wartezeit (Jahre)",
+    "additionalNotes": "Zusätzliche Notizen"
+  },
+  "fertilizers": {
+    "title": "Düngemittel",
+    "createFertilizer": "Düngemittel erstellen",
+    "editFertilizer": "Düngemittel bearbeiten",
+    "fertilizerDetails": "Düngemitteldetails",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Düngemittel löschen möchten?",
+    "name": "Name",
+    "type": "Typ",
+    "unit": "Einheit",
+    "description": "Beschreibung",
+    "types": {
+      "mineral": "Mineralisch",
+      "organic": "Organisch"
+    }
+  },
+  "cropProtectionProducts": {
+    "title": "Pflanzenschutzmittel",
+    "createProduct": "Pflanzenschutzmittel erstellen",
+    "editProduct": "Pflanzenschutzmittel bearbeiten",
+    "productDetails": "Produktdetails",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Pflanzenschutzmittel löschen möchten?",
+    "name": "Name",
+    "unit": "Einheit",
+    "description": "Beschreibung"
   }
 }

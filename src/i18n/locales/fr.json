@@ -19,7 +19,8 @@
     "all": "Tous",
     "rowsPerPage": "Lignes par page",
     "showingOf": "{{showing}} sur {{total}}",
-    "pageOf": "Page {{current}} sur {{total}}"
+    "pageOf": "Page {{current}} sur {{total}}",
+    "noSelection": "Aucune sélection"
   },
   "nav": {
     "groups": {
@@ -50,7 +51,11 @@
     "cropProtectionApplications": "Protection des cultures",
     "harvests": "Récoltes",
     "account": "Compte",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "crops": "Cultures",
+    "cropFamilies": "Familles de cultures",
+    "fertilizers": "Engrais",
+    "cropProtectionProducts": "Produits phytosanitaires"
   },
   "animals": {
     "title": "Animaux",
@@ -721,5 +726,60 @@
       "weeks": "Semaines",
       "today": "Aujourd'hui"
     }
+  },
+  "crops": {
+    "title": "Cultures",
+    "createCrop": "Créer une culture",
+    "editCrop": "Modifier la culture",
+    "cropDetails": "Détails de la culture",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette culture?",
+    "name": "Nom",
+    "category": "Catégorie",
+    "variety": "Variété",
+    "family": "Famille",
+    "waitingTimeInYears": "Temps d'attente (années)",
+    "additionalNotes": "Notes supplémentaires",
+    "categories": {
+      "grass": "Gazon",
+      "grain": "Céréale",
+      "vegetable": "Légume",
+      "fruit": "Fruit",
+      "other": "Autre"
+    }
+  },
+  "cropFamilies": {
+    "title": "Familles de cultures",
+    "createCropFamily": "Créer une famille de cultures",
+    "editCropFamily": "Modifier la famille de cultures",
+    "familyDetails": "Détails de la famille",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette famille de cultures?",
+    "name": "Nom",
+    "waitingTimeInYears": "Temps d'attente (années)",
+    "additionalNotes": "Notes supplémentaires"
+  },
+  "fertilizers": {
+    "title": "Engrais",
+    "createFertilizer": "Créer un engrais",
+    "editFertilizer": "Modifier l'engrais",
+    "fertilizerDetails": "Détails de l'engrais",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet engrais?",
+    "name": "Nom",
+    "type": "Type",
+    "unit": "Unité",
+    "description": "Description",
+    "types": {
+      "mineral": "Minéral",
+      "organic": "Organique"
+    }
+  },
+  "cropProtectionProducts": {
+    "title": "Produits phytosanitaires",
+    "createProduct": "Créer un produit",
+    "editProduct": "Modifier le produit",
+    "productDetails": "Détails du produit",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce produit?",
+    "name": "Nom",
+    "unit": "Unité",
+    "description": "Description"
   }
 }

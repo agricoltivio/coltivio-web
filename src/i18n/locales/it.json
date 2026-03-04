@@ -19,7 +19,8 @@
     "all": "Tutti",
     "rowsPerPage": "Righe per pagina",
     "showingOf": "{{showing}} di {{total}}",
-    "pageOf": "Pagina {{current}} di {{total}}"
+    "pageOf": "Pagina {{current}} di {{total}}",
+    "noSelection": "Nessuna selezione"
   },
   "nav": {
     "groups": {
@@ -50,7 +51,11 @@
     "cropProtectionApplications": "Trattamenti fitosanitari",
     "harvests": "Raccolti",
     "account": "Account",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "crops": "Colture",
+    "cropFamilies": "Famiglie di colture",
+    "fertilizers": "Fertilizzanti",
+    "cropProtectionProducts": "Prodotti fitosanitari"
   },
   "animals": {
     "title": "Animali",
@@ -721,5 +726,60 @@
       "weeks": "Settimane",
       "today": "Oggi"
     }
+  },
+  "crops": {
+    "title": "Colture",
+    "createCrop": "Crea coltura",
+    "editCrop": "Modifica coltura",
+    "cropDetails": "Dettagli coltura",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa coltura?",
+    "name": "Nome",
+    "category": "Categoria",
+    "variety": "Varietà",
+    "family": "Famiglia",
+    "waitingTimeInYears": "Tempo di attesa (anni)",
+    "additionalNotes": "Note aggiuntive",
+    "categories": {
+      "grass": "Erba",
+      "grain": "Cereale",
+      "vegetable": "Verdura",
+      "fruit": "Frutto",
+      "other": "Altro"
+    }
+  },
+  "cropFamilies": {
+    "title": "Famiglie di colture",
+    "createCropFamily": "Crea famiglia di colture",
+    "editCropFamily": "Modifica famiglia di colture",
+    "familyDetails": "Dettagli famiglia",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa famiglia di colture?",
+    "name": "Nome",
+    "waitingTimeInYears": "Tempo di attesa (anni)",
+    "additionalNotes": "Note aggiuntive"
+  },
+  "fertilizers": {
+    "title": "Fertilizzanti",
+    "createFertilizer": "Crea fertilizzante",
+    "editFertilizer": "Modifica fertilizzante",
+    "fertilizerDetails": "Dettagli fertilizzante",
+    "deleteConfirm": "Sei sicuro di voler eliminare questo fertilizzante?",
+    "name": "Nome",
+    "type": "Tipo",
+    "unit": "Unità",
+    "description": "Descrizione",
+    "types": {
+      "mineral": "Minerale",
+      "organic": "Organico"
+    }
+  },
+  "cropProtectionProducts": {
+    "title": "Prodotti fitosanitari",
+    "createProduct": "Crea prodotto",
+    "editProduct": "Modifica prodotto",
+    "productDetails": "Dettagli prodotto",
+    "deleteConfirm": "Sei sicuro di voler eliminare questo prodotto?",
+    "name": "Nome",
+    "unit": "Unità",
+    "description": "Descrizione"
   }
 }

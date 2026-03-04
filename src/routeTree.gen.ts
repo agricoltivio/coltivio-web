@@ -36,9 +36,13 @@ import { Route as AuthedOrdersCreateRouteImport } from './routes/_authed/orders/
 import { Route as AuthedFieldCalendarTillagesRouteImport } from './routes/_authed/field-calendar/tillages'
 import { Route as AuthedFieldCalendarPlotsRouteImport } from './routes/_authed/field-calendar/plots'
 import { Route as AuthedFieldCalendarHarvestsRouteImport } from './routes/_authed/field-calendar/harvests'
+import { Route as AuthedFieldCalendarFertilizersRouteImport } from './routes/_authed/field-calendar/fertilizers'
 import { Route as AuthedFieldCalendarFertilizerApplicationsRouteImport } from './routes/_authed/field-calendar/fertilizer-applications'
+import { Route as AuthedFieldCalendarCropsRouteImport } from './routes/_authed/field-calendar/crops'
 import { Route as AuthedFieldCalendarCropRotationsRouteImport } from './routes/_authed/field-calendar/crop-rotations'
+import { Route as AuthedFieldCalendarCropProtectionProductsRouteImport } from './routes/_authed/field-calendar/crop-protection-products'
 import { Route as AuthedFieldCalendarCropProtectionApplicationsRouteImport } from './routes/_authed/field-calendar/crop-protection-applications'
+import { Route as AuthedFieldCalendarCropFamiliesRouteImport } from './routes/_authed/field-calendar/crop-families'
 import { Route as AuthedDrugsCreateRouteImport } from './routes/_authed/drugs/create'
 import { Route as AuthedContactsCreateRouteImport } from './routes/_authed/contacts/create'
 import { Route as AuthedAnimalsTurnoutJournalRouteImport } from './routes/_authed/animals/turnout-journal'
@@ -66,8 +70,16 @@ import { Route as AuthedFieldCalendarTillagesTillageIdRouteImport } from './rout
 import { Route as AuthedFieldCalendarPlotsPlotIdRouteImport } from './routes/_authed/field-calendar/plots_.$plotId'
 import { Route as AuthedFieldCalendarHarvestsCreateRouteImport } from './routes/_authed/field-calendar/harvests_.create'
 import { Route as AuthedFieldCalendarHarvestsHarvestIdRouteImport } from './routes/_authed/field-calendar/harvests_.$harvestId'
+import { Route as AuthedFieldCalendarFertilizersCreateRouteImport } from './routes/_authed/field-calendar/fertilizers_.create'
+import { Route as AuthedFieldCalendarFertilizersFertilizerIdRouteImport } from './routes/_authed/field-calendar/fertilizers_.$fertilizerId'
 import { Route as AuthedFieldCalendarFertilizerApplicationsCreateRouteImport } from './routes/_authed/field-calendar/fertilizer-applications_.create'
+import { Route as AuthedFieldCalendarCropsCreateRouteImport } from './routes/_authed/field-calendar/crops_.create'
+import { Route as AuthedFieldCalendarCropsCropIdRouteImport } from './routes/_authed/field-calendar/crops_.$cropId'
+import { Route as AuthedFieldCalendarCropProtectionProductsCreateRouteImport } from './routes/_authed/field-calendar/crop-protection-products_.create'
+import { Route as AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRouteImport } from './routes/_authed/field-calendar/crop-protection-products_.$cropProtectionProductId'
 import { Route as AuthedFieldCalendarCropProtectionApplicationsCreateRouteImport } from './routes/_authed/field-calendar/crop-protection-applications_.create'
+import { Route as AuthedFieldCalendarCropFamiliesCreateRouteImport } from './routes/_authed/field-calendar/crop-families_.create'
+import { Route as AuthedFieldCalendarCropFamiliesFamilyIdRouteImport } from './routes/_authed/field-calendar/crop-families_.$familyId'
 import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drugs/$drugId.edit'
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
@@ -76,7 +88,11 @@ import { Route as AuthedSponsorshipsProgramsProgramIdIndexRouteImport } from './
 import { Route as AuthedSponsorshipsProgramsProgramIdEditRouteImport } from './routes/_authed/sponsorships/programs/$programId.edit'
 import { Route as AuthedFieldCalendarTillagesTillageIdEditRouteImport } from './routes/_authed/field-calendar/tillages_.$tillageId.edit'
 import { Route as AuthedFieldCalendarPlotsPlotIdCropRotationsRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.crop-rotations'
+import { Route as AuthedFieldCalendarFertilizersFertilizerIdEditRouteImport } from './routes/_authed/field-calendar/fertilizers_.$fertilizerId_.edit'
+import { Route as AuthedFieldCalendarCropsCropIdEditRouteImport } from './routes/_authed/field-calendar/crops_.$cropId_.edit'
+import { Route as AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRouteImport } from './routes/_authed/field-calendar/crop-protection-products_.$cropProtectionProductId_.edit'
 import { Route as AuthedFieldCalendarCropProtectionApplicationsIdEditRouteImport } from './routes/_authed/field-calendar/crop-protection-applications_.$id.edit'
+import { Route as AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport } from './routes/_authed/field-calendar/crop-families_.$familyId_.edit'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -216,10 +232,22 @@ const AuthedFieldCalendarHarvestsRoute =
     path: '/field-calendar/harvests',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarFertilizersRoute =
+  AuthedFieldCalendarFertilizersRouteImport.update({
+    id: '/field-calendar/fertilizers',
+    path: '/field-calendar/fertilizers',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedFieldCalendarFertilizerApplicationsRoute =
   AuthedFieldCalendarFertilizerApplicationsRouteImport.update({
     id: '/field-calendar/fertilizer-applications',
     path: '/field-calendar/fertilizer-applications',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropsRoute =
+  AuthedFieldCalendarCropsRouteImport.update({
+    id: '/field-calendar/crops',
+    path: '/field-calendar/crops',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedFieldCalendarCropRotationsRoute =
@@ -228,10 +256,22 @@ const AuthedFieldCalendarCropRotationsRoute =
     path: '/field-calendar/crop-rotations',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarCropProtectionProductsRoute =
+  AuthedFieldCalendarCropProtectionProductsRouteImport.update({
+    id: '/field-calendar/crop-protection-products',
+    path: '/field-calendar/crop-protection-products',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedFieldCalendarCropProtectionApplicationsRoute =
   AuthedFieldCalendarCropProtectionApplicationsRouteImport.update({
     id: '/field-calendar/crop-protection-applications',
     path: '/field-calendar/crop-protection-applications',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropFamiliesRoute =
+  AuthedFieldCalendarCropFamiliesRouteImport.update({
+    id: '/field-calendar/crop-families',
+    path: '/field-calendar/crop-families',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedDrugsCreateRoute = AuthedDrugsCreateRouteImport.update({
@@ -389,16 +429,66 @@ const AuthedFieldCalendarHarvestsHarvestIdRoute =
     path: '/field-calendar/harvests/$harvestId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarFertilizersCreateRoute =
+  AuthedFieldCalendarFertilizersCreateRouteImport.update({
+    id: '/field-calendar/fertilizers_/create',
+    path: '/field-calendar/fertilizers/create',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarFertilizersFertilizerIdRoute =
+  AuthedFieldCalendarFertilizersFertilizerIdRouteImport.update({
+    id: '/field-calendar/fertilizers_/$fertilizerId',
+    path: '/field-calendar/fertilizers/$fertilizerId',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedFieldCalendarFertilizerApplicationsCreateRoute =
   AuthedFieldCalendarFertilizerApplicationsCreateRouteImport.update({
     id: '/field-calendar/fertilizer-applications_/create',
     path: '/field-calendar/fertilizer-applications/create',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarCropsCreateRoute =
+  AuthedFieldCalendarCropsCreateRouteImport.update({
+    id: '/field-calendar/crops_/create',
+    path: '/field-calendar/crops/create',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropsCropIdRoute =
+  AuthedFieldCalendarCropsCropIdRouteImport.update({
+    id: '/field-calendar/crops_/$cropId',
+    path: '/field-calendar/crops/$cropId',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropProtectionProductsCreateRoute =
+  AuthedFieldCalendarCropProtectionProductsCreateRouteImport.update({
+    id: '/field-calendar/crop-protection-products_/create',
+    path: '/field-calendar/crop-protection-products/create',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute =
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRouteImport.update(
+    {
+      id: '/field-calendar/crop-protection-products_/$cropProtectionProductId',
+      path: '/field-calendar/crop-protection-products/$cropProtectionProductId',
+      getParentRoute: () => AuthedRouteRoute,
+    } as any,
+  )
 const AuthedFieldCalendarCropProtectionApplicationsCreateRoute =
   AuthedFieldCalendarCropProtectionApplicationsCreateRouteImport.update({
     id: '/field-calendar/crop-protection-applications_/create',
     path: '/field-calendar/crop-protection-applications/create',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropFamiliesCreateRoute =
+  AuthedFieldCalendarCropFamiliesCreateRouteImport.update({
+    id: '/field-calendar/crop-families_/create',
+    path: '/field-calendar/crop-families/create',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropFamiliesFamilyIdRoute =
+  AuthedFieldCalendarCropFamiliesFamilyIdRouteImport.update({
+    id: '/field-calendar/crop-families_/$familyId',
+    path: '/field-calendar/crop-families/$familyId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedDrugsDrugIdEditRoute = AuthedDrugsDrugIdEditRouteImport.update({
@@ -448,10 +538,36 @@ const AuthedFieldCalendarPlotsPlotIdCropRotationsRoute =
     path: '/field-calendar/plots/$plotId/crop-rotations',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarFertilizersFertilizerIdEditRoute =
+  AuthedFieldCalendarFertilizersFertilizerIdEditRouteImport.update({
+    id: '/field-calendar/fertilizers_/$fertilizerId_/edit',
+    path: '/field-calendar/fertilizers/$fertilizerId/edit',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropsCropIdEditRoute =
+  AuthedFieldCalendarCropsCropIdEditRouteImport.update({
+    id: '/field-calendar/crops_/$cropId_/edit',
+    path: '/field-calendar/crops/$cropId/edit',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute =
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRouteImport.update(
+    {
+      id: '/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit',
+      path: '/field-calendar/crop-protection-products/$cropProtectionProductId/edit',
+      getParentRoute: () => AuthedRouteRoute,
+    } as any,
+  )
 const AuthedFieldCalendarCropProtectionApplicationsIdEditRoute =
   AuthedFieldCalendarCropProtectionApplicationsIdEditRouteImport.update({
     id: '/field-calendar/crop-protection-applications_/$id/edit',
     path: '/field-calendar/crop-protection-applications/$id/edit',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedFieldCalendarCropFamiliesFamilyIdEditRoute =
+  AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport.update({
+    id: '/field-calendar/crop-families_/$familyId_/edit',
+    path: '/field-calendar/crop-families/$familyId/edit',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 
@@ -474,9 +590,13 @@ export interface FileRoutesByFullPath {
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
   '/drugs/create': typeof AuthedDrugsCreateRoute
+  '/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
+  '/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
   '/field-calendar/crop-rotations': typeof AuthedFieldCalendarCropRotationsRoute
+  '/field-calendar/crops': typeof AuthedFieldCalendarCropsRoute
   '/field-calendar/fertilizer-applications': typeof AuthedFieldCalendarFertilizerApplicationsRoute
+  '/field-calendar/fertilizers': typeof AuthedFieldCalendarFertilizersRoute
   '/field-calendar/harvests': typeof AuthedFieldCalendarHarvestsRoute
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
@@ -496,8 +616,16 @@ export interface FileRoutesByFullPath {
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
+  '/field-calendar/crop-families/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
+  '/field-calendar/crop-families/create': typeof AuthedFieldCalendarCropFamiliesCreateRoute
   '/field-calendar/crop-protection-applications/create': typeof AuthedFieldCalendarCropProtectionApplicationsCreateRoute
+  '/field-calendar/crop-protection-products/$cropProtectionProductId': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute
+  '/field-calendar/crop-protection-products/create': typeof AuthedFieldCalendarCropProtectionProductsCreateRoute
+  '/field-calendar/crops/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
+  '/field-calendar/crops/create': typeof AuthedFieldCalendarCropsCreateRoute
   '/field-calendar/fertilizer-applications/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
+  '/field-calendar/fertilizers/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
+  '/field-calendar/fertilizers/create': typeof AuthedFieldCalendarFertilizersCreateRoute
   '/field-calendar/harvests/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/field-calendar/harvests/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/field-calendar/plots/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
@@ -518,7 +646,11 @@ export interface FileRoutesByFullPath {
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
   '/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-applications/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
+  '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
+  '/field-calendar/crops/$cropId/edit': typeof AuthedFieldCalendarCropsCropIdEditRoute
+  '/field-calendar/fertilizers/$fertilizerId/edit': typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
@@ -543,9 +675,13 @@ export interface FileRoutesByTo {
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
   '/drugs/create': typeof AuthedDrugsCreateRoute
+  '/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
+  '/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
   '/field-calendar/crop-rotations': typeof AuthedFieldCalendarCropRotationsRoute
+  '/field-calendar/crops': typeof AuthedFieldCalendarCropsRoute
   '/field-calendar/fertilizer-applications': typeof AuthedFieldCalendarFertilizerApplicationsRoute
+  '/field-calendar/fertilizers': typeof AuthedFieldCalendarFertilizersRoute
   '/field-calendar/harvests': typeof AuthedFieldCalendarHarvestsRoute
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
@@ -565,8 +701,16 @@ export interface FileRoutesByTo {
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
+  '/field-calendar/crop-families/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
+  '/field-calendar/crop-families/create': typeof AuthedFieldCalendarCropFamiliesCreateRoute
   '/field-calendar/crop-protection-applications/create': typeof AuthedFieldCalendarCropProtectionApplicationsCreateRoute
+  '/field-calendar/crop-protection-products/$cropProtectionProductId': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute
+  '/field-calendar/crop-protection-products/create': typeof AuthedFieldCalendarCropProtectionProductsCreateRoute
+  '/field-calendar/crops/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
+  '/field-calendar/crops/create': typeof AuthedFieldCalendarCropsCreateRoute
   '/field-calendar/fertilizer-applications/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
+  '/field-calendar/fertilizers/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
+  '/field-calendar/fertilizers/create': typeof AuthedFieldCalendarFertilizersCreateRoute
   '/field-calendar/harvests/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/field-calendar/harvests/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/field-calendar/plots/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
@@ -587,7 +731,11 @@ export interface FileRoutesByTo {
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs': typeof AuthedSponsorshipsProgramsIndexRoute
   '/treatments/$treatmentId': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-applications/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
+  '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
+  '/field-calendar/crops/$cropId/edit': typeof AuthedFieldCalendarCropsCropIdEditRoute
+  '/field-calendar/fertilizers/$fertilizerId/edit': typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
@@ -614,9 +762,13 @@ export interface FileRoutesById {
   '/_authed/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/_authed/contacts/create': typeof AuthedContactsCreateRoute
   '/_authed/drugs/create': typeof AuthedDrugsCreateRoute
+  '/_authed/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/_authed/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
+  '/_authed/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
   '/_authed/field-calendar/crop-rotations': typeof AuthedFieldCalendarCropRotationsRoute
+  '/_authed/field-calendar/crops': typeof AuthedFieldCalendarCropsRoute
   '/_authed/field-calendar/fertilizer-applications': typeof AuthedFieldCalendarFertilizerApplicationsRoute
+  '/_authed/field-calendar/fertilizers': typeof AuthedFieldCalendarFertilizersRoute
   '/_authed/field-calendar/harvests': typeof AuthedFieldCalendarHarvestsRoute
   '/_authed/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/_authed/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
@@ -636,8 +788,16 @@ export interface FileRoutesById {
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/_authed/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
+  '/_authed/field-calendar/crop-families_/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
+  '/_authed/field-calendar/crop-families_/create': typeof AuthedFieldCalendarCropFamiliesCreateRoute
   '/_authed/field-calendar/crop-protection-applications_/create': typeof AuthedFieldCalendarCropProtectionApplicationsCreateRoute
+  '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute
+  '/_authed/field-calendar/crop-protection-products_/create': typeof AuthedFieldCalendarCropProtectionProductsCreateRoute
+  '/_authed/field-calendar/crops_/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
+  '/_authed/field-calendar/crops_/create': typeof AuthedFieldCalendarCropsCreateRoute
   '/_authed/field-calendar/fertilizer-applications_/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
+  '/_authed/field-calendar/fertilizers_/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
+  '/_authed/field-calendar/fertilizers_/create': typeof AuthedFieldCalendarFertilizersCreateRoute
   '/_authed/field-calendar/harvests_/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/_authed/field-calendar/harvests_/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/_authed/field-calendar/plots_/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
@@ -658,7 +818,11 @@ export interface FileRoutesById {
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/_authed/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
   '/_authed/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/_authed/field-calendar/crop-families_/$familyId_/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/_authed/field-calendar/crop-protection-applications_/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
+  '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
+  '/_authed/field-calendar/crops_/$cropId_/edit': typeof AuthedFieldCalendarCropsCropIdEditRoute
+  '/_authed/field-calendar/fertilizers_/$fertilizerId_/edit': typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   '/_authed/field-calendar/plots_/$plotId_/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/_authed/field-calendar/tillages_/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/_authed/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
@@ -685,9 +849,13 @@ export interface FileRouteTypes {
     | '/animals/turnout-journal'
     | '/contacts/create'
     | '/drugs/create'
+    | '/field-calendar/crop-families'
     | '/field-calendar/crop-protection-applications'
+    | '/field-calendar/crop-protection-products'
     | '/field-calendar/crop-rotations'
+    | '/field-calendar/crops'
     | '/field-calendar/fertilizer-applications'
+    | '/field-calendar/fertilizers'
     | '/field-calendar/harvests'
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
@@ -707,8 +875,16 @@ export interface FileRouteTypes {
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
     | '/drugs/$drugId/edit'
+    | '/field-calendar/crop-families/$familyId'
+    | '/field-calendar/crop-families/create'
     | '/field-calendar/crop-protection-applications/create'
+    | '/field-calendar/crop-protection-products/$cropProtectionProductId'
+    | '/field-calendar/crop-protection-products/create'
+    | '/field-calendar/crops/$cropId'
+    | '/field-calendar/crops/create'
     | '/field-calendar/fertilizer-applications/create'
+    | '/field-calendar/fertilizers/$fertilizerId'
+    | '/field-calendar/fertilizers/create'
     | '/field-calendar/harvests/$harvestId'
     | '/field-calendar/harvests/create'
     | '/field-calendar/plots/$plotId'
@@ -729,7 +905,11 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId/'
     | '/sponsorships/programs/'
     | '/treatments/$treatmentId/'
+    | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-applications/$id/edit'
+    | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
+    | '/field-calendar/crops/$cropId/edit'
+    | '/field-calendar/fertilizers/$fertilizerId/edit'
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/tillages/$tillageId/edit'
     | '/sponsorships/programs/$programId/edit'
@@ -754,9 +934,13 @@ export interface FileRouteTypes {
     | '/animals/turnout-journal'
     | '/contacts/create'
     | '/drugs/create'
+    | '/field-calendar/crop-families'
     | '/field-calendar/crop-protection-applications'
+    | '/field-calendar/crop-protection-products'
     | '/field-calendar/crop-rotations'
+    | '/field-calendar/crops'
     | '/field-calendar/fertilizer-applications'
+    | '/field-calendar/fertilizers'
     | '/field-calendar/harvests'
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
@@ -776,8 +960,16 @@ export interface FileRouteTypes {
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
     | '/drugs/$drugId/edit'
+    | '/field-calendar/crop-families/$familyId'
+    | '/field-calendar/crop-families/create'
     | '/field-calendar/crop-protection-applications/create'
+    | '/field-calendar/crop-protection-products/$cropProtectionProductId'
+    | '/field-calendar/crop-protection-products/create'
+    | '/field-calendar/crops/$cropId'
+    | '/field-calendar/crops/create'
     | '/field-calendar/fertilizer-applications/create'
+    | '/field-calendar/fertilizers/$fertilizerId'
+    | '/field-calendar/fertilizers/create'
     | '/field-calendar/harvests/$harvestId'
     | '/field-calendar/harvests/create'
     | '/field-calendar/plots/$plotId'
@@ -798,7 +990,11 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId'
     | '/sponsorships/programs'
     | '/treatments/$treatmentId'
+    | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-applications/$id/edit'
+    | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
+    | '/field-calendar/crops/$cropId/edit'
+    | '/field-calendar/fertilizers/$fertilizerId/edit'
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/tillages/$tillageId/edit'
     | '/sponsorships/programs/$programId/edit'
@@ -824,9 +1020,13 @@ export interface FileRouteTypes {
     | '/_authed/animals/turnout-journal'
     | '/_authed/contacts/create'
     | '/_authed/drugs/create'
+    | '/_authed/field-calendar/crop-families'
     | '/_authed/field-calendar/crop-protection-applications'
+    | '/_authed/field-calendar/crop-protection-products'
     | '/_authed/field-calendar/crop-rotations'
+    | '/_authed/field-calendar/crops'
     | '/_authed/field-calendar/fertilizer-applications'
+    | '/_authed/field-calendar/fertilizers'
     | '/_authed/field-calendar/harvests'
     | '/_authed/field-calendar/plots'
     | '/_authed/field-calendar/tillages'
@@ -846,8 +1046,16 @@ export interface FileRouteTypes {
     | '/_authed/animals/herds_/$herdId'
     | '/_authed/contacts/$contactId/edit'
     | '/_authed/drugs/$drugId/edit'
+    | '/_authed/field-calendar/crop-families_/$familyId'
+    | '/_authed/field-calendar/crop-families_/create'
     | '/_authed/field-calendar/crop-protection-applications_/create'
+    | '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId'
+    | '/_authed/field-calendar/crop-protection-products_/create'
+    | '/_authed/field-calendar/crops_/$cropId'
+    | '/_authed/field-calendar/crops_/create'
     | '/_authed/field-calendar/fertilizer-applications_/create'
+    | '/_authed/field-calendar/fertilizers_/$fertilizerId'
+    | '/_authed/field-calendar/fertilizers_/create'
     | '/_authed/field-calendar/harvests_/$harvestId'
     | '/_authed/field-calendar/harvests_/create'
     | '/_authed/field-calendar/plots_/$plotId'
@@ -868,7 +1076,11 @@ export interface FileRouteTypes {
     | '/_authed/sponsorships/$sponsorshipId/'
     | '/_authed/sponsorships/programs/'
     | '/_authed/treatments/$treatmentId/'
+    | '/_authed/field-calendar/crop-families_/$familyId_/edit'
     | '/_authed/field-calendar/crop-protection-applications_/$id/edit'
+    | '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit'
+    | '/_authed/field-calendar/crops_/$cropId_/edit'
+    | '/_authed/field-calendar/fertilizers_/$fertilizerId_/edit'
     | '/_authed/field-calendar/plots_/$plotId_/crop-rotations'
     | '/_authed/field-calendar/tillages_/$tillageId/edit'
     | '/_authed/sponsorships/programs/$programId/edit'
@@ -1078,11 +1290,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarHarvestsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/fertilizers': {
+      id: '/_authed/field-calendar/fertilizers'
+      path: '/field-calendar/fertilizers'
+      fullPath: '/field-calendar/fertilizers'
+      preLoaderRoute: typeof AuthedFieldCalendarFertilizersRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/fertilizer-applications': {
       id: '/_authed/field-calendar/fertilizer-applications'
       path: '/field-calendar/fertilizer-applications'
       fullPath: '/field-calendar/fertilizer-applications'
       preLoaderRoute: typeof AuthedFieldCalendarFertilizerApplicationsRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crops': {
+      id: '/_authed/field-calendar/crops'
+      path: '/field-calendar/crops'
+      fullPath: '/field-calendar/crops'
+      preLoaderRoute: typeof AuthedFieldCalendarCropsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/field-calendar/crop-rotations': {
@@ -1092,11 +1318,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarCropRotationsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/crop-protection-products': {
+      id: '/_authed/field-calendar/crop-protection-products'
+      path: '/field-calendar/crop-protection-products'
+      fullPath: '/field-calendar/crop-protection-products'
+      preLoaderRoute: typeof AuthedFieldCalendarCropProtectionProductsRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/crop-protection-applications': {
       id: '/_authed/field-calendar/crop-protection-applications'
       path: '/field-calendar/crop-protection-applications'
       fullPath: '/field-calendar/crop-protection-applications'
       preLoaderRoute: typeof AuthedFieldCalendarCropProtectionApplicationsRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-families': {
+      id: '/_authed/field-calendar/crop-families'
+      path: '/field-calendar/crop-families'
+      fullPath: '/field-calendar/crop-families'
+      preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/drugs/create': {
@@ -1288,6 +1528,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarHarvestsHarvestIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/fertilizers_/create': {
+      id: '/_authed/field-calendar/fertilizers_/create'
+      path: '/field-calendar/fertilizers/create'
+      fullPath: '/field-calendar/fertilizers/create'
+      preLoaderRoute: typeof AuthedFieldCalendarFertilizersCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/fertilizers_/$fertilizerId': {
+      id: '/_authed/field-calendar/fertilizers_/$fertilizerId'
+      path: '/field-calendar/fertilizers/$fertilizerId'
+      fullPath: '/field-calendar/fertilizers/$fertilizerId'
+      preLoaderRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/fertilizer-applications_/create': {
       id: '/_authed/field-calendar/fertilizer-applications_/create'
       path: '/field-calendar/fertilizer-applications/create'
@@ -1295,11 +1549,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarFertilizerApplicationsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/crops_/create': {
+      id: '/_authed/field-calendar/crops_/create'
+      path: '/field-calendar/crops/create'
+      fullPath: '/field-calendar/crops/create'
+      preLoaderRoute: typeof AuthedFieldCalendarCropsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crops_/$cropId': {
+      id: '/_authed/field-calendar/crops_/$cropId'
+      path: '/field-calendar/crops/$cropId'
+      fullPath: '/field-calendar/crops/$cropId'
+      preLoaderRoute: typeof AuthedFieldCalendarCropsCropIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-protection-products_/create': {
+      id: '/_authed/field-calendar/crop-protection-products_/create'
+      path: '/field-calendar/crop-protection-products/create'
+      fullPath: '/field-calendar/crop-protection-products/create'
+      preLoaderRoute: typeof AuthedFieldCalendarCropProtectionProductsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId': {
+      id: '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId'
+      path: '/field-calendar/crop-protection-products/$cropProtectionProductId'
+      fullPath: '/field-calendar/crop-protection-products/$cropProtectionProductId'
+      preLoaderRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/crop-protection-applications_/create': {
       id: '/_authed/field-calendar/crop-protection-applications_/create'
       path: '/field-calendar/crop-protection-applications/create'
       fullPath: '/field-calendar/crop-protection-applications/create'
       preLoaderRoute: typeof AuthedFieldCalendarCropProtectionApplicationsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-families_/create': {
+      id: '/_authed/field-calendar/crop-families_/create'
+      path: '/field-calendar/crop-families/create'
+      fullPath: '/field-calendar/crop-families/create'
+      preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-families_/$familyId': {
+      id: '/_authed/field-calendar/crop-families_/$familyId'
+      path: '/field-calendar/crop-families/$familyId'
+      fullPath: '/field-calendar/crop-families/$familyId'
+      preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/drugs/$drugId/edit': {
@@ -1358,11 +1654,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/fertilizers_/$fertilizerId_/edit': {
+      id: '/_authed/field-calendar/fertilizers_/$fertilizerId_/edit'
+      path: '/field-calendar/fertilizers/$fertilizerId/edit'
+      fullPath: '/field-calendar/fertilizers/$fertilizerId/edit'
+      preLoaderRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crops_/$cropId_/edit': {
+      id: '/_authed/field-calendar/crops_/$cropId_/edit'
+      path: '/field-calendar/crops/$cropId/edit'
+      fullPath: '/field-calendar/crops/$cropId/edit'
+      preLoaderRoute: typeof AuthedFieldCalendarCropsCropIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit': {
+      id: '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit'
+      path: '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
+      fullPath: '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
+      preLoaderRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/crop-protection-applications_/$id/edit': {
       id: '/_authed/field-calendar/crop-protection-applications_/$id/edit'
       path: '/field-calendar/crop-protection-applications/$id/edit'
       fullPath: '/field-calendar/crop-protection-applications/$id/edit'
       preLoaderRoute: typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/field-calendar/crop-families_/$familyId_/edit': {
+      id: '/_authed/field-calendar/crop-families_/$familyId_/edit'
+      path: '/field-calendar/crop-families/$familyId/edit'
+      fullPath: '/field-calendar/crop-families/$familyId/edit'
+      preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
   }
@@ -1394,9 +1718,13 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsTurnoutJournalRoute: typeof AuthedAnimalsTurnoutJournalRoute
   AuthedContactsCreateRoute: typeof AuthedContactsCreateRoute
   AuthedDrugsCreateRoute: typeof AuthedDrugsCreateRoute
+  AuthedFieldCalendarCropFamiliesRoute: typeof AuthedFieldCalendarCropFamiliesRoute
   AuthedFieldCalendarCropProtectionApplicationsRoute: typeof AuthedFieldCalendarCropProtectionApplicationsRoute
+  AuthedFieldCalendarCropProtectionProductsRoute: typeof AuthedFieldCalendarCropProtectionProductsRoute
   AuthedFieldCalendarCropRotationsRoute: typeof AuthedFieldCalendarCropRotationsRoute
+  AuthedFieldCalendarCropsRoute: typeof AuthedFieldCalendarCropsRoute
   AuthedFieldCalendarFertilizerApplicationsRoute: typeof AuthedFieldCalendarFertilizerApplicationsRoute
+  AuthedFieldCalendarFertilizersRoute: typeof AuthedFieldCalendarFertilizersRoute
   AuthedFieldCalendarHarvestsRoute: typeof AuthedFieldCalendarHarvestsRoute
   AuthedFieldCalendarPlotsRoute: typeof AuthedFieldCalendarPlotsRoute
   AuthedFieldCalendarTillagesRoute: typeof AuthedFieldCalendarTillagesRoute
@@ -1416,8 +1744,16 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
   AuthedContactsContactIdEditRoute: typeof AuthedContactsContactIdEditRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
+  AuthedFieldCalendarCropFamiliesFamilyIdRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
+  AuthedFieldCalendarCropFamiliesCreateRoute: typeof AuthedFieldCalendarCropFamiliesCreateRoute
   AuthedFieldCalendarCropProtectionApplicationsCreateRoute: typeof AuthedFieldCalendarCropProtectionApplicationsCreateRoute
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute
+  AuthedFieldCalendarCropProtectionProductsCreateRoute: typeof AuthedFieldCalendarCropProtectionProductsCreateRoute
+  AuthedFieldCalendarCropsCropIdRoute: typeof AuthedFieldCalendarCropsCropIdRoute
+  AuthedFieldCalendarCropsCreateRoute: typeof AuthedFieldCalendarCropsCreateRoute
   AuthedFieldCalendarFertilizerApplicationsCreateRoute: typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
+  AuthedFieldCalendarFertilizersFertilizerIdRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
+  AuthedFieldCalendarFertilizersCreateRoute: typeof AuthedFieldCalendarFertilizersCreateRoute
   AuthedFieldCalendarHarvestsHarvestIdRoute: typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   AuthedFieldCalendarHarvestsCreateRoute: typeof AuthedFieldCalendarHarvestsCreateRoute
   AuthedFieldCalendarPlotsPlotIdRoute: typeof AuthedFieldCalendarPlotsPlotIdRoute
@@ -1438,7 +1774,11 @@ interface AuthedRouteRouteChildren {
   AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
   AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
+  AuthedFieldCalendarCropFamiliesFamilyIdEditRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute: typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
+  AuthedFieldCalendarCropsCropIdEditRoute: typeof AuthedFieldCalendarCropsCropIdEditRoute
+  AuthedFieldCalendarFertilizersFertilizerIdEditRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   AuthedFieldCalendarPlotsPlotIdCropRotationsRoute: typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
@@ -1455,11 +1795,16 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsTurnoutJournalRoute: AuthedAnimalsTurnoutJournalRoute,
   AuthedContactsCreateRoute: AuthedContactsCreateRoute,
   AuthedDrugsCreateRoute: AuthedDrugsCreateRoute,
+  AuthedFieldCalendarCropFamiliesRoute: AuthedFieldCalendarCropFamiliesRoute,
   AuthedFieldCalendarCropProtectionApplicationsRoute:
     AuthedFieldCalendarCropProtectionApplicationsRoute,
+  AuthedFieldCalendarCropProtectionProductsRoute:
+    AuthedFieldCalendarCropProtectionProductsRoute,
   AuthedFieldCalendarCropRotationsRoute: AuthedFieldCalendarCropRotationsRoute,
+  AuthedFieldCalendarCropsRoute: AuthedFieldCalendarCropsRoute,
   AuthedFieldCalendarFertilizerApplicationsRoute:
     AuthedFieldCalendarFertilizerApplicationsRoute,
+  AuthedFieldCalendarFertilizersRoute: AuthedFieldCalendarFertilizersRoute,
   AuthedFieldCalendarHarvestsRoute: AuthedFieldCalendarHarvestsRoute,
   AuthedFieldCalendarPlotsRoute: AuthedFieldCalendarPlotsRoute,
   AuthedFieldCalendarTillagesRoute: AuthedFieldCalendarTillagesRoute,
@@ -1479,10 +1824,24 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
   AuthedContactsContactIdEditRoute: AuthedContactsContactIdEditRoute,
   AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,
+  AuthedFieldCalendarCropFamiliesFamilyIdRoute:
+    AuthedFieldCalendarCropFamiliesFamilyIdRoute,
+  AuthedFieldCalendarCropFamiliesCreateRoute:
+    AuthedFieldCalendarCropFamiliesCreateRoute,
   AuthedFieldCalendarCropProtectionApplicationsCreateRoute:
     AuthedFieldCalendarCropProtectionApplicationsCreateRoute,
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute:
+    AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdRoute,
+  AuthedFieldCalendarCropProtectionProductsCreateRoute:
+    AuthedFieldCalendarCropProtectionProductsCreateRoute,
+  AuthedFieldCalendarCropsCropIdRoute: AuthedFieldCalendarCropsCropIdRoute,
+  AuthedFieldCalendarCropsCreateRoute: AuthedFieldCalendarCropsCreateRoute,
   AuthedFieldCalendarFertilizerApplicationsCreateRoute:
     AuthedFieldCalendarFertilizerApplicationsCreateRoute,
+  AuthedFieldCalendarFertilizersFertilizerIdRoute:
+    AuthedFieldCalendarFertilizersFertilizerIdRoute,
+  AuthedFieldCalendarFertilizersCreateRoute:
+    AuthedFieldCalendarFertilizersCreateRoute,
   AuthedFieldCalendarHarvestsHarvestIdRoute:
     AuthedFieldCalendarHarvestsHarvestIdRoute,
   AuthedFieldCalendarHarvestsCreateRoute:
@@ -1509,8 +1868,16 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedSponsorshipsSponsorshipIdIndexRoute,
   AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
   AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
+  AuthedFieldCalendarCropFamiliesFamilyIdEditRoute:
+    AuthedFieldCalendarCropFamiliesFamilyIdEditRoute,
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute:
     AuthedFieldCalendarCropProtectionApplicationsIdEditRoute,
+  AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute:
+    AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute,
+  AuthedFieldCalendarCropsCropIdEditRoute:
+    AuthedFieldCalendarCropsCropIdEditRoute,
+  AuthedFieldCalendarFertilizersFertilizerIdEditRoute:
+    AuthedFieldCalendarFertilizersFertilizerIdEditRoute,
   AuthedFieldCalendarPlotsPlotIdCropRotationsRoute:
     AuthedFieldCalendarPlotsPlotIdCropRotationsRoute,
   AuthedSponsorshipsProgramsProgramIdEditRoute:

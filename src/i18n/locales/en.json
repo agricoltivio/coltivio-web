@@ -19,7 +19,8 @@
     "all": "All",
     "rowsPerPage": "Rows per page",
     "showingOf": "Showing {{showing}} of {{total}}",
-    "pageOf": "Page {{current}} of {{total}}"
+    "pageOf": "Page {{current}} of {{total}}",
+    "noSelection": "No selection"
   },
   "nav": {
     "groups": {
@@ -50,7 +51,11 @@
     "cropProtectionApplications": "Crop Protection",
     "harvests": "Harvests",
     "account": "Account",
-    "settings": "Settings"
+    "settings": "Settings",
+    "crops": "Crops",
+    "cropFamilies": "Crop Families",
+    "fertilizers": "Fertilizers",
+    "cropProtectionProducts": "Crop Protection Products"
   },
   "animals": {
     "title": "Animals",
@@ -721,5 +726,60 @@
       "weeks": "Weeks",
       "today": "Today"
     }
+  },
+  "crops": {
+    "title": "Crops",
+    "createCrop": "Create Crop",
+    "editCrop": "Edit Crop",
+    "cropDetails": "Crop Details",
+    "deleteConfirm": "Are you sure you want to delete this crop?",
+    "name": "Name",
+    "category": "Category",
+    "variety": "Variety",
+    "family": "Family",
+    "waitingTimeInYears": "Waiting Time (Years)",
+    "additionalNotes": "Additional Notes",
+    "categories": {
+      "grass": "Grass",
+      "grain": "Grain",
+      "vegetable": "Vegetable",
+      "fruit": "Fruit",
+      "other": "Other"
+    }
+  },
+  "cropFamilies": {
+    "title": "Crop Families",
+    "createCropFamily": "Create Crop Family",
+    "editCropFamily": "Edit Crop Family",
+    "familyDetails": "Family Details",
+    "deleteConfirm": "Are you sure you want to delete this crop family?",
+    "name": "Name",
+    "waitingTimeInYears": "Waiting Time (Years)",
+    "additionalNotes": "Additional Notes"
+  },
+  "fertilizers": {
+    "title": "Fertilizers",
+    "createFertilizer": "Create Fertilizer",
+    "editFertilizer": "Edit Fertilizer",
+    "fertilizerDetails": "Fertilizer Details",
+    "deleteConfirm": "Are you sure you want to delete this fertilizer?",
+    "name": "Name",
+    "type": "Type",
+    "unit": "Unit",
+    "description": "Description",
+    "types": {
+      "mineral": "Mineral",
+      "organic": "Organic"
+    }
+  },
+  "cropProtectionProducts": {
+    "title": "Crop Protection Products",
+    "createProduct": "Create Product",
+    "editProduct": "Edit Product",
+    "productDetails": "Product Details",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "name": "Name",
+    "unit": "Unit",
+    "description": "Description"
   }
 }

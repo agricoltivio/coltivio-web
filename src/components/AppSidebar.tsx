@@ -14,8 +14,10 @@ import { useTranslation } from "react-i18next";
 import {
   CreditCard,
   Droplets,
+  FlaskConical,
   HeartHandshake,
   Layers,
+  Leaf,
   Map,
   NotebookPen,
   NotepadText,
@@ -339,6 +341,62 @@ export function AppSidebar() {
                     to="/field-calendar/harvests"
                   >
                     <Wheat /> {t("nav.harvests")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crops"
+                  >
+                    <Leaf /> {t("nav.crops")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crop-families"
+                  >
+                    <Leaf /> {t("nav.cropFamilies")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/fertilizers"
+                  >
+                    <Droplets /> {t("nav.fertilizers")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crop-protection-products"
+                  >
+                    <FlaskConical /> {t("nav.cropProtectionProducts")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
