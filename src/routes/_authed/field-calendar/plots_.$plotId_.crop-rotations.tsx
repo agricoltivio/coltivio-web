@@ -1,0 +1,865 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { Plus, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { apiClient } from "@/api/client";
+import { cropsQueryOptions } from "@/api/crops.queries";
+import { plotPlanCropRotationsQueryOptions } from "@/api/cropRotations.queries";
+import { plotQueryOptions } from "@/api/plots.queries";
+import type { Crop } from "@/api/types";
+import { PageContent } from "@/components/PageContent";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  getAllGridLines,
+  getCropCategoryColor,
+  getScaleForZoomLevel,
+  getTodayX,
+  type ZoomLevel,
+} from "@/lib/cropRotationTimelineUtils";
+
+// --- Domain types scoped to this module ---
+
+type RecurrenceRule = {
+  interval: number; // every N years
+  until?: Date;
+};
+
+type RotationEntry = {
+  entryId: string; // local client-side ID (not the server rotation ID)
+  cropId: string;
+  fromDate: Date;
+  toDate: Date;
+  recurrence?: RecurrenceRule;
+  isNew: boolean; // true = added in this session, not yet on the server
+};
+
+type PlanTimelineBar = {
+  entryId: string;
+  left: number;
+  width: number;
+  cropName: string;
+  cropCategory: Crop["category"];
+  hasConflict: boolean;
+  isNew: boolean;
+  fromDate: Date;
+  toDate: Date;
+};
+
+// --- Pure utilities ---
+
+function addYears(date: Date, years: number): Date {
+  const result = new Date(date);
+  result.setFullYear(result.getFullYear() + years);
+  return result;
+}
+
+// Expand one entry into its concrete date occurrences up to timelineEnd.
+// Recurring entries produce multiple ranges; single entries produce one.
+function expandRanges(
+  entry: RotationEntry,
+  timelineEnd: Date,
+): Array<{ from: Date; to: Date }> {
+  if (!entry.recurrence) {
+    return [{ from: entry.fromDate, to: entry.toDate }];
+  }
+  const effectiveUntil =
+    entry.recurrence.until && entry.recurrence.until < timelineEnd
+      ? entry.recurrence.until
+      : timelineEnd;
+  const ranges: Array<{ from: Date; to: Date }> = [];
+  const durationMs = entry.toDate.getTime() - entry.fromDate.getTime();
+  let currentFrom = new Date(entry.fromDate);
+  let iteration = 0;
+  while (currentFrom <= effectiveUntil && iteration < 100) {
+    ranges.push({
+      from: new Date(currentFrom),
+      to: new Date(currentFrom.getTime() + durationMs),
+    });
+    currentFrom = addYears(currentFrom, entry.recurrence.interval);
+    iteration++;
+  }
+  return ranges;
+}
+
+// Returns a map of entryId → name of the conflicting crop.
+// Two entries conflict when any of their expanded date ranges overlap.
+function detectConflicts(
+  entries: RotationEntry[],
+  crops: Crop[],
+  timelineEnd: Date,
+): Map<string, string> {
+  const conflicts = new Map<string, string>();
+  const expanded = entries.map((e) => expandRanges(e, timelineEnd));
+
+  for (let i = 0; i < entries.length; i++) {
+    for (let j = i + 1; j < entries.length; j++) {
+      let overlapping = false;
+      outer: for (const rangeA of expanded[i]) {
+        for (const rangeB of expanded[j]) {
+          if (rangeA.from <= rangeB.to && rangeA.to >= rangeB.from) {
+            overlapping = true;
+            break outer;
+          }
+        }
+      }
+      if (overlapping) {
+        const nameI = crops.find((c) => c.id === entries[i].cropId)?.name ?? "?";
+        const nameJ = crops.find((c) => c.id === entries[j].cropId)?.name ?? "?";
+        if (!conflicts.has(entries[i].entryId)) conflicts.set(entries[i].entryId, nameJ);
+        if (!conflicts.has(entries[j].entryId)) conflicts.set(entries[j].entryId, nameI);
+      }
+    }
+  }
+  return conflicts;
+}
+
+// Build flat list of bars for the timeline (recurrences expanded, one bar per occurrence).
+function buildPlanTimelineBars(
+  entries: RotationEntry[],
+  crops: Crop[],
+  conflicts: Map<string, string>,
+  timelineStart: Date,
+  timelineEnd: Date,
+  pxPerDay: number,
+): PlanTimelineBar[] {
+  const MS_PER_DAY = 86_400_000;
+  const bars: PlanTimelineBar[] = [];
+
+  for (const entry of entries) {
+    const crop = crops.find((c) => c.id === entry.cropId);
+    if (!crop) continue;
+    const hasConflict = conflicts.has(entry.entryId);
+    for (const range of expandRanges(entry, timelineEnd)) {
+      const clampedFrom = range.from < timelineStart ? timelineStart : range.from;
+      const clampedTo = range.to > timelineEnd ? timelineEnd : range.to;
+      if (clampedFrom >= clampedTo) continue;
+      bars.push({
+        entryId: entry.entryId,
+        left: Math.max(
+          0,
+          ((clampedFrom.getTime() - timelineStart.getTime()) / MS_PER_DAY) * pxPerDay,
+        ),
+        width: Math.max(
+          2,
+          ((clampedTo.getTime() - clampedFrom.getTime()) / MS_PER_DAY) * pxPerDay,
+        ),
+        cropName: crop.name,
+        cropCategory: crop.category,
+        hasConflict,
+        isNew: entry.isNew,
+        fromDate: range.from,
+        toDate: range.to,
+      });
+    }
+  }
+  return bars;
+}
+
+// --- Route ---
+
+// Computed once per session — the planning window spans 10 years back to 25 years forward.
+const CURRENT_YEAR = new Date().getFullYear();
+const TIMELINE_START = new Date(CURRENT_YEAR - 10, 0, 1);
+const TIMELINE_END = new Date(CURRENT_YEAR + 25, 11, 31);
+const MS_PER_DAY = 86_400_000;
+
+export const Route = createFileRoute(
+  "/_authed/field-calendar/plots_/$plotId_/crop-rotations",
+)({
+  loader: ({ context: { queryClient }, params: { plotId } }) => {
+    queryClient.ensureQueryData(plotQueryOptions(plotId));
+    queryClient.ensureQueryData(plotPlanCropRotationsQueryOptions(plotId));
+    queryClient.ensureQueryData(cropsQueryOptions());
+  },
+  component: PlanCropRotations,
+});
+
+// --- Main planning component ---
+
+function PlanCropRotations() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { plotId } = Route.useParams();
+
+  const plotQuery = useQuery(plotQueryOptions(plotId));
+  const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
+  const cropsQuery = useQuery(cropsQueryOptions());
+
+  const plot = plotQuery.data;
+  const crops = cropsQuery.data?.result ?? [];
+
+  const [rotations, setRotations] = useState<RotationEntry[]>([]);
+  const [initialized, setInitialized] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<RotationEntry | null>(null);
+  const [zoom, setZoom] = useState<ZoomLevel>("years");
+
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const headerScrollRef = useRef<HTMLDivElement>(null);
+  // Stores the visible center date before a zoom change so scroll can be restored.
+  const centerDateRef = useRef<Date | null>(null);
+
+  // Initialize local rotation list from server data exactly once.
+  useEffect(() => {
+    if (initialized || !rotationsQuery.data) return;
+    setRotations(
+      rotationsQuery.data.result.map((r) => ({
+        entryId: `existing-${r.id}`,
+        cropId: r.cropId,
+        fromDate: new Date(r.fromDate),
+        toDate: new Date(r.toDate),
+        recurrence: r.recurrence
+          ? {
+              interval: r.recurrence.interval,
+              until: r.recurrence.until ? new Date(r.recurrence.until) : undefined,
+            }
+          : undefined,
+        isNew: false,
+      })),
+    );
+    setInitialized(true);
+  }, [rotationsQuery.data, initialized]);
+
+  // Scroll to today once, after the first time `initialized` becomes true.
+  // Using initialized as the trigger (rather than []) ensures the component has
+  // its final layout even on a hard reload where data loads asynchronously.
+  const initialScrollDoneRef = useRef(false);
+  useEffect(() => {
+    if (!initialized || initialScrollDoneRef.current) return;
+    initialScrollDoneRef.current = true;
+    const frame = requestAnimationFrame(() => {
+      if (!scrollAreaRef.current) return;
+      const pxPerDay = getScaleForZoomLevel(zoom);
+      const todayOffset = getTodayX(TIMELINE_START, pxPerDay);
+      scrollAreaRef.current.scrollLeft = Math.max(
+        0,
+        todayOffset - scrollAreaRef.current.clientWidth / 2,
+      );
+      if (headerScrollRef.current) {
+        headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialized]);
+
+  // After zoom changes, restore scroll so the same date stays centered.
+  useEffect(() => {
+    if (!scrollAreaRef.current || !centerDateRef.current) return;
+    const pxPerDay = getScaleForZoomLevel(zoom);
+    const centerDays =
+      (centerDateRef.current.getTime() - TIMELINE_START.getTime()) / MS_PER_DAY;
+    scrollAreaRef.current.scrollLeft = Math.max(
+      0,
+      centerDays * pxPerDay - scrollAreaRef.current.clientWidth / 2,
+    );
+    if (headerScrollRef.current) {
+      headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+    }
+    centerDateRef.current = null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoom]);
+
+  const pxPerDay = getScaleForZoomLevel(zoom);
+
+  const conflicts = useMemo(
+    () => detectConflicts(rotations, crops, TIMELINE_END),
+    [rotations, crops],
+  );
+  const hasConflicts = conflicts.size > 0;
+
+  const gridLines = useMemo(
+    () => getAllGridLines(zoom, TIMELINE_START, TIMELINE_END, pxPerDay),
+    [zoom, pxPerDay],
+  );
+  const totalWidth = Math.ceil(
+    ((TIMELINE_END.getTime() - TIMELINE_START.getTime()) / MS_PER_DAY) * pxPerDay,
+  );
+  const todayX = getTodayX(TIMELINE_START, pxPerDay);
+
+  const timelineBars = useMemo(
+    () =>
+      buildPlanTimelineBars(
+        rotations,
+        crops,
+        conflicts,
+        TIMELINE_START,
+        TIMELINE_END,
+        pxPerDay,
+      ),
+    [rotations, crops, conflicts, pxPerDay],
+  );
+
+  const handleBodyScroll = useCallback(() => {
+    if (headerScrollRef.current && scrollAreaRef.current) {
+      headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+    }
+  }, []);
+
+  function scrollToToday() {
+    if (!scrollAreaRef.current) return;
+    const todayOffset = getTodayX(TIMELINE_START, pxPerDay);
+    scrollAreaRef.current.scrollLeft = Math.max(
+      0,
+      todayOffset - scrollAreaRef.current.clientWidth / 2,
+    );
+    if (headerScrollRef.current) {
+      headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+    }
+  }
+
+  // Batch-replace all rotations for this plot. The server treats this as the full
+  // intended state (creates, updates, and deletes happen server-side by comparison).
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.POST("/v1/cropRotations/batch/byPlot", {
+        body: {
+          plotId,
+          crops: rotations.map((r) => ({
+            cropId: r.cropId,
+            fromDate: r.fromDate.toISOString(),
+            toDate: r.toDate.toISOString(),
+            ...(r.recurrence && {
+              recurrence: {
+                interval: r.recurrence.interval,
+                ...(r.recurrence.until && {
+                  until: r.recurrence.until.toISOString(),
+                }),
+              },
+            }),
+          })),
+        },
+      });
+      if (response.error) throw new Error("Failed to save crop rotations");
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cropRotations"] });
+      queryClient.invalidateQueries({ queryKey: ["plots"] });
+      router.history.back();
+    },
+  });
+
+  function openAddDialog() {
+    setEditingEntry(null);
+    setDialogOpen(true);
+  }
+
+  function openEditDialog(entry: RotationEntry) {
+    setEditingEntry(entry);
+    setDialogOpen(true);
+  }
+
+  function handleDialogSave(data: {
+    cropId: string;
+    fromDate: Date;
+    toDate: Date;
+    recurrence?: RecurrenceRule;
+  }) {
+    if (editingEntry) {
+      setRotations((prev) =>
+        prev.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)),
+      );
+    } else {
+      setRotations((prev) => [
+        ...prev,
+        { entryId: `new-${Date.now()}`, isNew: true, ...data },
+      ]);
+    }
+    setDialogOpen(false);
+  }
+
+  function handleDialogDelete(entryId: string) {
+    setRotations((prev) => prev.filter((r) => r.entryId !== entryId));
+    setDialogOpen(false);
+  }
+
+  const ROW_HEIGHT = 36;
+
+  return (
+    <PageContent
+      title={
+        plot
+          ? t("fieldCalendar.cropRotations.planFor", { name: plot.name })
+          : t("fieldCalendar.cropRotations.title")
+      }
+      showBackButton
+      backTo={() =>
+        router.history.back()
+      }
+    >
+      {/* Timeline — single row showing all entries with recurrences expanded */}
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="flex items-center justify-between">
+          <ToggleGroup
+            type="single"
+            value={zoom}
+            onValueChange={(value) => {
+              if (!value) return;
+              // Capture center date before the zoom change so the effect can restore it.
+              if (scrollAreaRef.current) {
+                const centerX =
+                  scrollAreaRef.current.scrollLeft +
+                  scrollAreaRef.current.clientWidth / 2;
+                centerDateRef.current = new Date(
+                  TIMELINE_START.getTime() + (centerX / pxPerDay) * MS_PER_DAY,
+                );
+              }
+              setZoom(value as ZoomLevel);
+            }}
+          >
+            <ToggleGroupItem value="years">
+              {t("fieldCalendar.timeline.years")}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="months">
+              {t("fieldCalendar.timeline.months")}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="weeks">
+              {t("fieldCalendar.timeline.weeks")}
+            </ToggleGroupItem>
+          </ToggleGroup>
+          <Button variant="outline" size="sm" onClick={scrollToToday}>
+            {t("fieldCalendar.timeline.today")}
+          </Button>
+        </div>
+
+        <div className="rounded-md border overflow-hidden">
+          {/* Scrollable header with time labels */}
+          <div className="flex border-b bg-muted/30">
+            <div
+              ref={headerScrollRef}
+              className="flex-1 overflow-hidden"
+              style={{ pointerEvents: "none" }}
+            >
+              <div className="relative" style={{ width: totalWidth, height: 32 }}>
+                {gridLines
+                  .filter((l) => l.isMajor && l.label)
+                  .map((line, i) => (
+                    <div
+                      key={`h-${i}`}
+                      className="absolute top-0 bottom-0 flex items-center border-l border-border px-1"
+                      style={{ left: line.x }}
+                    >
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {line.label}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Single-row scrollable body */}
+          <div
+            ref={scrollAreaRef}
+            className="overflow-x-auto"
+            onScroll={handleBodyScroll}
+          >
+            <div
+              className="relative"
+              style={{ width: totalWidth, height: ROW_HEIGHT }}
+            >
+              {/* Grid lines */}
+              {gridLines.map((line, i) => (
+                <div
+                  key={`g-${i}`}
+                  className={`absolute top-0 bottom-0 border-l ${line.isMajor ? "border-border" : "border-border/30"}`}
+                  style={{ left: line.x }}
+                />
+              ))}
+
+              {/* Today line */}
+              <div
+                className="absolute top-0 bottom-0 border-l-2 border-destructive z-10"
+                style={{ left: todayX }}
+              />
+
+              {/* Bars — click opens the edit dialog for that entry */}
+              {timelineBars.map((bar, i) => (
+                <button
+                  key={`${bar.entryId}-${i}`}
+                  className={`absolute top-1.5 bottom-1.5 rounded-sm opacity-80 hover:opacity-100 transition-opacity overflow-hidden flex items-center px-1 cursor-pointer ${
+                    bar.hasConflict
+                      ? "bg-destructive"
+                      : getCropCategoryColor(bar.cropCategory)
+                  } ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
+                  style={{ left: bar.left, width: Math.max(bar.width, 4) }}
+                  title={`${bar.cropName}: ${bar.fromDate.toLocaleDateString()} – ${bar.toDate.toLocaleDateString()}`}
+                  onClick={() => {
+                    const entry = rotations.find((r) => r.entryId === bar.entryId);
+                    if (entry) openEditDialog(entry);
+                  }}
+                >
+                  {bar.width > 30 && (
+                    <span className="text-white text-xs font-medium truncate leading-none">
+                      {bar.cropName}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rotation list */}
+      <div className="mb-24">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-sm">
+            {t("fieldCalendar.cropRotations.title")}
+          </h2>
+          <Button variant="outline" size="sm" onClick={openAddDialog}>
+            <Plus className="h-3.5 w-3.5 mr-1" />
+            {t("fieldCalendar.cropRotations.addRotation")}
+          </Button>
+        </div>
+
+        {rotations.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-10">
+            {t("fieldCalendar.cropRotations.noRotations")}
+          </p>
+        ) : (
+          <div className="rounded-md border divide-y">
+            {rotations.map((entry) => {
+              const crop = crops.find((c) => c.id === entry.cropId);
+              const conflictMsg = conflicts.get(entry.entryId);
+              return (
+                <button
+                  key={entry.entryId}
+                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : ""}`}
+                  onClick={() => openEditDialog(entry)}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium">{crop?.name ?? "—"}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">
+                        {entry.fromDate.toLocaleDateString()} –{" "}
+                        {entry.toDate.toLocaleDateString()}
+                        {entry.recurrence && (
+                          <span className="ml-2">
+                            {"· "}
+                            {t("fieldCalendar.cropRotations.repeatEveryPrefix")}{" "}
+                            {entry.recurrence.interval}{" "}
+                            {t("fieldCalendar.cropRotations.repeatEverySuffix")}
+                            {entry.recurrence.until &&
+                              ` (${t("fieldCalendar.cropRotations.repeatUntil")} ${entry.recurrence.until.toLocaleDateString()})`}
+                          </span>
+                        )}
+                      </div>
+                      {conflictMsg && (
+                        <div className="text-xs text-destructive mt-1">
+                          {t("fieldCalendar.cropRotations.overlapsWith", {
+                            crop: conflictMsg,
+                          })}
+                        </div>
+                      )}
+                    </div>
+                    {entry.isNew && (
+                      <span className="shrink-0 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
+                        {t("fieldCalendar.cropRotations.new")}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Sticky save bar — always visible at the bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t px-6 py-3 flex items-center gap-4 z-20">
+        {hasConflicts && (
+          <p className="text-sm text-destructive flex-1">
+            {t("fieldCalendar.cropRotations.resolveConflicts")}
+          </p>
+        )}
+        <div className="ml-auto flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() =>
+              router.history.back()
+            }
+          >
+            {t("common.cancel")}
+          </Button>
+          <Button
+            onClick={() => saveMutation.mutate()}
+            disabled={hasConflicts || saveMutation.isPending}
+          >
+            {t("fieldCalendar.cropRotations.savePlan")}
+          </Button>
+        </div>
+      </div>
+
+      <RotationDialog
+        open={dialogOpen}
+        entry={editingEntry}
+        crops={crops}
+        onSave={handleDialogSave}
+        onDelete={handleDialogDelete}
+        onClose={() => setDialogOpen(false)}
+      />
+    </PageContent>
+  );
+}
+
+// --- Add / Edit rotation dialog ---
+
+function RotationDialog({
+  open,
+  entry,
+  crops,
+  onSave,
+  onDelete,
+  onClose,
+}: {
+  open: boolean;
+  entry: RotationEntry | null;
+  crops: Crop[];
+  onSave: (data: {
+    cropId: string;
+    fromDate: Date;
+    toDate: Date;
+    recurrence?: RecurrenceRule;
+  }) => void;
+  onDelete: (entryId: string) => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+
+  const [cropId, setCropId] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [hasRecurrence, setHasRecurrence] = useState(false);
+  const [recurrenceInterval, setRecurrenceInterval] = useState("1");
+  const [hasUntil, setHasUntil] = useState(false);
+  const [untilDate, setUntilDate] = useState("");
+
+  // Sync form fields whenever the dialog opens (with a different entry or as a fresh add).
+  useEffect(() => {
+    if (!open) return;
+    if (entry) {
+      setCropId(entry.cropId);
+      setFromDate(entry.fromDate.toISOString().split("T")[0]);
+      setToDate(entry.toDate.toISOString().split("T")[0]);
+      if (entry.recurrence) {
+        setHasRecurrence(true);
+        setRecurrenceInterval(String(entry.recurrence.interval));
+        setHasUntil(!!entry.recurrence.until);
+        setUntilDate(
+          entry.recurrence.until
+            ? entry.recurrence.until.toISOString().split("T")[0]
+            : "",
+        );
+      } else {
+        setHasRecurrence(false);
+        setRecurrenceInterval("1");
+        setHasUntil(false);
+        setUntilDate("");
+      }
+    } else {
+      const today = new Date().toISOString().split("T")[0];
+      setCropId("");
+      setFromDate(today);
+      setToDate(today);
+      setHasRecurrence(false);
+      setRecurrenceInterval("1");
+      setHasUntil(false);
+      setUntilDate("");
+    }
+  }, [open, entry]);
+
+  function handleSave() {
+    if (!cropId || !fromDate || !toDate) return;
+    const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
+    onSave({
+      cropId,
+      fromDate: new Date(fromDate),
+      toDate: new Date(toDate),
+      recurrence: hasRecurrence
+        ? {
+            interval: intervalNum,
+            until: hasUntil && untilDate ? new Date(untilDate) : undefined,
+          }
+        : undefined,
+    });
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {entry
+              ? t("fieldCalendar.cropRotations.editRotation")
+              : t("fieldCalendar.cropRotations.addRotation")}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4 mt-2">
+          {/* Crop */}
+          <div className="space-y-1.5">
+            <Label>{t("fieldCalendar.cropRotations.crop")}</Label>
+            <Select value={cropId} onValueChange={setCropId}>
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={t("fieldCalendar.cropRotations.selectCrop")}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {crops.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Date range */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label>{t("fieldCalendar.cropRotations.fromDate")}</Label>
+              <Input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("fieldCalendar.cropRotations.toDate")}</Label>
+              <Input
+                type="date"
+                value={toDate}
+                min={fromDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Optional recurrence */}
+          <div>
+            {!hasRecurrence ? (
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={() => setHasRecurrence(true)}
+              >
+                <Plus className="h-3.5 w-3.5 mr-1" />
+                {t("fieldCalendar.cropRotations.addRecurrence")}
+              </Button>
+            ) : (
+              <div className="rounded-md border p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">
+                    {t("fieldCalendar.cropRotations.recurrence")}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={() => setHasRecurrence(false)}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span>{t("fieldCalendar.cropRotations.repeatEveryPrefix")}</span>
+                  <Input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={recurrenceInterval}
+                    onChange={(e) => setRecurrenceInterval(e.target.value)}
+                    className="w-16 h-7"
+                  />
+                  <span>{t("fieldCalendar.cropRotations.repeatEverySuffix")}</span>
+                </div>
+                {!hasUntil ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => setHasUntil(true)}
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1" />
+                    {t("fieldCalendar.cropRotations.addEndDate")}
+                  </Button>
+                ) : (
+                  <div className="flex items-end gap-2">
+                    <div className="space-y-1.5 flex-1">
+                      <Label className="text-xs">
+                        {t("fieldCalendar.cropRotations.repeatUntil")}
+                      </Label>
+                      <Input
+                        type="date"
+                        value={untilDate}
+                        min={toDate}
+                        onChange={(e) => setUntilDate(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 shrink-0"
+                      onClick={() => {
+                        setHasUntil(false);
+                        setUntilDate("");
+                      }}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          {entry && (
+            <Button
+              variant="destructive"
+              size="icon"
+              type="button"
+              onClick={() => onDelete(entry.entryId)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+          <Button variant="outline" className="flex-1" onClick={onClose}>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={handleSave}
+            disabled={!cropId || !fromDate || !toDate}
+          >
+            {t("common.save")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

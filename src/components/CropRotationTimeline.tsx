@@ -54,17 +54,24 @@ export function CropRotationTimeline({
 
   const todayX = getTodayX(timelineStart, pxPerDay);
 
-  // Scroll to today on initial mount
+  // Scroll to today once, after data has arrived (rotations.length > 0 or plots settled).
+  // Keying on plots.length means a hard reload — where data arrives asynchronously —
+  // still gets the correct clientWidth because the layout is finalized by then.
+  const initialScrollDoneRef = useRef(false);
   useEffect(() => {
-    if (!scrollAreaRef.current) return;
-    const todayOffset = getTodayX(timelineStart, pxPerDay);
-    const containerWidth = scrollAreaRef.current.clientWidth;
-    scrollAreaRef.current.scrollLeft = Math.max(0, todayOffset - containerWidth / 2);
-    if (headerScrollRef.current) {
-      headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
-    }
+    if (plots.length === 0 || initialScrollDoneRef.current) return;
+    initialScrollDoneRef.current = true;
+    const frame = requestAnimationFrame(() => {
+      if (!scrollAreaRef.current) return;
+      const todayOffset = getTodayX(timelineStart, pxPerDay);
+      scrollAreaRef.current.scrollLeft = Math.max(0, todayOffset - scrollAreaRef.current.clientWidth / 2);
+      if (headerScrollRef.current) {
+        headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+      }
+    });
+    return () => cancelAnimationFrame(frame);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [plots.length]);
 
   // After zoom changes, restore scroll so the same date stays centered
   useEffect(() => {
@@ -183,7 +190,7 @@ export function CropRotationTimeline({
                 style={{ height: ROW_HEIGHT }}
               >
                 <Link
-                  to="/field-calendar/plots/$plotId"
+                  to="/field-calendar/plots/$plotId/crop-rotations"
                   params={{ plotId: plotData.plotId }}
                   className="text-xs font-medium truncate hover:underline"
                 >

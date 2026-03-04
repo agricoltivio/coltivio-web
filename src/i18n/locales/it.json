@@ -610,7 +610,18 @@
       "sowingDate": "Data di semina",
       "repeatEveryPrefix": "Ogni",
       "repeatEverySuffix": "anni",
-      "repeatUntil": "Fino al"
+      "repeatUntil": "Fino al",
+      "planFor": "Pianificazione: {{name}}",
+      "addRotation": "Aggiungi rotazione",
+      "editRotation": "Modifica rotazione",
+      "noRotations": "Nessuna rotazione pianificata",
+      "overlapsWith": "Sovrapposizione con {{crop}}",
+      "resolveConflicts": "Risolvere i conflitti prima di salvare",
+      "savePlan": "Salva piano",
+      "new": "Nuovo",
+      "addRecurrence": "Aggiungi ricorrenza",
+      "recurrence": "Ricorrenza",
+      "addEndDate": "Aggiungi data di fine"
     },
     "tillages": {
       "title": "Lavorazione del suolo",

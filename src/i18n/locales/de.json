@@ -610,7 +610,18 @@
       "sowingDate": "Aussaatdatum",
       "repeatEveryPrefix": "Alle",
       "repeatEverySuffix": "Jahre",
-      "repeatUntil": "Bis"
+      "repeatUntil": "Bis",
+      "planFor": "Planung: {{name}}",
+      "addRotation": "Rotation hinzufügen",
+      "editRotation": "Rotation bearbeiten",
+      "noRotations": "Noch keine Rotationen geplant",
+      "overlapsWith": "Überschneidung mit {{crop}}",
+      "resolveConflicts": "Bitte Überschneidungen auflösen vor dem Speichern",
+      "savePlan": "Plan speichern",
+      "new": "Neu",
+      "addRecurrence": "Wiederholung hinzufügen",
+      "recurrence": "Wiederholung",
+      "addEndDate": "Enddatum hinzufügen"
     },
     "tillages": {
       "title": "Bodenbearbeitung",

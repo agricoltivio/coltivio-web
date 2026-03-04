@@ -402,8 +402,7 @@ function PlotsMap() {
 function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void }) {
   const { t } = useTranslation();
 
-  const navLinks = [
-    { label: t("fieldCalendar.cropRotations.title"), to: "/field-calendar/crop-rotations" as const },
+  const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
     { label: t("fieldCalendar.fertilizerApplications.title"), to: "/field-calendar/fertilizer-applications" as const },
     { label: t("fieldCalendar.tillages.title"), to: "/field-calendar/tillages" as const },
@@ -457,7 +456,15 @@ function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void })
         )}
 
         <div className="border-t pt-3 space-y-1">
-          {navLinks.map(({ label, to }) => (
+          {/* Crop rotations → per-plot planning screen */}
+          <Link
+            to="/field-calendar/plots/$plotId/crop-rotations"
+            params={{ plotId: plot.id }}
+            className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors"
+          >
+            {t("fieldCalendar.cropRotations.title")}
+          </Link>
+          {searchNavLinks.map(({ label, to }) => (
             <Link
               key={to}
               to={to}

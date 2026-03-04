@@ -610,7 +610,18 @@
       "sowingDate": "Sowing date",
       "repeatEveryPrefix": "Repeats every",
       "repeatEverySuffix": "years",
-      "repeatUntil": "Until"
+      "repeatUntil": "Until",
+      "planFor": "Plan: {{name}}",
+      "addRotation": "Add Rotation",
+      "editRotation": "Edit Rotation",
+      "noRotations": "No rotations planned yet",
+      "overlapsWith": "Overlaps with {{crop}}",
+      "resolveConflicts": "Please resolve conflicts before saving",
+      "savePlan": "Save Plan",
+      "new": "New",
+      "addRecurrence": "Add Recurrence",
+      "recurrence": "Recurrence",
+      "addEndDate": "Add End Date"
     },
     "tillages": {
       "title": "Tillages",

@@ -59,19 +59,22 @@ function CropRotations() {
       title={t("fieldCalendar.cropRotations.title")}
       showBackButton={false}
     >
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/crop-rotations/create",
-              search: plotId ? { plotId } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("fieldCalendar.cropRotations.create")}
-        </Button>
-      </div>
+      {/* Planning is per-plot — only show when a plot is filtered */}
+      {plotId && (
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/field-calendar/plots/$plotId/crop-rotations",
+                params: { plotId },
+              })
+            }
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.cropRotations.planFor", { name: "" }).trim()}
+          </Button>
+        </div>
+      )}
       <CropRotationTimeline
         rotations={filteredRotations}
         plots={filteredPlots}
@@ -79,12 +82,15 @@ function CropRotations() {
         onZoomChange={setZoom}
         timelineStart={timelineStart}
         timelineEnd={timelineEnd}
-        onBarClick={(rotationId) =>
-          navigate({
-            to: "/field-calendar/crop-rotations/$rotationId/edit",
-            params: { rotationId },
-          })
-        }
+        onBarClick={(rotationId) => {
+          const rotation = allRotations.find((r) => r.id === rotationId);
+          if (rotation) {
+            navigate({
+              to: "/field-calendar/plots/$plotId/crop-rotations",
+              params: { plotId: rotation.plotId },
+            });
+          }
+        }}
       />
     </PageContent>
   );

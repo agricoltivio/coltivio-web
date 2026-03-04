@@ -37,12 +37,6 @@ function PlotDetail() {
 
   const navLinks = [
     {
-      icon: RefreshCw,
-      label: t("fieldCalendar.cropRotations.title"),
-      to: "/field-calendar/crop-rotations" as const,
-      search: { plotId },
-    },
-    {
       icon: Wheat,
       label: t("fieldCalendar.harvests.title"),
       to: "/field-calendar/harvests" as const,
@@ -101,6 +95,20 @@ function PlotDetail() {
 
       {/* Navigation list */}
       <div className="rounded-md border divide-y">
+        {/* Crop rotations → per-plot planning screen */}
+        <Link
+          to="/field-calendar/plots/$plotId/crop-rotations"
+          params={{ plotId }}
+          className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">
+              {t("fieldCalendar.cropRotations.title")}
+            </span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
         {navLinks.map(({ icon: Icon, label, to, search }) => (
           <Link
             key={to}
