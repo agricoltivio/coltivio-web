@@ -89,11 +89,14 @@ function PlotsMap() {
     [selectedPlotId, plots],
   );
 
+  // Plots with size === 0 have empty/invalid geometry — exclude from map, keep in list.
+  const mappablePlots = useMemo(() => plots.filter((p) => p.size > 0), [plots]);
+
   // Build GeoJSON with color + selected properties for data-driven styling.
   // Recomputes when plots or selectedPlotId changes so the selected property stays current.
   const geojson = useMemo<GeoJSON.FeatureCollection>(() => ({
     type: "FeatureCollection",
-    features: plots.map((plot) => ({
+    features: mappablePlots.map((plot) => ({
       type: "Feature",
       id: plot.id,
       properties: {
@@ -104,12 +107,28 @@ function PlotsMap() {
       },
       geometry: plot.geometry,
     })),
-  }), [plots, selectedPlotId]);
+  }), [mappablePlots, selectedPlotId]);
 
-  // Fly to a plot's center of mass when selected.
+  // Separate Point source for labels: one point per plot at the center of mass of the full
+  // MultiPolygon. Using a Point source ensures exactly one label per plot regardless of how
+  // many sub-polygons the MultiPolygon contains (MapLibre otherwise places one per sub-part).
+  const labelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
+    type: "FeatureCollection",
+    features: mappablePlots.map((plot) => {
+      const center = turf.centerOfMass({ type: "Feature", geometry: plot.geometry, properties: {} });
+      return {
+        type: "Feature",
+        id: plot.id,
+        properties: { name: plot.name },
+        geometry: center.geometry,
+      };
+    }),
+  }), [mappablePlots]);
+
+  // Fly to a plot's center of mass when selected — skipped for size-0 plots with no geometry.
   useEffect(() => {
     if (!selectedPlotId || !mapRef.current) return;
-    const plot = plots.find((p) => p.id === selectedPlotId);
+    const plot = mappablePlots.find((p) => p.id === selectedPlotId);
     if (!plot) return;
     const center = turf.centerOfMass({
       type: "Feature",
@@ -118,7 +137,7 @@ function PlotsMap() {
     });
     const [lng, lat] = center.geometry.coordinates;
     mapRef.current.flyTo({ center: [lng, lat], duration: 800 });
-  }, [selectedPlotId, plots]);
+  }, [selectedPlotId, mappablePlots]);
 
   // Add plots source + layers imperatively once the map style has loaded.
   const handleMapLoad = () => {
@@ -126,6 +145,11 @@ function PlotsMap() {
     setMapReady(true);
     const map = mapRef.current.getMap();
     map.addSource("plots", {
+      type: "geojson",
+      data: { type: "FeatureCollection", features: [] },
+    });
+    // Separate Point source so each MultiPolygon gets exactly one label at its center of mass.
+    map.addSource("plots-labels", {
       type: "geojson",
       data: { type: "FeatureCollection", features: [] },
     });
@@ -150,7 +174,7 @@ function PlotsMap() {
     map.addLayer({
       id: "plots-label",
       type: "symbol",
-      source: "plots",
+      source: "plots-labels",
       layout: {
         "text-field": ["get", "name"],
         "text-size": 13,
@@ -175,14 +199,19 @@ function PlotsMap() {
     hasCentered.current = true;
   }, [mapReady, farm, savedViewport]);
 
-  // Push updated geojson into the source whenever plots or selection changes.
+  // Push updated geojson into sources whenever plots or selection changes.
   useEffect(() => {
     if (!mapReady || !mapRef.current) return;
-    const source = mapRef.current.getMap().getSource("plots");
-    if (source instanceof maplibregl.GeoJSONSource) {
-      source.setData(geojson);
+    const map = mapRef.current.getMap();
+    const plotsSource = map.getSource("plots");
+    if (plotsSource instanceof maplibregl.GeoJSONSource) {
+      plotsSource.setData(geojson);
     }
-  }, [mapReady, geojson]);
+    const labelsSource = map.getSource("plots-labels");
+    if (labelsSource instanceof maplibregl.GeoJSONSource) {
+      labelsSource.setData(labelsGeojson);
+    }
+  }, [mapReady, geojson, labelsGeojson]);
 
   const fuse = useMemo(
     () => new Fuse(plots, { keys: ["name", "localId"], threshold: 0.4 }),
