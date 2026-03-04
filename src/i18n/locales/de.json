@@ -595,7 +595,9 @@
       "usage": "Nutzungscode",
       "cuttingDate": "Schnittzeitpunkt",
       "localId": "Parzelle",
-      "currentCrop": "Aktuelle Kultur"
+      "currentCrop": "Aktuelle Kultur",
+      "additionalNotes": "Notizen",
+      "viewDetails": "Details anzeigen"
     },
     "cropRotations": {
       "title": "Fruchtfolge",

@@ -595,7 +595,9 @@
       "usage": "Code d'utilisation",
       "cuttingDate": "Date de coupe",
       "localId": "Parcelle",
-      "currentCrop": "Culture actuelle"
+      "currentCrop": "Culture actuelle",
+      "additionalNotes": "Notes",
+      "viewDetails": "Voir les détails"
     },
     "cropRotations": {
       "title": "Rotation des cultures",

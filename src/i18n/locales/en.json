@@ -595,7 +595,9 @@
       "usage": "Usage code",
       "cuttingDate": "Cutting date",
       "localId": "Parcel",
-      "currentCrop": "Current crop"
+      "currentCrop": "Current crop",
+      "additionalNotes": "Notes",
+      "viewDetails": "View details"
     },
     "cropRotations": {
       "title": "Crop Rotations",
