@@ -139,19 +139,27 @@ function PlotsMap() {
     mapRef.current.flyTo({ center: [lng, lat], duration: 800 });
   }, [selectedPlotId, mappablePlots]);
 
+  // Keep refs to the latest geojson so onLoad can read current data without stale closures.
+  // Assigning in render (not useEffect) ensures they're always up-to-date synchronously.
+  const geojsonRef = useRef(geojson);
+  const labelsGeojsonRef = useRef(labelsGeojson);
+  geojsonRef.current = geojson;
+  labelsGeojsonRef.current = labelsGeojson;
+
   // Add plots source + layers imperatively once the map style has loaded.
-  const handleMapLoad = () => {
-    if (!mapRef.current) return;
-    setMapReady(true);
-    const map = mapRef.current.getMap();
+  // Uses e.target (the MapLibre map from the event) instead of mapRef.current to avoid
+  // any ref-timing edge cases. Sources are initialized with the current geojson immediately
+  // so plots are visible as soon as the map loads, regardless of React's effect scheduling.
+  const handleMapLoad = (e: maplibregl.MapLibreEvent) => {
+    const map = e.target;
     map.addSource("plots", {
       type: "geojson",
-      data: { type: "FeatureCollection", features: [] },
+      data: geojsonRef.current,
     });
     // Separate Point source so each MultiPolygon gets exactly one label at its center of mass.
     map.addSource("plots-labels", {
       type: "geojson",
-      data: { type: "FeatureCollection", features: [] },
+      data: labelsGeojsonRef.current,
     });
     map.addLayer({
       id: "plots-fill",
@@ -187,6 +195,9 @@ function PlotsMap() {
         "text-opacity": ["step", ["zoom"], 0, 14, 1],
       },
     });
+    // Set mapReady AFTER all sources and layers are added so the data-push effect
+    // always finds the sources present when it runs.
+    setMapReady(true);
   };
 
   // Jump to farm location at zoom 17 once ready — skipped if a saved viewport exists.
