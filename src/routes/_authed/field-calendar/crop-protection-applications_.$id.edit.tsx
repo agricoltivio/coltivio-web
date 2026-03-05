@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -10,8 +11,19 @@ import type {
   CropProtectionApplication,
   FertilizerApplication,
 } from "@/api/types";
+import {
+  CROP_PROTECTION_PRODUCT_UNITS,
+  type CropProtectionProductUnit,
+} from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -62,11 +74,19 @@ type FormData = {
   additionalNotes: string;
 };
 
+type ProductModalFormData = {
+  name: string;
+  unit: CropProtectionProductUnit;
+  description: string;
+};
+
 function EditCropProtectionApplication() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { id } = Route.useParams();
+
+  const [createProductOpen, setCreateProductOpen] = useState(false);
 
   const allAppsQuery = useQuery(cropProtectionApplicationsQueryOptions());
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
@@ -84,6 +104,10 @@ function EditCropProtectionApplication() {
       numberOfUnits: "1",
       additionalNotes: "",
     },
+  });
+
+  const productForm = useForm<ProductModalFormData>({
+    defaultValues: { name: "", unit: "ml", description: "" },
   });
 
   useEffect(() => {
@@ -132,6 +156,34 @@ function EditCropProtectionApplication() {
     },
   });
 
+  const createProductMutation = useMutation({
+    mutationFn: async (data: ProductModalFormData) => {
+      const response = await apiClient.POST("/v1/cropProtectionProducts", {
+        body: {
+          name: data.name,
+          unit: data.unit,
+          description: data.description || undefined,
+        },
+      });
+      if (response.error)
+        throw new Error("Failed to create crop protection product");
+      return response.data.data;
+    },
+    onSuccess: (newProduct) => {
+      queryClient.setQueryData(
+        cropProtectionProductsQueryOptions().queryKey,
+        (old) => {
+          if (!old) return old;
+          return { ...old, result: [...old.result, newProduct] };
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
+      setValue("productId", newProduct.id);
+      setCreateProductOpen(false);
+      productForm.reset();
+    },
+  });
+
   const products = productsQuery.data?.result ?? [];
   const watchedProductId = watch("productId");
   const watchedMethod = watch("method");
@@ -151,21 +203,33 @@ function EditCropProtectionApplication() {
       >
         <div className="space-y-1">
           <Label>{t("fieldCalendar.cropProtectionApplications.product")}</Label>
-          <Select
-            value={watchedProductId}
-            onValueChange={(v) => setValue("productId", v)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {products.map((product) => (
-                <SelectItem key={product.id} value={product.id}>
-                  {product.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex gap-1">
+            <div className="flex-1 min-w-0">
+            <Select
+              value={watchedProductId}
+              onValueChange={(v) => { if (v) setValue("productId", v); }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {products.map((product) => (
+                  <SelectItem key={product.id} value={product.id}>
+                    {product.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setCreateProductOpen(true)}
+            >
+              <PlusIcon className="size-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-1">
@@ -261,6 +325,72 @@ function EditCropProtectionApplication() {
           </Button>
         </div>
       </form>
+
+      {/* Inline create product dialog */}
+      <Dialog
+        open={createProductOpen}
+        onOpenChange={(open) => {
+          setCreateProductOpen(open);
+          if (!open) productForm.reset();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("cropProtectionProducts.createProduct")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.name")} *</Label>
+              <Input
+                {...productForm.register("name", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.unit")} *</Label>
+              <Select
+                value={productForm.watch("unit")}
+                onValueChange={(v) =>
+                  productForm.setValue("unit", v as CropProtectionProductUnit)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CROP_PROTECTION_PRODUCT_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {unit}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.description")}</Label>
+              <Textarea {...productForm.register("description")} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateProductOpen(false);
+                productForm.reset();
+              }}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={productForm.handleSubmit((data) =>
+                createProductMutation.mutate(data),
+              )}
+              disabled={createProductMutation.isPending}
+            >
+              {t("common.create")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContent>
   );
 }

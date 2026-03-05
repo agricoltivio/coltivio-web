@@ -1,18 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { z } from "zod";
 import { Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
-import { cropsQueryOptions } from "@/api/crops.queries";
+import { cropFamiliesQueryOptions, cropsQueryOptions } from "@/api/crops.queries";
 import { plotPlanCropRotationsQueryOptions } from "@/api/cropRotations.queries";
 import { plotQueryOptions } from "@/api/plots.queries";
-import type { Crop } from "@/api/types";
+import { CROP_CATEGORIES, type Crop, type CropCategory } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -25,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   getAllGridLines,
@@ -180,13 +184,17 @@ const TIMELINE_START = new Date(CURRENT_YEAR - 10, 0, 1);
 const TIMELINE_END = new Date(CURRENT_YEAR + 25, 11, 31);
 const MS_PER_DAY = 86_400_000;
 
+const searchSchema = z.object({});
+
 export const Route = createFileRoute(
   "/_authed/field-calendar/plots_/$plotId_/crop-rotations",
 )({
+  validateSearch: searchSchema,
   loader: ({ context: { queryClient }, params: { plotId } }) => {
     queryClient.ensureQueryData(plotQueryOptions(plotId));
     queryClient.ensureQueryData(plotPlanCropRotationsQueryOptions(plotId));
     queryClient.ensureQueryData(cropsQueryOptions());
+    queryClient.ensureQueryData(cropFamiliesQueryOptions());
   },
   component: PlanCropRotations,
 });
@@ -198,7 +206,6 @@ function PlanCropRotations() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { plotId } = Route.useParams();
-
   const plotQuery = useQuery(plotQueryOptions(plotId));
   const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
   const cropsQuery = useQuery(cropsQueryOptions());
@@ -622,6 +629,15 @@ function PlanCropRotations() {
   );
 }
 
+type CropModalFormData = {
+  name: string;
+  category: CropCategory;
+  variety: string;
+  familyId: string;
+  waitingTimeInYears: string;
+  additionalNotes: string;
+};
+
 // --- Add / Edit rotation dialog ---
 
 function RotationDialog({
@@ -645,6 +661,7 @@ function RotationDialog({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [cropId, setCropId] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -653,6 +670,51 @@ function RotationDialog({
   const [recurrenceInterval, setRecurrenceInterval] = useState("1");
   const [hasUntil, setHasUntil] = useState(false);
   const [untilDate, setUntilDate] = useState("");
+  const [createCropOpen, setCreateCropOpen] = useState(false);
+
+  const familiesQuery = useQuery(cropFamiliesQueryOptions());
+  const families = familiesQuery.data?.result ?? [];
+
+  const cropForm = useForm<CropModalFormData>({
+    defaultValues: {
+      name: "",
+      category: "grain",
+      variety: "",
+      familyId: "",
+      waitingTimeInYears: "",
+      additionalNotes: "",
+    },
+  });
+
+  const createCropMutation = useMutation({
+    mutationFn: async (data: CropModalFormData) => {
+      const response = await apiClient.POST("/v1/crops", {
+        body: {
+          name: data.name,
+          category: data.category,
+          variety: data.variety || undefined,
+          waitingTimeInYears: data.waitingTimeInYears
+            ? Number(data.waitingTimeInYears)
+            : undefined,
+          familyId: data.familyId || undefined,
+          additionalNotes: data.additionalNotes || undefined,
+          usageCodes: [],
+        },
+      });
+      if (response.error) throw new Error("Failed to create crop");
+      return response.data.data;
+    },
+    onSuccess: (newCrop) => {
+      queryClient.setQueryData(cropsQueryOptions().queryKey, (old) => {
+        if (!old) return old;
+        return { ...old, result: [...old.result, newCrop] };
+      });
+      queryClient.invalidateQueries({ queryKey: ["crops"] });
+      setCropId(newCrop.id);
+      setCreateCropOpen(false);
+      cropForm.reset();
+    },
+  });
 
   // Sync form fields whenever the dialog opens (with a different entry or as a fresh add).
   useEffect(() => {
@@ -719,8 +781,10 @@ function RotationDialog({
           {/* Crop */}
           <div className="space-y-1.5">
             <Label>{t("fieldCalendar.cropRotations.crop")}</Label>
-            <Select value={cropId} onValueChange={setCropId}>
-              <SelectTrigger>
+            <div className="flex gap-1">
+            <div className="flex-1 min-w-0">
+            <Select value={cropId} onValueChange={(v) => { if (v) setCropId(v); }}>
+              <SelectTrigger className="w-full">
                 <SelectValue
                   placeholder={t("fieldCalendar.cropRotations.selectCrop")}
                 />
@@ -733,6 +797,16 @@ function RotationDialog({
                 ))}
               </SelectContent>
             </Select>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setCreateCropOpen(true)}
+            >
+              <Plus className="size-4" />
+            </Button>
+            </div>
           </div>
 
           {/* Date range */}
@@ -859,6 +933,105 @@ function RotationDialog({
           </Button>
         </div>
       </DialogContent>
+
+      {/* Inline create crop dialog (nested inside RotationDialog's Dialog) */}
+      <Dialog
+        open={createCropOpen}
+        onOpenChange={(isOpen) => {
+          setCreateCropOpen(isOpen);
+          if (!isOpen) cropForm.reset();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("crops.createCrop")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>{t("crops.name")} *</Label>
+              <Input {...cropForm.register("name", { required: true })} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("crops.category")} *</Label>
+              <Select
+                value={cropForm.watch("category")}
+                onValueChange={(v) =>
+                  cropForm.setValue("category", v as CropCategory)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CROP_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {t(`crops.categories.${cat}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("crops.variety")}</Label>
+              <Input {...cropForm.register("variety")} />
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("crops.family")}</Label>
+              <Select
+                value={cropForm.watch("familyId") || "__none__"}
+                onValueChange={(v) =>
+                  cropForm.setValue("familyId", v === "__none__" ? "" : v)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("common.noSelection")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">
+                    {t("common.noSelection")}
+                  </SelectItem>
+                  {families.map((family) => (
+                    <SelectItem key={family.id} value={family.id}>
+                      {family.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("crops.waitingTimeInYears")}</Label>
+              <Input
+                type="number"
+                min="0"
+                {...cropForm.register("waitingTimeInYears")}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t("crops.additionalNotes")}</Label>
+              <Textarea {...cropForm.register("additionalNotes")} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateCropOpen(false);
+                cropForm.reset();
+              }}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={cropForm.handleSubmit((data) =>
+                createCropMutation.mutate(data),
+              )}
+              disabled={createCropMutation.isPending}
+            >
+              {t("common.create")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

@@ -1,15 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { apiClient } from "@/api/client";
-import { cropsQueryOptions } from "@/api/crops.queries";
+import { cropFamiliesQueryOptions, cropsQueryOptions } from "@/api/crops.queries";
 import { harvestPresetsQueryOptions } from "@/api/harvests.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
-import type { Harvest, HarvestPreset } from "@/api/types";
+import {
+  CROP_CATEGORIES,
+  type CropCategory,
+  type Harvest,
+  type HarvestPreset,
+} from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { PlotCombobox } from "@/components/PlotCombobox";
@@ -62,6 +67,7 @@ export const Route = createFileRoute(
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(plotsQueryOptions());
     queryClient.ensureQueryData(cropsQueryOptions());
+    queryClient.ensureQueryData(cropFamiliesQueryOptions());
     queryClient.ensureQueryData(harvestPresetsQueryOptions());
   },
   component: CreateHarvest,
@@ -79,6 +85,14 @@ type FormData = {
   additionalNotes: string;
 };
 
+type CropModalFormData = {
+  name: string;
+  category: CropCategory;
+  variety: string;
+  familyId: string;
+  waitingTimeInYears: string;
+  additionalNotes: string;
+};
 
 function CreateHarvest() {
   const { t } = useTranslation();
@@ -90,10 +104,12 @@ function CreateHarvest() {
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
+  const [createCropOpen, setCreateCropOpen] = useState(false);
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const cropsQuery = useQuery(cropsQueryOptions());
   const presetsQuery = useQuery(harvestPresetsQueryOptions());
+  const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
   const { register, handleSubmit, setValue, watch } = useForm<FormData>({
     defaultValues: {
@@ -105,6 +121,17 @@ function CreateHarvest() {
       numberOfUnits: "1",
       harvestCount: "",
       conservationMethod: "",
+      additionalNotes: "",
+    },
+  });
+
+  const cropForm = useForm<CropModalFormData>({
+    defaultValues: {
+      name: "",
+      category: "grain",
+      variety: "",
+      familyId: "",
+      waitingTimeInYears: "",
       additionalNotes: "",
     },
   });
@@ -188,16 +215,45 @@ function CreateHarvest() {
     },
   });
 
+  const createCropMutation = useMutation({
+    mutationFn: async (data: CropModalFormData) => {
+      const response = await apiClient.POST("/v1/crops", {
+        body: {
+          name: data.name,
+          category: data.category,
+          variety: data.variety || undefined,
+          waitingTimeInYears: data.waitingTimeInYears
+            ? Number(data.waitingTimeInYears)
+            : undefined,
+          familyId: data.familyId || undefined,
+          additionalNotes: data.additionalNotes || undefined,
+          usageCodes: [],
+        },
+      });
+      if (response.error) throw new Error("Failed to create crop");
+      return response.data.data;
+    },
+    onSuccess: (newCrop) => {
+      queryClient.setQueryData(cropsQueryOptions().queryKey, (old) => {
+        if (!old) return old;
+        return { ...old, result: [...old.result, newCrop] };
+      });
+      setValue("cropId", newCrop.id);
+      setCreateCropOpen(false);
+      cropForm.reset();
+    },
+  });
+
   const plots = plotsQuery.data?.result ?? [];
   const crops = cropsQuery.data?.result ?? [];
   const presets = presetsQuery.data?.result ?? [];
+  const families = familiesQuery.data?.result ?? [];
 
   const watchedPlotId = watch("plotId");
   const watchedCropId = watch("cropId");
   const watchedUnit = watch("unit");
   const watchedConservation = watch("conservationMethod");
   const watchedKilosPerUnit = watch("kilosPerUnit");
-
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -231,23 +287,35 @@ function CreateHarvest() {
 
           <div className="space-y-1 flex-1 min-w-[180px]">
             <Label>{t("fieldCalendar.harvests.crop")}</Label>
-            <Select
-              value={watchedCropId}
-              onValueChange={(v) => setValue("cropId", v)}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={t("fieldCalendar.cropRotations.selectCrop")}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {crops.map((crop) => (
-                  <SelectItem key={crop.id} value={crop.id}>
-                    {crop.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1">
+              <div className="flex-1 min-w-0">
+              <Select
+                value={watchedCropId}
+                onValueChange={(v) => { if (v) setValue("cropId", v); }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={t("fieldCalendar.cropRotations.selectCrop")}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {crops.map((crop) => (
+                    <SelectItem key={crop.id} value={crop.id}>
+                      {crop.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateCropOpen(true)}
+              >
+                <PlusIcon className="size-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -291,35 +359,35 @@ function CreateHarvest() {
             </Button>
           </div>
 
-          {/* Unit */}
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.unit")}</Label>
-            <Select
-              value={watchedUnit}
-              onValueChange={(v) => setValue("unit", v as HarvestUnit)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {HARVEST_UNITS.map((unit) => (
-                  <SelectItem key={unit} value={unit}>
-                    {t(`fieldCalendar.harvests.units.${unit}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* kg per unit */}
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.kilosPerUnit")}</Label>
-            <Input
-              type="number"
-              min={0}
-              step="0.1"
-              {...register("kilosPerUnit", { required: true })}
-            />
+          {/* kg per unit + Unit */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.harvests.kilosPerUnit")}</Label>
+              <Input
+                type="number"
+                min={0}
+                step="0.1"
+                {...register("kilosPerUnit", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.harvests.unit")}</Label>
+              <Select
+                value={watchedUnit}
+                onValueChange={(v) => setValue("unit", v as HarvestUnit)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {HARVEST_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {t(`fieldCalendar.harvests.units.${unit}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Conservation method */}
@@ -463,6 +531,105 @@ function CreateHarvest() {
               onClick={() => setManagePresetsOpen(false)}
             >
               {t("common.close")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Inline create crop dialog */}
+      <Dialog
+        open={createCropOpen}
+        onOpenChange={(open) => {
+          setCreateCropOpen(open);
+          if (!open) cropForm.reset();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("crops.createCrop")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("crops.name")} *</Label>
+              <Input {...cropForm.register("name", { required: true })} />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("crops.category")} *</Label>
+              <Select
+                value={cropForm.watch("category")}
+                onValueChange={(v) =>
+                  cropForm.setValue("category", v as CropCategory)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CROP_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {t(`crops.categories.${cat}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("crops.variety")}</Label>
+              <Input {...cropForm.register("variety")} />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("crops.family")}</Label>
+              <Select
+                value={cropForm.watch("familyId") || "__none__"}
+                onValueChange={(v) =>
+                  cropForm.setValue("familyId", v === "__none__" ? "" : v)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("common.noSelection")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">
+                    {t("common.noSelection")}
+                  </SelectItem>
+                  {families.map((family) => (
+                    <SelectItem key={family.id} value={family.id}>
+                      {family.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("crops.waitingTimeInYears")}</Label>
+              <Input
+                type="number"
+                min="0"
+                {...cropForm.register("waitingTimeInYears")}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("crops.additionalNotes")}</Label>
+              <Textarea {...cropForm.register("additionalNotes")} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateCropOpen(false);
+                cropForm.reset();
+              }}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={cropForm.handleSubmit((data) =>
+                createCropMutation.mutate(data),
+              )}
+              disabled={createCropMutation.isPending}
+            >
+              {t("common.create")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,12 @@ import { plotsQueryOptions } from "@/api/plots.queries";
 import type {
   FertilizerApplication,
   FertilizerApplicationPreset,
+} from "@/api/types";
+import {
+  FERTILIZER_TYPES,
+  FERTILIZER_UNITS,
+  type FertilizerType,
+  type FertilizerUnit,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -34,10 +40,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-type FertilizerUnit = FertilizerApplication["unit"];
+type FertilizerApplicationUnit = FertilizerApplication["unit"];
 type FertilizerMethod = NonNullable<FertilizerApplication["method"]>;
 
-const FERTILIZER_UNITS: FertilizerUnit[] = [
+const FERTILIZER_APPLICATION_UNITS: FertilizerApplicationUnit[] = [
   "load",
   "bag",
   "total_amount",
@@ -67,11 +73,18 @@ type FormData = {
   plotId: string;
   fertilizerId: string;
   date: string;
-  unit: FertilizerUnit;
+  unit: FertilizerApplicationUnit;
   method: FertilizerMethod | "";
   amountPerUnit: string;
   numberOfUnits: string;
   additionalNotes: string;
+};
+
+type FertilizerModalFormData = {
+  name: string;
+  type: FertilizerType;
+  unit: FertilizerUnit;
+  description: string;
 };
 
 function CreateFertilizerApplication() {
@@ -84,6 +97,7 @@ function CreateFertilizerApplication() {
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
+  const [createFertilizerOpen, setCreateFertilizerOpen] = useState(false);
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const fertilizersQuery = useQuery(fertilizersQueryOptions());
@@ -99,6 +113,15 @@ function CreateFertilizerApplication() {
       amountPerUnit: "0",
       numberOfUnits: "1",
       additionalNotes: "",
+    },
+  });
+
+  const fertilizerForm = useForm<FertilizerModalFormData>({
+    defaultValues: {
+      name: "",
+      type: "mineral",
+      unit: "kg",
+      description: "",
     },
   });
 
@@ -186,6 +209,31 @@ function CreateFertilizerApplication() {
     },
   });
 
+  const createFertilizerMutation = useMutation({
+    mutationFn: async (data: FertilizerModalFormData) => {
+      const response = await apiClient.POST("/v1/fertilizers", {
+        body: {
+          name: data.name,
+          type: data.type,
+          unit: data.unit,
+          description: data.description || undefined,
+        },
+      });
+      if (response.error) throw new Error("Failed to create fertilizer");
+      return response.data.data;
+    },
+    onSuccess: (newFertilizer) => {
+      queryClient.setQueryData(fertilizersQueryOptions().queryKey, (old) => {
+        if (!old) return old;
+        return { ...old, result: [...old.result, newFertilizer] };
+      });
+      queryClient.invalidateQueries({ queryKey: ["fertilizers"] });
+      setValue("fertilizerId", newFertilizer.id);
+      setCreateFertilizerOpen(false);
+      fertilizerForm.reset();
+    },
+  });
+
   const plots = plotsQuery.data?.result ?? [];
   const fertilizers = fertilizersQuery.data?.result ?? [];
   const presets = presetsQuery.data?.result ?? [];
@@ -195,7 +243,6 @@ function CreateFertilizerApplication() {
   const watchedUnit = watch("unit");
   const watchedMethod = watch("method");
   const watchedAmountPerUnit = watch("amountPerUnit");
-
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -272,58 +319,70 @@ function CreateFertilizerApplication() {
             <Label>
               {t("fieldCalendar.fertilizerApplications.fertilizer")}
             </Label>
-            <Select
-              value={watchedFertilizerId}
-              onValueChange={(v) => setValue("fertilizerId", v)}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={t(
-                    "fieldCalendar.fertilizerApplications.selectFertilizer",
-                  )}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {fertilizers.map((fertilizer) => (
-                  <SelectItem key={fertilizer.id} value={fertilizer.id}>
-                    {fertilizer.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1">
+              <div className="flex-1 min-w-0">
+              <Select
+                value={watchedFertilizerId}
+                onValueChange={(v) => { if (v) setValue("fertilizerId", v); }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={t(
+                      "fieldCalendar.fertilizerApplications.selectFertilizer",
+                    )}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {fertilizers.map((fertilizer) => (
+                    <SelectItem key={fertilizer.id} value={fertilizer.id}>
+                      {fertilizer.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateFertilizerOpen(true)}
+              >
+                <PlusIcon className="size-4" />
+              </Button>
+            </div>
           </div>
 
-          {/* Unit */}
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
-            <Select
-              value={watchedUnit}
-              onValueChange={(v) => setValue("unit", v as FertilizerUnit)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {FERTILIZER_UNITS.map((unit) => (
-                  <SelectItem key={unit} value={unit}>
-                    {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Amount per unit */}
-          <div className="space-y-1">
-            <Label>
-              {t("fieldCalendar.fertilizerApplications.amountPerUnit")}
-            </Label>
-            <Input
-              type="number"
-              min={0}
-              step="0.1"
-              {...register("amountPerUnit", { required: true })}
-            />
+          {/* Unit + Amount per unit */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+              <Input
+                type="number"
+                min={0}
+                step="0.1"
+                {...register("amountPerUnit", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
+              <Select
+                value={watchedUnit}
+                onValueChange={(v) =>
+                  setValue("unit", v as FertilizerApplicationUnit)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FERTILIZER_APPLICATION_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Method */}
@@ -468,6 +527,92 @@ function CreateFertilizerApplication() {
               onClick={() => setManagePresetsOpen(false)}
             >
               {t("common.close")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Inline create fertilizer dialog */}
+      <Dialog
+        open={createFertilizerOpen}
+        onOpenChange={(open) => {
+          setCreateFertilizerOpen(open);
+          if (!open) fertilizerForm.reset();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("fertilizers.createFertilizer")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("fertilizers.name")} *</Label>
+              <Input
+                {...fertilizerForm.register("name", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fertilizers.type")} *</Label>
+              <Select
+                value={fertilizerForm.watch("type")}
+                onValueChange={(v) =>
+                  fertilizerForm.setValue("type", v as FertilizerType)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FERTILIZER_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`fertilizers.types.${type}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fertilizers.unit")} *</Label>
+              <Select
+                value={fertilizerForm.watch("unit")}
+                onValueChange={(v) =>
+                  fertilizerForm.setValue("unit", v as FertilizerUnit)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FERTILIZER_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {unit}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fertilizers.description")}</Label>
+              <Textarea {...fertilizerForm.register("description")} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateFertilizerOpen(false);
+                fertilizerForm.reset();
+              }}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={fertilizerForm.handleSubmit((data) =>
+                createFertilizerMutation.mutate(data),
+              )}
+              disabled={createFertilizerMutation.isPending}
+            >
+              {t("common.create")}
             </Button>
           </DialogFooter>
         </DialogContent>

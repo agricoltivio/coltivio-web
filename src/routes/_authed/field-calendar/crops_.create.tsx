@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { apiClient } from "@/api/client";
 import { cropFamiliesQueryOptions } from "@/api/crops.queries";
 import { CROP_CATEGORIES, type CropCategory } from "@/api/types";
@@ -18,7 +19,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+const searchSchema = z.object({ returnTo: z.string().optional() });
+
 export const Route = createFileRoute("/_authed/field-calendar/crops_/create")({
+  validateSearch: searchSchema,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(cropFamiliesQueryOptions());
   },
@@ -37,7 +41,9 @@ type CropFormData = {
 function CreateCropPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const { returnTo } = Route.useSearch();
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
   const { register, handleSubmit, setValue, watch } = useForm<CropFormData>({
@@ -71,9 +77,15 @@ function CreateCropPage() {
       }
       return response.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (newCrop) => {
       queryClient.invalidateQueries({ queryKey: ["crops"] });
-      navigate({ to: "/field-calendar/crops" });
+      if (returnTo) {
+        const url = new URL(returnTo, window.location.origin);
+        url.searchParams.set("newCropId", newCrop.id);
+        router.navigate({ href: url.pathname + url.search });
+      } else {
+        navigate({ to: "/field-calendar/crops" });
+      }
     },
   });
 
@@ -81,7 +93,7 @@ function CreateCropPage() {
     <PageContent
       title={t("crops.createCrop")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/crops" })}
+      backTo={() => returnTo ? router.navigate({ href: returnTo }) : navigate({ to: "/field-calendar/crops" })}
     >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}

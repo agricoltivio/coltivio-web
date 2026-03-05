@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { apiClient } from "@/api/client";
 import {
   CROP_PROTECTION_PRODUCT_UNITS,
@@ -20,9 +21,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+const searchSchema = z.object({ returnTo: z.string().optional() });
+
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-protection-products_/create",
 )({
+  validateSearch: searchSchema,
   component: CreateCropProtectionProductPage,
 });
 
@@ -35,7 +39,9 @@ type ProductFormData = {
 function CreateCropProtectionProductPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const { returnTo } = Route.useSearch();
 
   const { register, handleSubmit, setValue, watch } = useForm<ProductFormData>({
     defaultValues: { name: "", unit: "ml", description: "" },
@@ -55,9 +61,15 @@ function CreateCropProtectionProductPage() {
       }
       return response.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (newProduct) => {
       queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
-      navigate({ to: "/field-calendar/crop-protection-products" });
+      if (returnTo) {
+        const url = new URL(returnTo, window.location.origin);
+        url.searchParams.set("newProductId", newProduct.id);
+        router.navigate({ href: url.pathname + url.search });
+      } else {
+        navigate({ to: "/field-calendar/crop-protection-products" });
+      }
     },
   });
 
@@ -66,7 +78,7 @@ function CreateCropProtectionProductPage() {
       title={t("cropProtectionProducts.createProduct")}
       showBackButton
       backTo={() =>
-        navigate({ to: "/field-calendar/crop-protection-products" })
+        returnTo ? router.navigate({ href: returnTo }) : navigate({ to: "/field-calendar/crop-protection-products" })
       }
     >
       <form

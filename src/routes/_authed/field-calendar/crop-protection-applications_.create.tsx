@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,10 @@ import type {
   CropProtectionApplication,
   CropProtectionApplicationPreset,
   FertilizerApplication,
+} from "@/api/types";
+import {
+  CROP_PROTECTION_PRODUCT_UNITS,
+  type CropProtectionProductUnit,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -82,6 +86,12 @@ type FormData = {
   additionalNotes: string;
 };
 
+type ProductModalFormData = {
+  name: string;
+  unit: CropProtectionProductUnit;
+  description: string;
+};
+
 function CreateCropProtectionApplication() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -92,6 +102,7 @@ function CreateCropProtectionApplication() {
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
+  const [createProductOpen, setCreateProductOpen] = useState(false);
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
@@ -108,6 +119,10 @@ function CreateCropProtectionApplication() {
       numberOfUnits: "1",
       additionalNotes: "",
     },
+  });
+
+  const productForm = useForm<ProductModalFormData>({
+    defaultValues: { name: "", unit: "ml", description: "" },
   });
 
   const createMutation = useMutation({
@@ -197,6 +212,34 @@ function CreateCropProtectionApplication() {
     },
   });
 
+  const createProductMutation = useMutation({
+    mutationFn: async (data: ProductModalFormData) => {
+      const response = await apiClient.POST("/v1/cropProtectionProducts", {
+        body: {
+          name: data.name,
+          unit: data.unit,
+          description: data.description || undefined,
+        },
+      });
+      if (response.error)
+        throw new Error("Failed to create crop protection product");
+      return response.data.data;
+    },
+    onSuccess: (newProduct) => {
+      queryClient.setQueryData(
+        cropProtectionProductsQueryOptions().queryKey,
+        (old) => {
+          if (!old) return old;
+          return { ...old, result: [...old.result, newProduct] };
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
+      setValue("productId", newProduct.id);
+      setCreateProductOpen(false);
+      productForm.reset();
+    },
+  });
+
   const plots = plotsQuery.data?.result ?? [];
   const products = productsQuery.data?.result ?? [];
   const presets = presetsQuery.data?.result ?? [];
@@ -206,7 +249,6 @@ function CreateCropProtectionApplication() {
   const watchedMethod = watch("method");
   const watchedUnit = watch("unit");
   const watchedAmountPerUnit = watch("amountPerUnit");
-
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -244,25 +286,37 @@ function CreateCropProtectionApplication() {
             <Label>
               {t("fieldCalendar.cropProtectionApplications.product")}
             </Label>
-            <Select
-              value={watchedProductId}
-              onValueChange={(v) => setValue("productId", v)}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={t(
-                    "fieldCalendar.cropProtectionApplications.selectProduct",
-                  )}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-1">
+              <div className="flex-1 min-w-0">
+              <Select
+                value={watchedProductId}
+                onValueChange={(v) => { if (v) setValue("productId", v); }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={t(
+                      "fieldCalendar.cropProtectionApplications.selectProduct",
+                    )}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {products.map((product) => (
+                    <SelectItem key={product.id} value={product.id}>
+                      {product.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateProductOpen(true)}
+              >
+                <PlusIcon className="size-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -332,37 +386,35 @@ function CreateCropProtectionApplication() {
             </Select>
           </div>
 
-          {/* Unit */}
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
-            <Select
-              value={watchedUnit}
-              onValueChange={(v) => setValue("unit", v as ApplicationUnit)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {APPLICATION_UNITS.map((unit) => (
-                  <SelectItem key={unit} value={unit}>
-                    {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Amount per unit */}
-          <div className="space-y-1">
-            <Label>
-              {t("fieldCalendar.fertilizerApplications.amountPerUnit")}
-            </Label>
-            <Input
-              type="number"
-              min={0}
-              step="0.01"
-              {...register("amountPerUnit", { required: true })}
-            />
+          {/* Amount per unit + Unit */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+              <Input
+                type="number"
+                min={0}
+                step="0.01"
+                {...register("amountPerUnit", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
+              <Select
+                value={watchedUnit}
+                onValueChange={(v) => setValue("unit", v as ApplicationUnit)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {APPLICATION_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Save as preset button */}
@@ -486,6 +538,72 @@ function CreateCropProtectionApplication() {
               onClick={() => setManagePresetsOpen(false)}
             >
               {t("common.close")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Inline create product dialog */}
+      <Dialog
+        open={createProductOpen}
+        onOpenChange={(open) => {
+          setCreateProductOpen(open);
+          if (!open) productForm.reset();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("cropProtectionProducts.createProduct")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.name")} *</Label>
+              <Input
+                {...productForm.register("name", { required: true })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.unit")} *</Label>
+              <Select
+                value={productForm.watch("unit")}
+                onValueChange={(v) =>
+                  productForm.setValue("unit", v as CropProtectionProductUnit)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CROP_PROTECTION_PRODUCT_UNITS.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {unit}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("cropProtectionProducts.description")}</Label>
+              <Textarea {...productForm.register("description")} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateProductOpen(false);
+                productForm.reset();
+              }}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={productForm.handleSubmit((data) =>
+                createProductMutation.mutate(data),
+              )}
+              disabled={createProductMutation.isPending}
+            >
+              {t("common.create")}
             </Button>
           </DialogFooter>
         </DialogContent>

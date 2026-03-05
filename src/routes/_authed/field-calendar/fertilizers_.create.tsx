@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { apiClient } from "@/api/client";
 import {
   FERTILIZER_TYPES,
@@ -22,9 +23,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+const searchSchema = z.object({ returnTo: z.string().optional() });
+
 export const Route = createFileRoute(
   "/_authed/field-calendar/fertilizers_/create",
 )({
+  validateSearch: searchSchema,
   component: CreateFertilizerPage,
 });
 
@@ -38,7 +42,9 @@ type FertilizerFormData = {
 function CreateFertilizerPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const { returnTo } = Route.useSearch();
 
   const { register, handleSubmit, setValue, watch } =
     useForm<FertilizerFormData>({
@@ -65,9 +71,15 @@ function CreateFertilizerPage() {
       }
       return response.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (newFertilizer) => {
       queryClient.invalidateQueries({ queryKey: ["fertilizers"] });
-      navigate({ to: "/field-calendar/fertilizers" });
+      if (returnTo) {
+        const url = new URL(returnTo, window.location.origin);
+        url.searchParams.set("newFertilizerId", newFertilizer.id);
+        router.navigate({ href: url.pathname + url.search });
+      } else {
+        navigate({ to: "/field-calendar/fertilizers" });
+      }
     },
   });
 
@@ -75,7 +87,7 @@ function CreateFertilizerPage() {
     <PageContent
       title={t("fertilizers.createFertilizer")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/fertilizers" })}
+      backTo={() => returnTo ? router.navigate({ href: returnTo }) : navigate({ to: "/field-calendar/fertilizers" })}
     >
       <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
