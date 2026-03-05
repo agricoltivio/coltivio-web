@@ -20,7 +20,12 @@
     "rowsPerPage": "Zeilen pro Seite",
     "showingOf": "{{showing}} von {{total}} angezeigt",
     "pageOf": "Seite {{current}} von {{total}}",
-    "noSelection": "Keine Auswahl"
+    "noSelection": "Keine Auswahl",
+    "export": "Exportieren",
+    "exporting": "Exportieren...",
+    "fromDate": "Von",
+    "toDate": "Bis",
+    "download": "Herunterladen"
   },
   "nav": {
     "groups": {
@@ -55,7 +60,8 @@
     "crops": "Kulturen",
     "cropFamilies": "Kulturfamilien",
     "fertilizers": "Düngemittel",
-    "cropProtectionProducts": "Pflanzenschutzmittel"
+    "cropProtectionProducts": "Pflanzenschutzmittel",
+    "fieldCalendarExport": "Export"
   },
   "animals": {
     "title": "Tiere",
@@ -337,6 +343,11 @@
     "antibiogramAvailable": "Antibiogramm vorhanden",
     "deleteConfirm": "Sind Sie sicher, dass Sie diese Behandlung löschen möchten?",
     "noTreatments": "Keine Behandlungen",
+    "exportDialog": {
+      "title": "Behandlungen exportieren",
+      "description": "Behandlungsjournal als Excel-Datei herunterladen.",
+      "filterByAnimalType": "Nach Tierart filtern (optional)"
+    },
     "drugDoseValue": "Dosis",
     "drugDoseUnit": "Einheit",
     "drugDosePerUnit": "Pro",
@@ -442,7 +453,11 @@
     "nextMonth": "Nächster Monat",
     "animals": "Tiere",
     "manageHerds": "Herden verwalten",
-    "uncategorizedCount": "{{count}} Tier keiner Gruppe zugeordnet"
+    "uncategorizedCount": "{{count}} Tier keiner Gruppe zugeordnet",
+    "exportDialog": {
+      "title": "Auslaufjournal exportieren",
+      "description": "Auslaufjournal als Excel-Datei herunterladen."
+    }
   },
   "landing": {
     "nav": {
@@ -662,7 +677,7 @@
       "date": "Datum",
       "crop": "Kultur",
       "amount": "Menge",
-      "unit": "Einheit",
+      "unit": "Ausbringungseinheit",
       "numberOfUnits": "Anzahl Einheiten",
       "kilosPerUnit": "kg pro Einheit",
       "conservationMethod": "Konservierungsmethode",
@@ -688,8 +703,9 @@
       "date": "Datum",
       "fertilizer": "Düngemittel",
       "selectFertilizer": "Düngemittel auswählen",
-      "unit": "Einheit",
+      "unit": "Ausbringungseinheit",
       "amountPerUnit": "Menge pro Einheit",
+      "amountPerUnitWith": "{{unit}} pro Einheit",
       "method": "Ausbringungsmethode",
       "units": {
         "load": "Fuder",
@@ -725,6 +741,11 @@
       "months": "Monate",
       "weeks": "Wochen",
       "today": "Heute"
+    },
+    "exportDialog": {
+      "title": "Feldkalender exportieren",
+      "description": "Feldkalender als Excel-Datei herunterladen.",
+      "sections": "Abschnitte"
     }
   },
   "crops": {

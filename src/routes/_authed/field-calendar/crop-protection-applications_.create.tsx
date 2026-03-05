@@ -250,6 +250,8 @@ function CreateCropProtectionApplication() {
   const watchedUnit = watch("unit");
   const watchedAmountPerUnit = watch("amountPerUnit");
 
+  const selectedProduct = products.find((p) => p.id === watchedProductId);
+
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
@@ -389,7 +391,11 @@ function CreateCropProtectionApplication() {
           {/* Amount per unit + Unit */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+              <Label>
+                {selectedProduct
+                  ? t("fieldCalendar.fertilizerApplications.amountPerUnitWith", { unit: selectedProduct.unit })
+                  : t("fieldCalendar.fertilizerApplications.amountPerUnit")}
+              </Label>
               <Input
                 type="number"
                 min={0}

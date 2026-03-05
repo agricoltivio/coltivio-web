@@ -40,6 +40,8 @@ function Settings() {
               <SelectContent>
                 <SelectItem value="de">Deutsch</SelectItem>
                 <SelectItem value="en">English</SelectItem>
+                <SelectItem value="fr">Français</SelectItem>
+                <SelectItem value="it">Italiano</SelectItem>
               </SelectContent>
             </Select>
           </Field>

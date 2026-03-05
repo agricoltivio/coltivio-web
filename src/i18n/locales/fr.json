@@ -20,7 +20,12 @@
     "rowsPerPage": "Lignes par page",
     "showingOf": "{{showing}} sur {{total}}",
     "pageOf": "Page {{current}} sur {{total}}",
-    "noSelection": "Aucune sélection"
+    "noSelection": "Aucune sélection",
+    "export": "Exporter",
+    "exporting": "Exportation...",
+    "fromDate": "Du",
+    "toDate": "Au",
+    "download": "Télécharger"
   },
   "nav": {
     "groups": {
@@ -55,7 +60,8 @@
     "crops": "Cultures",
     "cropFamilies": "Familles de cultures",
     "fertilizers": "Engrais",
-    "cropProtectionProducts": "Produits phytosanitaires"
+    "cropProtectionProducts": "Produits phytosanitaires",
+    "fieldCalendarExport": "Exporter"
   },
   "animals": {
     "title": "Animaux",
@@ -337,6 +343,11 @@
     "antibiogramAvailable": "Antibiogramme disponible",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce traitement ?",
     "noTreatments": "Aucun traitement",
+    "exportDialog": {
+      "title": "Exporter les traitements",
+      "description": "Télécharger le journal de traitements en tant que fichier Excel.",
+      "filterByAnimalType": "Filtrer par type d'animal (optionnel)"
+    },
     "drugDoseValue": "Dose",
     "drugDoseUnit": "Unité",
     "drugDosePerUnit": "Par",
@@ -442,7 +453,11 @@
     "nextMonth": "Mois suivant",
     "animals": "Animaux",
     "manageHerds": "Gérer les troupeaux",
-    "uncategorizedCount": "{{count}} animal non assigné à un groupe"
+    "uncategorizedCount": "{{count}} animal non assigné à un groupe",
+    "exportDialog": {
+      "title": "Exporter le journal de sorties",
+      "description": "Télécharger le journal de sorties en tant que fichier Excel."
+    }
   },
   "landing": {
     "nav": {
@@ -662,7 +677,7 @@
       "date": "Date",
       "crop": "Culture",
       "amount": "Quantité",
-      "unit": "Unité",
+      "unit": "Unité d'épandage",
       "numberOfUnits": "Nombre d'unités",
       "kilosPerUnit": "Kg par unité",
       "conservationMethod": "Méthode de conservation",
@@ -688,8 +703,9 @@
       "date": "Date",
       "fertilizer": "Engrais",
       "selectFertilizer": "Sélectionner un engrais",
-      "unit": "Unité",
+      "unit": "Unité d'épandage",
       "amountPerUnit": "Quantité par unité",
+      "amountPerUnitWith": "{{unit}} par unité",
       "method": "Méthode d'application",
       "units": {
         "load": "Chargement",
@@ -725,6 +741,11 @@
       "months": "Mois",
       "weeks": "Semaines",
       "today": "Aujourd'hui"
+    },
+    "exportDialog": {
+      "title": "Exporter le calendrier des champs",
+      "description": "Télécharger le calendrier des champs en tant que fichier Excel.",
+      "sections": "Sections"
     }
   },
   "crops": {

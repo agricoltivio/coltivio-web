@@ -244,6 +244,8 @@ function CreateFertilizerApplication() {
   const watchedMethod = watch("method");
   const watchedAmountPerUnit = watch("amountPerUnit");
 
+  const selectedFertilizer = fertilizers.find((f) => f.id === watchedFertilizerId);
+
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
@@ -355,7 +357,11 @@ function CreateFertilizerApplication() {
           {/* Unit + Amount per unit */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.fertilizerApplications.amountPerUnit")}</Label>
+              <Label>
+                {selectedFertilizer
+                  ? t("fieldCalendar.fertilizerApplications.amountPerUnitWith", { unit: selectedFertilizer.unit })
+                  : t("fieldCalendar.fertilizerApplications.amountPerUnit")}
+              </Label>
               <Input
                 type="number"
                 min={0}

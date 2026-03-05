@@ -1,13 +1,25 @@
+import { apiClient } from "@/api/client";
 import { treatmentsQueryOptions } from "@/api/treatments.queries";
 import type { Treatment } from "@/api/types";
 import { DataTable } from "@/components/DataTable";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import { useMemo } from "react";
+import { ArrowDown, ArrowUp, Download } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authed/animals/treatments-journal")({
@@ -17,10 +29,58 @@ export const Route = createFileRoute("/_authed/animals/treatments-journal")({
   component: TreatmentsJournal,
 });
 
+type AnimalType = "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+const ALL_ANIMAL_TYPES: AnimalType[] = ["goat", "sheep", "cow", "horse", "donkey", "pig", "deer"];
+
 function TreatmentsJournal() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const treatmentsQuery = useQuery(treatmentsQueryOptions());
+
+  const currentYear = new Date().getFullYear();
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportFromDate, setExportFromDate] = useState(`${currentYear}-01-01`);
+  const [exportToDate, setExportToDate] = useState(`${currentYear}-12-31`);
+  const [selectedAnimalTypes, setSelectedAnimalTypes] = useState<AnimalType[]>([]);
+  const [exporting, setExporting] = useState(false);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const response = await apiClient.POST("/v1/reports/treatments/download", {
+        body: {
+          fromDate: new Date(exportFromDate).toISOString(),
+          toDate: new Date(`${exportToDate}T23:59:59`).toISOString(),
+          animalTypes: selectedAnimalTypes.length > 0 ? selectedAnimalTypes : undefined,
+        },
+      });
+      if (response.error || !response.data) throw new Error("Export failed");
+      const { base64, fileName } = response.data.data;
+      // Decode base64 and trigger a file download
+      const byteCharacters = atob(base64);
+      const byteNumbers = Array.from({ length: byteCharacters.length }, (_, i) =>
+        byteCharacters.charCodeAt(i),
+      );
+      const blob = new Blob([new Uint8Array(byteNumbers)], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = fileName;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      setExportOpen(false);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  function toggleAnimalType(type: AnimalType) {
+    setSelectedAnimalTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+  }
 
   function formatDate(dateString: string | null) {
     if (!dateString) return "-";
@@ -159,11 +219,70 @@ function TreatmentsJournal() {
 
   return (
     <PageContent title={t("treatments.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-2 mb-4">
+        <Button variant="outline" onClick={() => setExportOpen(true)}>
+          <Download className="h-4 w-4 mr-2" />
+          {t("common.export")}
+        </Button>
         <Button onClick={() => navigate({ to: "/treatments/create" })}>
           {t("treatments.addTreatment")}
         </Button>
       </div>
+
+      <Dialog open={exportOpen} onOpenChange={setExportOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("treatments.exportDialog.title")}</DialogTitle>
+            <DialogDescription>{t("treatments.exportDialog.description")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label>{t("common.fromDate")}</Label>
+                <Input
+                  type="date"
+                  value={exportFromDate}
+                  onChange={(e) => setExportFromDate(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>{t("common.toDate")}</Label>
+                <Input
+                  type="date"
+                  value={exportToDate}
+                  onChange={(e) => setExportToDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{t("treatments.exportDialog.filterByAnimalType")}</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {ALL_ANIMAL_TYPES.map((animalType) => (
+                  <div key={animalType} className="flex items-center gap-2">
+                    <Checkbox
+                      id={`animal-type-${animalType}`}
+                      checked={selectedAnimalTypes.includes(animalType)}
+                      onCheckedChange={() => toggleAnimalType(animalType)}
+                    />
+                    <label htmlFor={`animal-type-${animalType}`} className="text-sm cursor-pointer">
+                      {t(`animals.typesPlural.${animalType}`)}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExportOpen(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button onClick={handleExport} disabled={exporting || !exportFromDate || !exportToDate}>
+              <Download className="h-4 w-4 mr-2" />
+              {exporting ? t("common.exporting") : t("common.download")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <DataTable
         data={data}
         columns={columns}

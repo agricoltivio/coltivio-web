@@ -82,7 +82,7 @@ function CropProtectionApplications() {
         accessorKey: "numberOfUnits",
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
-          `${row.original.numberOfUnits} × ${row.original.amountPerUnit} (${t(`fieldCalendar.fertilizerApplications.units.${row.original.unit}`)})`,
+          `${(row.original.numberOfUnits * row.original.amountPerUnit).toFixed(1)} ${row.original.product.unit}`,
       },
     ],
     [t],

@@ -83,12 +83,12 @@ function FertilizerApplications() {
         id: "amount",
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
-          `${row.original.numberOfUnits} × ${row.original.amountPerUnit} (${t(`fieldCalendar.fertilizerApplications.units.${row.original.unit}`)})`,
+          `${(row.original.numberOfUnits * row.original.amountPerUnit).toFixed(1)} ${row.original.fertilizer.unit}`,
       },
       {
         accessorKey: "size",
         header: t("fieldCalendar.tillages.size"),
-        cell: ({ row }) => `${row.original.size.toFixed(2)} ha`,
+        cell: ({ row }) => `${(row.original.size / 100).toFixed(2)} a`,
       },
     ],
     [t, plotId],

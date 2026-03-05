@@ -13,6 +13,7 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   CreditCard,
+  Download,
   Droplets,
   FlaskConical,
   HeartHandshake,
@@ -397,6 +398,20 @@ export function AppSidebar() {
                     to="/field-calendar/crop-protection-products"
                   >
                     <FlaskConical /> {t("nav.cropProtectionProducts")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/export"
+                  >
+                    <Download /> {t("nav.fieldCalendarExport")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

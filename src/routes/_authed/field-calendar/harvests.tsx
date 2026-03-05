@@ -75,12 +75,12 @@ function Harvests() {
         id: "amount",
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
-          `${row.original.numberOfUnits} × ${row.original.kilosPerUnit} kg (${t(`fieldCalendar.harvests.units.${row.original.unit}`)})`,
+          `${(row.original.numberOfUnits * row.original.kilosPerUnit).toFixed(1)} kg`,
       },
       {
         accessorKey: "size",
         header: t("fieldCalendar.tillages.size"),
-        cell: ({ row }) => `${row.original.size.toFixed(2)} ha`,
+        cell: ({ row }) => `${(row.original.size / 100).toFixed(2)} a`,
       },
     ],
     [t, plotId],

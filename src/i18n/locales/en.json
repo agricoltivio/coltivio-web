@@ -20,7 +20,12 @@
     "rowsPerPage": "Rows per page",
     "showingOf": "Showing {{showing}} of {{total}}",
     "pageOf": "Page {{current}} of {{total}}",
-    "noSelection": "No selection"
+    "noSelection": "No selection",
+    "export": "Export",
+    "exporting": "Exporting...",
+    "fromDate": "From",
+    "toDate": "To",
+    "download": "Download"
   },
   "nav": {
     "groups": {
@@ -55,7 +60,8 @@
     "crops": "Crops",
     "cropFamilies": "Crop Families",
     "fertilizers": "Fertilizers",
-    "cropProtectionProducts": "Crop Protection Products"
+    "cropProtectionProducts": "Crop Protection Products",
+    "fieldCalendarExport": "Export"
   },
   "animals": {
     "title": "Animals",
@@ -337,6 +343,11 @@
     "antibiogramAvailable": "Antibiogram Available",
     "deleteConfirm": "Are you sure you want to delete this treatment?",
     "noTreatments": "No treatments",
+    "exportDialog": {
+      "title": "Export Treatments",
+      "description": "Download the treatment journal as an Excel file.",
+      "filterByAnimalType": "Filter by animal type (optional)"
+    },
     "drugDoseValue": "Dose",
     "drugDoseUnit": "Unit",
     "drugDosePerUnit": "Per",
@@ -587,7 +598,11 @@
     "nextMonth": "Next Month",
     "animals": "Animals",
     "manageHerds": "Manage Herds",
-    "uncategorizedCount": "{{count}} animal not assigned to any group"
+    "uncategorizedCount": "{{count}} animal not assigned to any group",
+    "exportDialog": {
+      "title": "Export Turnout Journal",
+      "description": "Download the turnout journal as an Excel file."
+    }
   },
   "fieldCalendar": {
     "plots": {
@@ -662,7 +677,7 @@
       "date": "Date",
       "crop": "Crop",
       "amount": "Amount",
-      "unit": "Unit",
+      "unit": "Application unit",
       "numberOfUnits": "Number of units",
       "kilosPerUnit": "Kg per unit",
       "conservationMethod": "Conservation method",
@@ -688,8 +703,9 @@
       "date": "Date",
       "fertilizer": "Fertilizer",
       "selectFertilizer": "Select fertilizer",
-      "unit": "Unit",
+      "unit": "Application unit",
       "amountPerUnit": "Amount per unit",
+      "amountPerUnitWith": "{{unit}} per unit",
       "method": "Application method",
       "units": {
         "load": "Load",
@@ -725,6 +741,11 @@
       "months": "Months",
       "weeks": "Weeks",
       "today": "Today"
+    },
+    "exportDialog": {
+      "title": "Export Field Calendar",
+      "description": "Download the field calendar as an Excel file.",
+      "sections": "Sections"
     }
   },
   "crops": {

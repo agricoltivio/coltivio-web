@@ -66,7 +66,7 @@ function TillageDetail() {
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">{t("fieldCalendar.tillages.size")}</span>
-          <span className="font-medium">{tillage.size.toFixed(2)} ha</span>
+          <span className="font-medium">{(tillage.size / 100).toFixed(2)} a</span>
         </div>
         {tillage.additionalNotes && (
           <div className="flex justify-between text-sm">

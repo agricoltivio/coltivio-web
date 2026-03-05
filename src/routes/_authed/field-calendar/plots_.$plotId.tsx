@@ -68,7 +68,7 @@ function PlotDetail() {
       <div className="rounded-md border p-4 mb-6 space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">{t("fieldCalendar.plots.size")}</span>
-          <span className="font-medium">{plot.size.toFixed(2)} ha</span>
+          <span className="font-medium">{(plot.size / 100).toFixed(2)} a</span>
         </div>
         {plot.usage !== null && (
           <div className="flex justify-between text-sm">

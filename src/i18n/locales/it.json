@@ -20,7 +20,12 @@
     "rowsPerPage": "Righe per pagina",
     "showingOf": "{{showing}} di {{total}}",
     "pageOf": "Pagina {{current}} di {{total}}",
-    "noSelection": "Nessuna selezione"
+    "noSelection": "Nessuna selezione",
+    "export": "Esporta",
+    "exporting": "Esportazione...",
+    "fromDate": "Dal",
+    "toDate": "Al",
+    "download": "Scarica"
   },
   "nav": {
     "groups": {
@@ -55,7 +60,8 @@
     "crops": "Colture",
     "cropFamilies": "Famiglie di colture",
     "fertilizers": "Fertilizzanti",
-    "cropProtectionProducts": "Prodotti fitosanitari"
+    "cropProtectionProducts": "Prodotti fitosanitari",
+    "fieldCalendarExport": "Esporta"
   },
   "animals": {
     "title": "Animali",
@@ -337,6 +343,11 @@
     "antibiogramAvailable": "Antibiogramma disponibile",
     "deleteConfirm": "Sei sicuro di voler eliminare questo trattamento?",
     "noTreatments": "Nessun trattamento",
+    "exportDialog": {
+      "title": "Esporta trattamenti",
+      "description": "Scarica il diario dei trattamenti come file Excel.",
+      "filterByAnimalType": "Filtra per tipo di animale (opzionale)"
+    },
     "drugDoseValue": "Dose",
     "drugDoseUnit": "Unità",
     "drugDosePerUnit": "Per",
@@ -442,7 +453,11 @@
     "nextMonth": "Mese successivo",
     "animals": "Animali",
     "manageHerds": "Gestisci mandrie",
-    "uncategorizedCount": "{{count}} animale non assegnato a nessun gruppo"
+    "uncategorizedCount": "{{count}} animale non assegnato a nessun gruppo",
+    "exportDialog": {
+      "title": "Esporta diario di uscita",
+      "description": "Scarica il diario di uscita come file Excel."
+    }
   },
   "landing": {
     "nav": {
@@ -662,7 +677,7 @@
       "date": "Data",
       "crop": "Coltura",
       "amount": "Quantità",
-      "unit": "Unità",
+      "unit": "Unità di distribuzione",
       "numberOfUnits": "Numero di unità",
       "kilosPerUnit": "Kg per unità",
       "conservationMethod": "Metodo di conservazione",
@@ -688,8 +703,9 @@
       "date": "Data",
       "fertilizer": "Fertilizzante",
       "selectFertilizer": "Seleziona fertilizzante",
-      "unit": "Unità",
+      "unit": "Unità di distribuzione",
       "amountPerUnit": "Quantità per unità",
+      "amountPerUnitWith": "{{unit}} per unità",
       "method": "Metodo di applicazione",
       "units": {
         "load": "Carico",
@@ -725,6 +741,11 @@
       "months": "Mesi",
       "weeks": "Settimane",
       "today": "Oggi"
+    },
+    "exportDialog": {
+      "title": "Esporta calendario dei campi",
+      "description": "Scarica il calendario dei campi come file Excel.",
+      "sections": "Sezioni"
     }
   },
   "crops": {

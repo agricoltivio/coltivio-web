@@ -387,7 +387,7 @@ function PlotsMap() {
                   <span className="font-medium text-sm truncate">{plot.name}</span>
                 </div>
                 <div className="text-xs text-muted-foreground ml-5">
-                  {(plot.size / 100).toFixed(2)} Xa
+                  {(plot.size / 100).toFixed(2)} a
                   {plot.currentCropRotation && ` · ${plot.currentCropRotation.crop.name}`}
                 </div>
               </button>
@@ -421,7 +421,7 @@ function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void })
         <div className="grid grid-cols-2 gap-2">
           <div>
             <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
-            <div>{(plot.size / 100).toFixed(2)} Xa</div>
+            <div>{(plot.size / 100).toFixed(2)} a</div>
           </div>
           {plot.localId && (
             <div>
