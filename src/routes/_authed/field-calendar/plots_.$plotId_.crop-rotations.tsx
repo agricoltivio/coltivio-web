@@ -418,6 +418,8 @@ function PlanCropRotations() {
         <div className="flex items-center justify-between">
           <ToggleGroup
             type="single"
+            variant="outline"
+            spacing={0}
             value={zoom}
             onValueChange={(value) => {
               if (!value) return;

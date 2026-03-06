@@ -31,7 +31,7 @@ function CropRotations() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { plotId } = Route.useSearch();
-  const [zoom, setZoom] = useState<ZoomLevel>("months");
+  const [zoom, setZoom] = useState<ZoomLevel>("years");
 
   const currentYear = new Date().getFullYear();
   const timelineStart = new Date(currentYear - 10, 0, 1);
