@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
 import { useTranslation } from "react-i18next";
-import { farmDashboardQueryOptions } from "@/api/farm.queries";
+import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOptions } from "@/api/farm.queries";
+import { FieldworkMap } from "@/components/FieldworkMap";
 import {
   Select,
   SelectContent,
@@ -52,9 +53,12 @@ function RouteComponent() {
 
   const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
-  const { data, isLoading, isError } = useQuery(
-    farmDashboardQueryOptions(year),
-  );
+  const { data, isLoading, isError } = useQuery(farmDashboardQueryOptions(year));
+
+  const fromDate = `${year}-01-01`;
+  const toDate = `${year}-12-31`;
+  const fieldEventsQuery = useQuery(farmFieldEventsQueryOptions(fromDate, toDate));
+  const farmQuery = useQuery(farmQueryOptions());
 
   if (isLoading) {
     return <p className="text-muted-foreground">{t("common.loading")}</p>;
@@ -346,6 +350,26 @@ function RouteComponent() {
             {t("dashboard.cropRotations", { defaultValue: "Aktive Fruchtfolgen" })}
           </p>
           <ReactECharts option={cropRotationsOption} style={{ height: 220 }} />
+        </div>
+      )}
+
+      {/* Fieldwork playback map */}
+      {fieldEventsQuery.data && fieldEventsQuery.data.length > 0 && (
+        <div>
+          <p className="text-sm font-semibold mb-2">
+            {t("dashboard.fieldworkMap", { defaultValue: "Feldarbeit" })}
+          </p>
+          <div className="relative">
+            <FieldworkMap
+              key={`${year}`}
+              events={fieldEventsQuery.data}
+              farmLocation={
+                farmQuery.data?.location.coordinates
+                  ? [farmQuery.data.location.coordinates[0], farmQuery.data.location.coordinates[1]]
+                  : null
+              }
+            />
+          </div>
         </div>
       )}
     </div>
