@@ -18,6 +18,7 @@ import {
   Droplets,
   FlaskConical,
   HeartHandshake,
+  LayoutDashboard,
   Layers,
   Leaf,
   Map,
@@ -58,6 +59,26 @@ export function AppSidebar() {
           e.currentTarget.scrollTop = savedScrollRef.current;
         }}
       >
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/dashboard"
+                  >
+                    <LayoutDashboard /> {t("nav.dashboard")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.livestock")}</SidebarGroupLabel>
           <SidebarGroupContent>

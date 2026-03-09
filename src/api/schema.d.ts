@@ -132,6 +132,38 @@ export interface paths {
         patch: operations["PatchV1Farm"];
         trace?: never;
     };
+    "/v1/farm/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1FarmDashboard"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/farm/fieldEvents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmFieldEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1FarmFieldEvents"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/users": {
         parameters: {
             query?: never;
@@ -2027,6 +2059,104 @@ export interface components {
             address?: string;
             federalId?: string;
             tvdId?: string;
+        };
+        GetV1FarmDashboardPositiveResponse: {
+            data: {
+                animals: {
+                    total: number;
+                    byType: {
+                        /** @enum {string} */
+                        type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        count: number;
+                    }[];
+                    bySex: {
+                        /** @enum {string} */
+                        sex: "male" | "female";
+                        count: number;
+                    }[];
+                    bornThisYear: number;
+                    diedThisYear: number;
+                };
+                harvests: {
+                    totalKilos: number;
+                    byCrop: {
+                        cropName: string;
+                        conservationMethod: string | null;
+                        totalKilos: number;
+                    }[];
+                    byPlot: {
+                        plotId: string;
+                        plotName: string;
+                        totalKilos: number;
+                        count: number;
+                    }[];
+                };
+                fertilizerApplications: {
+                    totalCount: number;
+                    byFertilizer: {
+                        fertilizerName: string;
+                        /** @enum {string} */
+                        type: "mineral" | "organic";
+                        totalAmount: number;
+                        unit: string;
+                    }[];
+                    byPlot: {
+                        plotId: string;
+                        plotName: string;
+                        count: number;
+                    }[];
+                };
+                cropProtectionApplications: {
+                    totalCount: number;
+                    byProduct: {
+                        productName: string;
+                        totalAmount: number;
+                        unit: string;
+                    }[];
+                    byPlot: {
+                        plotId: string;
+                        plotName: string;
+                        count: number;
+                    }[];
+                };
+                plots: {
+                    total: number;
+                    totalAreaM2: number;
+                    byUsage: {
+                        usage: string;
+                        count: number;
+                        totalAreaM2: number;
+                    }[];
+                };
+                cropRotations: {
+                    active: {
+                        cropName: string;
+                        category: string;
+                        plotCount: number;
+                        totalAreaM2: number;
+                    }[];
+                };
+            };
+        };
+        /** Format: date */
+        GetV1FarmFieldEventsParameterFromDate: string;
+        GetV1FarmFieldEventsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    date: string;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    plotId: string;
+                    plotName: string;
+                    /** @enum {string} */
+                    type: "harvest" | "fertilizerApplication" | "cropProtectionApplication" | "tillage";
+                    action: string;
+                }[];
+            };
         };
         GetV1UsersPositiveResponse: {
             data: {
@@ -8612,6 +8742,130 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
                 };
+            };
+        };
+    };
+    GetV1FarmDashboard: {
+        parameters: {
+            query?: {
+                /** @description GET /v1/farm/dashboard Parameter */
+                year?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/dashboard Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmDashboardPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/dashboard Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmDashboard: {
+        parameters: {
+            query?: {
+                /** @description HEAD /v1/farm/dashboard Parameter */
+                year?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/dashboard Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/dashboard Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1FarmFieldEvents: {
+        parameters: {
+            query: {
+                /** @description GET /v1/farm/fieldEvents Parameter */
+                fromDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+                /** @description GET /v1/farm/fieldEvents Parameter */
+                toDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/fieldEvents Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmFieldEventsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/fieldEvents Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmFieldEvents: {
+        parameters: {
+            query: {
+                /** @description HEAD /v1/farm/fieldEvents Parameter */
+                fromDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+                /** @description HEAD /v1/farm/fieldEvents Parameter */
+                toDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/fieldEvents Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/fieldEvents Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

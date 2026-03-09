@@ -11,3 +11,16 @@ export const farmQueryOptions = () => {
     },
   });
 };
+
+export const farmDashboardQueryOptions = (year: number) => {
+  return queryOptions({
+    queryKey: ["farm", "dashboard", year],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/farm/dashboard", {
+        params: { query: { year: String(year) } },
+      });
+      if (response.error) throw new Error("Failed to fetch dashboard");
+      return response.data.data;
+    },
+  });
+};
