@@ -35,7 +35,8 @@
       "sponsorships": "Sponsorships",
       "accounting": "Accounting",
       "fieldCalendar": "Field Calendar",
-      "admin": "Admin"
+      "admin": "Admin",
+      "wiki": "Wiki"
     },
     "dashboard": "Dashboard",
     "animals": "Animals",
@@ -62,7 +63,10 @@
     "cropFamilies": "Crop Families",
     "fertilizers": "Fertilizers",
     "cropProtectionProducts": "Crop Protection Products",
-    "fieldCalendarExport": "Export"
+    "fieldCalendarExport": "Export",
+    "wiki": "Wiki",
+    "wikiMyEntries": "My Entries",
+    "wikiAdmin": "Wiki Admin"
   },
   "animals": {
     "title": "Animals",
@@ -793,6 +797,82 @@
       "mineral": "Mineral",
       "organic": "Organic"
     }
+  },
+  "wiki": {
+    "title": "Wiki",
+    "myEntries": "My Entries",
+    "admin": "Admin",
+    "reviewQueue": "Review Queue",
+    "categories": "Categories",
+    "moderators": "Moderators",
+    "newEntry": "New Entry",
+    "editEntry": "Edit Entry",
+    "entryDetail": "Entry Details",
+    "slug": "URL Slug",
+    "category": "Category",
+    "tags": "Tags",
+    "translations": "Translations",
+    "title_field": "Title",
+    "body": "Content",
+    "preview": "Preview",
+    "addTag": "Add Tag",
+    "newTag": "New Tag",
+    "submit": "Make Public",
+    "submitConfirm": "Submit this entry for public review?",
+    "propose": "Propose Changes",
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestChanges": "Request Changes",
+    "reviewNotes": "Review Notes",
+    "noEntries": "No entries",
+    "noReviewItems": "No pending review requests",
+    "privateNote": "This entry is private and only visible to you.",
+    "submitNote": "Submitting will send this entry for public review.",
+    "deleteConfirm": "Are you sure you want to delete this entry?",
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "under_review": "Under Review",
+      "published": "Published",
+      "rejected": "Rejected"
+    },
+    "visibility": {
+      "private": "Private",
+      "public": "Public"
+    },
+    "changeRequest": {
+      "type": {
+        "new_entry": "New Entry",
+        "change_request": "Change Request"
+      },
+      "status": {
+        "under_review": "Under Review",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "draft": "Draft"
+      }
+    },
+    "addCategory": "Add Category",
+    "categorySlug": "Category Slug",
+    "categoryName": "Category Name",
+    "addModerator": "Add Moderator",
+    "moderatorUserId": "User ID",
+    "revoke": "Revoke",
+    "grantModerator": "Grant Moderator",
+    "noCategories": "No categories",
+    "noModerators": "No moderators",
+    "images": "Images",
+    "uploadImage": "Upload Image",
+    "filterByCategory": "Filter by category",
+    "filterByTag": "Filter by tag",
+    "editSubmission": "Edit Submission",
+    "submissions": "Submissions",
+    "noSubmissions": "No submissions yet",
+    "changesRequested": "Changes requested",
+    "comments": "Comments",
+    "addComment": "Send",
+    "noComments": "No comments yet",
+    "commentBody": "Write a comment…"
   },
   "cropProtectionProducts": {
     "title": "Crop Protection Products",

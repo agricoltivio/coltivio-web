@@ -1844,6 +1844,374 @@ export interface paths {
         patch: operations["PatchV1SponsorshipsByIdSponsorshipId"];
         trace?: never;
     };
+    "/v1/wiki": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Wiki"];
+        put?: never;
+        post: operations["PostV1Wiki"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Wiki"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/myEntries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiMyEntries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiMyEntries"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/myChangeRequests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiMyChangeRequests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiMyChangeRequests"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/myChangeRequestDrafts/byId/{changeRequestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["PatchV1WikiMyChangeRequestDraftsByIdChangeRequestId"];
+        trace?: never;
+    };
+    "/v1/wiki/myChangeRequestDrafts/byId/{changeRequestId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/myChangeRequestDrafts/byId/{changeRequestId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes"];
+        put?: never;
+        post: operations["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1WikiByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1WikiByIdEntryId"];
+        patch: operations["PatchV1WikiByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/wiki/byId/{entryId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiByIdEntryIdSubmit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/byId/{entryId}/changeRequest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiByIdEntryIdChangeRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/images/signedUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiImagesSignedUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/images/byId/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1WikiImagesByIdImageId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiCategories"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiTags"];
+        put?: never;
+        post: operations["PostV1WikiTags"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiTags"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/reviewQueue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiReviewQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiReviewQueue"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/changeRequests/byId/{changeRequestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiChangeRequestsByIdChangeRequestId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiChangeRequestsByIdChangeRequestId"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/changeRequests/byId/{changeRequestId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiChangeRequestsByIdChangeRequestIdApprove"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/changeRequests/byId/{changeRequestId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiChangeRequestsByIdChangeRequestIdReject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/changeRequests/byId/{changeRequestId}/requestChanges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiChangeRequestsByIdChangeRequestIdRequestChanges"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/changeRequests/byId/{changeRequestId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1WikiChangeRequestsByIdChangeRequestIdNotes"];
+        put?: never;
+        post: operations["PostV1WikiChangeRequestsByIdChangeRequestIdNotes"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1WikiChangeRequestsByIdChangeRequestIdNotes"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/admin/moderators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiAdminModerators"];
+        delete: operations["DeleteV1WikiAdminModerators"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/admin/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1WikiAdminCategories"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/wiki/admin/categories/byId/{categoryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1WikiAdminCategoriesByIdCategoryId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2166,6 +2534,7 @@ export interface components {
                     fullName: string | null;
                     emailVerified: boolean;
                     farmId: string | null;
+                    isWikiModerator: boolean;
                 }[];
                 count: number;
             };
@@ -2177,6 +2546,7 @@ export interface components {
                 fullName: string | null;
                 emailVerified: boolean;
                 farmId: string | null;
+                isWikiModerator: boolean;
             };
         };
         PatchV1MePositiveResponse: {
@@ -2186,6 +2556,7 @@ export interface components {
                 fullName: string | null;
                 emailVerified: boolean;
                 farmId: string | null;
+                isWikiModerator: boolean;
             };
         };
         PatchV1MeRequestBody: {
@@ -2200,6 +2571,7 @@ export interface components {
                 fullName: string | null;
                 emailVerified: boolean;
                 farmId: string | null;
+                isWikiModerator: boolean;
             };
         };
         GetV1PlotsPositiveResponse: {
@@ -8150,6 +8522,777 @@ export interface components {
             preferredCommunication?: "email" | "phone" | "whatsapp";
         };
         DeleteV1SponsorshipsByIdSponsorshipIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        /** @enum {string} */
+        GetV1WikiParameterLocale: "de" | "en" | "it" | "fr";
+        GetV1WikiPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    /** @enum {string} */
+                    status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                    /** @enum {string} */
+                    visibility: "private" | "public";
+                    createdBy: string;
+                    farmId: string | null;
+                    categoryId: string;
+                    category: {
+                        id: string;
+                        slug: string;
+                        createdAt: string | unknown;
+                        translations: {
+                            id: string;
+                            categoryId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            name: string;
+                        }[];
+                    };
+                    createdAt: string | unknown;
+                    updatedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        entryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                        updatedBy: string | null;
+                        updatedAt: string | unknown;
+                    }[];
+                    images: {
+                        id: string;
+                        entryId: string;
+                        storagePath: string;
+                        altText: string | null;
+                        uploadedBy: string | null;
+                        createdAt: string | unknown;
+                    }[];
+                    tags: {
+                        id: string;
+                        entryId: string;
+                        tagId: string;
+                        tag: {
+                            id: string;
+                            name: string;
+                            slug: string;
+                            createdBy: string | null;
+                            createdAt: string | unknown;
+                        };
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        PostV1WikiPositiveResponse: {
+            data: {
+                id: string;
+                /** @enum {string} */
+                status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                /** @enum {string} */
+                visibility: "private" | "public";
+                createdBy: string;
+                farmId: string | null;
+                categoryId: string;
+                category: {
+                    id: string;
+                    slug: string;
+                    createdAt: string | unknown;
+                    translations: {
+                        id: string;
+                        categoryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        name: string;
+                    }[];
+                };
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                translations: {
+                    id: string;
+                    entryId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                    updatedBy: string | null;
+                    updatedAt: string | unknown;
+                }[];
+                images: {
+                    id: string;
+                    entryId: string;
+                    storagePath: string;
+                    altText: string | null;
+                    uploadedBy: string | null;
+                    createdAt: string | unknown;
+                }[];
+                tags: {
+                    id: string;
+                    entryId: string;
+                    tagId: string;
+                    tag: {
+                        id: string;
+                        name: string;
+                        slug: string;
+                        createdBy: string | null;
+                        createdAt: string | unknown;
+                    };
+                }[];
+            };
+        };
+        PostV1WikiRequestBody: {
+            id?: string;
+            /** Format: uuid */
+            categoryId: string;
+            farmId?: string;
+            translations: {
+                /** @enum {string} */
+                locale: "de" | "en" | "it" | "fr";
+                title: string;
+                body: string;
+            }[];
+            tagIds?: string[];
+        };
+        GetV1WikiMyEntriesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    /** @enum {string} */
+                    status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                    /** @enum {string} */
+                    visibility: "private" | "public";
+                    createdBy: string;
+                    farmId: string | null;
+                    categoryId: string;
+                    category: {
+                        id: string;
+                        slug: string;
+                        createdAt: string | unknown;
+                        translations: {
+                            id: string;
+                            categoryId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            name: string;
+                        }[];
+                    };
+                    createdAt: string | unknown;
+                    updatedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        entryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                        updatedBy: string | null;
+                        updatedAt: string | unknown;
+                    }[];
+                    images: {
+                        id: string;
+                        entryId: string;
+                        storagePath: string;
+                        altText: string | null;
+                        uploadedBy: string | null;
+                        createdAt: string | unknown;
+                    }[];
+                    tags: {
+                        id: string;
+                        entryId: string;
+                        tagId: string;
+                        tag: {
+                            id: string;
+                            name: string;
+                            slug: string;
+                            createdBy: string | null;
+                            createdAt: string | unknown;
+                        };
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        GetV1WikiMyChangeRequestsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    entryId: string | null;
+                    /** @enum {string} */
+                    type: "new_entry" | "change_request";
+                    /** @enum {string} */
+                    status: "draft" | "under_review" | "approved" | "rejected";
+                    submittedBy: string;
+                    proposedCategoryId: string | null;
+                    proposedFarmId: string | null;
+                    createdAt: string | unknown;
+                    resolvedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        changeRequestId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        PatchV1WikiMyChangeRequestDraftsByIdChangeRequestIdPositiveResponse: {
+            data: {
+                id: string;
+                entryId: string | null;
+                /** @enum {string} */
+                type: "new_entry" | "change_request";
+                /** @enum {string} */
+                status: "draft" | "under_review" | "approved" | "rejected";
+                submittedBy: string;
+                proposedCategoryId: string | null;
+                proposedFarmId: string | null;
+                createdAt: string | unknown;
+                resolvedAt: string | unknown;
+                translations: {
+                    id: string;
+                    changeRequestId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                }[];
+            };
+        };
+        PatchV1WikiMyChangeRequestDraftsByIdChangeRequestIdRequestBody: {
+            translations?: {
+                /** @enum {string} */
+                locale: "de" | "en" | "it" | "fr";
+                title: string;
+                body: string;
+            }[];
+            /** Format: uuid */
+            proposedCategoryId?: string;
+            /** Format: uuid */
+            proposedFarmId?: string | null;
+        };
+        PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmitPositiveResponse: {
+            data: {
+                id: string;
+                entryId: string | null;
+                /** @enum {string} */
+                type: "new_entry" | "change_request";
+                /** @enum {string} */
+                status: "draft" | "under_review" | "approved" | "rejected";
+                submittedBy: string;
+                proposedCategoryId: string | null;
+                proposedFarmId: string | null;
+                createdAt: string | unknown;
+                resolvedAt: string | unknown;
+                translations: {
+                    id: string;
+                    changeRequestId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                }[];
+            };
+        };
+        PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmitRequestBody: Record<string, never>;
+        GetV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    changeRequestId: string;
+                    authorId: string;
+                    body: string;
+                    createdAt: string | unknown;
+                }[];
+                count: number;
+            };
+        };
+        PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesPositiveResponse: {
+            data: {
+                id: string;
+                changeRequestId: string;
+                authorId: string;
+                body: string;
+                createdAt: string | unknown;
+            };
+        };
+        PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesRequestBody: {
+            body: string;
+        };
+        GetV1WikiByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                /** @enum {string} */
+                status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                /** @enum {string} */
+                visibility: "private" | "public";
+                createdBy: string;
+                farmId: string | null;
+                categoryId: string;
+                category: {
+                    id: string;
+                    slug: string;
+                    createdAt: string | unknown;
+                    translations: {
+                        id: string;
+                        categoryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        name: string;
+                    }[];
+                };
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                translations: {
+                    id: string;
+                    entryId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                    updatedBy: string | null;
+                    updatedAt: string | unknown;
+                }[];
+                images: {
+                    id: string;
+                    entryId: string;
+                    storagePath: string;
+                    altText: string | null;
+                    uploadedBy: string | null;
+                    createdAt: string | unknown;
+                }[];
+                tags: {
+                    id: string;
+                    entryId: string;
+                    tagId: string;
+                    tag: {
+                        id: string;
+                        name: string;
+                        slug: string;
+                        createdBy: string | null;
+                        createdAt: string | unknown;
+                    };
+                }[];
+            };
+        };
+        PatchV1WikiByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                /** @enum {string} */
+                status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                /** @enum {string} */
+                visibility: "private" | "public";
+                createdBy: string;
+                farmId: string | null;
+                categoryId: string;
+                category: {
+                    id: string;
+                    slug: string;
+                    createdAt: string | unknown;
+                    translations: {
+                        id: string;
+                        categoryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        name: string;
+                    }[];
+                };
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                translations: {
+                    id: string;
+                    entryId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                    updatedBy: string | null;
+                    updatedAt: string | unknown;
+                }[];
+                images: {
+                    id: string;
+                    entryId: string;
+                    storagePath: string;
+                    altText: string | null;
+                    uploadedBy: string | null;
+                    createdAt: string | unknown;
+                }[];
+                tags: {
+                    id: string;
+                    entryId: string;
+                    tagId: string;
+                    tag: {
+                        id: string;
+                        name: string;
+                        slug: string;
+                        createdBy: string | null;
+                        createdAt: string | unknown;
+                    };
+                }[];
+            };
+        };
+        PatchV1WikiByIdEntryIdRequestBody: {
+            /** Format: uuid */
+            categoryId?: string;
+            translations?: {
+                /** @enum {string} */
+                locale: "de" | "en" | "it" | "fr";
+                title: string;
+                body: string;
+            }[];
+            tagIds?: string[];
+        };
+        DeleteV1WikiByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiByIdEntryIdSubmitPositiveResponse: {
+            data: {
+                id: string;
+                entryId: string | null;
+                /** @enum {string} */
+                type: "new_entry" | "change_request";
+                /** @enum {string} */
+                status: "draft" | "under_review" | "approved" | "rejected";
+                submittedBy: string;
+                proposedCategoryId: string | null;
+                proposedFarmId: string | null;
+                createdAt: string | unknown;
+                resolvedAt: string | unknown;
+                translations: {
+                    id: string;
+                    changeRequestId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                }[];
+            };
+        };
+        PostV1WikiByIdEntryIdSubmitRequestBody: Record<string, never>;
+        PostV1WikiByIdEntryIdChangeRequestPositiveResponse: {
+            data: {
+                id: string;
+                entryId: string | null;
+                /** @enum {string} */
+                type: "new_entry" | "change_request";
+                /** @enum {string} */
+                status: "draft" | "under_review" | "approved" | "rejected";
+                submittedBy: string;
+                proposedCategoryId: string | null;
+                proposedFarmId: string | null;
+                createdAt: string | unknown;
+                resolvedAt: string | unknown;
+                translations: {
+                    id: string;
+                    changeRequestId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                }[];
+            };
+        };
+        PostV1WikiByIdEntryIdChangeRequestRequestBody: {
+            translations: {
+                /** @enum {string} */
+                locale: "de" | "en" | "it" | "fr";
+                title: string;
+                body: string;
+            }[];
+        };
+        PostV1WikiImagesSignedUrlPositiveResponse: {
+            data: {
+                signedUrl: string;
+                path: string;
+            };
+        };
+        PostV1WikiImagesSignedUrlRequestBody: {
+            entryId: string;
+            filename: string;
+        };
+        PostV1WikiImagesPositiveResponse: {
+            data: {
+                id: string;
+                publicUrl: string;
+            };
+        };
+        PostV1WikiImagesRequestBody: {
+            entryId: string;
+            storagePath: string;
+        };
+        DeleteV1WikiImagesByIdImageIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1WikiCategoriesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    slug: string;
+                    createdAt: string | unknown;
+                    translations: {
+                        id: string;
+                        categoryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        name: string;
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        GetV1WikiTagsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                    createdBy: string | null;
+                    createdAt: string | unknown;
+                }[];
+                count: number;
+            };
+        };
+        PostV1WikiTagsPositiveResponse: {
+            data: {
+                id: string;
+                name: string;
+                slug: string;
+                createdBy: string | null;
+                createdAt: string | unknown;
+            };
+        };
+        PostV1WikiTagsRequestBody: {
+            name: string;
+            slug: string;
+        };
+        GetV1WikiReviewQueuePositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    entryId: string | null;
+                    /** @enum {string} */
+                    type: "new_entry" | "change_request";
+                    /** @enum {string} */
+                    status: "draft" | "under_review" | "approved" | "rejected";
+                    submittedBy: string;
+                    proposedCategoryId: string | null;
+                    proposedFarmId: string | null;
+                    createdAt: string | unknown;
+                    resolvedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        changeRequestId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                    }[];
+                    entry: {
+                        id: string;
+                        /** @enum {string} */
+                        status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                        /** @enum {string} */
+                        visibility: "private" | "public";
+                        createdBy: string;
+                        farmId: string | null;
+                        categoryId: string;
+                        category: {
+                            id: string;
+                            slug: string;
+                            createdAt: string | unknown;
+                            translations: {
+                                id: string;
+                                categoryId: string;
+                                /** @enum {string} */
+                                locale: "de" | "en" | "it" | "fr";
+                                name: string;
+                            }[];
+                        };
+                        createdAt: string | unknown;
+                        updatedAt: string | unknown;
+                        translations: {
+                            id: string;
+                            entryId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            title: string;
+                            body: string;
+                            updatedBy: string | null;
+                            updatedAt: string | unknown;
+                        }[];
+                        images: {
+                            id: string;
+                            entryId: string;
+                            storagePath: string;
+                            altText: string | null;
+                            uploadedBy: string | null;
+                            createdAt: string | unknown;
+                        }[];
+                        tags: {
+                            id: string;
+                            entryId: string;
+                            tagId: string;
+                            tag: {
+                                id: string;
+                                name: string;
+                                slug: string;
+                                createdBy: string | null;
+                                createdAt: string | unknown;
+                            };
+                        }[];
+                    } | null;
+                }[];
+                count: number;
+            };
+        };
+        GetV1WikiChangeRequestsByIdChangeRequestIdPositiveResponse: {
+            data: {
+                id: string;
+                entryId: string | null;
+                /** @enum {string} */
+                type: "new_entry" | "change_request";
+                /** @enum {string} */
+                status: "draft" | "under_review" | "approved" | "rejected";
+                submittedBy: string;
+                proposedCategoryId: string | null;
+                proposedFarmId: string | null;
+                createdAt: string | unknown;
+                resolvedAt: string | unknown;
+                translations: {
+                    id: string;
+                    changeRequestId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    title: string;
+                    body: string;
+                }[];
+                entry: {
+                    id: string;
+                    /** @enum {string} */
+                    status: "draft" | "submitted" | "under_review" | "published" | "rejected";
+                    /** @enum {string} */
+                    visibility: "private" | "public";
+                    createdBy: string;
+                    farmId: string | null;
+                    categoryId: string;
+                    category: {
+                        id: string;
+                        slug: string;
+                        createdAt: string | unknown;
+                        translations: {
+                            id: string;
+                            categoryId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            name: string;
+                        }[];
+                    };
+                    createdAt: string | unknown;
+                    updatedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        entryId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                        updatedBy: string | null;
+                        updatedAt: string | unknown;
+                    }[];
+                    images: {
+                        id: string;
+                        entryId: string;
+                        storagePath: string;
+                        altText: string | null;
+                        uploadedBy: string | null;
+                        createdAt: string | unknown;
+                    }[];
+                    tags: {
+                        id: string;
+                        entryId: string;
+                        tagId: string;
+                        tag: {
+                            id: string;
+                            name: string;
+                            slug: string;
+                            createdBy: string | null;
+                            createdAt: string | unknown;
+                        };
+                    }[];
+                } | null;
+            };
+        };
+        PostV1WikiChangeRequestsByIdChangeRequestIdApprovePositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiChangeRequestsByIdChangeRequestIdApproveRequestBody: Record<string, never>;
+        PostV1WikiChangeRequestsByIdChangeRequestIdRejectPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiChangeRequestsByIdChangeRequestIdRejectRequestBody: Record<string, never>;
+        PostV1WikiChangeRequestsByIdChangeRequestIdRequestChangesPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiChangeRequestsByIdChangeRequestIdRequestChangesRequestBody: Record<string, never>;
+        GetV1WikiChangeRequestsByIdChangeRequestIdNotesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    changeRequestId: string;
+                    authorId: string;
+                    body: string;
+                    createdAt: string | unknown;
+                }[];
+                count: number;
+            };
+        };
+        PostV1WikiChangeRequestsByIdChangeRequestIdNotesPositiveResponse: {
+            data: {
+                id: string;
+                changeRequestId: string;
+                authorId: string;
+                body: string;
+                createdAt: string | unknown;
+            };
+        };
+        PostV1WikiAdminModeratorsPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiAdminModeratorsRequestBody: {
+            /** Format: uuid */
+            userId: string;
+        };
+        /** Format: uuid */
+        DeleteV1WikiAdminModeratorsParameterUserId: string;
+        DeleteV1WikiAdminModeratorsPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1WikiAdminCategoriesPositiveResponse: {
+            data: {
+                id: string;
+                slug: string;
+                createdAt: string | unknown;
+                translations: {
+                    id: string;
+                    categoryId: string;
+                    /** @enum {string} */
+                    locale: "de" | "en" | "it" | "fr";
+                    name: string;
+                }[];
+            };
+        };
+        PostV1WikiAdminCategoriesRequestBody: {
+            slug: string;
+            translations: {
+                /** @enum {string} */
+                locale: "de" | "en" | "it" | "fr";
+                name: string;
+            }[];
+        };
+        DeleteV1WikiAdminCategoriesByIdCategoryIdPositiveResponse: {
             data: Record<string, never>;
         };
     };
@@ -17082,6 +18225,1290 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/sponsorships/byId/:sponsorshipId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1Wiki: {
+        parameters: {
+            query?: {
+                /** @description GET /v1/wiki Parameter */
+                locale?: components["schemas"]["GetV1WikiParameterLocale"];
+                /** @description GET /v1/wiki Parameter */
+                categorySlug?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/wiki Parameter */
+                tagSlug?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/wiki Parameter */
+                search?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Wiki: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Wiki: {
+        parameters: {
+            query?: {
+                /** @description HEAD /v1/wiki Parameter */
+                locale?: components["schemas"]["GetV1WikiParameterLocale"];
+                /** @description HEAD /v1/wiki Parameter */
+                categorySlug?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/wiki Parameter */
+                tagSlug?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/wiki Parameter */
+                search?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiMyEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/myEntries Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiMyEntriesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/myEntries Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiMyEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/myEntries Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/myEntries Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiMyChangeRequests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/myChangeRequests Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiMyChangeRequestsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/myChangeRequests Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiMyChangeRequests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/myChangeRequests Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/myChangeRequests Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1WikiMyChangeRequestDraftsByIdChangeRequestId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1WikiMyChangeRequestDraftsByIdChangeRequestIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1WikiMyChangeRequestDraftsByIdChangeRequestIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/submit Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/submit Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmitRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/submit Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdSubmitPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/submit Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/myChangeRequestDrafts/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/wiki/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1WikiByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/wiki/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/wiki/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1WikiByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/wiki/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/wiki/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1WikiByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/wiki/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/wiki/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1WikiByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/wiki/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1WikiByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/wiki/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiByIdEntryIdSubmit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/byId/:entryId/submit Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/byId/:entryId/submit Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiByIdEntryIdSubmitRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/byId/:entryId/submit Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiByIdEntryIdSubmitPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/byId/:entryId/submit Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiByIdEntryIdChangeRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/byId/:entryId/changeRequest Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/byId/:entryId/changeRequest Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiByIdEntryIdChangeRequestRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/byId/:entryId/changeRequest Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiByIdEntryIdChangeRequestPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/byId/:entryId/changeRequest Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiImagesSignedUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/images/signedUrl Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiImagesSignedUrlRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/images/signedUrl Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiImagesSignedUrlPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/images/signedUrl Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/images Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiImagesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/images Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiImagesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/images Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1WikiImagesByIdImageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/wiki/images/byId/:imageId Parameter */
+                imageId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/wiki/images/byId/:imageId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1WikiImagesByIdImageIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/wiki/images/byId/:imageId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1WikiCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/categories Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiCategoriesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/categories Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/categories Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/categories Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/tags Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiTagsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/tags Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/tags Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiTagsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/tags Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiTagsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/tags Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/tags Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/tags Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiReviewQueue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/reviewQueue Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiReviewQueuePositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/reviewQueue Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiReviewQueue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/reviewQueue Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/reviewQueue Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1WikiChangeRequestsByIdChangeRequestId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiChangeRequestsByIdChangeRequestIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiChangeRequestsByIdChangeRequestId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1WikiChangeRequestsByIdChangeRequestIdApprove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/approve Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/approve Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdApproveRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/approve Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdApprovePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/approve Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiChangeRequestsByIdChangeRequestIdReject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/reject Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/reject Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdRejectRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/reject Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdRejectPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/reject Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiChangeRequestsByIdChangeRequestIdRequestChanges: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/requestChanges Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/requestChanges Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdRequestChangesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/requestChanges Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdRequestChangesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/requestChanges Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1WikiChangeRequestsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1WikiChangeRequestsByIdChangeRequestIdNotesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/wiki/changeRequests/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiChangeRequestsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/notes Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiMyChangeRequestDraftsByIdChangeRequestIdNotesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiChangeRequestsByIdChangeRequestIdNotesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/changeRequests/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1WikiChangeRequestsByIdChangeRequestIdNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId/notes Parameter */
+                changeRequestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId/notes Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/wiki/changeRequests/byId/:changeRequestId/notes Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1WikiAdminModerators: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/admin/moderators Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiAdminModeratorsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/admin/moderators Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiAdminModeratorsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/admin/moderators Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1WikiAdminModerators: {
+        parameters: {
+            query: {
+                /** @description DELETE /v1/wiki/admin/moderators Parameter */
+                userId: components["schemas"]["DeleteV1WikiAdminModeratorsParameterUserId"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/wiki/admin/moderators Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1WikiAdminModeratorsPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/wiki/admin/moderators Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1WikiAdminCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/wiki/admin/categories Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1WikiAdminCategoriesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/wiki/admin/categories Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1WikiAdminCategoriesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/wiki/admin/categories Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1WikiAdminCategoriesByIdCategoryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/wiki/admin/categories/byId/:categoryId Parameter */
+                categoryId: components["schemas"]["DeleteV1WikiAdminModeratorsParameterUserId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/wiki/admin/categories/byId/:categoryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1WikiAdminCategoriesByIdCategoryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/wiki/admin/categories/byId/:categoryId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

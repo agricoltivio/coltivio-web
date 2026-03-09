@@ -12,7 +12,10 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { meQueryOptions } from "@/api/user.queries";
 import {
+  BookOpen,
   CreditCard,
   Download,
   Droplets,
@@ -39,6 +42,8 @@ import {
 
 export function AppSidebar() {
   const { t } = useTranslation();
+  const meQuery = useQuery(meQueryOptions());
+  const isWikiModerator = meQuery.data?.isWikiModerator ?? false;
   // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
   // The browser scrolls a container synchronously during focus (before rAF), so we
   // capture the scroll position on pointerdown and restore it in onFocusCapture.
@@ -444,6 +449,48 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.wiki")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
+                    to="/wiki"
+                  >
+                    <BookOpen /> {t("nav.wiki")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
+                    to="/wiki/my-entries"
+                  >
+                    <NotepadText /> {t("nav.wikiMyEntries")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {isWikiModerator && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeOptions={{ exact: true, includeSearch: false }}
+                      activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
+                      to="/wiki/admin"
+                    >
+                      <Shield /> {t("nav.wikiAdmin")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

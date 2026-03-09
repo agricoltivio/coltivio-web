@@ -35,7 +35,8 @@
       "sponsorships": "Sponsorizzazioni",
       "accounting": "Contabilità",
       "fieldCalendar": "Calendario dei campi",
-      "admin": "Amministrazione"
+      "admin": "Amministrazione",
+      "wiki": "Wiki"
     },
     "dashboard": "Dashboard",
     "animals": "Animali",
@@ -62,7 +63,10 @@
     "cropFamilies": "Famiglie di colture",
     "fertilizers": "Fertilizzanti",
     "cropProtectionProducts": "Prodotti fitosanitari",
-    "fieldCalendarExport": "Esporta"
+    "fieldCalendarExport": "Esporta",
+    "wiki": "Wiki",
+    "wikiMyEntries": "Le mie voci",
+    "wikiAdmin": "Wiki Admin"
   },
   "animals": {
     "title": "Animali",
@@ -793,6 +797,82 @@
       "mineral": "Minerale",
       "organic": "Organico"
     }
+  },
+  "wiki": {
+    "title": "Wiki",
+    "myEntries": "Le mie voci",
+    "admin": "Admin",
+    "reviewQueue": "Coda di revisione",
+    "categories": "Categorie",
+    "moderators": "Moderatori",
+    "newEntry": "Nuova voce",
+    "editEntry": "Modifica voce",
+    "entryDetail": "Dettagli voce",
+    "slug": "Slug URL",
+    "category": "Categoria",
+    "tags": "Tag",
+    "translations": "Traduzioni",
+    "title_field": "Titolo",
+    "body": "Contenuto",
+    "preview": "Anteprima",
+    "addTag": "Aggiungi tag",
+    "newTag": "Nuovo tag",
+    "submit": "Rendi pubblico",
+    "submitConfirm": "Inviare questa voce per revisione pubblica?",
+    "propose": "Proponi modifiche",
+    "approve": "Approva",
+    "reject": "Rifiuta",
+    "requestChanges": "Richiedi modifiche",
+    "reviewNotes": "Note di revisione",
+    "noEntries": "Nessuna voce",
+    "noReviewItems": "Nessuna richiesta in attesa",
+    "privateNote": "Questa voce è privata e visibile solo a te.",
+    "submitNote": "L'invio renderà questa voce disponibile per revisione pubblica.",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa voce?",
+    "status": {
+      "draft": "Bozza",
+      "submitted": "Inviato",
+      "under_review": "In revisione",
+      "published": "Pubblicato",
+      "rejected": "Rifiutato"
+    },
+    "visibility": {
+      "private": "Privato",
+      "public": "Pubblico"
+    },
+    "changeRequest": {
+      "type": {
+        "new_entry": "Nuova voce",
+        "change_request": "Richiesta di modifica"
+      },
+      "status": {
+        "under_review": "In revisione",
+        "approved": "Approvato",
+        "rejected": "Rifiutato",
+        "draft": "Bozza"
+      }
+    },
+    "addCategory": "Aggiungi categoria",
+    "categorySlug": "Slug categoria",
+    "categoryName": "Nome categoria",
+    "addModerator": "Aggiungi moderatore",
+    "moderatorUserId": "ID utente",
+    "revoke": "Revoca",
+    "grantModerator": "Concedi ruolo moderatore",
+    "noCategories": "Nessuna categoria",
+    "noModerators": "Nessun moderatore",
+    "images": "Immagini",
+    "uploadImage": "Carica immagine",
+    "filterByCategory": "Filtra per categoria",
+    "filterByTag": "Filtra per tag",
+    "editSubmission": "Modifica invio",
+    "submissions": "Invii",
+    "noSubmissions": "Nessun invio",
+    "changesRequested": "Modifiche richieste",
+    "comments": "Commenti",
+    "addComment": "Invia",
+    "noComments": "Nessun commento",
+    "commentBody": "Scrivi un commento…"
   },
   "cropProtectionProducts": {
     "title": "Prodotti fitosanitari",

@@ -23,3 +23,4 @@ const authMiddleware: Middleware = {
 
 export const apiClient = createClient<paths>({ baseUrl })
 apiClient.use(authMiddleware)
+
