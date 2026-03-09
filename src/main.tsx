@@ -36,11 +36,14 @@ declare module "@tanstack/react-router" {
 function App() {
   const auth = useAuth();
 
-  // Whenever isAuthenticated changes (sign-in or sign-out), re-run beforeLoad
-  // on the current route so auth guards react to the new state.
+  // Re-run beforeLoad when auth state changes (sign-in / sign-out / token refresh).
+  // Guard: only when loading is false — at that point RouterProvider is in the tree and
+  // has already called router.update() with the valid context (synchronously during render),
+  // so router.invalidate() won't crash with context.auth === undefined.
   useEffect(() => {
+    if (auth.loading) return;
     router.invalidate();
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, auth.loading]);
 
   if (auth.loading) {
     return (
