@@ -20,9 +20,6 @@ function WikiAdmin() {
         <Button variant="outline" onClick={() => navigate({ to: "/wiki/admin/categories" })}>
           {t("wiki.categories")}
         </Button>
-        <Button variant="outline" onClick={() => navigate({ to: "/wiki/admin/moderators" })}>
-          {t("wiki.moderators")}
-        </Button>
       </div>
     </PageContent>
   );
