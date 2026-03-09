@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CreditCard,
@@ -37,17 +38,24 @@ import {
 
 export function AppSidebar() {
   const { t } = useTranslation();
+  // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
+  // The browser scrolls a container synchronously during focus (before rAF), so we
+  // capture the scroll position on pointerdown and restore it in onFocusCapture.
+  // Keyboard navigation is unaffected because it never sets isPointerFocus.
+  const savedScrollRef = useRef(0);
+  const isPointerFocusRef = useRef(false);
   return (
     <Sidebar>
       <SidebarHeader>Coltivio</SidebarHeader>
       <SidebarContent
+        onPointerDownCapture={(e) => {
+          savedScrollRef.current = e.currentTarget.scrollTop;
+          isPointerFocusRef.current = true;
+        }}
         onFocusCapture={(e) => {
-          // Prevent the browser from auto-scrolling the sidebar when a link is focused on click
-          const el = e.currentTarget;
-          const savedScroll = el.scrollTop;
-          requestAnimationFrame(() => {
-            el.scrollTop = savedScroll;
-          });
+          if (!isPointerFocusRef.current) return;
+          isPointerFocusRef.current = false;
+          e.currentTarget.scrollTop = savedScrollRef.current;
         }}
       >
         <SidebarGroup>
