@@ -6,7 +6,7 @@ import { Home, Layers, List, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Map, { Layer, Marker, NavigationControl, Source } from "react-map-gl/maplibre";
+import Map, { Marker, NavigationControl } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -139,12 +139,14 @@ function PlotsMap() {
     mapRef.current.flyTo({ center: [lng, lat], duration: 800 });
   }, [selectedPlotId, mappablePlots]);
 
-  // Keep refs to the latest geojson so onLoad can read current data without stale closures.
+  // Keep refs to the latest values so onLoad can read them without stale closures.
   // Assigning in render (not useEffect) ensures they're always up-to-date synchronously.
   const geojsonRef = useRef(geojson);
   const labelsGeojsonRef = useRef(labelsGeojson);
+  const activeLayerRef = useRef(activeLayer);
   geojsonRef.current = geojson;
   labelsGeojsonRef.current = labelsGeojson;
+  activeLayerRef.current = activeLayer;
 
   // Add plots source + layers imperatively once the map style has loaded.
   // Uses e.target (the MapLibre map from the event) instead of mapRef.current to avoid
@@ -152,6 +154,31 @@ function PlotsMap() {
   // so plots are visible as soon as the map loads, regardless of React's effect scheduling.
   const handleMapLoad = (e: maplibregl.MapLibreEvent) => {
     const map = e.target;
+
+    // Tile sources — added before plot layers so they render underneath
+    map.addSource("satellite", {
+      type: "raster",
+      tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"],
+      tileSize: 256,
+    });
+    map.addLayer({
+      id: "satellite-layer",
+      type: "raster",
+      source: "satellite",
+      layout: { visibility: activeLayerRef.current === "satellite" ? "visible" : "none" },
+    });
+    map.addSource("pixelkarte", {
+      type: "raster",
+      tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"],
+      tileSize: 256,
+    });
+    map.addLayer({
+      id: "pixelkarte-layer",
+      type: "raster",
+      source: "pixelkarte",
+      layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" },
+    });
+
     map.addSource("plots", {
       type: "geojson",
       data: geojsonRef.current,
@@ -224,6 +251,14 @@ function PlotsMap() {
     }
   }, [mapReady, geojson, labelsGeojson]);
 
+  // Toggle tile layer visibility imperatively to maintain deterministic layer order.
+  useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
+    const map = mapRef.current.getMap();
+    map.setLayoutProperty("satellite-layer", "visibility", activeLayer === "satellite" ? "visible" : "none");
+    map.setLayoutProperty("pixelkarte-layer", "visibility", activeLayer === "pixelkarte" ? "visible" : "none");
+  }, [mapReady, activeLayer]);
+
   const fuse = useMemo(
     () => new Fuse(plots, { keys: ["name", "localId"], threshold: 0.4 }),
     [plots],
@@ -279,32 +314,6 @@ function PlotsMap() {
           interactiveLayerIds={["plots-fill"]}
           style={{ width: "100%", height: "100%" }}
         >
-          {/* Tile layers — always mounted, visibility toggled via layout prop */}
-          <Source
-            id="satellite"
-            type="raster"
-            tiles={["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"]}
-            tileSize={256}
-          >
-            <Layer
-              id="satellite-layer"
-              type="raster"
-              layout={{ visibility: activeLayer === "satellite" ? "visible" : "none" }}
-            />
-          </Source>
-          <Source
-            id="pixelkarte"
-            type="raster"
-            tiles={["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"]}
-            tileSize={256}
-          >
-            <Layer
-              id="pixelkarte-layer"
-              type="raster"
-              layout={{ visibility: activeLayer === "pixelkarte" ? "visible" : "none" }}
-            />
-          </Source>
-
           {farm && (
             <Marker
               longitude={farm.location.coordinates[0]}
