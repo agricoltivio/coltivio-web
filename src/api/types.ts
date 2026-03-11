@@ -217,3 +217,32 @@ export type OutdoorJournalData =
   components["schemas"]["GetV1AnimalsOutdoorJournalPositiveResponse"]["data"];
 
 export type AnimalUsage = Animal["usage"];
+
+// Wiki types
+export type WikiEntry =
+  components["schemas"]["GetV1WikiPositiveResponse"]["data"]["result"][number];
+export type WikiTranslation = WikiEntry["translations"][number];
+export type WikiCategory = WikiEntry["category"];
+export type WikiCategoryTranslation = WikiCategory["translations"][number];
+export type WikiImage = WikiEntry["images"][number];
+export type WikiEntryTag = WikiEntry["tags"][number];
+export type WikiTag = WikiEntryTag["tag"];
+export type WikiEntryStatus = WikiEntry["status"];
+export type WikiEntryVisibility = WikiEntry["visibility"];
+
+export type WikiChangeRequest =
+  components["schemas"]["GetV1WikiMyChangeRequestsPositiveResponse"]["data"]["result"][number];
+export type WikiChangeRequestTranslation =
+  WikiChangeRequest["translations"][number];
+export type WikiChangeRequestStatus = WikiChangeRequest["status"];
+export type WikiChangeRequestType = WikiChangeRequest["type"];
+
+export type WikiReviewItem =
+  components["schemas"]["GetV1WikiReviewQueuePositiveResponse"]["data"]["result"][number];
+
+// Full change request detail (byId) — includes nullable embedded entry
+export type WikiChangeRequestDetail =
+  components["schemas"]["GetV1WikiChangeRequestsByIdChangeRequestIdPositiveResponse"]["data"];
+
+export type WikiChangeRequestNote =
+  components["schemas"]["GetV1WikiChangeRequestsByIdChangeRequestIdNotesPositiveResponse"]["data"]["result"][number];

@@ -35,7 +35,8 @@
       "sponsorships": "Parrainages",
       "accounting": "Comptabilité",
       "fieldCalendar": "Calendrier cultural",
-      "admin": "Administration"
+      "admin": "Administration",
+      "wiki": "Wiki"
     },
     "dashboard": "Tableau de bord",
     "animals": "Animaux",
@@ -62,7 +63,10 @@
     "cropFamilies": "Familles de cultures",
     "fertilizers": "Engrais",
     "cropProtectionProducts": "Produits phytosanitaires",
-    "fieldCalendarExport": "Exporter"
+    "fieldCalendarExport": "Exporter",
+    "wiki": "Wiki",
+    "wikiMyEntries": "Mes entrées",
+    "wikiAdmin": "Wiki Admin"
   },
   "animals": {
     "title": "Animaux",
@@ -793,6 +797,76 @@
       "mineral": "Minéral",
       "organic": "Organique"
     }
+  },
+  "wiki": {
+    "title": "Wiki",
+    "myEntries": "Mes entrées",
+    "admin": "Admin",
+    "reviewQueue": "File de révision",
+    "categories": "Catégories",
+    "newEntry": "Nouvelle entrée",
+    "editEntry": "Modifier l'entrée",
+    "entryDetail": "Détails de l'entrée",
+    "slug": "Slug URL",
+    "category": "Catégorie",
+    "tags": "Tags",
+    "translations": "Traductions",
+    "title_field": "Titre",
+    "body": "Contenu",
+    "preview": "Aperçu",
+    "addTag": "Ajouter un tag",
+    "newTag": "Nouveau tag",
+    "submit": "Rendre public",
+    "submitConfirm": "Soumettre cette entrée pour révision publique?",
+    "propose": "Proposer des modifications",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "requestChanges": "Demander des modifications",
+    "reviewNotes": "Notes de révision",
+    "noEntries": "Aucune entrée",
+    "noReviewItems": "Aucune demande en attente",
+    "privateNote": "Cette entrée est privée et uniquement visible par vous.",
+    "submitNote": "La soumission enverra cette entrée pour révision publique.",
+    "deleteConfirm": "Voulez-vous vraiment supprimer cette entrée?",
+    "status": {
+      "draft": "Brouillon",
+      "submitted": "Soumis",
+      "under_review": "En révision",
+      "published": "Publié",
+      "rejected": "Rejeté"
+    },
+    "visibility": {
+      "private": "Privé",
+      "public": "Public"
+    },
+    "changeRequest": {
+      "type": {
+        "new_entry": "Nouvelle entrée",
+        "change_request": "Demande de modification"
+      },
+      "status": {
+        "under_review": "En cours de révision",
+        "approved": "Approuvé",
+        "rejected": "Rejeté",
+        "draft": "Brouillon"
+      }
+    },
+    "addCategory": "Ajouter une catégorie",
+    "categorySlug": "Slug de catégorie",
+    "categoryName": "Nom de catégorie",
+    "noCategories": "Aucune catégorie",
+    "images": "Images",
+    "uploadImage": "Télécharger une image",
+    "filterByCategory": "Filtrer par catégorie",
+    "filterByTag": "Filtrer par tag",
+    "editSubmission": "Modifier la soumission",
+    "submissions": "Soumissions",
+    "noSubmissions": "Aucune soumission",
+    "changesRequested": "Modifications demandées",
+    "comments": "Commentaires",
+    "addComment": "Envoyer",
+    "noComments": "Aucun commentaire",
+    "commentBody": "Écrire un commentaire…"
   },
   "cropProtectionProducts": {
     "title": "Produits phytosanitaires",

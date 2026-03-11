@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
+import { Route as AuthedWikiIndexRouteImport } from './routes/_authed/wiki/index'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
 import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
@@ -28,6 +29,7 @@ import { Route as AuthedOrdersIndexRouteImport } from './routes/_authed/orders/i
 import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/index'
 import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contacts/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
+import { Route as AuthedWikiEntryIdRouteImport } from './routes/_authed/wiki/$entryId'
 import { Route as AuthedTreatmentsCreateRouteImport } from './routes/_authed/treatments/create'
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
 import { Route as AuthedProductsCreateRouteImport } from './routes/_authed/products/create'
@@ -51,6 +53,8 @@ import { Route as AuthedAnimalsTreatmentsJournalRouteImport } from './routes/_au
 import { Route as AuthedAnimalsHerdsRouteImport } from './routes/_authed/animals/herds'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
+import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
+import { Route as AuthedWikiAdminIndexRouteImport } from './routes/_authed/wiki/admin/index'
 import { Route as AuthedTreatmentsTreatmentIdIndexRouteImport } from './routes/_authed/treatments/$treatmentId.index'
 import { Route as AuthedSponsorshipsProgramsIndexRouteImport } from './routes/_authed/sponsorships/programs/index'
 import { Route as AuthedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.index'
@@ -60,6 +64,7 @@ import { Route as AuthedOrdersOrderIdIndexRouteImport } from './routes/_authed/o
 import { Route as AuthedDrugsDrugIdIndexRouteImport } from './routes/_authed/drugs/$drugId.index'
 import { Route as AuthedContactsContactIdIndexRouteImport } from './routes/_authed/contacts/$contactId.index'
 import { Route as AuthedAnimalsAnimalIdIndexRouteImport } from './routes/_authed/animals/$animalId.index'
+import { Route as AuthedWikiMyEntriesNewRouteImport } from './routes/_authed/wiki/my-entries/new'
 import { Route as AuthedTreatmentsTreatmentIdEditRouteImport } from './routes/_authed/treatments/$treatmentId.edit'
 import { Route as AuthedSponsorshipsProgramsCreateRouteImport } from './routes/_authed/sponsorships/programs/create'
 import { Route as AuthedSponsorshipsSponsorshipIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.edit'
@@ -85,7 +90,13 @@ import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drug
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
 import { Route as AuthedAnimalsAnimalIdEditRouteImport } from './routes/_authed/animals/$animalId.edit'
+import { Route as AuthedWikiAdminReviewQueueIndexRouteImport } from './routes/_authed/wiki/admin/review-queue/index'
+import { Route as AuthedWikiAdminCategoriesIndexRouteImport } from './routes/_authed/wiki/admin/categories/index'
 import { Route as AuthedSponsorshipsProgramsProgramIdIndexRouteImport } from './routes/_authed/sponsorships/programs/$programId.index'
+import { Route as AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRouteImport } from './routes/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
+import { Route as AuthedWikiMyEntriesEntryIdEditRouteImport } from './routes/_authed/wiki/my-entries/$entryId/edit'
+import { Route as AuthedWikiMyEntriesEntryIdChangeRequestRouteImport } from './routes/_authed/wiki/my-entries/$entryId/change-request'
+import { Route as AuthedWikiAdminReviewQueueChangeRequestIdRouteImport } from './routes/_authed/wiki/admin/review-queue/$changeRequestId'
 import { Route as AuthedSponsorshipsProgramsProgramIdEditRouteImport } from './routes/_authed/sponsorships/programs/$programId.edit'
 import { Route as AuthedFieldCalendarTillagesTillageIdEditRouteImport } from './routes/_authed/field-calendar/tillages_.$tillageId.edit'
 import { Route as AuthedFieldCalendarPlotsPlotIdCropRotationsRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.crop-rotations'
@@ -154,6 +165,11 @@ const AuthedAccountRoute = AuthedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedWikiIndexRoute = AuthedWikiIndexRouteImport.update({
+  id: '/wiki/',
+  path: '/wiki/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedSponsorshipsIndexRoute = AuthedSponsorshipsIndexRouteImport.update({
   id: '/sponsorships/',
   path: '/sponsorships/',
@@ -187,6 +203,11 @@ const AuthedContactsIndexRoute = AuthedContactsIndexRouteImport.update({
 const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
   path: '/animals/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedWikiEntryIdRoute = AuthedWikiEntryIdRouteImport.update({
+  id: '/wiki/$entryId',
+  path: '/wiki/$entryId',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedTreatmentsCreateRoute = AuthedTreatmentsCreateRouteImport.update({
@@ -318,6 +339,17 @@ const AuthedAnimalsCreateRoute = AuthedAnimalsCreateRouteImport.update({
   path: '/animals/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedWikiMyEntriesIndexRoute =
+  AuthedWikiMyEntriesIndexRouteImport.update({
+    id: '/wiki/my-entries/',
+    path: '/wiki/my-entries/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiAdminIndexRoute = AuthedWikiAdminIndexRouteImport.update({
+  id: '/wiki/admin/',
+  path: '/wiki/admin/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedTreatmentsTreatmentIdIndexRoute =
   AuthedTreatmentsTreatmentIdIndexRouteImport.update({
     id: '/treatments/$treatmentId/',
@@ -371,6 +403,11 @@ const AuthedAnimalsAnimalIdIndexRoute =
     path: '/animals/$animalId/',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedWikiMyEntriesNewRoute = AuthedWikiMyEntriesNewRouteImport.update({
+  id: '/wiki/my-entries/new',
+  path: '/wiki/my-entries/new',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedTreatmentsTreatmentIdEditRoute =
   AuthedTreatmentsTreatmentIdEditRouteImport.update({
     id: '/treatments/$treatmentId/edit',
@@ -521,10 +558,46 @@ const AuthedAnimalsAnimalIdEditRoute =
     path: '/animals/$animalId/edit',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedWikiAdminReviewQueueIndexRoute =
+  AuthedWikiAdminReviewQueueIndexRouteImport.update({
+    id: '/wiki/admin/review-queue/',
+    path: '/wiki/admin/review-queue/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiAdminCategoriesIndexRoute =
+  AuthedWikiAdminCategoriesIndexRouteImport.update({
+    id: '/wiki/admin/categories/',
+    path: '/wiki/admin/categories/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedSponsorshipsProgramsProgramIdIndexRoute =
   AuthedSponsorshipsProgramsProgramIdIndexRouteImport.update({
     id: '/sponsorships/programs/$programId/',
     path: '/sponsorships/programs/$programId/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute =
+  AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRouteImport.update({
+    id: '/wiki/my-entries/change-request-drafts/$changeRequestId',
+    path: '/wiki/my-entries/change-request-drafts/$changeRequestId',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiMyEntriesEntryIdEditRoute =
+  AuthedWikiMyEntriesEntryIdEditRouteImport.update({
+    id: '/wiki/my-entries/$entryId/edit',
+    path: '/wiki/my-entries/$entryId/edit',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiMyEntriesEntryIdChangeRequestRoute =
+  AuthedWikiMyEntriesEntryIdChangeRequestRouteImport.update({
+    id: '/wiki/my-entries/$entryId/change-request',
+    path: '/wiki/my-entries/$entryId/change-request',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
+const AuthedWikiAdminReviewQueueChangeRequestIdRoute =
+  AuthedWikiAdminReviewQueueChangeRequestIdRouteImport.update({
+    id: '/wiki/admin/review-queue/$changeRequestId',
+    path: '/wiki/admin/review-queue/$changeRequestId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedSponsorshipsProgramsProgramIdEditRoute =
@@ -613,6 +686,7 @@ export interface FileRoutesByFullPath {
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
   '/contacts/': typeof AuthedContactsIndexRoute
   '/drugs/': typeof AuthedDrugsIndexRoute
@@ -620,6 +694,7 @@ export interface FileRoutesByFullPath {
   '/payments/': typeof AuthedPaymentsIndexRoute
   '/products/': typeof AuthedProductsIndexRoute
   '/sponsorships/': typeof AuthedSponsorshipsIndexRoute
+  '/wiki/': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -645,6 +720,7 @@ export interface FileRoutesByFullPath {
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
   '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
+  '/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
   '/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
   '/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
@@ -654,6 +730,8 @@ export interface FileRoutesByFullPath {
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
   '/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/wiki/admin/': typeof AuthedWikiAdminIndexRoute
+  '/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-applications/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
   '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
@@ -662,7 +740,13 @@ export interface FileRoutesByFullPath {
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
+  '/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
+  '/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
+  '/wiki/my-entries/$entryId/edit': typeof AuthedWikiMyEntriesEntryIdEditRoute
+  '/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+  '/wiki/admin/categories/': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/wiki/admin/review-queue/': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -699,6 +783,7 @@ export interface FileRoutesByTo {
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals': typeof AuthedAnimalsIndexRoute
   '/contacts': typeof AuthedContactsIndexRoute
   '/drugs': typeof AuthedDrugsIndexRoute
@@ -706,6 +791,7 @@ export interface FileRoutesByTo {
   '/payments': typeof AuthedPaymentsIndexRoute
   '/products': typeof AuthedProductsIndexRoute
   '/sponsorships': typeof AuthedSponsorshipsIndexRoute
+  '/wiki': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -731,6 +817,7 @@ export interface FileRoutesByTo {
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
   '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
+  '/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/animals/$animalId': typeof AuthedAnimalsAnimalIdIndexRoute
   '/contacts/$contactId': typeof AuthedContactsContactIdIndexRoute
   '/drugs/$drugId': typeof AuthedDrugsDrugIdIndexRoute
@@ -740,6 +827,8 @@ export interface FileRoutesByTo {
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs': typeof AuthedSponsorshipsProgramsIndexRoute
   '/treatments/$treatmentId': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/wiki/admin': typeof AuthedWikiAdminIndexRoute
+  '/wiki/my-entries': typeof AuthedWikiMyEntriesIndexRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-applications/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
   '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
@@ -748,7 +837,13 @@ export interface FileRoutesByTo {
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
+  '/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
+  '/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
+  '/wiki/my-entries/$entryId/edit': typeof AuthedWikiMyEntriesEntryIdEditRoute
+  '/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/sponsorships/programs/$programId': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+  '/wiki/admin/categories': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/wiki/admin/review-queue': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -787,6 +882,7 @@ export interface FileRoutesById {
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/_authed/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/_authed/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
   '/_authed/contacts/': typeof AuthedContactsIndexRoute
   '/_authed/drugs/': typeof AuthedDrugsIndexRoute
@@ -794,6 +890,7 @@ export interface FileRoutesById {
   '/_authed/payments/': typeof AuthedPaymentsIndexRoute
   '/_authed/products/': typeof AuthedProductsIndexRoute
   '/_authed/sponsorships/': typeof AuthedSponsorshipsIndexRoute
+  '/_authed/wiki/': typeof AuthedWikiIndexRoute
   '/_authed/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -819,6 +916,7 @@ export interface FileRoutesById {
   '/_authed/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/_authed/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
   '/_authed/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
+  '/_authed/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/_authed/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
   '/_authed/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
   '/_authed/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
@@ -828,6 +926,8 @@ export interface FileRoutesById {
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/_authed/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
   '/_authed/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
+  '/_authed/wiki/admin/': typeof AuthedWikiAdminIndexRoute
+  '/_authed/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
   '/_authed/field-calendar/crop-families_/$familyId_/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/_authed/field-calendar/crop-protection-applications_/$id/edit': typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
   '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
@@ -836,7 +936,13 @@ export interface FileRoutesById {
   '/_authed/field-calendar/plots_/$plotId_/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/_authed/field-calendar/tillages_/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
   '/_authed/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
+  '/_authed/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
+  '/_authed/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
+  '/_authed/wiki/my-entries/$entryId/edit': typeof AuthedWikiMyEntriesEntryIdEditRoute
+  '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/_authed/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+  '/_authed/wiki/admin/categories/': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/_authed/wiki/admin/review-queue/': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -875,6 +981,7 @@ export interface FileRouteTypes {
     | '/products/create'
     | '/sponsorships/create'
     | '/treatments/create'
+    | '/wiki/$entryId'
     | '/animals/'
     | '/contacts/'
     | '/drugs/'
@@ -882,6 +989,7 @@ export interface FileRouteTypes {
     | '/payments/'
     | '/products/'
     | '/sponsorships/'
+    | '/wiki/'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
@@ -907,6 +1015,7 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
     | '/treatments/$treatmentId/edit'
+    | '/wiki/my-entries/new'
     | '/animals/$animalId/'
     | '/contacts/$contactId/'
     | '/drugs/$drugId/'
@@ -916,6 +1025,8 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId/'
     | '/sponsorships/programs/'
     | '/treatments/$treatmentId/'
+    | '/wiki/admin/'
+    | '/wiki/my-entries/'
     | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-applications/$id/edit'
     | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
@@ -924,7 +1035,13 @@ export interface FileRouteTypes {
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/tillages/$tillageId/edit'
     | '/sponsorships/programs/$programId/edit'
+    | '/wiki/admin/review-queue/$changeRequestId'
+    | '/wiki/my-entries/$entryId/change-request'
+    | '/wiki/my-entries/$entryId/edit'
+    | '/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/sponsorships/programs/$programId/'
+    | '/wiki/admin/categories/'
+    | '/wiki/admin/review-queue/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -961,6 +1078,7 @@ export interface FileRouteTypes {
     | '/products/create'
     | '/sponsorships/create'
     | '/treatments/create'
+    | '/wiki/$entryId'
     | '/animals'
     | '/contacts'
     | '/drugs'
@@ -968,6 +1086,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/products'
     | '/sponsorships'
+    | '/wiki'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
@@ -993,6 +1112,7 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
     | '/treatments/$treatmentId/edit'
+    | '/wiki/my-entries/new'
     | '/animals/$animalId'
     | '/contacts/$contactId'
     | '/drugs/$drugId'
@@ -1002,6 +1122,8 @@ export interface FileRouteTypes {
     | '/sponsorships/$sponsorshipId'
     | '/sponsorships/programs'
     | '/treatments/$treatmentId'
+    | '/wiki/admin'
+    | '/wiki/my-entries'
     | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-applications/$id/edit'
     | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
@@ -1010,7 +1132,13 @@ export interface FileRouteTypes {
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/tillages/$tillageId/edit'
     | '/sponsorships/programs/$programId/edit'
+    | '/wiki/admin/review-queue/$changeRequestId'
+    | '/wiki/my-entries/$entryId/change-request'
+    | '/wiki/my-entries/$entryId/edit'
+    | '/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/sponsorships/programs/$programId'
+    | '/wiki/admin/categories'
+    | '/wiki/admin/review-queue'
   id:
     | '__root__'
     | '/'
@@ -1048,6 +1176,7 @@ export interface FileRouteTypes {
     | '/_authed/products/create'
     | '/_authed/sponsorships/create'
     | '/_authed/treatments/create'
+    | '/_authed/wiki/$entryId'
     | '/_authed/animals/'
     | '/_authed/contacts/'
     | '/_authed/drugs/'
@@ -1055,6 +1184,7 @@ export interface FileRouteTypes {
     | '/_authed/payments/'
     | '/_authed/products/'
     | '/_authed/sponsorships/'
+    | '/_authed/wiki/'
     | '/_authed/animals/$animalId/edit'
     | '/_authed/animals/herds_/$herdId'
     | '/_authed/contacts/$contactId/edit'
@@ -1080,6 +1210,7 @@ export interface FileRouteTypes {
     | '/_authed/sponsorships/$sponsorshipId/edit'
     | '/_authed/sponsorships/programs/create'
     | '/_authed/treatments/$treatmentId/edit'
+    | '/_authed/wiki/my-entries/new'
     | '/_authed/animals/$animalId/'
     | '/_authed/contacts/$contactId/'
     | '/_authed/drugs/$drugId/'
@@ -1089,6 +1220,8 @@ export interface FileRouteTypes {
     | '/_authed/sponsorships/$sponsorshipId/'
     | '/_authed/sponsorships/programs/'
     | '/_authed/treatments/$treatmentId/'
+    | '/_authed/wiki/admin/'
+    | '/_authed/wiki/my-entries/'
     | '/_authed/field-calendar/crop-families_/$familyId_/edit'
     | '/_authed/field-calendar/crop-protection-applications_/$id/edit'
     | '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit'
@@ -1097,7 +1230,13 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/plots_/$plotId_/crop-rotations'
     | '/_authed/field-calendar/tillages_/$tillageId/edit'
     | '/_authed/sponsorships/programs/$programId/edit'
+    | '/_authed/wiki/admin/review-queue/$changeRequestId'
+    | '/_authed/wiki/my-entries/$entryId/change-request'
+    | '/_authed/wiki/my-entries/$entryId/edit'
+    | '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/_authed/sponsorships/programs/$programId/'
+    | '/_authed/wiki/admin/categories/'
+    | '/_authed/wiki/admin/review-queue/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1198,6 +1337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAccountRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/wiki/': {
+      id: '/_authed/wiki/'
+      path: '/wiki'
+      fullPath: '/wiki/'
+      preLoaderRoute: typeof AuthedWikiIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/sponsorships/': {
       id: '/_authed/sponsorships/'
       path: '/sponsorships'
@@ -1245,6 +1391,13 @@ declare module '@tanstack/react-router' {
       path: '/animals'
       fullPath: '/animals/'
       preLoaderRoute: typeof AuthedAnimalsIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/$entryId': {
+      id: '/_authed/wiki/$entryId'
+      path: '/wiki/$entryId'
+      fullPath: '/wiki/$entryId'
+      preLoaderRoute: typeof AuthedWikiEntryIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/treatments/create': {
@@ -1408,6 +1561,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/wiki/my-entries/': {
+      id: '/_authed/wiki/my-entries/'
+      path: '/wiki/my-entries'
+      fullPath: '/wiki/my-entries/'
+      preLoaderRoute: typeof AuthedWikiMyEntriesIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/admin/': {
+      id: '/_authed/wiki/admin/'
+      path: '/wiki/admin'
+      fullPath: '/wiki/admin/'
+      preLoaderRoute: typeof AuthedWikiAdminIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/treatments/$treatmentId/': {
       id: '/_authed/treatments/$treatmentId/'
       path: '/treatments/$treatmentId'
@@ -1469,6 +1636,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/$animalId'
       fullPath: '/animals/$animalId/'
       preLoaderRoute: typeof AuthedAnimalsAnimalIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/my-entries/new': {
+      id: '/_authed/wiki/my-entries/new'
+      path: '/wiki/my-entries/new'
+      fullPath: '/wiki/my-entries/new'
+      preLoaderRoute: typeof AuthedWikiMyEntriesNewRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/treatments/$treatmentId/edit': {
@@ -1646,11 +1820,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsAnimalIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/wiki/admin/review-queue/': {
+      id: '/_authed/wiki/admin/review-queue/'
+      path: '/wiki/admin/review-queue'
+      fullPath: '/wiki/admin/review-queue/'
+      preLoaderRoute: typeof AuthedWikiAdminReviewQueueIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/admin/categories/': {
+      id: '/_authed/wiki/admin/categories/'
+      path: '/wiki/admin/categories'
+      fullPath: '/wiki/admin/categories/'
+      preLoaderRoute: typeof AuthedWikiAdminCategoriesIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/sponsorships/programs/$programId/': {
       id: '/_authed/sponsorships/programs/$programId/'
       path: '/sponsorships/programs/$programId'
       fullPath: '/sponsorships/programs/$programId/'
       preLoaderRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId': {
+      id: '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
+      path: '/wiki/my-entries/change-request-drafts/$changeRequestId'
+      fullPath: '/wiki/my-entries/change-request-drafts/$changeRequestId'
+      preLoaderRoute: typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/my-entries/$entryId/edit': {
+      id: '/_authed/wiki/my-entries/$entryId/edit'
+      path: '/wiki/my-entries/$entryId/edit'
+      fullPath: '/wiki/my-entries/$entryId/edit'
+      preLoaderRoute: typeof AuthedWikiMyEntriesEntryIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/my-entries/$entryId/change-request': {
+      id: '/_authed/wiki/my-entries/$entryId/change-request'
+      path: '/wiki/my-entries/$entryId/change-request'
+      fullPath: '/wiki/my-entries/$entryId/change-request'
+      preLoaderRoute: typeof AuthedWikiMyEntriesEntryIdChangeRequestRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/admin/review-queue/$changeRequestId': {
+      id: '/_authed/wiki/admin/review-queue/$changeRequestId'
+      path: '/wiki/admin/review-queue/$changeRequestId'
+      fullPath: '/wiki/admin/review-queue/$changeRequestId'
+      preLoaderRoute: typeof AuthedWikiAdminReviewQueueChangeRequestIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/programs/$programId/edit': {
@@ -1754,6 +1970,7 @@ interface AuthedRouteRouteChildren {
   AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
   AuthedSponsorshipsCreateRoute: typeof AuthedSponsorshipsCreateRoute
   AuthedTreatmentsCreateRoute: typeof AuthedTreatmentsCreateRoute
+  AuthedWikiEntryIdRoute: typeof AuthedWikiEntryIdRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
   AuthedContactsIndexRoute: typeof AuthedContactsIndexRoute
   AuthedDrugsIndexRoute: typeof AuthedDrugsIndexRoute
@@ -1761,6 +1978,7 @@ interface AuthedRouteRouteChildren {
   AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
   AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
   AuthedSponsorshipsIndexRoute: typeof AuthedSponsorshipsIndexRoute
+  AuthedWikiIndexRoute: typeof AuthedWikiIndexRoute
   AuthedAnimalsAnimalIdEditRoute: typeof AuthedAnimalsAnimalIdEditRoute
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
   AuthedContactsContactIdEditRoute: typeof AuthedContactsContactIdEditRoute
@@ -1786,6 +2004,7 @@ interface AuthedRouteRouteChildren {
   AuthedSponsorshipsSponsorshipIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdEditRoute
   AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
   AuthedTreatmentsTreatmentIdEditRoute: typeof AuthedTreatmentsTreatmentIdEditRoute
+  AuthedWikiMyEntriesNewRoute: typeof AuthedWikiMyEntriesNewRoute
   AuthedAnimalsAnimalIdIndexRoute: typeof AuthedAnimalsAnimalIdIndexRoute
   AuthedContactsContactIdIndexRoute: typeof AuthedContactsContactIdIndexRoute
   AuthedDrugsDrugIdIndexRoute: typeof AuthedDrugsDrugIdIndexRoute
@@ -1795,6 +2014,8 @@ interface AuthedRouteRouteChildren {
   AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
   AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
+  AuthedWikiAdminIndexRoute: typeof AuthedWikiAdminIndexRoute
+  AuthedWikiMyEntriesIndexRoute: typeof AuthedWikiMyEntriesIndexRoute
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute: typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
   AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
@@ -1802,7 +2023,13 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarFertilizersFertilizerIdEditRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   AuthedFieldCalendarPlotsPlotIdCropRotationsRoute: typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
+  AuthedWikiAdminReviewQueueChangeRequestIdRoute: typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
+  AuthedWikiMyEntriesEntryIdChangeRequestRoute: typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
+  AuthedWikiMyEntriesEntryIdEditRoute: typeof AuthedWikiMyEntriesEntryIdEditRoute
+  AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute: typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+  AuthedWikiAdminCategoriesIndexRoute: typeof AuthedWikiAdminCategoriesIndexRoute
+  AuthedWikiAdminReviewQueueIndexRoute: typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
@@ -1835,6 +2062,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedProductsCreateRoute: AuthedProductsCreateRoute,
   AuthedSponsorshipsCreateRoute: AuthedSponsorshipsCreateRoute,
   AuthedTreatmentsCreateRoute: AuthedTreatmentsCreateRoute,
+  AuthedWikiEntryIdRoute: AuthedWikiEntryIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
   AuthedContactsIndexRoute: AuthedContactsIndexRoute,
   AuthedDrugsIndexRoute: AuthedDrugsIndexRoute,
@@ -1842,6 +2070,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
   AuthedProductsIndexRoute: AuthedProductsIndexRoute,
   AuthedSponsorshipsIndexRoute: AuthedSponsorshipsIndexRoute,
+  AuthedWikiIndexRoute: AuthedWikiIndexRoute,
   AuthedAnimalsAnimalIdEditRoute: AuthedAnimalsAnimalIdEditRoute,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
   AuthedContactsContactIdEditRoute: AuthedContactsContactIdEditRoute,
@@ -1880,6 +2109,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedSponsorshipsSponsorshipIdEditRoute,
   AuthedSponsorshipsProgramsCreateRoute: AuthedSponsorshipsProgramsCreateRoute,
   AuthedTreatmentsTreatmentIdEditRoute: AuthedTreatmentsTreatmentIdEditRoute,
+  AuthedWikiMyEntriesNewRoute: AuthedWikiMyEntriesNewRoute,
   AuthedAnimalsAnimalIdIndexRoute: AuthedAnimalsAnimalIdIndexRoute,
   AuthedContactsContactIdIndexRoute: AuthedContactsContactIdIndexRoute,
   AuthedDrugsDrugIdIndexRoute: AuthedDrugsDrugIdIndexRoute,
@@ -1890,6 +2120,8 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedSponsorshipsSponsorshipIdIndexRoute,
   AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
   AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
+  AuthedWikiAdminIndexRoute: AuthedWikiAdminIndexRoute,
+  AuthedWikiMyEntriesIndexRoute: AuthedWikiMyEntriesIndexRoute,
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute:
     AuthedFieldCalendarCropFamiliesFamilyIdEditRoute,
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute:
@@ -1904,8 +2136,17 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedFieldCalendarPlotsPlotIdCropRotationsRoute,
   AuthedSponsorshipsProgramsProgramIdEditRoute:
     AuthedSponsorshipsProgramsProgramIdEditRoute,
+  AuthedWikiAdminReviewQueueChangeRequestIdRoute:
+    AuthedWikiAdminReviewQueueChangeRequestIdRoute,
+  AuthedWikiMyEntriesEntryIdChangeRequestRoute:
+    AuthedWikiMyEntriesEntryIdChangeRequestRoute,
+  AuthedWikiMyEntriesEntryIdEditRoute: AuthedWikiMyEntriesEntryIdEditRoute,
+  AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute:
+    AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute,
   AuthedSponsorshipsProgramsProgramIdIndexRoute:
     AuthedSponsorshipsProgramsProgramIdIndexRoute,
+  AuthedWikiAdminCategoriesIndexRoute: AuthedWikiAdminCategoriesIndexRoute,
+  AuthedWikiAdminReviewQueueIndexRoute: AuthedWikiAdminReviewQueueIndexRoute,
 }
 
 const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(

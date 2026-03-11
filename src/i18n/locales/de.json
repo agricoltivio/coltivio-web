@@ -35,7 +35,8 @@
       "sponsorships": "Gönnerschaften",
       "accounting": "Buchhaltung",
       "fieldCalendar": "Feldkalender",
-      "admin": "Admin"
+      "admin": "Admin",
+      "wiki": "Wiki"
     },
     "dashboard": "Dashboard",
     "animals": "Tiere",
@@ -62,7 +63,10 @@
     "cropFamilies": "Kulturfamilien",
     "fertilizers": "Düngemittel",
     "cropProtectionProducts": "Pflanzenschutzmittel",
-    "fieldCalendarExport": "Export"
+    "fieldCalendarExport": "Export",
+    "wiki": "Wiki",
+    "wikiMyEntries": "Meine Einträge",
+    "wikiAdmin": "Wiki Admin"
   },
   "animals": {
     "title": "Tiere",
@@ -793,6 +797,76 @@
       "mineral": "Mineralisch",
       "organic": "Organisch"
     }
+  },
+  "wiki": {
+    "title": "Wiki",
+    "myEntries": "Meine Einträge",
+    "admin": "Admin",
+    "reviewQueue": "Prüfwarteschlange",
+    "categories": "Kategorien",
+    "newEntry": "Neuer Eintrag",
+    "editEntry": "Eintrag bearbeiten",
+    "entryDetail": "Eintragdetails",
+    "slug": "URL-Slug",
+    "category": "Kategorie",
+    "tags": "Tags",
+    "translations": "Übersetzungen",
+    "title_field": "Titel",
+    "body": "Inhalt",
+    "preview": "Vorschau",
+    "addTag": "Tag hinzufügen",
+    "newTag": "Neuer Tag",
+    "submit": "Veröffentlichen",
+    "submitConfirm": "Diesen Eintrag zur öffentlichen Prüfung einreichen?",
+    "propose": "Änderung vorschlagen",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "requestChanges": "Änderungen anfordern",
+    "reviewNotes": "Prüfnotizen",
+    "noEntries": "Keine Einträge",
+    "noReviewItems": "Keine offenen Prüfanfragen",
+    "privateNote": "Dieser Eintrag ist privat und nur für dich sichtbar.",
+    "submitNote": "Durch Einreichen wird der Eintrag zur öffentlichen Prüfung freigegeben.",
+    "deleteConfirm": "Möchtest du diesen Eintrag wirklich löschen?",
+    "status": {
+      "draft": "Entwurf",
+      "submitted": "Eingereicht",
+      "under_review": "In Prüfung",
+      "published": "Veröffentlicht",
+      "rejected": "Abgelehnt"
+    },
+    "visibility": {
+      "private": "Privat",
+      "public": "Öffentlich"
+    },
+    "changeRequest": {
+      "type": {
+        "new_entry": "Neuer Eintrag",
+        "change_request": "Änderungsantrag"
+      },
+      "status": {
+        "under_review": "In Prüfung",
+        "approved": "Genehmigt",
+        "rejected": "Abgelehnt",
+        "draft": "Entwurf"
+      }
+    },
+    "addCategory": "Kategorie hinzufügen",
+    "categorySlug": "Kategorie-Slug",
+    "categoryName": "Kategoriename",
+    "noCategories": "Keine Kategorien",
+    "images": "Bilder",
+    "uploadImage": "Bild hochladen",
+    "filterByCategory": "Nach Kategorie filtern",
+    "filterByTag": "Nach Tag filtern",
+    "editSubmission": "Einreichung bearbeiten",
+    "submissions": "Einreichungen",
+    "noSubmissions": "Noch keine Einreichungen",
+    "changesRequested": "Änderungen nötig",
+    "comments": "Kommentare",
+    "addComment": "Senden",
+    "noComments": "Noch keine Kommentare",
+    "commentBody": "Kommentar schreiben…"
   },
   "cropProtectionProducts": {
     "title": "Pflanzenschutzmittel",
