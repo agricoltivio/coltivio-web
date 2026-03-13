@@ -22,6 +22,7 @@ import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
 import { Route as AuthedWikiIndexRouteImport } from './routes/_authed/wiki/index'
+import { Route as AuthedTasksIndexRouteImport } from './routes/_authed/tasks/index'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
 import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
@@ -31,6 +32,7 @@ import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contac
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
 import { Route as AuthedWikiEntryIdRouteImport } from './routes/_authed/wiki/$entryId'
 import { Route as AuthedTreatmentsCreateRouteImport } from './routes/_authed/treatments/create'
+import { Route as AuthedTasksCreateRouteImport } from './routes/_authed/tasks/create'
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
 import { Route as AuthedProductsCreateRouteImport } from './routes/_authed/products/create'
 import { Route as AuthedPaymentsCreateRouteImport } from './routes/_authed/payments/create'
@@ -56,6 +58,7 @@ import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animal
 import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
 import { Route as AuthedWikiAdminIndexRouteImport } from './routes/_authed/wiki/admin/index'
 import { Route as AuthedTreatmentsTreatmentIdIndexRouteImport } from './routes/_authed/treatments/$treatmentId.index'
+import { Route as AuthedTasksTaskIdIndexRouteImport } from './routes/_authed/tasks/$taskId.index'
 import { Route as AuthedSponsorshipsProgramsIndexRouteImport } from './routes/_authed/sponsorships/programs/index'
 import { Route as AuthedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.index'
 import { Route as AuthedProductsProductIdIndexRouteImport } from './routes/_authed/products/$productId.index'
@@ -66,6 +69,7 @@ import { Route as AuthedContactsContactIdIndexRouteImport } from './routes/_auth
 import { Route as AuthedAnimalsAnimalIdIndexRouteImport } from './routes/_authed/animals/$animalId.index'
 import { Route as AuthedWikiMyEntriesNewRouteImport } from './routes/_authed/wiki/my-entries/new'
 import { Route as AuthedTreatmentsTreatmentIdEditRouteImport } from './routes/_authed/treatments/$treatmentId.edit'
+import { Route as AuthedTasksTaskIdEditRouteImport } from './routes/_authed/tasks/$taskId.edit'
 import { Route as AuthedSponsorshipsProgramsCreateRouteImport } from './routes/_authed/sponsorships/programs/create'
 import { Route as AuthedSponsorshipsSponsorshipIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.edit'
 import { Route as AuthedProductsProductIdEditRouteImport } from './routes/_authed/products/$productId.edit'
@@ -170,6 +174,11 @@ const AuthedWikiIndexRoute = AuthedWikiIndexRouteImport.update({
   path: '/wiki/',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedTasksIndexRoute = AuthedTasksIndexRouteImport.update({
+  id: '/tasks/',
+  path: '/tasks/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedSponsorshipsIndexRoute = AuthedSponsorshipsIndexRouteImport.update({
   id: '/sponsorships/',
   path: '/sponsorships/',
@@ -213,6 +222,11 @@ const AuthedWikiEntryIdRoute = AuthedWikiEntryIdRouteImport.update({
 const AuthedTreatmentsCreateRoute = AuthedTreatmentsCreateRouteImport.update({
   id: '/treatments/create',
   path: '/treatments/create',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedTasksCreateRoute = AuthedTasksCreateRouteImport.update({
+  id: '/tasks/create',
+  path: '/tasks/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedSponsorshipsCreateRoute =
@@ -356,6 +370,11 @@ const AuthedTreatmentsTreatmentIdIndexRoute =
     path: '/treatments/$treatmentId/',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedTasksTaskIdIndexRoute = AuthedTasksTaskIdIndexRouteImport.update({
+  id: '/tasks/$taskId/',
+  path: '/tasks/$taskId/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedSponsorshipsProgramsIndexRoute =
   AuthedSponsorshipsProgramsIndexRouteImport.update({
     id: '/sponsorships/programs/',
@@ -414,6 +433,11 @@ const AuthedTreatmentsTreatmentIdEditRoute =
     path: '/treatments/$treatmentId/edit',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedTasksTaskIdEditRoute = AuthedTasksTaskIdEditRouteImport.update({
+  id: '/tasks/$taskId/edit',
+  path: '/tasks/$taskId/edit',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedSponsorshipsProgramsCreateRoute =
   AuthedSponsorshipsProgramsCreateRouteImport.update({
     id: '/sponsorships/programs/create',
@@ -685,6 +709,7 @@ export interface FileRoutesByFullPath {
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/tasks/create': typeof AuthedTasksCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
@@ -694,6 +719,7 @@ export interface FileRoutesByFullPath {
   '/payments/': typeof AuthedPaymentsIndexRoute
   '/products/': typeof AuthedProductsIndexRoute
   '/sponsorships/': typeof AuthedSponsorshipsIndexRoute
+  '/tasks/': typeof AuthedTasksIndexRoute
   '/wiki/': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -719,6 +745,7 @@ export interface FileRoutesByFullPath {
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/tasks/$taskId/edit': typeof AuthedTasksTaskIdEditRoute
   '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
@@ -729,6 +756,7 @@ export interface FileRoutesByFullPath {
   '/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/tasks/$taskId/': typeof AuthedTasksTaskIdIndexRoute
   '/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/wiki/admin/': typeof AuthedWikiAdminIndexRoute
   '/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
@@ -782,6 +810,7 @@ export interface FileRoutesByTo {
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/tasks/create': typeof AuthedTasksCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals': typeof AuthedAnimalsIndexRoute
@@ -791,6 +820,7 @@ export interface FileRoutesByTo {
   '/payments': typeof AuthedPaymentsIndexRoute
   '/products': typeof AuthedProductsIndexRoute
   '/sponsorships': typeof AuthedSponsorshipsIndexRoute
+  '/tasks': typeof AuthedTasksIndexRoute
   '/wiki': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -816,6 +846,7 @@ export interface FileRoutesByTo {
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/tasks/$taskId/edit': typeof AuthedTasksTaskIdEditRoute
   '/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/animals/$animalId': typeof AuthedAnimalsAnimalIdIndexRoute
@@ -826,6 +857,7 @@ export interface FileRoutesByTo {
   '/products/$productId': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/tasks/$taskId': typeof AuthedTasksTaskIdIndexRoute
   '/treatments/$treatmentId': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/wiki/admin': typeof AuthedWikiAdminIndexRoute
   '/wiki/my-entries': typeof AuthedWikiMyEntriesIndexRoute
@@ -881,6 +913,7 @@ export interface FileRoutesById {
   '/_authed/payments/create': typeof AuthedPaymentsCreateRoute
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
+  '/_authed/tasks/create': typeof AuthedTasksCreateRoute
   '/_authed/treatments/create': typeof AuthedTreatmentsCreateRoute
   '/_authed/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
@@ -890,6 +923,7 @@ export interface FileRoutesById {
   '/_authed/payments/': typeof AuthedPaymentsIndexRoute
   '/_authed/products/': typeof AuthedProductsIndexRoute
   '/_authed/sponsorships/': typeof AuthedSponsorshipsIndexRoute
+  '/_authed/tasks/': typeof AuthedTasksIndexRoute
   '/_authed/wiki/': typeof AuthedWikiIndexRoute
   '/_authed/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -915,6 +949,7 @@ export interface FileRoutesById {
   '/_authed/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/_authed/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/_authed/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
+  '/_authed/tasks/$taskId/edit': typeof AuthedTasksTaskIdEditRoute
   '/_authed/treatments/$treatmentId/edit': typeof AuthedTreatmentsTreatmentIdEditRoute
   '/_authed/wiki/my-entries/new': typeof AuthedWikiMyEntriesNewRoute
   '/_authed/animals/$animalId/': typeof AuthedAnimalsAnimalIdIndexRoute
@@ -925,6 +960,7 @@ export interface FileRoutesById {
   '/_authed/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/_authed/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
+  '/_authed/tasks/$taskId/': typeof AuthedTasksTaskIdIndexRoute
   '/_authed/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/_authed/wiki/admin/': typeof AuthedWikiAdminIndexRoute
   '/_authed/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
@@ -980,6 +1016,7 @@ export interface FileRouteTypes {
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
+    | '/tasks/create'
     | '/treatments/create'
     | '/wiki/$entryId'
     | '/animals/'
@@ -989,6 +1026,7 @@ export interface FileRouteTypes {
     | '/payments/'
     | '/products/'
     | '/sponsorships/'
+    | '/tasks/'
     | '/wiki/'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
@@ -1014,6 +1052,7 @@ export interface FileRouteTypes {
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
+    | '/tasks/$taskId/edit'
     | '/treatments/$treatmentId/edit'
     | '/wiki/my-entries/new'
     | '/animals/$animalId/'
@@ -1024,6 +1063,7 @@ export interface FileRouteTypes {
     | '/products/$productId/'
     | '/sponsorships/$sponsorshipId/'
     | '/sponsorships/programs/'
+    | '/tasks/$taskId/'
     | '/treatments/$treatmentId/'
     | '/wiki/admin/'
     | '/wiki/my-entries/'
@@ -1077,6 +1117,7 @@ export interface FileRouteTypes {
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
+    | '/tasks/create'
     | '/treatments/create'
     | '/wiki/$entryId'
     | '/animals'
@@ -1086,6 +1127,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/products'
     | '/sponsorships'
+    | '/tasks'
     | '/wiki'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
@@ -1111,6 +1153,7 @@ export interface FileRouteTypes {
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
+    | '/tasks/$taskId/edit'
     | '/treatments/$treatmentId/edit'
     | '/wiki/my-entries/new'
     | '/animals/$animalId'
@@ -1121,6 +1164,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/sponsorships/$sponsorshipId'
     | '/sponsorships/programs'
+    | '/tasks/$taskId'
     | '/treatments/$treatmentId'
     | '/wiki/admin'
     | '/wiki/my-entries'
@@ -1175,6 +1219,7 @@ export interface FileRouteTypes {
     | '/_authed/payments/create'
     | '/_authed/products/create'
     | '/_authed/sponsorships/create'
+    | '/_authed/tasks/create'
     | '/_authed/treatments/create'
     | '/_authed/wiki/$entryId'
     | '/_authed/animals/'
@@ -1184,6 +1229,7 @@ export interface FileRouteTypes {
     | '/_authed/payments/'
     | '/_authed/products/'
     | '/_authed/sponsorships/'
+    | '/_authed/tasks/'
     | '/_authed/wiki/'
     | '/_authed/animals/$animalId/edit'
     | '/_authed/animals/herds_/$herdId'
@@ -1209,6 +1255,7 @@ export interface FileRouteTypes {
     | '/_authed/products/$productId/edit'
     | '/_authed/sponsorships/$sponsorshipId/edit'
     | '/_authed/sponsorships/programs/create'
+    | '/_authed/tasks/$taskId/edit'
     | '/_authed/treatments/$treatmentId/edit'
     | '/_authed/wiki/my-entries/new'
     | '/_authed/animals/$animalId/'
@@ -1219,6 +1266,7 @@ export interface FileRouteTypes {
     | '/_authed/products/$productId/'
     | '/_authed/sponsorships/$sponsorshipId/'
     | '/_authed/sponsorships/programs/'
+    | '/_authed/tasks/$taskId/'
     | '/_authed/treatments/$treatmentId/'
     | '/_authed/wiki/admin/'
     | '/_authed/wiki/my-entries/'
@@ -1344,6 +1392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedWikiIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/tasks/': {
+      id: '/_authed/tasks/'
+      path: '/tasks'
+      fullPath: '/tasks/'
+      preLoaderRoute: typeof AuthedTasksIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/sponsorships/': {
       id: '/_authed/sponsorships/'
       path: '/sponsorships'
@@ -1405,6 +1460,13 @@ declare module '@tanstack/react-router' {
       path: '/treatments/create'
       fullPath: '/treatments/create'
       preLoaderRoute: typeof AuthedTreatmentsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/tasks/create': {
+      id: '/_authed/tasks/create'
+      path: '/tasks/create'
+      fullPath: '/tasks/create'
+      preLoaderRoute: typeof AuthedTasksCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/create': {
@@ -1582,6 +1644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedTreatmentsTreatmentIdIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/tasks/$taskId/': {
+      id: '/_authed/tasks/$taskId/'
+      path: '/tasks/$taskId'
+      fullPath: '/tasks/$taskId/'
+      preLoaderRoute: typeof AuthedTasksTaskIdIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/sponsorships/programs/': {
       id: '/_authed/sponsorships/programs/'
       path: '/sponsorships/programs'
@@ -1650,6 +1719,13 @@ declare module '@tanstack/react-router' {
       path: '/treatments/$treatmentId/edit'
       fullPath: '/treatments/$treatmentId/edit'
       preLoaderRoute: typeof AuthedTreatmentsTreatmentIdEditRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/tasks/$taskId/edit': {
+      id: '/_authed/tasks/$taskId/edit'
+      path: '/tasks/$taskId/edit'
+      fullPath: '/tasks/$taskId/edit'
+      preLoaderRoute: typeof AuthedTasksTaskIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/sponsorships/programs/create': {
@@ -1969,6 +2045,7 @@ interface AuthedRouteRouteChildren {
   AuthedPaymentsCreateRoute: typeof AuthedPaymentsCreateRoute
   AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
   AuthedSponsorshipsCreateRoute: typeof AuthedSponsorshipsCreateRoute
+  AuthedTasksCreateRoute: typeof AuthedTasksCreateRoute
   AuthedTreatmentsCreateRoute: typeof AuthedTreatmentsCreateRoute
   AuthedWikiEntryIdRoute: typeof AuthedWikiEntryIdRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
@@ -1978,6 +2055,7 @@ interface AuthedRouteRouteChildren {
   AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
   AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
   AuthedSponsorshipsIndexRoute: typeof AuthedSponsorshipsIndexRoute
+  AuthedTasksIndexRoute: typeof AuthedTasksIndexRoute
   AuthedWikiIndexRoute: typeof AuthedWikiIndexRoute
   AuthedAnimalsAnimalIdEditRoute: typeof AuthedAnimalsAnimalIdEditRoute
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
@@ -2003,6 +2081,7 @@ interface AuthedRouteRouteChildren {
   AuthedProductsProductIdEditRoute: typeof AuthedProductsProductIdEditRoute
   AuthedSponsorshipsSponsorshipIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdEditRoute
   AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
+  AuthedTasksTaskIdEditRoute: typeof AuthedTasksTaskIdEditRoute
   AuthedTreatmentsTreatmentIdEditRoute: typeof AuthedTreatmentsTreatmentIdEditRoute
   AuthedWikiMyEntriesNewRoute: typeof AuthedWikiMyEntriesNewRoute
   AuthedAnimalsAnimalIdIndexRoute: typeof AuthedAnimalsAnimalIdIndexRoute
@@ -2013,6 +2092,7 @@ interface AuthedRouteRouteChildren {
   AuthedProductsProductIdIndexRoute: typeof AuthedProductsProductIdIndexRoute
   AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
+  AuthedTasksTaskIdIndexRoute: typeof AuthedTasksTaskIdIndexRoute
   AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
   AuthedWikiAdminIndexRoute: typeof AuthedWikiAdminIndexRoute
   AuthedWikiMyEntriesIndexRoute: typeof AuthedWikiMyEntriesIndexRoute
@@ -2061,6 +2141,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedPaymentsCreateRoute: AuthedPaymentsCreateRoute,
   AuthedProductsCreateRoute: AuthedProductsCreateRoute,
   AuthedSponsorshipsCreateRoute: AuthedSponsorshipsCreateRoute,
+  AuthedTasksCreateRoute: AuthedTasksCreateRoute,
   AuthedTreatmentsCreateRoute: AuthedTreatmentsCreateRoute,
   AuthedWikiEntryIdRoute: AuthedWikiEntryIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
@@ -2070,6 +2151,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
   AuthedProductsIndexRoute: AuthedProductsIndexRoute,
   AuthedSponsorshipsIndexRoute: AuthedSponsorshipsIndexRoute,
+  AuthedTasksIndexRoute: AuthedTasksIndexRoute,
   AuthedWikiIndexRoute: AuthedWikiIndexRoute,
   AuthedAnimalsAnimalIdEditRoute: AuthedAnimalsAnimalIdEditRoute,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
@@ -2108,6 +2190,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedSponsorshipsSponsorshipIdEditRoute:
     AuthedSponsorshipsSponsorshipIdEditRoute,
   AuthedSponsorshipsProgramsCreateRoute: AuthedSponsorshipsProgramsCreateRoute,
+  AuthedTasksTaskIdEditRoute: AuthedTasksTaskIdEditRoute,
   AuthedTreatmentsTreatmentIdEditRoute: AuthedTreatmentsTreatmentIdEditRoute,
   AuthedWikiMyEntriesNewRoute: AuthedWikiMyEntriesNewRoute,
   AuthedAnimalsAnimalIdIndexRoute: AuthedAnimalsAnimalIdIndexRoute,
@@ -2119,6 +2202,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedSponsorshipsSponsorshipIdIndexRoute:
     AuthedSponsorshipsSponsorshipIdIndexRoute,
   AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
+  AuthedTasksTaskIdIndexRoute: AuthedTasksTaskIdIndexRoute,
   AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
   AuthedWikiAdminIndexRoute: AuthedWikiAdminIndexRoute,
   AuthedWikiMyEntriesIndexRoute: AuthedWikiMyEntriesIndexRoute,

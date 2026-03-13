@@ -66,7 +66,8 @@
     "fieldCalendarExport": "Export",
     "wiki": "Wiki",
     "wikiMyEntries": "Meine Einträge",
-    "wikiAdmin": "Wiki Admin"
+    "wikiAdmin": "Wiki Admin",
+    "tasks": "Aufgaben"
   },
   "animals": {
     "title": "Tiere",
@@ -877,5 +878,73 @@
     "name": "Name",
     "unit": "Einheit",
     "description": "Beschreibung"
+  },
+  "tasks": {
+    "title": "Aufgaben",
+    "createTask": "Aufgabe erstellen",
+    "editTask": "Aufgabe bearbeiten",
+    "noTasks": "Keine Aufgaben gefunden",
+    "name": "Name",
+    "description": "Beschreibung",
+    "assignee": "Zugewiesen an",
+    "dueDate": "Fälligkeitsdatum",
+    "labels": "Labels",
+    "addLabel": "Label hinzufügen",
+    "markDone": "Als erledigt markieren",
+    "markTodo": "Als offen markieren",
+    "deleteConfirm": "Möchten Sie diese Aufgabe wirklich löschen?",
+    "filter": {
+      "overdue": "Überfällig",
+      "allAssignees": "Alle Personen",
+      "allLabels": "Alle Labels",
+      "clear": "Filter zurücksetzen"
+    },
+    "status": {
+      "todo": "Offen",
+      "done": "Erledigt"
+    },
+    "recurrence": {
+      "title": "Wiederholung",
+      "frequency": "Häufigkeit",
+      "interval": "Intervall",
+      "until": "Bis",
+      "frequencies": {
+        "weekly": "Wöchentlich",
+        "monthly": "Monatlich",
+        "yearly": "Jährlich"
+      }
+    },
+    "checklist": {
+      "title": "Checkliste",
+      "addItem": "Element hinzufügen",
+      "itemName": "Elementname",
+      "itemDueDate": "Fälligkeitsdatum",
+      "createFromLinks": "Checkliste aus Verknüpfungen erstellen"
+    },
+    "links": {
+      "title": "Verknüpfungen",
+      "addLink": "Verknüpfung hinzufügen",
+      "selectAll": "Alle auswählen",
+      "clearAll": "Alle entfernen",
+      "selected": "ausgewählt",
+      "types": {
+        "animal": "Tier",
+        "herd": "Herde",
+        "plot": "Schlag",
+        "contact": "Kontakt",
+        "order": "Bestellung",
+        "treatment": "Behandlung",
+        "wiki_entry": "Wiki-Eintrag"
+      },
+      "typesPlural": {
+        "animal": "Tiere",
+        "herd": "Herden",
+        "plot": "Schläge",
+        "contact": "Kontakte",
+        "order": "Bestellungen",
+        "treatment": "Behandlungen",
+        "wiki_entry": "Wiki-Einträge"
+      }
+    }
   }
 }

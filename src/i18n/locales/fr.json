@@ -66,7 +66,8 @@
     "fieldCalendarExport": "Exporter",
     "wiki": "Wiki",
     "wikiMyEntries": "Mes entrées",
-    "wikiAdmin": "Wiki Admin"
+    "wikiAdmin": "Wiki Admin",
+    "tasks": "Tâches"
   },
   "animals": {
     "title": "Animaux",
@@ -877,5 +878,73 @@
     "name": "Nom",
     "unit": "Unité",
     "description": "Description"
+  },
+  "tasks": {
+    "title": "Tâches",
+    "createTask": "Créer une tâche",
+    "editTask": "Modifier la tâche",
+    "noTasks": "Aucune tâche trouvée",
+    "name": "Nom",
+    "description": "Description",
+    "assignee": "Assigné à",
+    "dueDate": "Date d'échéance",
+    "labels": "Étiquettes",
+    "addLabel": "Ajouter une étiquette",
+    "markDone": "Marquer comme terminé",
+    "markTodo": "Rouvrir",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette tâche?",
+    "filter": {
+      "overdue": "En retard",
+      "allAssignees": "Tous les assignés",
+      "allLabels": "Toutes les étiquettes",
+      "clear": "Effacer les filtres"
+    },
+    "status": {
+      "todo": "À faire",
+      "done": "Terminé"
+    },
+    "recurrence": {
+      "title": "Récurrence",
+      "frequency": "Fréquence",
+      "interval": "Intervalle",
+      "until": "Jusqu'au",
+      "frequencies": {
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "yearly": "Annuel"
+      }
+    },
+    "checklist": {
+      "title": "Liste de contrôle",
+      "addItem": "Ajouter un élément",
+      "itemName": "Nom de l'élément",
+      "itemDueDate": "Date d'échéance",
+      "createFromLinks": "Créer une liste de contrôle à partir des liens"
+    },
+    "links": {
+      "title": "Liens",
+      "addLink": "Ajouter un lien",
+      "selectAll": "Tout sélectionner",
+      "clearAll": "Tout effacer",
+      "selected": "sélectionné(s)",
+      "types": {
+        "animal": "Animal",
+        "herd": "Troupeau",
+        "plot": "Parcelle",
+        "contact": "Contact",
+        "order": "Commande",
+        "treatment": "Traitement",
+        "wiki_entry": "Article Wiki"
+      },
+      "typesPlural": {
+        "animal": "Animaux",
+        "herd": "Troupeaux",
+        "plot": "Parcelles",
+        "contact": "Contacts",
+        "order": "Commandes",
+        "treatment": "Traitements",
+        "wiki_entry": "Articles Wiki"
+      }
+    }
   }
 }

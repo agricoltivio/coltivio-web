@@ -66,7 +66,8 @@
     "fieldCalendarExport": "Export",
     "wiki": "Wiki",
     "wikiMyEntries": "My Entries",
-    "wikiAdmin": "Wiki Admin"
+    "wikiAdmin": "Wiki Admin",
+    "tasks": "Tasks"
   },
   "animals": {
     "title": "Animals",
@@ -877,5 +878,73 @@
     "name": "Name",
     "unit": "Unit",
     "description": "Description"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "createTask": "Create Task",
+    "editTask": "Edit Task",
+    "noTasks": "No tasks found",
+    "name": "Name",
+    "description": "Description",
+    "assignee": "Assignee",
+    "dueDate": "Due Date",
+    "labels": "Labels",
+    "addLabel": "Add label",
+    "markDone": "Mark as done",
+    "markTodo": "Reopen",
+    "deleteConfirm": "Are you sure you want to delete this task?",
+    "filter": {
+      "overdue": "Overdue",
+      "allAssignees": "All assignees",
+      "allLabels": "All labels",
+      "clear": "Clear filters"
+    },
+    "status": {
+      "todo": "Todo",
+      "done": "Done"
+    },
+    "recurrence": {
+      "title": "Recurrence",
+      "frequency": "Frequency",
+      "interval": "Interval",
+      "until": "Until",
+      "frequencies": {
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      }
+    },
+    "checklist": {
+      "title": "Checklist",
+      "addItem": "Add item",
+      "itemName": "Item name",
+      "itemDueDate": "Due date",
+      "createFromLinks": "Create checklist from links"
+    },
+    "links": {
+      "title": "Links",
+      "addLink": "Add link",
+      "selectAll": "Select all",
+      "clearAll": "Clear all",
+      "selected": "selected",
+      "types": {
+        "animal": "Animal",
+        "herd": "Herd",
+        "plot": "Plot",
+        "contact": "Contact",
+        "order": "Order",
+        "treatment": "Treatment",
+        "wiki_entry": "Wiki Entry"
+      },
+      "typesPlural": {
+        "animal": "Animals",
+        "herd": "Herds",
+        "plot": "Plots",
+        "contact": "Contacts",
+        "order": "Orders",
+        "treatment": "Treatments",
+        "wiki_entry": "Wiki Entries"
+      }
+    }
   }
 }

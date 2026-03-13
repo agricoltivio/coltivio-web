@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { contactQueryOptions } from "@/api/contacts.queries";
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authed/contacts/$contactId/")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(contactQueryOptions(params.contactId));
   },
@@ -37,6 +39,7 @@ export const Route = createFileRoute("/_authed/contacts/$contactId/")({
 function ContactDetailPage() {
   const { t } = useTranslation();
   const { contactId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -85,7 +88,7 @@ function ContactDetailPage() {
   const fullName = `${contact.firstName} ${contact.lastName}`;
 
   return (
-    <PageContent title={fullName} showBackButton backTo={() => navigate({ to: "/contacts" })}>
+    <PageContent title={fullName} showBackButton backTo={() => navigate({ to: returnTo ?? "/contacts" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

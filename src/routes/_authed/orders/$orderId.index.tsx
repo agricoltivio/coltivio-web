@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { orderQueryOptions } from "@/api/orders.queries";
@@ -19,6 +20,7 @@ import {
 import type { OrderStatus } from "@/api/types";
 
 export const Route = createFileRoute("/_authed/orders/$orderId/")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(orderQueryOptions(params.orderId));
   },
@@ -41,6 +43,7 @@ function getStatusVariant(status: OrderStatus): "default" | "secondary" | "destr
 function OrderDetailPage() {
   const { t } = useTranslation();
   const { orderId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -133,7 +136,7 @@ function OrderDetailPage() {
     cancelMutation.isPending;
 
   return (
-    <PageContent title={t("orders.orderDetails")} showBackButton backTo={() => navigate({ to: "/orders" })}>
+    <PageContent title={t("orders.orderDetails")} showBackButton backTo={() => navigate({ to: returnTo ?? "/orders" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

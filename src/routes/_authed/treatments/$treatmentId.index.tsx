@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { treatmentQueryOptions } from "@/api/treatments.queries";
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authed/treatments/$treatmentId/")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(
       treatmentQueryOptions(params.treatmentId),
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/_authed/treatments/$treatmentId/")({
 function TreatmentDetailPage() {
   const { t } = useTranslation();
   const { treatmentId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -82,7 +85,7 @@ function TreatmentDetailPage() {
   const treatment = treatmentQuery.data;
 
   return (
-    <PageContent title={treatment.name} showBackButton backTo={() => navigate({ to: "/animals/treatments-journal" })}>
+    <PageContent title={treatment.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals/treatments-journal" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
         <div className="flex items-center gap-2">

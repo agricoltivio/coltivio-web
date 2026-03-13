@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -38,12 +39,14 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authed/animals/$animalId/")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   component: AnimalDetailPage,
 });
 
 function AnimalDetailPage() {
   const { t } = useTranslation();
   const { animalId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showDeceasedChildren, setShowDeceasedChildren] = useState(false);
@@ -114,7 +117,7 @@ function AnimalDetailPage() {
   const animal = animalQuery.data;
 
   return (
-    <PageContent title={animal.name} showBackButton backTo={() => navigate({ to: "/animals" })}>
+    <PageContent title={animal.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">

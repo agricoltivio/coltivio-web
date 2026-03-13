@@ -24,6 +24,7 @@ import {
   LayoutDashboard,
   Layers,
   Leaf,
+  ListTodo,
   Map,
   NotebookPen,
   NotepadText,
@@ -78,6 +79,20 @@ export function AppSidebar() {
                     to="/dashboard"
                   >
                     <LayoutDashboard /> {t("nav.dashboard")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/tasks"
+                  >
+                    <ListTodo /> {t("nav.tasks")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

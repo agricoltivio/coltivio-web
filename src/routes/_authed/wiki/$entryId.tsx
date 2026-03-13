@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authed/wiki/$entryId")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ context: { queryClient }, params: { entryId } }) => {
     queryClient.ensureQueryData(wikiEntryByIdQueryOptions(entryId));
   },
@@ -27,6 +29,7 @@ export const Route = createFileRoute("/_authed/wiki/$entryId")({
 
 function WikiDetail() {
   const { entryId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const entryQuery = useQuery(wikiEntryByIdQueryOptions(entryId));
@@ -42,7 +45,7 @@ function WikiDetail() {
     <PageContent
       title={translation?.title ?? ""}
       showBackButton
-      backTo={() => navigate({ to: "/wiki" })}
+      backTo={() => navigate({ to: returnTo ?? "/wiki" })}
     >
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         <Badge variant="outline">{categoryName}</Badge>
