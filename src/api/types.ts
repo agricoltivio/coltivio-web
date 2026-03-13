@@ -260,3 +260,10 @@ export type TaskRecurrence = NonNullable<Task["recurrence"]>;
 
 export type FarmUser =
   components["schemas"]["GetV1UsersPositiveResponse"]["data"]["result"][number];
+
+// Membership types
+export type MembershipStatus =
+  components["schemas"]["GetV1MembershipStatusPositiveResponse"]["data"];
+
+export type MembershipPayment =
+  components["schemas"]["GetV1MembershipPaymentsPositiveResponse"]["data"]["result"][number];

@@ -67,7 +67,8 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Mes entrées",
     "wikiAdmin": "Wiki Admin",
-    "tasks": "Tâches"
+    "tasks": "Tâches",
+    "membership": "Abonnement"
   },
   "animals": {
     "title": "Animaux",
@@ -944,6 +945,39 @@
         "order": "Commandes",
         "treatment": "Traitements",
         "wiki_entry": "Articles Wiki"
+      }
+    }
+  },
+  "membership": {
+    "title": "Abonnement",
+    "updatePaymentMethod": "Mettre à jour le moyen de paiement",
+    "cancelRenewal": "Annuler le renouvellement",
+    "reactivate": "Réactiver l'abonnement",
+    "paymentHistory": "Historique des paiements",
+    "status": {
+      "label": "Statut",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "autoRenewing": "Renouvellement automatique",
+      "cancelsAtPeriodEnd": "Expire en fin de période",
+      "validUntil": "Valide jusqu'au"
+    },
+    "paywall": {
+      "noMembership": "Votre ferme n'a pas d'abonnement actif",
+      "trialInfo": "30 jours d'essai gratuit — aucune carte de crédit requise pour commencer",
+      "monthly": "S'abonner mensuellement",
+      "yearly": "S'abonner annuellement"
+    },
+    "payments": {
+      "date": "Date",
+      "amount": "Montant",
+      "currency": "Devise",
+      "status": "Statut",
+      "statuses": {
+        "pending": "En attente",
+        "succeeded": "Réussi",
+        "failed": "Échoué",
+        "refunded": "Remboursé"
       }
     }
   }

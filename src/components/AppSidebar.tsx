@@ -539,6 +539,20 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/membership"
+                  >
+                    <CreditCard /> {t("nav.membership")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

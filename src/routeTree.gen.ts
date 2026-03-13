@@ -18,6 +18,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthTokenRouteImport } from './routes/auth.token'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
@@ -27,6 +28,7 @@ import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sp
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
 import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
 import { Route as AuthedOrdersIndexRouteImport } from './routes/_authed/orders/index'
+import { Route as AuthedMembershipIndexRouteImport } from './routes/_authed/membership/index'
 import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/index'
 import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contacts/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
@@ -154,6 +156,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthTokenRoute = AuthTokenRouteImport.update({
+  id: '/auth/token',
+  path: '/auth/token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -197,6 +204,11 @@ const AuthedPaymentsIndexRoute = AuthedPaymentsIndexRouteImport.update({
 const AuthedOrdersIndexRoute = AuthedOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedMembershipIndexRoute = AuthedMembershipIndexRouteImport.update({
+  id: '/membership/',
+  path: '/membership/',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedDrugsIndexRoute = AuthedDrugsIndexRouteImport.update({
@@ -687,6 +699,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
+  '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
@@ -715,6 +728,7 @@ export interface FileRoutesByFullPath {
   '/animals/': typeof AuthedAnimalsIndexRoute
   '/contacts/': typeof AuthedContactsIndexRoute
   '/drugs/': typeof AuthedDrugsIndexRoute
+  '/membership/': typeof AuthedMembershipIndexRoute
   '/orders/': typeof AuthedOrdersIndexRoute
   '/payments/': typeof AuthedPaymentsIndexRoute
   '/products/': typeof AuthedProductsIndexRoute
@@ -788,6 +802,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
+  '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
@@ -816,6 +831,7 @@ export interface FileRoutesByTo {
   '/animals': typeof AuthedAnimalsIndexRoute
   '/contacts': typeof AuthedContactsIndexRoute
   '/drugs': typeof AuthedDrugsIndexRoute
+  '/membership': typeof AuthedMembershipIndexRoute
   '/orders': typeof AuthedOrdersIndexRoute
   '/payments': typeof AuthedPaymentsIndexRoute
   '/products': typeof AuthedProductsIndexRoute
@@ -891,6 +907,7 @@ export interface FileRoutesById {
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
+  '/auth/token': typeof AuthTokenRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/herds': typeof AuthedAnimalsHerdsRoute
@@ -919,6 +936,7 @@ export interface FileRoutesById {
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
   '/_authed/contacts/': typeof AuthedContactsIndexRoute
   '/_authed/drugs/': typeof AuthedDrugsIndexRoute
+  '/_authed/membership/': typeof AuthedMembershipIndexRoute
   '/_authed/orders/': typeof AuthedOrdersIndexRoute
   '/_authed/payments/': typeof AuthedPaymentsIndexRoute
   '/_authed/products/': typeof AuthedProductsIndexRoute
@@ -994,6 +1012,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/settings'
+    | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/herds'
@@ -1022,6 +1041,7 @@ export interface FileRouteTypes {
     | '/animals/'
     | '/contacts/'
     | '/drugs/'
+    | '/membership/'
     | '/orders/'
     | '/payments/'
     | '/products/'
@@ -1095,6 +1115,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/settings'
+    | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/herds'
@@ -1123,6 +1144,7 @@ export interface FileRouteTypes {
     | '/animals'
     | '/contacts'
     | '/drugs'
+    | '/membership'
     | '/orders'
     | '/payments'
     | '/products'
@@ -1197,6 +1219,7 @@ export interface FileRouteTypes {
     | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
+    | '/auth/token'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/herds'
@@ -1225,6 +1248,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/'
     | '/_authed/contacts/'
     | '/_authed/drugs/'
+    | '/_authed/membership/'
     | '/_authed/orders/'
     | '/_authed/payments/'
     | '/_authed/products/'
@@ -1297,6 +1321,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  AuthTokenRoute: typeof AuthTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1364,6 +1389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/token': {
+      id: '/auth/token'
+      path: '/auth/token'
+      fullPath: '/auth/token'
+      preLoaderRoute: typeof AuthTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed/settings': {
       id: '/_authed/settings'
       path: '/settings'
@@ -1425,6 +1457,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders/'
       preLoaderRoute: typeof AuthedOrdersIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/membership/': {
+      id: '/_authed/membership/'
+      path: '/membership'
+      fullPath: '/membership/'
+      preLoaderRoute: typeof AuthedMembershipIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/drugs/': {
@@ -2051,6 +2090,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
   AuthedContactsIndexRoute: typeof AuthedContactsIndexRoute
   AuthedDrugsIndexRoute: typeof AuthedDrugsIndexRoute
+  AuthedMembershipIndexRoute: typeof AuthedMembershipIndexRoute
   AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
   AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
   AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
@@ -2147,6 +2187,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
   AuthedContactsIndexRoute: AuthedContactsIndexRoute,
   AuthedDrugsIndexRoute: AuthedDrugsIndexRoute,
+  AuthedMembershipIndexRoute: AuthedMembershipIndexRoute,
   AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
   AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
   AuthedProductsIndexRoute: AuthedProductsIndexRoute,
@@ -2247,6 +2288,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  AuthTokenRoute: AuthTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

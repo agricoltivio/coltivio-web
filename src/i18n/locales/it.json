@@ -67,7 +67,8 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Le mie voci",
     "wikiAdmin": "Wiki Admin",
-    "tasks": "Compiti"
+    "tasks": "Compiti",
+    "membership": "Abbonamento"
   },
   "animals": {
     "title": "Animali",
@@ -944,6 +945,39 @@
         "order": "Ordini",
         "treatment": "Trattamenti",
         "wiki_entry": "Voci Wiki"
+      }
+    }
+  },
+  "membership": {
+    "title": "Abbonamento",
+    "updatePaymentMethod": "Aggiorna metodo di pagamento",
+    "cancelRenewal": "Annulla rinnovo",
+    "reactivate": "Riattiva abbonamento",
+    "paymentHistory": "Storico pagamenti",
+    "status": {
+      "label": "Stato",
+      "active": "Attivo",
+      "inactive": "Inattivo",
+      "autoRenewing": "Rinnovo automatico",
+      "cancelsAtPeriodEnd": "Scade a fine periodo",
+      "validUntil": "Valido fino al"
+    },
+    "paywall": {
+      "noMembership": "La tua azienda non ha un abbonamento attivo",
+      "trialInfo": "30 giorni di prova gratuita — nessuna carta di credito richiesta per iniziare",
+      "monthly": "Abbonati mensilmente",
+      "yearly": "Abbonati annualmente"
+    },
+    "payments": {
+      "date": "Data",
+      "amount": "Importo",
+      "currency": "Valuta",
+      "status": "Stato",
+      "statuses": {
+        "pending": "In attesa",
+        "succeeded": "Completato",
+        "failed": "Fallito",
+        "refunded": "Rimborsato"
       }
     }
   }

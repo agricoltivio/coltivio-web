@@ -67,7 +67,8 @@
     "wiki": "Wiki",
     "wikiMyEntries": "My Entries",
     "wikiAdmin": "Wiki Admin",
-    "tasks": "Tasks"
+    "tasks": "Tasks",
+    "membership": "Membership"
   },
   "animals": {
     "title": "Animals",
@@ -944,6 +945,39 @@
         "order": "Orders",
         "treatment": "Treatments",
         "wiki_entry": "Wiki Entries"
+      }
+    }
+  },
+  "membership": {
+    "title": "Membership",
+    "updatePaymentMethod": "Update payment method",
+    "cancelRenewal": "Cancel renewal",
+    "reactivate": "Reactivate subscription",
+    "paymentHistory": "Payment History",
+    "status": {
+      "label": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "autoRenewing": "Auto-renewing",
+      "cancelsAtPeriodEnd": "Cancels at period end",
+      "validUntil": "Valid until"
+    },
+    "paywall": {
+      "noMembership": "Your farm has no active membership",
+      "trialInfo": "Try free for 30 days — no credit card required to start",
+      "monthly": "Subscribe monthly",
+      "yearly": "Subscribe yearly"
+    },
+    "payments": {
+      "date": "Date",
+      "amount": "Amount",
+      "currency": "Currency",
+      "status": "Status",
+      "statuses": {
+        "pending": "Pending",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "refunded": "Refunded"
       }
     }
   }

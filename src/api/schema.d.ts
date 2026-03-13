@@ -2340,6 +2340,118 @@ export interface paths {
         patch: operations["PatchV1TasksByIdTaskIdChecklistItemsByIdItemId"];
         trace?: never;
     };
+    "/v1/membership/checkout/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipCheckoutSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/checkout/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipCheckoutManual"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MembershipStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1MembershipStatus"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/paymentMethod": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipPaymentMethod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipSubscription"];
+        delete: operations["DeleteV1MembershipSubscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MembershipPayments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1MembershipPayments"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/donations/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1DonationsCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2520,6 +2632,7 @@ export interface components {
                         number
                     ];
                 };
+                hasActiveMembership: boolean;
             };
         };
         DeleteV1FarmPositiveResponse: {
@@ -9811,6 +9924,95 @@ export interface components {
         };
         PatchV1TasksByIdTaskIdChecklistItemsByIdItemIdRequestBody: {
             done: boolean;
+        };
+        PostV1MembershipCheckoutSubscriptionPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipCheckoutSubscriptionRequestBody: {
+            /** @enum {string} */
+            interval: "monthly" | "yearly";
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        PostV1MembershipCheckoutManualPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipCheckoutManualRequestBody: {
+            /** @enum {string} */
+            interval: "monthly" | "yearly";
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        GetV1MembershipStatusPositiveResponse: {
+            data: {
+                active: boolean;
+                currentPeriodEnd: unknown;
+                cancelAtPeriodEnd: boolean;
+                autoRenewing: boolean;
+                trialEnd: unknown;
+            };
+        };
+        PostV1MembershipPaymentMethodPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipPaymentMethodRequestBody: {
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        DeleteV1MembershipSubscriptionPositiveResponse: {
+            data: {
+                cancelAtPeriodEnd: boolean;
+            };
+        };
+        PostV1MembershipSubscriptionPositiveResponse: {
+            data: {
+                cancelAtPeriodEnd: boolean;
+            };
+        };
+        PostV1MembershipSubscriptionRequestBody: Record<string, never>;
+        GetV1MembershipPaymentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    userId: string | null;
+                    stripePaymentId: string;
+                    stripeSubscriptionId: string | null;
+                    amount: number;
+                    currency: string;
+                    /** @enum {string} */
+                    status: "pending" | "succeeded" | "failed" | "refunded";
+                    periodEnd: unknown;
+                    createdAt: unknown;
+                }[];
+                count: number;
+            };
+        };
+        PostV1DonationsCheckoutPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1DonationsCheckoutRequestBody: {
+            amount: number;
+            /** Format: email */
+            email: string;
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
         };
     };
     responses: never;
@@ -20490,6 +20692,313 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/tasks/byId/:taskId/checklistItems/byId/:itemId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipCheckoutSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/checkout/subscription Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipCheckoutSubscriptionRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/checkout/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipCheckoutSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/checkout/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipCheckoutManual: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/checkout/manual Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipCheckoutManualRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/checkout/manual Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipCheckoutManualPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/checkout/manual Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1MembershipStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/membership/status Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MembershipStatusPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/membership/status Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MembershipStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/membership/status Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/membership/status Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1MembershipPaymentMethod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/paymentMethod Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipPaymentMethodRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/paymentMethod Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipPaymentMethodPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/paymentMethod Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/subscription Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipSubscriptionRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1MembershipSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/membership/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1MembershipSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/membership/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1MembershipPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/membership/payments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MembershipPaymentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/membership/payments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MembershipPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/membership/payments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/membership/payments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1DonationsCheckout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/donations/checkout Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1DonationsCheckoutRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/donations/checkout Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1DonationsCheckoutPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/donations/checkout Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

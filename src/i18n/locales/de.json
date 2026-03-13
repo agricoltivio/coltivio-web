@@ -67,7 +67,8 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Meine Einträge",
     "wikiAdmin": "Wiki Admin",
-    "tasks": "Aufgaben"
+    "tasks": "Aufgaben",
+    "membership": "Mitgliedschaft"
   },
   "animals": {
     "title": "Tiere",
@@ -944,6 +945,39 @@
         "order": "Bestellungen",
         "treatment": "Behandlungen",
         "wiki_entry": "Wiki-Einträge"
+      }
+    }
+  },
+  "membership": {
+    "title": "Mitgliedschaft",
+    "updatePaymentMethod": "Zahlungsmethode aktualisieren",
+    "cancelRenewal": "Verlängerung kündigen",
+    "reactivate": "Abonnement reaktivieren",
+    "paymentHistory": "Zahlungshistorie",
+    "status": {
+      "label": "Status",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "autoRenewing": "Automatische Verlängerung",
+      "cancelsAtPeriodEnd": "Läuft aus",
+      "validUntil": "Gültig bis"
+    },
+    "paywall": {
+      "noMembership": "Ihr Hof hat keine aktive Mitgliedschaft",
+      "trialInfo": "30 Tage kostenlos testen — keine Kreditkarte erforderlich zum Starten",
+      "monthly": "Monatlich abonnieren",
+      "yearly": "Jährlich abonnieren"
+    },
+    "payments": {
+      "date": "Datum",
+      "amount": "Betrag",
+      "currency": "Währung",
+      "status": "Status",
+      "statuses": {
+        "pending": "Ausstehend",
+        "succeeded": "Erfolgreich",
+        "failed": "Fehlgeschlagen",
+        "refunded": "Erstattet"
       }
     }
   }
