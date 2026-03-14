@@ -948,30 +948,71 @@
       }
     }
   },
+  "noFarm": {
+    "message": "Il tuo account non ha ancora un'azienda. Creane una prima nell'app."
+  },
   "membership": {
     "title": "Abbonamento",
+    "expired": {
+      "message": "Il tuo abbonamento è scaduto — rinnova ora per riottenere l'accesso.",
+      "renew": "Rinnova abbonamento"
+    },
+    "expiry": {
+      "trialEnding": "Il tuo periodo di prova termina tra {{days}} giorni.",
+      "membershipExpiring": "Il tuo abbonamento scade tra {{days}} giorni.",
+      "renew": "Rinnova"
+    },
+    "becomeMember": "Diventa membro",
     "updatePaymentMethod": "Aggiorna metodo di pagamento",
+    "subscribeDialog": {
+      "title": "Inizia l'abbonamento",
+      "description": "Non ti verrà addebitato nulla fino alla fine del periodo di prova il {{date}}."
+    },
     "cancelRenewal": "Annulla rinnovo",
     "reactivate": "Riattiva abbonamento",
     "paymentHistory": "Storico pagamenti",
     "status": {
       "label": "Stato",
       "active": "Attivo",
+      "trial": "Periodo di prova",
       "inactive": "Inattivo",
       "autoRenewing": "Rinnovo automatico",
       "cancelsAtPeriodEnd": "Scade a fine periodo",
-      "validUntil": "Valido fino al"
+      "validUntil": "Valido fino al",
+      "trialEnds": "Periodo di prova termina il",
+      "subscriptionStartsAfterTrial": "L'abbonamento inizia dopo la prova il {{date}}"
     },
     "paywall": {
       "noMembership": "La tua azienda non ha un abbonamento attivo",
-      "trialInfo": "30 giorni di prova gratuita — nessuna carta di credito richiesta per iniziare",
-      "monthly": "Abbonati mensilmente",
-      "yearly": "Abbonati annualmente"
+      "startTrial": "Prova gratuita 30 giorni",
+      "trialInfo": "Nessuna carta di credito richiesta",
+      "or": "oppure",
+      "subscribe": "Diventa membro",
+      "features": {
+        "app": {
+          "title": "App",
+          "items": [
+            "Attività con assegnazione di animali o superfici e liste automatiche",
+            "Invita più utenti e pianifica insieme",
+            "Usa immagini nelle voci wiki"
+          ]
+        },
+        "web": {
+          "title": "Web App",
+          "items": [
+            "Tutte le funzioni dell'app nel browser",
+            "Gestisci i contatti",
+            "Registra gli ordini e monitora i pagamenti",
+            "Gestisci le adozioni di animali"
+          ]
+        }
+      }
     },
     "payments": {
       "date": "Data",
       "amount": "Importo",
       "currency": "Valuta",
+      "card": "Carta",
       "status": "Stato",
       "statuses": {
         "pending": "In attesa",

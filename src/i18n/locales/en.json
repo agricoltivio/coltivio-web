@@ -948,30 +948,71 @@
       }
     }
   },
+  "noFarm": {
+    "message": "Your account doesn't have a farm yet. Create one first in the app."
+  },
   "membership": {
     "title": "Membership",
+    "expired": {
+      "message": "Your membership has expired. Renew now to regain access.",
+      "renew": "Renew membership"
+    },
+    "expiry": {
+      "trialEnding": "Your trial ends in {{days}} days.",
+      "membershipExpiring": "Your membership expires in {{days}} days.",
+      "renew": "Renew"
+    },
+    "becomeMember": "Become a member",
     "updatePaymentMethod": "Update payment method",
+    "subscribeDialog": {
+      "title": "Start membership",
+      "description": "You won't be charged until your trial ends on {{date}}."
+    },
     "cancelRenewal": "Cancel renewal",
     "reactivate": "Reactivate subscription",
     "paymentHistory": "Payment History",
     "status": {
       "label": "Status",
       "active": "Active",
+      "trial": "Trial",
       "inactive": "Inactive",
       "autoRenewing": "Auto-renewing",
       "cancelsAtPeriodEnd": "Cancels at period end",
-      "validUntil": "Valid until"
+      "validUntil": "Valid until",
+      "trialEnds": "Trial ends",
+      "subscriptionStartsAfterTrial": "Membership starts after trial on {{date}}"
     },
     "paywall": {
       "noMembership": "Your farm has no active membership",
-      "trialInfo": "Try free for 30 days — no credit card required to start",
-      "monthly": "Subscribe monthly",
-      "yearly": "Subscribe yearly"
+      "startTrial": "Try free for 30 days",
+      "trialInfo": "No credit card required",
+      "or": "or",
+      "subscribe": "Become a member",
+      "features": {
+        "app": {
+          "title": "App",
+          "items": [
+            "Tasks with animal or plot assignment and automatic checklists",
+            "Invite multiple users and plan together",
+            "Use images in wiki entries"
+          ]
+        },
+        "web": {
+          "title": "Web App",
+          "items": [
+            "All app features in the browser",
+            "Manage contacts",
+            "Record orders and track payment",
+            "Manage animal sponsorships"
+          ]
+        }
+      }
     },
     "payments": {
       "date": "Date",
       "amount": "Amount",
       "currency": "Currency",
+      "card": "Card",
       "status": "Status",
       "statuses": {
         "pending": "Pending",

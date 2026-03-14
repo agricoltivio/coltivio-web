@@ -948,30 +948,71 @@
       }
     }
   },
+  "noFarm": {
+    "message": "Ton compte n'a pas encore de ferme. Crée-en une d'abord dans l'app."
+  },
   "membership": {
     "title": "Abonnement",
+    "expired": {
+      "message": "Ton abonnement a expiré — renouvelle maintenant pour retrouver l'accès.",
+      "renew": "Renouveler l'abonnement"
+    },
+    "expiry": {
+      "trialEnding": "Ta période d'essai se termine dans {{days}} jours.",
+      "membershipExpiring": "Ton abonnement expire dans {{days}} jours.",
+      "renew": "Renouveler"
+    },
+    "becomeMember": "Devenir membre",
     "updatePaymentMethod": "Mettre à jour le moyen de paiement",
+    "subscribeDialog": {
+      "title": "Démarrer l'abonnement",
+      "description": "Tu ne seras facturé qu'à la fin de ta période d'essai le {{date}}."
+    },
     "cancelRenewal": "Annuler le renouvellement",
     "reactivate": "Réactiver l'abonnement",
     "paymentHistory": "Historique des paiements",
     "status": {
       "label": "Statut",
       "active": "Actif",
+      "trial": "Période d'essai",
       "inactive": "Inactif",
       "autoRenewing": "Renouvellement automatique",
       "cancelsAtPeriodEnd": "Expire en fin de période",
-      "validUntil": "Valide jusqu'au"
+      "validUntil": "Valide jusqu'au",
+      "trialEnds": "Période d'essai se termine le",
+      "subscriptionStartsAfterTrial": "L'abonnement démarre après l'essai le {{date}}"
     },
     "paywall": {
-      "noMembership": "Votre ferme n'a pas d'abonnement actif",
-      "trialInfo": "30 jours d'essai gratuit — aucune carte de crédit requise pour commencer",
-      "monthly": "S'abonner mensuellement",
-      "yearly": "S'abonner annuellement"
+      "noMembership": "Ta ferme n'a pas d'abonnement actif",
+      "startTrial": "Essayer gratuitement 30 jours",
+      "trialInfo": "Aucune carte de crédit requise",
+      "or": "ou",
+      "subscribe": "Devenir membre",
+      "features": {
+        "app": {
+          "title": "App",
+          "items": [
+            "Tâches avec affectation d'animaux ou de parcelles et listes automatiques",
+            "Inviter plusieurs utilisateurs et planifier ensemble",
+            "Utiliser des images dans les entrées wiki"
+          ]
+        },
+        "web": {
+          "title": "Web App",
+          "items": [
+            "Toutes les fonctions de l'app dans le navigateur",
+            "Gérer les contacts",
+            "Enregistrer les commandes et suivre le paiement",
+            "Gérer les parrainages d'animaux"
+          ]
+        }
+      }
     },
     "payments": {
       "date": "Date",
       "amount": "Montant",
       "currency": "Devise",
+      "card": "Carte",
       "status": "Statut",
       "statuses": {
         "pending": "En attente",

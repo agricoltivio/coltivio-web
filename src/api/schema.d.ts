@@ -2436,6 +2436,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/membership/trial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipTrial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/donations/checkout": {
         parameters: {
             query?: never;
@@ -2632,7 +2648,12 @@ export interface components {
                         number
                     ];
                 };
-                hasActiveMembership: boolean;
+                membership: {
+                    lastPeriodEnd: unknown;
+                    cancelAtPeriodEnd: boolean;
+                    autoRenewing: boolean;
+                    trialEnd: unknown;
+                };
             };
         };
         DeleteV1FarmPositiveResponse: {
@@ -9931,8 +9952,6 @@ export interface components {
             };
         };
         PostV1MembershipCheckoutSubscriptionRequestBody: {
-            /** @enum {string} */
-            interval: "monthly" | "yearly";
             /** Format: uri */
             successUrl: string;
             /** Format: uri */
@@ -9944,8 +9963,6 @@ export interface components {
             };
         };
         PostV1MembershipCheckoutManualRequestBody: {
-            /** @enum {string} */
-            interval: "monthly" | "yearly";
             /** Format: uri */
             successUrl: string;
             /** Format: uri */
@@ -9953,8 +9970,7 @@ export interface components {
         };
         GetV1MembershipStatusPositiveResponse: {
             data: {
-                active: boolean;
-                currentPeriodEnd: unknown;
+                lastPeriodEnd: unknown;
                 cancelAtPeriodEnd: boolean;
                 autoRenewing: boolean;
                 trialEnd: unknown;
@@ -9995,11 +10011,21 @@ export interface components {
                     /** @enum {string} */
                     status: "pending" | "succeeded" | "failed" | "refunded";
                     periodEnd: unknown;
+                    cardLast4: string | null;
+                    cardBrand: string | null;
+                    cardExpMonth: number | null;
+                    cardExpYear: number | null;
                     createdAt: unknown;
                 }[];
                 count: number;
             };
         };
+        PostV1MembershipTrialPositiveResponse: {
+            data: {
+                trialEnd: unknown;
+            };
+        };
+        PostV1MembershipTrialRequestBody: Record<string, never>;
         PostV1DonationsCheckoutPositiveResponse: {
             data: {
                 url: string;
@@ -20972,6 +20998,40 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    PostV1MembershipTrial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/trial Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipTrialRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/trial Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipTrialPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/trial Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

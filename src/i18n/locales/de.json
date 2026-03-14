@@ -948,30 +948,71 @@
       }
     }
   },
+  "noFarm": {
+    "message": "Dein Konto hat noch keinen Hof. Erstelle zuerst einen Hof in der App."
+  },
   "membership": {
     "title": "Mitgliedschaft",
+    "expired": {
+      "message": "Deine Mitgliedschaft ist abgelaufen — erneuere jetzt, um weiterhin Zugang zu erhalten.",
+      "renew": "Mitgliedschaft erneuern"
+    },
+    "expiry": {
+      "trialEnding": "Deine Testphase endet in {{days}} Tagen.",
+      "membershipExpiring": "Deine Mitgliedschaft läuft in {{days}} Tagen ab.",
+      "renew": "Erneuern"
+    },
+    "becomeMember": "Mitglied werden",
     "updatePaymentMethod": "Zahlungsmethode aktualisieren",
+    "subscribeDialog": {
+      "title": "Mitgliedschaft abschliessen",
+      "description": "Du wirst erst nach Ablauf deiner Testphase am {{date}} belastet."
+    },
     "cancelRenewal": "Verlängerung kündigen",
     "reactivate": "Abonnement reaktivieren",
     "paymentHistory": "Zahlungshistorie",
     "status": {
       "label": "Status",
       "active": "Aktiv",
+      "trial": "Testphase",
       "inactive": "Inaktiv",
       "autoRenewing": "Automatische Verlängerung",
       "cancelsAtPeriodEnd": "Läuft aus",
-      "validUntil": "Gültig bis"
+      "validUntil": "Gültig bis",
+      "trialEnds": "Testphase endet am",
+      "subscriptionStartsAfterTrial": "Mitgliedschaft startet nach der Testphase am {{date}}"
     },
     "paywall": {
-      "noMembership": "Ihr Hof hat keine aktive Mitgliedschaft",
-      "trialInfo": "30 Tage kostenlos testen — keine Kreditkarte erforderlich zum Starten",
-      "monthly": "Monatlich abonnieren",
-      "yearly": "Jährlich abonnieren"
+      "noMembership": "Dein Hof hat keine aktive Mitgliedschaft",
+      "startTrial": "30 Tage kostenlos testen",
+      "trialInfo": "Keine Kreditkarte erforderlich",
+      "or": "oder",
+      "subscribe": "Mitglied werden",
+      "features": {
+        "app": {
+          "title": "App",
+          "items": [
+            "Aufgaben mit Tier- oder Flächenzuweisung und automatischer Checkliste",
+            "Mehrere Benutzer einladen und gemeinsam planen",
+            "Bilder in Wiki-Einträgen verwenden"
+          ]
+        },
+        "web": {
+          "title": "Web App",
+          "items": [
+            "Alle App-Funktionen im Browser",
+            "Kontakte verwalten",
+            "Bestellungen erfassen und Zahlung verfolgen",
+            "Tierpatenschaften verwalten"
+          ]
+        }
+      }
     },
     "payments": {
       "date": "Datum",
       "amount": "Betrag",
       "currency": "Währung",
+      "card": "Karte",
       "status": "Status",
       "statuses": {
         "pending": "Ausstehend",

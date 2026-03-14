@@ -9,6 +9,14 @@ import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -29,6 +37,8 @@ function MembershipPage() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [isLoadingPaymentMethod, setIsLoadingPaymentMethod] = useState(false);
+  const [isLoadingSubscribe, setIsLoadingSubscribe] = useState(false);
+  const [showSubscribeDialog, setShowSubscribeDialog] = useState(false);
 
   const statusQuery = useQuery(membershipStatusQueryOptions());
   const paymentsQuery = useQuery(membershipPaymentsQueryOptions());
@@ -57,6 +67,24 @@ function MembershipPage() {
     },
   });
 
+  // Stripe checkout for trial users converting to paid subscription
+  async function handleSubscribeFromTrial() {
+    setIsLoadingSubscribe(true);
+    setShowSubscribeDialog(false);
+    try {
+      const response = await apiClient.POST("/v1/membership/checkout/subscription", {
+        body: {
+          successUrl: `${window.location.href.split("?")[0]}?membership=success`,
+          cancelUrl: window.location.href,
+        },
+      });
+      if (response.error || !response.data) throw new Error("Checkout failed");
+      window.location.href = response.data.data.url;
+    } catch {
+      setIsLoadingSubscribe(false);
+    }
+  }
+
   // Open Stripe payment method update flow
   async function handleUpdatePaymentMethod() {
     setIsLoadingPaymentMethod(true);
@@ -75,7 +103,8 @@ function MembershipPage() {
   }
 
   const status = statusQuery.data;
-  const payments = paymentsQuery.data?.result ?? [];
+  // Filter out $0 Stripe invoices generated when subscribing during a trial
+  const payments = (paymentsQuery.data?.result ?? []).filter((p) => p.amount > 0);
 
   const dateFormatter = new Intl.DateTimeFormat(i18n.language, {
     day: "numeric",
@@ -83,9 +112,18 @@ function MembershipPage() {
     year: "numeric",
   });
 
-  const periodEndDate = status?.currentPeriodEnd
-    ? dateFormatter.format(new Date(status.currentPeriodEnd as string))
+  const periodEndDate = status?.lastPeriodEnd
+    ? dateFormatter.format(new Date(status.lastPeriodEnd as string))
     : null;
+
+  const trialEndDate = status?.trialEnd
+    ? dateFormatter.format(new Date(status.trialEnd as string))
+    : null;
+
+  const isTrial = !!trialEndDate && !periodEndDate;
+  // Subscribed during trial: $0 Stripe period ends at trialEnd, then auto-renews
+  const isSubscribedDuringTrial = !!trialEndDate && !!periodEndDate;
+  const isActive = !!periodEndDate || !!trialEndDate;
 
   const isMutating = cancelMutation.isPending || reactivateMutation.isPending;
 
@@ -95,49 +133,90 @@ function MembershipPage() {
       <div className="border rounded-lg p-6 mb-8 bg-white max-w-xl">
         <div className="flex items-center gap-3 mb-2">
           <span className="font-semibold">{t("membership.status.label")}:</span>
-          {status?.active ? (
-            <Badge variant="default">{t("membership.status.active")}</Badge>
+          {isActive ? (
+            <Badge variant="default">
+              {isTrial || isSubscribedDuringTrial
+                ? t("membership.status.trial")
+                : t("membership.status.active")}
+            </Badge>
           ) : (
             <Badge variant="secondary">{t("membership.status.inactive")}</Badge>
           )}
-          {status?.cancelAtPeriodEnd ? (
+          {isSubscribedDuringTrial && (
+            <Badge variant="outline">{t("membership.status.autoRenewing")}</Badge>
+          )}
+          {!isTrial && !isSubscribedDuringTrial && (status?.cancelAtPeriodEnd ? (
             <Badge variant="outline">{t("membership.status.cancelsAtPeriodEnd")}</Badge>
           ) : status?.autoRenewing ? (
             <Badge variant="outline">{t("membership.status.autoRenewing")}</Badge>
-          ) : null}
+          ) : null)}
         </div>
-        {periodEndDate && (
+        {(isTrial || isSubscribedDuringTrial) && trialEndDate && (
+          <p className="text-sm text-muted-foreground mb-4">
+            {isSubscribedDuringTrial
+              ? t("membership.status.subscriptionStartsAfterTrial", { date: trialEndDate })
+              : `${t("membership.status.trialEnds")}: ${trialEndDate}`}
+          </p>
+        )}
+        {!isTrial && !isSubscribedDuringTrial && periodEndDate && (
           <p className="text-sm text-muted-foreground mb-4">
             {t("membership.status.validUntil")}: {periodEndDate}
           </p>
         )}
         <div className="flex flex-wrap gap-3">
-          <Button
-            variant="outline"
-            onClick={handleUpdatePaymentMethod}
-            disabled={isLoadingPaymentMethod}
-          >
-            {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
-          </Button>
-          {status?.active && status.cancelAtPeriodEnd && (
-            <Button
-              variant="outline"
-              onClick={() => reactivateMutation.mutate()}
-              disabled={isMutating}
-            >
-              {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
+          {isTrial && !isSubscribedDuringTrial ? (
+            <Button onClick={() => setShowSubscribeDialog(true)} disabled={isLoadingSubscribe}>
+              {isLoadingSubscribe ? t("common.loading") : t("membership.becomeMember")}
             </Button>
-          )}
-          {status?.active && !status.cancelAtPeriodEnd && (
-            <Button
-              variant="ghost"
-              onClick={() => cancelMutation.mutate()}
-              disabled={isMutating}
-            >
-              {cancelMutation.isPending ? t("common.loading") : t("membership.cancelRenewal")}
-            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleUpdatePaymentMethod}
+                disabled={isLoadingPaymentMethod}
+              >
+                {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
+              </Button>
+              {isActive && status?.cancelAtPeriodEnd && (
+                <Button
+                  variant="outline"
+                  onClick={() => reactivateMutation.mutate()}
+                  disabled={isMutating}
+                >
+                  {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
+                </Button>
+              )}
+              {isActive && !status?.cancelAtPeriodEnd && (
+                <Button
+                  variant="ghost"
+                  onClick={() => cancelMutation.mutate()}
+                  disabled={isMutating}
+                >
+                  {cancelMutation.isPending ? t("common.loading") : t("membership.cancelRenewal")}
+                </Button>
+              )}
+            </>
           )}
         </div>
+
+        <Dialog open={showSubscribeDialog} onOpenChange={setShowSubscribeDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("membership.subscribeDialog.title")}</DialogTitle>
+              <DialogDescription>
+                {t("membership.subscribeDialog.description", { date: trialEndDate })}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowSubscribeDialog(false)}>
+                {t("common.cancel")}
+              </Button>
+              <Button onClick={handleSubscribeFromTrial}>
+                {t("membership.becomeMember")}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Payment history */}
@@ -148,13 +227,14 @@ function MembershipPage() {
             <TableHead>{t("membership.payments.date")}</TableHead>
             <TableHead>{t("membership.payments.amount")}</TableHead>
             <TableHead>{t("membership.payments.currency")}</TableHead>
+            <TableHead>{t("membership.payments.card")}</TableHead>
             <TableHead>{t("membership.payments.status")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {payments.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground">
+              <TableCell colSpan={5} className="text-center text-muted-foreground">
                 {t("common.noResults")}
               </TableCell>
             </TableRow>
@@ -166,8 +246,13 @@ function MembershipPage() {
                     ? dateFormatter.format(new Date(payment.createdAt as string))
                     : "—"}
                 </TableCell>
-                <TableCell>{payment.amount.toFixed(2)}</TableCell>
+                <TableCell>{(payment.amount / 100).toFixed(2)}</TableCell>
                 <TableCell>{payment.currency.toUpperCase()}</TableCell>
+                <TableCell className="font-mono text-sm">
+                  {payment.cardBrand && payment.cardLast4
+                    ? `${payment.cardBrand} **** ${payment.cardLast4}`
+                    : "—"}
+                </TableCell>
                 <TableCell>
                   <Badge variant={payment.status === "succeeded" ? "default" : "secondary"}>
                     {t(`membership.payments.statuses.${payment.status}`)}
