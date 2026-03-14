@@ -43,8 +43,8 @@ function EditDrug() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["drugs"] });
       navigate({ to: "/drugs/$drugId", params: { drugId } });
+      queryClient.invalidateQueries({ queryKey: ["drugs"] });
     },
   });
 

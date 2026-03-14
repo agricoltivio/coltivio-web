@@ -103,9 +103,9 @@ function EditAnimal() {
       return response.data.data;
     },
     onSuccess: () => {
+      navigate({ to: "/animals/$animalId", params: { animalId } });
       queryClient.invalidateQueries({ queryKey: ["animals"] });
       queryClient.invalidateQueries({ queryKey: ["earTags"] });
-      navigate({ to: "/animals/$animalId", params: { animalId } });
     },
   });
 

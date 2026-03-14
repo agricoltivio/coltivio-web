@@ -81,11 +81,11 @@ function EditSponsorship() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sponsorships"] });
       navigate({
         to: "/sponsorships/$sponsorshipId",
         params: { sponsorshipId },
       });
+      queryClient.invalidateQueries({ queryKey: ["sponsorships"] });
     },
   });
 

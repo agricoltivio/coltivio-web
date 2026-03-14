@@ -54,8 +54,8 @@ function EditOrder() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
       navigate({ to: "/orders/$orderId", params: { orderId } });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
   });
 

@@ -48,8 +48,8 @@ function EditContact() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
       navigate({ to: "/contacts/$contactId", params: { contactId } });
+      queryClient.invalidateQueries({ queryKey: ["contacts"] });
     },
   });
 

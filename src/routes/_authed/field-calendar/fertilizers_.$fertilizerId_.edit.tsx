@@ -79,11 +79,11 @@ function EditFertilizerPage() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fertilizers"] });
       navigate({
         to: "/field-calendar/fertilizers/$fertilizerId",
         params: { fertilizerId },
       });
+      queryClient.invalidateQueries({ queryKey: ["fertilizers"] });
     },
   });
 
