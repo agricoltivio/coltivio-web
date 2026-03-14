@@ -1,6 +1,4 @@
 import { AppSidebar } from "@/components/AppSidebar";
-import { MembershipExpired } from "@/components/MembershipExpired";
-import { MembershipPaywall } from "@/components/MembershipPaywall";
 import { NoFarm } from "@/components/NoFarm";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -51,18 +49,9 @@ function AuthedLayout() {
   const hasActivePeriod = !!periodEnd && periodEnd > now;
   const hasActiveTrial = !!trialEnd && trialEnd > now;
   const hasActiveMembership = hasActivePeriod || hasActiveTrial;
-  const isExpired = !hasActiveMembership && (!!periodEnd || !!trialEnd);
 
   if (!farmQuery.isLoading && farmQuery.data === null) {
     return <NoFarm />;
-  }
-
-  if (!farmQuery.isLoading && isExpired) {
-    return <MembershipExpired />;
-  }
-
-  if (!farmQuery.isLoading && !hasActiveMembership) {
-    return <MembershipPaywall />;
   }
 
   const isTrial = hasActiveTrial && !hasActivePeriod;
@@ -78,7 +67,9 @@ function AuthedLayout() {
 
   const showExpiryBanner =
     !bannerDismissed &&
+    (!membership?.autoRenewing || !!membership?.cancelAtPeriodEnd) &&
     daysUntilExpiry !== null &&
+    daysUntilExpiry > 0 &&
     daysUntilExpiry <= EXPIRING_SOON_DAYS;
 
   function dismissBanner() {

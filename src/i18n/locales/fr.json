@@ -954,7 +954,7 @@
   "membership": {
     "title": "Abonnement",
     "expired": {
-      "message": "Ton abonnement a expiré — renouvelle maintenant pour retrouver l'accès.",
+      "message": "Ton abonnement a expiré — renouvelle maintenant pour retrouver l'accès aux fonctions supplémentaires.",
       "renew": "Renouveler l'abonnement"
     },
     "expiry": {
@@ -984,6 +984,7 @@
     },
     "paywall": {
       "noMembership": "Ta ferme n'a pas d'abonnement actif",
+      "tagline": "Rejoins une communauté qui défend une agriculture ouverte et équitable. Contribue au développement du projet et bénéficie d'avantages supplémentaires.",
       "startTrial": "Essayer gratuitement 30 jours",
       "trialInfo": "Aucune carte de crédit requise",
       "or": "ou",
@@ -1020,6 +1021,17 @@
         "failed": "Échoué",
         "refunded": "Remboursé"
       }
-    }
+    },
+    "membersOnly": {
+      "title": "Fonction membres",
+      "description": "Cette fonction est réservée aux membres.",
+      "cta": "Devenir membre"
+    },
+    "wikiImageDialog": {
+      "title": "Images réservées aux membres",
+      "description": "Les images dans les entrées wiki ne sont visibles que par les membres.",
+      "cta": "Devenir membre"
+    },
+    "ownerOnlyManagement": "L'abonnement ne peut être géré que par le propriétaire de la ferme."
   }
 }

@@ -63,6 +63,7 @@ export function MembershipPaywall() {
         <div className="text-center mb-10">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Coltivio</h1>
           <p className="text-gray-600">{t("membership.paywall.noMembership")}</p>
+          <p className="text-gray-500 text-sm mt-2 max-w-md mx-auto">{t("membership.paywall.tagline")}</p>
         </div>
 
         {/* Feature columns */}

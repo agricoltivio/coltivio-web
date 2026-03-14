@@ -954,7 +954,7 @@
   "membership": {
     "title": "Membership",
     "expired": {
-      "message": "Your membership has expired. Renew now to regain access.",
+      "message": "Your membership has expired — renew now to regain access to the additional features.",
       "renew": "Renew membership"
     },
     "expiry": {
@@ -984,6 +984,7 @@
     },
     "paywall": {
       "noMembership": "Your farm has no active membership",
+      "tagline": "Join a community that stands for open and fair farming. Help shape the project and benefit from additional features.",
       "startTrial": "Try free for 30 days",
       "trialInfo": "No credit card required",
       "or": "or",
@@ -1020,6 +1021,17 @@
         "failed": "Failed",
         "refunded": "Refunded"
       }
-    }
+    },
+    "membersOnly": {
+      "title": "Members Only",
+      "description": "This feature is only available to members.",
+      "cta": "Become a member"
+    },
+    "wikiImageDialog": {
+      "title": "Images for Members Only",
+      "description": "Images in wiki entries are only visible to members.",
+      "cta": "Become a member"
+    },
+    "ownerOnlyManagement": "Membership can only be managed by the farm owner."
   }
 }

@@ -954,7 +954,7 @@
   "membership": {
     "title": "Abbonamento",
     "expired": {
-      "message": "Il tuo abbonamento è scaduto — rinnova ora per riottenere l'accesso.",
+      "message": "Il tuo abbonamento è scaduto — rinnova ora per riottenere l'accesso alle funzioni aggiuntive.",
       "renew": "Rinnova abbonamento"
     },
     "expiry": {
@@ -984,6 +984,7 @@
     },
     "paywall": {
       "noMembership": "La tua azienda non ha un abbonamento attivo",
+      "tagline": "Entra a far parte di una comunità che promuove un'agricoltura aperta ed equa. Contribuisci allo sviluppo del progetto e approfitta di ulteriori vantaggi.",
       "startTrial": "Prova gratuita 30 giorni",
       "trialInfo": "Nessuna carta di credito richiesta",
       "or": "oppure",
@@ -1020,6 +1021,17 @@
         "failed": "Fallito",
         "refunded": "Rimborsato"
       }
-    }
+    },
+    "membersOnly": {
+      "title": "Funzione membri",
+      "description": "Questa funzione è riservata ai membri.",
+      "cta": "Diventa membro"
+    },
+    "wikiImageDialog": {
+      "title": "Immagini solo per membri",
+      "description": "Le immagini nelle voci wiki sono visibili solo ai membri.",
+      "cta": "Diventa membro"
+    },
+    "ownerOnlyManagement": "L'abbonamento può essere gestito solo dal proprietario dell'azienda."
   }
 }

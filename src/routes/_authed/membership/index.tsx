@@ -1,12 +1,16 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { membershipStatusQueryOptions, membershipPaymentsQueryOptions } from "@/api/membership.queries";
 import { meQueryOptions } from "@/api/user.queries";
+import { farmQueryOptions } from "@/api/farm.queries";
+import { checkActiveMembership } from "@/lib/membership";
 import { apiClient } from "@/api/client";
 import type { MembershipPayment } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
+import { MembershipExpired } from "@/components/MembershipExpired";
+import { MembershipPaywall } from "@/components/MembershipPaywall";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,12 +31,6 @@ import {
 } from "@/components/ui/table";
 
 export const Route = createFileRoute("/_authed/membership/")({
-  beforeLoad: async ({ context: { queryClient } }) => {
-    const me = await queryClient.ensureQueryData(meQueryOptions());
-    if (me.farmRole !== "owner") {
-      throw redirect({ to: "/dashboard" });
-    }
-  },
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(membershipStatusQueryOptions());
     queryClient.ensureQueryData(membershipPaymentsQueryOptions());
@@ -47,6 +45,16 @@ function MembershipPage() {
   const [isLoadingSubscribe, setIsLoadingSubscribe] = useState(false);
   const [showSubscribeDialog, setShowSubscribeDialog] = useState(false);
 
+  const meQuery = useQuery(meQueryOptions());
+  const farmQuery = useQuery(farmQueryOptions());
+  const isOwner = meQuery.data?.farmRole === "owner";
+
+  const farmMembership = farmQuery.data?.membership;
+  const hasActiveMembership = checkActiveMembership(farmMembership);
+  const isExpired =
+    !hasActiveMembership &&
+    (!!farmMembership?.lastPeriodEnd || !!farmMembership?.trialEnd);
+
   const statusQuery = useQuery(membershipStatusQueryOptions());
   const paymentsQuery = useQuery(membershipPaymentsQueryOptions());
 
@@ -59,6 +67,7 @@ function MembershipPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["farm"] });
     },
   });
 
@@ -71,6 +80,7 @@ function MembershipPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["farm"] });
     },
   });
 
@@ -107,6 +117,14 @@ function MembershipPage() {
     } catch {
       setIsLoadingPaymentMethod(false);
     }
+  }
+
+  // Show paywall/expired screens inline (membership page is accessible to all)
+  if (!farmQuery.isLoading && isExpired) {
+    return <MembershipExpired />;
+  }
+  if (!farmQuery.isLoading && !hasActiveMembership) {
+    return <MembershipPaywall />;
   }
 
   const status = statusQuery.data;
@@ -170,41 +188,47 @@ function MembershipPage() {
             {t("membership.status.validUntil")}: {periodEndDate}
           </p>
         )}
-        <div className="flex flex-wrap gap-3">
-          {isTrial && !isSubscribedDuringTrial ? (
-            <Button onClick={() => setShowSubscribeDialog(true)} disabled={isLoadingSubscribe}>
-              {isLoadingSubscribe ? t("common.loading") : t("membership.becomeMember")}
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="outline"
-                onClick={handleUpdatePaymentMethod}
-                disabled={isLoadingPaymentMethod}
-              >
-                {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
+        {isOwner ? (
+          <div className="flex flex-wrap gap-3">
+            {isTrial && !isSubscribedDuringTrial ? (
+              <Button onClick={() => setShowSubscribeDialog(true)} disabled={isLoadingSubscribe}>
+                {isLoadingSubscribe ? t("common.loading") : t("membership.becomeMember")}
               </Button>
-              {isActive && status?.cancelAtPeriodEnd && (
+            ) : (
+              <>
                 <Button
                   variant="outline"
-                  onClick={() => reactivateMutation.mutate()}
-                  disabled={isMutating}
+                  onClick={handleUpdatePaymentMethod}
+                  disabled={isLoadingPaymentMethod}
                 >
-                  {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
+                  {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
                 </Button>
-              )}
-              {isActive && !status?.cancelAtPeriodEnd && (
-                <Button
-                  variant="ghost"
-                  onClick={() => cancelMutation.mutate()}
-                  disabled={isMutating}
-                >
-                  {cancelMutation.isPending ? t("common.loading") : t("membership.cancelRenewal")}
-                </Button>
-              )}
-            </>
-          )}
-        </div>
+                {isActive && status?.cancelAtPeriodEnd && (
+                  <Button
+                    variant="outline"
+                    onClick={() => reactivateMutation.mutate()}
+                    disabled={isMutating}
+                  >
+                    {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
+                  </Button>
+                )}
+                {isActive && !status?.cancelAtPeriodEnd && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => cancelMutation.mutate()}
+                    disabled={isMutating}
+                  >
+                    {cancelMutation.isPending ? t("common.loading") : t("membership.cancelRenewal")}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {t("membership.ownerOnlyManagement")}
+          </p>
+        )}
 
         <Dialog open={showSubscribeDialog} onOpenChange={setShowSubscribeDialog}>
           <DialogContent>

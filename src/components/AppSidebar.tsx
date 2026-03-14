@@ -198,116 +198,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/contacts"
-                  >
-                    <Users /> {t("nav.contacts")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/orders"
-                  >
-                    <ShoppingCart /> {t("nav.orders")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/products"
-                  >
-                    <Package /> {t("nav.products")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/sponsorships/programs"
-                  >
-                    <NotepadText /> {t("nav.sponsorshipPrograms")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/sponsorships"
-                  >
-                    <HeartHandshake /> {t("nav.sponsorships")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/payments"
-                  >
-                    <CreditCard /> {t("nav.payments")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.fieldCalendar")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -462,6 +352,116 @@ export function AppSidebar() {
                     to="/field-calendar/export"
                   >
                     <Download /> {t("nav.fieldCalendarExport")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/contacts"
+                  >
+                    <Users /> {t("nav.contacts")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/orders"
+                  >
+                    <ShoppingCart /> {t("nav.orders")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/products"
+                  >
+                    <Package /> {t("nav.products")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/sponsorships/programs"
+                  >
+                    <NotepadText /> {t("nav.sponsorshipPrograms")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/sponsorships"
+                  >
+                    <HeartHandshake /> {t("nav.sponsorships")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/payments"
+                  >
+                    <CreditCard /> {t("nav.payments")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -22,6 +22,12 @@ import { Route as AuthTokenRouteImport } from './routes/auth.token'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
+import { Route as AuthedTasksRouteRouteImport } from './routes/_authed/tasks/route'
+import { Route as AuthedSponsorshipsRouteRouteImport } from './routes/_authed/sponsorships/route'
+import { Route as AuthedProductsRouteRouteImport } from './routes/_authed/products/route'
+import { Route as AuthedPaymentsRouteRouteImport } from './routes/_authed/payments/route'
+import { Route as AuthedOrdersRouteRouteImport } from './routes/_authed/orders/route'
+import { Route as AuthedContactsRouteRouteImport } from './routes/_authed/contacts/route'
 import { Route as AuthedWikiIndexRouteImport } from './routes/_authed/wiki/index'
 import { Route as AuthedTasksIndexRouteImport } from './routes/_authed/tasks/index'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
@@ -176,35 +182,65 @@ const AuthedAccountRoute = AuthedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedTasksRouteRoute = AuthedTasksRouteRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedSponsorshipsRouteRoute = AuthedSponsorshipsRouteRouteImport.update({
+  id: '/sponsorships',
+  path: '/sponsorships',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedProductsRouteRoute = AuthedProductsRouteRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedPaymentsRouteRoute = AuthedPaymentsRouteRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedOrdersRouteRoute = AuthedOrdersRouteRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedContactsRouteRoute = AuthedContactsRouteRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedWikiIndexRoute = AuthedWikiIndexRouteImport.update({
   id: '/wiki/',
   path: '/wiki/',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedTasksIndexRoute = AuthedTasksIndexRouteImport.update({
-  id: '/tasks/',
-  path: '/tasks/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedTasksRouteRoute,
 } as any)
 const AuthedSponsorshipsIndexRoute = AuthedSponsorshipsIndexRouteImport.update({
-  id: '/sponsorships/',
-  path: '/sponsorships/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedSponsorshipsRouteRoute,
 } as any)
 const AuthedProductsIndexRoute = AuthedProductsIndexRouteImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedProductsRouteRoute,
 } as any)
 const AuthedPaymentsIndexRoute = AuthedPaymentsIndexRouteImport.update({
-  id: '/payments/',
-  path: '/payments/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedPaymentsRouteRoute,
 } as any)
 const AuthedOrdersIndexRoute = AuthedOrdersIndexRouteImport.update({
-  id: '/orders/',
-  path: '/orders/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedOrdersRouteRoute,
 } as any)
 const AuthedMembershipIndexRoute = AuthedMembershipIndexRouteImport.update({
   id: '/membership/',
@@ -217,9 +253,9 @@ const AuthedDrugsIndexRoute = AuthedDrugsIndexRouteImport.update({
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedContactsIndexRoute = AuthedContactsIndexRouteImport.update({
-  id: '/contacts/',
-  path: '/contacts/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedContactsRouteRoute,
 } as any)
 const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
@@ -237,30 +273,30 @@ const AuthedTreatmentsCreateRoute = AuthedTreatmentsCreateRouteImport.update({
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedTasksCreateRoute = AuthedTasksCreateRouteImport.update({
-  id: '/tasks/create',
-  path: '/tasks/create',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedTasksRouteRoute,
 } as any)
 const AuthedSponsorshipsCreateRoute =
   AuthedSponsorshipsCreateRouteImport.update({
-    id: '/sponsorships/create',
-    path: '/sponsorships/create',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedProductsCreateRoute = AuthedProductsCreateRouteImport.update({
-  id: '/products/create',
-  path: '/products/create',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedProductsRouteRoute,
 } as any)
 const AuthedPaymentsCreateRoute = AuthedPaymentsCreateRouteImport.update({
-  id: '/payments/create',
-  path: '/payments/create',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedPaymentsRouteRoute,
 } as any)
 const AuthedOrdersCreateRoute = AuthedOrdersCreateRouteImport.update({
-  id: '/orders/create',
-  path: '/orders/create',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedOrdersRouteRoute,
 } as any)
 const AuthedFieldCalendarTillagesRoute =
   AuthedFieldCalendarTillagesRouteImport.update({
@@ -334,9 +370,9 @@ const AuthedDrugsCreateRoute = AuthedDrugsCreateRouteImport.update({
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedContactsCreateRoute = AuthedContactsCreateRouteImport.update({
-  id: '/contacts/create',
-  path: '/contacts/create',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedContactsRouteRoute,
 } as any)
 const AuthedAnimalsTurnoutJournalRoute =
   AuthedAnimalsTurnoutJournalRouteImport.update({
@@ -383,39 +419,39 @@ const AuthedTreatmentsTreatmentIdIndexRoute =
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedTasksTaskIdIndexRoute = AuthedTasksTaskIdIndexRouteImport.update({
-  id: '/tasks/$taskId/',
-  path: '/tasks/$taskId/',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/$taskId/',
+  path: '/$taskId/',
+  getParentRoute: () => AuthedTasksRouteRoute,
 } as any)
 const AuthedSponsorshipsProgramsIndexRoute =
   AuthedSponsorshipsProgramsIndexRouteImport.update({
-    id: '/sponsorships/programs/',
-    path: '/sponsorships/programs/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/programs/',
+    path: '/programs/',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedSponsorshipsSponsorshipIdIndexRoute =
   AuthedSponsorshipsSponsorshipIdIndexRouteImport.update({
-    id: '/sponsorships/$sponsorshipId/',
-    path: '/sponsorships/$sponsorshipId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$sponsorshipId/',
+    path: '/$sponsorshipId/',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedProductsProductIdIndexRoute =
   AuthedProductsProductIdIndexRouteImport.update({
-    id: '/products/$productId/',
-    path: '/products/$productId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$productId/',
+    path: '/$productId/',
+    getParentRoute: () => AuthedProductsRouteRoute,
   } as any)
 const AuthedPaymentsPaymentIdIndexRoute =
   AuthedPaymentsPaymentIdIndexRouteImport.update({
-    id: '/payments/$paymentId/',
-    path: '/payments/$paymentId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$paymentId/',
+    path: '/$paymentId/',
+    getParentRoute: () => AuthedPaymentsRouteRoute,
   } as any)
 const AuthedOrdersOrderIdIndexRoute =
   AuthedOrdersOrderIdIndexRouteImport.update({
-    id: '/orders/$orderId/',
-    path: '/orders/$orderId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$orderId/',
+    path: '/$orderId/',
+    getParentRoute: () => AuthedOrdersRouteRoute,
   } as any)
 const AuthedDrugsDrugIdIndexRoute = AuthedDrugsDrugIdIndexRouteImport.update({
   id: '/drugs/$drugId/',
@@ -424,9 +460,9 @@ const AuthedDrugsDrugIdIndexRoute = AuthedDrugsDrugIdIndexRouteImport.update({
 } as any)
 const AuthedContactsContactIdIndexRoute =
   AuthedContactsContactIdIndexRouteImport.update({
-    id: '/contacts/$contactId/',
-    path: '/contacts/$contactId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$contactId/',
+    path: '/$contactId/',
+    getParentRoute: () => AuthedContactsRouteRoute,
   } as any)
 const AuthedAnimalsAnimalIdIndexRoute =
   AuthedAnimalsAnimalIdIndexRouteImport.update({
@@ -446,38 +482,38 @@ const AuthedTreatmentsTreatmentIdEditRoute =
     getParentRoute: () => AuthedRouteRoute,
   } as any)
 const AuthedTasksTaskIdEditRoute = AuthedTasksTaskIdEditRouteImport.update({
-  id: '/tasks/$taskId/edit',
-  path: '/tasks/$taskId/edit',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/$taskId/edit',
+  path: '/$taskId/edit',
+  getParentRoute: () => AuthedTasksRouteRoute,
 } as any)
 const AuthedSponsorshipsProgramsCreateRoute =
   AuthedSponsorshipsProgramsCreateRouteImport.update({
-    id: '/sponsorships/programs/create',
-    path: '/sponsorships/programs/create',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/programs/create',
+    path: '/programs/create',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedSponsorshipsSponsorshipIdEditRoute =
   AuthedSponsorshipsSponsorshipIdEditRouteImport.update({
-    id: '/sponsorships/$sponsorshipId/edit',
-    path: '/sponsorships/$sponsorshipId/edit',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$sponsorshipId/edit',
+    path: '/$sponsorshipId/edit',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedProductsProductIdEditRoute =
   AuthedProductsProductIdEditRouteImport.update({
-    id: '/products/$productId/edit',
-    path: '/products/$productId/edit',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$productId/edit',
+    path: '/$productId/edit',
+    getParentRoute: () => AuthedProductsRouteRoute,
   } as any)
 const AuthedPaymentsPaymentIdEditRoute =
   AuthedPaymentsPaymentIdEditRouteImport.update({
-    id: '/payments/$paymentId/edit',
-    path: '/payments/$paymentId/edit',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$paymentId/edit',
+    path: '/$paymentId/edit',
+    getParentRoute: () => AuthedPaymentsRouteRoute,
   } as any)
 const AuthedOrdersOrderIdEditRoute = AuthedOrdersOrderIdEditRouteImport.update({
-  id: '/orders/$orderId/edit',
-  path: '/orders/$orderId/edit',
-  getParentRoute: () => AuthedRouteRoute,
+  id: '/$orderId/edit',
+  path: '/$orderId/edit',
+  getParentRoute: () => AuthedOrdersRouteRoute,
 } as any)
 const AuthedFieldCalendarTillagesCreateRoute =
   AuthedFieldCalendarTillagesCreateRouteImport.update({
@@ -578,9 +614,9 @@ const AuthedDrugsDrugIdEditRoute = AuthedDrugsDrugIdEditRouteImport.update({
 } as any)
 const AuthedContactsContactIdEditRoute =
   AuthedContactsContactIdEditRouteImport.update({
-    id: '/contacts/$contactId/edit',
-    path: '/contacts/$contactId/edit',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/$contactId/edit',
+    path: '/$contactId/edit',
+    getParentRoute: () => AuthedContactsRouteRoute,
   } as any)
 const AuthedAnimalsHerdsHerdIdRoute =
   AuthedAnimalsHerdsHerdIdRouteImport.update({
@@ -608,9 +644,9 @@ const AuthedWikiAdminCategoriesIndexRoute =
   } as any)
 const AuthedSponsorshipsProgramsProgramIdIndexRoute =
   AuthedSponsorshipsProgramsProgramIdIndexRouteImport.update({
-    id: '/sponsorships/programs/$programId/',
-    path: '/sponsorships/programs/$programId/',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/programs/$programId/',
+    path: '/programs/$programId/',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute =
   AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRouteImport.update({
@@ -638,9 +674,9 @@ const AuthedWikiAdminReviewQueueChangeRequestIdRoute =
   } as any)
 const AuthedSponsorshipsProgramsProgramIdEditRoute =
   AuthedSponsorshipsProgramsProgramIdEditRouteImport.update({
-    id: '/sponsorships/programs/$programId/edit',
-    path: '/sponsorships/programs/$programId/edit',
-    getParentRoute: () => AuthedRouteRoute,
+    id: '/programs/$programId/edit',
+    path: '/programs/$programId/edit',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
 const AuthedFieldCalendarTillagesTillageIdEditRoute =
   AuthedFieldCalendarTillagesTillageIdEditRouteImport.update({
@@ -696,6 +732,12 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/contacts': typeof AuthedContactsRouteRouteWithChildren
+  '/orders': typeof AuthedOrdersRouteRouteWithChildren
+  '/payments': typeof AuthedPaymentsRouteRouteWithChildren
+  '/products': typeof AuthedProductsRouteRouteWithChildren
+  '/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
+  '/tasks': typeof AuthedTasksRouteRouteWithChildren
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
@@ -904,6 +946,12 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authed/contacts': typeof AuthedContactsRouteRouteWithChildren
+  '/_authed/orders': typeof AuthedOrdersRouteRouteWithChildren
+  '/_authed/payments': typeof AuthedPaymentsRouteRouteWithChildren
+  '/_authed/products': typeof AuthedProductsRouteRouteWithChildren
+  '/_authed/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
+  '/_authed/tasks': typeof AuthedTasksRouteRouteWithChildren
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
@@ -1009,6 +1057,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/contacts'
+    | '/orders'
+    | '/payments'
+    | '/products'
+    | '/sponsorships'
+    | '/tasks'
     | '/account'
     | '/dashboard'
     | '/settings'
@@ -1216,6 +1270,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/reset-password'
+    | '/_authed/contacts'
+    | '/_authed/orders'
+    | '/_authed/payments'
+    | '/_authed/products'
+    | '/_authed/sponsorships'
+    | '/_authed/tasks'
     | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
@@ -1417,6 +1477,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAccountRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/tasks': {
+      id: '/_authed/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof AuthedTasksRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/sponsorships': {
+      id: '/_authed/sponsorships'
+      path: '/sponsorships'
+      fullPath: '/sponsorships'
+      preLoaderRoute: typeof AuthedSponsorshipsRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/products': {
+      id: '/_authed/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof AuthedProductsRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/payments': {
+      id: '/_authed/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof AuthedPaymentsRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/orders': {
+      id: '/_authed/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AuthedOrdersRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/contacts': {
+      id: '/_authed/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AuthedContactsRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/wiki/': {
       id: '/_authed/wiki/'
       path: '/wiki'
@@ -1426,38 +1528,38 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/tasks/': {
       id: '/_authed/tasks/'
-      path: '/tasks'
+      path: '/'
       fullPath: '/tasks/'
       preLoaderRoute: typeof AuthedTasksIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedTasksRouteRoute
     }
     '/_authed/sponsorships/': {
       id: '/_authed/sponsorships/'
-      path: '/sponsorships'
+      path: '/'
       fullPath: '/sponsorships/'
       preLoaderRoute: typeof AuthedSponsorshipsIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/products/': {
       id: '/_authed/products/'
-      path: '/products'
+      path: '/'
       fullPath: '/products/'
       preLoaderRoute: typeof AuthedProductsIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedProductsRouteRoute
     }
     '/_authed/payments/': {
       id: '/_authed/payments/'
-      path: '/payments'
+      path: '/'
       fullPath: '/payments/'
       preLoaderRoute: typeof AuthedPaymentsIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/': {
       id: '/_authed/orders/'
-      path: '/orders'
+      path: '/'
       fullPath: '/orders/'
       preLoaderRoute: typeof AuthedOrdersIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/membership/': {
       id: '/_authed/membership/'
@@ -1475,10 +1577,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/contacts/': {
       id: '/_authed/contacts/'
-      path: '/contacts'
+      path: '/'
       fullPath: '/contacts/'
       preLoaderRoute: typeof AuthedContactsIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedContactsRouteRoute
     }
     '/_authed/animals/': {
       id: '/_authed/animals/'
@@ -1503,38 +1605,38 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/tasks/create': {
       id: '/_authed/tasks/create'
-      path: '/tasks/create'
+      path: '/create'
       fullPath: '/tasks/create'
       preLoaderRoute: typeof AuthedTasksCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedTasksRouteRoute
     }
     '/_authed/sponsorships/create': {
       id: '/_authed/sponsorships/create'
-      path: '/sponsorships/create'
+      path: '/create'
       fullPath: '/sponsorships/create'
       preLoaderRoute: typeof AuthedSponsorshipsCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/products/create': {
       id: '/_authed/products/create'
-      path: '/products/create'
+      path: '/create'
       fullPath: '/products/create'
       preLoaderRoute: typeof AuthedProductsCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedProductsRouteRoute
     }
     '/_authed/payments/create': {
       id: '/_authed/payments/create'
-      path: '/payments/create'
+      path: '/create'
       fullPath: '/payments/create'
       preLoaderRoute: typeof AuthedPaymentsCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/create': {
       id: '/_authed/orders/create'
-      path: '/orders/create'
+      path: '/create'
       fullPath: '/orders/create'
       preLoaderRoute: typeof AuthedOrdersCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/field-calendar/tillages': {
       id: '/_authed/field-calendar/tillages'
@@ -1622,10 +1724,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/contacts/create': {
       id: '/_authed/contacts/create'
-      path: '/contacts/create'
+      path: '/create'
       fullPath: '/contacts/create'
       preLoaderRoute: typeof AuthedContactsCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedContactsRouteRoute
     }
     '/_authed/animals/turnout-journal': {
       id: '/_authed/animals/turnout-journal'
@@ -1685,45 +1787,45 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/tasks/$taskId/': {
       id: '/_authed/tasks/$taskId/'
-      path: '/tasks/$taskId'
+      path: '/$taskId'
       fullPath: '/tasks/$taskId/'
       preLoaderRoute: typeof AuthedTasksTaskIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedTasksRouteRoute
     }
     '/_authed/sponsorships/programs/': {
       id: '/_authed/sponsorships/programs/'
-      path: '/sponsorships/programs'
+      path: '/programs'
       fullPath: '/sponsorships/programs/'
       preLoaderRoute: typeof AuthedSponsorshipsProgramsIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/sponsorships/$sponsorshipId/': {
       id: '/_authed/sponsorships/$sponsorshipId/'
-      path: '/sponsorships/$sponsorshipId'
+      path: '/$sponsorshipId'
       fullPath: '/sponsorships/$sponsorshipId/'
       preLoaderRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/products/$productId/': {
       id: '/_authed/products/$productId/'
-      path: '/products/$productId'
+      path: '/$productId'
       fullPath: '/products/$productId/'
       preLoaderRoute: typeof AuthedProductsProductIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedProductsRouteRoute
     }
     '/_authed/payments/$paymentId/': {
       id: '/_authed/payments/$paymentId/'
-      path: '/payments/$paymentId'
+      path: '/$paymentId'
       fullPath: '/payments/$paymentId/'
       preLoaderRoute: typeof AuthedPaymentsPaymentIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/$orderId/': {
       id: '/_authed/orders/$orderId/'
-      path: '/orders/$orderId'
+      path: '/$orderId'
       fullPath: '/orders/$orderId/'
       preLoaderRoute: typeof AuthedOrdersOrderIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/drugs/$drugId/': {
       id: '/_authed/drugs/$drugId/'
@@ -1734,10 +1836,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/contacts/$contactId/': {
       id: '/_authed/contacts/$contactId/'
-      path: '/contacts/$contactId'
+      path: '/$contactId'
       fullPath: '/contacts/$contactId/'
       preLoaderRoute: typeof AuthedContactsContactIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedContactsRouteRoute
     }
     '/_authed/animals/$animalId/': {
       id: '/_authed/animals/$animalId/'
@@ -1762,45 +1864,45 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/tasks/$taskId/edit': {
       id: '/_authed/tasks/$taskId/edit'
-      path: '/tasks/$taskId/edit'
+      path: '/$taskId/edit'
       fullPath: '/tasks/$taskId/edit'
       preLoaderRoute: typeof AuthedTasksTaskIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedTasksRouteRoute
     }
     '/_authed/sponsorships/programs/create': {
       id: '/_authed/sponsorships/programs/create'
-      path: '/sponsorships/programs/create'
+      path: '/programs/create'
       fullPath: '/sponsorships/programs/create'
       preLoaderRoute: typeof AuthedSponsorshipsProgramsCreateRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/sponsorships/$sponsorshipId/edit': {
       id: '/_authed/sponsorships/$sponsorshipId/edit'
-      path: '/sponsorships/$sponsorshipId/edit'
+      path: '/$sponsorshipId/edit'
       fullPath: '/sponsorships/$sponsorshipId/edit'
       preLoaderRoute: typeof AuthedSponsorshipsSponsorshipIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/products/$productId/edit': {
       id: '/_authed/products/$productId/edit'
-      path: '/products/$productId/edit'
+      path: '/$productId/edit'
       fullPath: '/products/$productId/edit'
       preLoaderRoute: typeof AuthedProductsProductIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedProductsRouteRoute
     }
     '/_authed/payments/$paymentId/edit': {
       id: '/_authed/payments/$paymentId/edit'
-      path: '/payments/$paymentId/edit'
+      path: '/$paymentId/edit'
       fullPath: '/payments/$paymentId/edit'
       preLoaderRoute: typeof AuthedPaymentsPaymentIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/$orderId/edit': {
       id: '/_authed/orders/$orderId/edit'
-      path: '/orders/$orderId/edit'
+      path: '/$orderId/edit'
       fullPath: '/orders/$orderId/edit'
       preLoaderRoute: typeof AuthedOrdersOrderIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/field-calendar/tillages_/create': {
       id: '/_authed/field-calendar/tillages_/create'
@@ -1916,10 +2018,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/contacts/$contactId/edit': {
       id: '/_authed/contacts/$contactId/edit'
-      path: '/contacts/$contactId/edit'
+      path: '/$contactId/edit'
       fullPath: '/contacts/$contactId/edit'
       preLoaderRoute: typeof AuthedContactsContactIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedContactsRouteRoute
     }
     '/_authed/animals/herds_/$herdId': {
       id: '/_authed/animals/herds_/$herdId'
@@ -1951,10 +2053,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/sponsorships/programs/$programId/': {
       id: '/_authed/sponsorships/programs/$programId/'
-      path: '/sponsorships/programs/$programId'
+      path: '/programs/$programId'
       fullPath: '/sponsorships/programs/$programId/'
       preLoaderRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId': {
       id: '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
@@ -1986,10 +2088,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/sponsorships/programs/$programId/edit': {
       id: '/_authed/sponsorships/programs/$programId/edit'
-      path: '/sponsorships/programs/$programId/edit'
+      path: '/programs/$programId/edit'
       fullPath: '/sponsorships/programs/$programId/edit'
       preLoaderRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRouteImport
-      parentRoute: typeof AuthedRouteRoute
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
     '/_authed/field-calendar/tillages_/$tillageId/edit': {
       id: '/_authed/field-calendar/tillages_/$tillageId/edit'
@@ -2043,6 +2145,124 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthedContactsRouteRouteChildren {
+  AuthedContactsCreateRoute: typeof AuthedContactsCreateRoute
+  AuthedContactsIndexRoute: typeof AuthedContactsIndexRoute
+  AuthedContactsContactIdEditRoute: typeof AuthedContactsContactIdEditRoute
+  AuthedContactsContactIdIndexRoute: typeof AuthedContactsContactIdIndexRoute
+}
+
+const AuthedContactsRouteRouteChildren: AuthedContactsRouteRouteChildren = {
+  AuthedContactsCreateRoute: AuthedContactsCreateRoute,
+  AuthedContactsIndexRoute: AuthedContactsIndexRoute,
+  AuthedContactsContactIdEditRoute: AuthedContactsContactIdEditRoute,
+  AuthedContactsContactIdIndexRoute: AuthedContactsContactIdIndexRoute,
+}
+
+const AuthedContactsRouteRouteWithChildren =
+  AuthedContactsRouteRoute._addFileChildren(AuthedContactsRouteRouteChildren)
+
+interface AuthedOrdersRouteRouteChildren {
+  AuthedOrdersCreateRoute: typeof AuthedOrdersCreateRoute
+  AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
+  AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
+  AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
+}
+
+const AuthedOrdersRouteRouteChildren: AuthedOrdersRouteRouteChildren = {
+  AuthedOrdersCreateRoute: AuthedOrdersCreateRoute,
+  AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
+  AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
+  AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,
+}
+
+const AuthedOrdersRouteRouteWithChildren =
+  AuthedOrdersRouteRoute._addFileChildren(AuthedOrdersRouteRouteChildren)
+
+interface AuthedPaymentsRouteRouteChildren {
+  AuthedPaymentsCreateRoute: typeof AuthedPaymentsCreateRoute
+  AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
+  AuthedPaymentsPaymentIdEditRoute: typeof AuthedPaymentsPaymentIdEditRoute
+  AuthedPaymentsPaymentIdIndexRoute: typeof AuthedPaymentsPaymentIdIndexRoute
+}
+
+const AuthedPaymentsRouteRouteChildren: AuthedPaymentsRouteRouteChildren = {
+  AuthedPaymentsCreateRoute: AuthedPaymentsCreateRoute,
+  AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
+  AuthedPaymentsPaymentIdEditRoute: AuthedPaymentsPaymentIdEditRoute,
+  AuthedPaymentsPaymentIdIndexRoute: AuthedPaymentsPaymentIdIndexRoute,
+}
+
+const AuthedPaymentsRouteRouteWithChildren =
+  AuthedPaymentsRouteRoute._addFileChildren(AuthedPaymentsRouteRouteChildren)
+
+interface AuthedProductsRouteRouteChildren {
+  AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
+  AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
+  AuthedProductsProductIdEditRoute: typeof AuthedProductsProductIdEditRoute
+  AuthedProductsProductIdIndexRoute: typeof AuthedProductsProductIdIndexRoute
+}
+
+const AuthedProductsRouteRouteChildren: AuthedProductsRouteRouteChildren = {
+  AuthedProductsCreateRoute: AuthedProductsCreateRoute,
+  AuthedProductsIndexRoute: AuthedProductsIndexRoute,
+  AuthedProductsProductIdEditRoute: AuthedProductsProductIdEditRoute,
+  AuthedProductsProductIdIndexRoute: AuthedProductsProductIdIndexRoute,
+}
+
+const AuthedProductsRouteRouteWithChildren =
+  AuthedProductsRouteRoute._addFileChildren(AuthedProductsRouteRouteChildren)
+
+interface AuthedSponsorshipsRouteRouteChildren {
+  AuthedSponsorshipsCreateRoute: typeof AuthedSponsorshipsCreateRoute
+  AuthedSponsorshipsIndexRoute: typeof AuthedSponsorshipsIndexRoute
+  AuthedSponsorshipsSponsorshipIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdEditRoute
+  AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
+  AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
+  AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
+  AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
+  AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+}
+
+const AuthedSponsorshipsRouteRouteChildren: AuthedSponsorshipsRouteRouteChildren =
+  {
+    AuthedSponsorshipsCreateRoute: AuthedSponsorshipsCreateRoute,
+    AuthedSponsorshipsIndexRoute: AuthedSponsorshipsIndexRoute,
+    AuthedSponsorshipsSponsorshipIdEditRoute:
+      AuthedSponsorshipsSponsorshipIdEditRoute,
+    AuthedSponsorshipsProgramsCreateRoute:
+      AuthedSponsorshipsProgramsCreateRoute,
+    AuthedSponsorshipsSponsorshipIdIndexRoute:
+      AuthedSponsorshipsSponsorshipIdIndexRoute,
+    AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
+    AuthedSponsorshipsProgramsProgramIdEditRoute:
+      AuthedSponsorshipsProgramsProgramIdEditRoute,
+    AuthedSponsorshipsProgramsProgramIdIndexRoute:
+      AuthedSponsorshipsProgramsProgramIdIndexRoute,
+  }
+
+const AuthedSponsorshipsRouteRouteWithChildren =
+  AuthedSponsorshipsRouteRoute._addFileChildren(
+    AuthedSponsorshipsRouteRouteChildren,
+  )
+
+interface AuthedTasksRouteRouteChildren {
+  AuthedTasksCreateRoute: typeof AuthedTasksCreateRoute
+  AuthedTasksIndexRoute: typeof AuthedTasksIndexRoute
+  AuthedTasksTaskIdEditRoute: typeof AuthedTasksTaskIdEditRoute
+  AuthedTasksTaskIdIndexRoute: typeof AuthedTasksTaskIdIndexRoute
+}
+
+const AuthedTasksRouteRouteChildren: AuthedTasksRouteRouteChildren = {
+  AuthedTasksCreateRoute: AuthedTasksCreateRoute,
+  AuthedTasksIndexRoute: AuthedTasksIndexRoute,
+  AuthedTasksTaskIdEditRoute: AuthedTasksTaskIdEditRoute,
+  AuthedTasksTaskIdIndexRoute: AuthedTasksTaskIdIndexRoute,
+}
+
+const AuthedTasksRouteRouteWithChildren =
+  AuthedTasksRouteRoute._addFileChildren(AuthedTasksRouteRouteChildren)
+
 interface AuthedFieldCalendarTillagesTillageIdRouteChildren {
   AuthedFieldCalendarTillagesTillageIdEditRoute: typeof AuthedFieldCalendarTillagesTillageIdEditRoute
 }
@@ -2059,6 +2279,12 @@ const AuthedFieldCalendarTillagesTillageIdRouteWithChildren =
   )
 
 interface AuthedRouteRouteChildren {
+  AuthedContactsRouteRoute: typeof AuthedContactsRouteRouteWithChildren
+  AuthedOrdersRouteRoute: typeof AuthedOrdersRouteRouteWithChildren
+  AuthedPaymentsRouteRoute: typeof AuthedPaymentsRouteRouteWithChildren
+  AuthedProductsRouteRoute: typeof AuthedProductsRouteRouteWithChildren
+  AuthedSponsorshipsRouteRoute: typeof AuthedSponsorshipsRouteRouteWithChildren
+  AuthedTasksRouteRoute: typeof AuthedTasksRouteRouteWithChildren
   AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
@@ -2067,7 +2293,6 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsHerdsRoute: typeof AuthedAnimalsHerdsRoute
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
   AuthedAnimalsTurnoutJournalRoute: typeof AuthedAnimalsTurnoutJournalRoute
-  AuthedContactsCreateRoute: typeof AuthedContactsCreateRoute
   AuthedDrugsCreateRoute: typeof AuthedDrugsCreateRoute
   AuthedFieldCalendarCropFamiliesRoute: typeof AuthedFieldCalendarCropFamiliesRoute
   AuthedFieldCalendarCropProtectionApplicationsRoute: typeof AuthedFieldCalendarCropProtectionApplicationsRoute
@@ -2080,26 +2305,14 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarHarvestsRoute: typeof AuthedFieldCalendarHarvestsRoute
   AuthedFieldCalendarPlotsRoute: typeof AuthedFieldCalendarPlotsRoute
   AuthedFieldCalendarTillagesRoute: typeof AuthedFieldCalendarTillagesRoute
-  AuthedOrdersCreateRoute: typeof AuthedOrdersCreateRoute
-  AuthedPaymentsCreateRoute: typeof AuthedPaymentsCreateRoute
-  AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
-  AuthedSponsorshipsCreateRoute: typeof AuthedSponsorshipsCreateRoute
-  AuthedTasksCreateRoute: typeof AuthedTasksCreateRoute
   AuthedTreatmentsCreateRoute: typeof AuthedTreatmentsCreateRoute
   AuthedWikiEntryIdRoute: typeof AuthedWikiEntryIdRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
-  AuthedContactsIndexRoute: typeof AuthedContactsIndexRoute
   AuthedDrugsIndexRoute: typeof AuthedDrugsIndexRoute
   AuthedMembershipIndexRoute: typeof AuthedMembershipIndexRoute
-  AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
-  AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
-  AuthedProductsIndexRoute: typeof AuthedProductsIndexRoute
-  AuthedSponsorshipsIndexRoute: typeof AuthedSponsorshipsIndexRoute
-  AuthedTasksIndexRoute: typeof AuthedTasksIndexRoute
   AuthedWikiIndexRoute: typeof AuthedWikiIndexRoute
   AuthedAnimalsAnimalIdEditRoute: typeof AuthedAnimalsAnimalIdEditRoute
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
-  AuthedContactsContactIdEditRoute: typeof AuthedContactsContactIdEditRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
   AuthedFieldCalendarCropFamiliesFamilyIdRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
   AuthedFieldCalendarCropFamiliesCreateRoute: typeof AuthedFieldCalendarCropFamiliesCreateRoute
@@ -2116,23 +2329,10 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarPlotsPlotIdRoute: typeof AuthedFieldCalendarPlotsPlotIdRoute
   AuthedFieldCalendarTillagesTillageIdRoute: typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   AuthedFieldCalendarTillagesCreateRoute: typeof AuthedFieldCalendarTillagesCreateRoute
-  AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
-  AuthedPaymentsPaymentIdEditRoute: typeof AuthedPaymentsPaymentIdEditRoute
-  AuthedProductsProductIdEditRoute: typeof AuthedProductsProductIdEditRoute
-  AuthedSponsorshipsSponsorshipIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdEditRoute
-  AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
-  AuthedTasksTaskIdEditRoute: typeof AuthedTasksTaskIdEditRoute
   AuthedTreatmentsTreatmentIdEditRoute: typeof AuthedTreatmentsTreatmentIdEditRoute
   AuthedWikiMyEntriesNewRoute: typeof AuthedWikiMyEntriesNewRoute
   AuthedAnimalsAnimalIdIndexRoute: typeof AuthedAnimalsAnimalIdIndexRoute
-  AuthedContactsContactIdIndexRoute: typeof AuthedContactsContactIdIndexRoute
   AuthedDrugsDrugIdIndexRoute: typeof AuthedDrugsDrugIdIndexRoute
-  AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
-  AuthedPaymentsPaymentIdIndexRoute: typeof AuthedPaymentsPaymentIdIndexRoute
-  AuthedProductsProductIdIndexRoute: typeof AuthedProductsProductIdIndexRoute
-  AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
-  AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
-  AuthedTasksTaskIdIndexRoute: typeof AuthedTasksTaskIdIndexRoute
   AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
   AuthedWikiAdminIndexRoute: typeof AuthedWikiAdminIndexRoute
   AuthedWikiMyEntriesIndexRoute: typeof AuthedWikiMyEntriesIndexRoute
@@ -2142,17 +2342,21 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarCropsCropIdEditRoute: typeof AuthedFieldCalendarCropsCropIdEditRoute
   AuthedFieldCalendarFertilizersFertilizerIdEditRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   AuthedFieldCalendarPlotsPlotIdCropRotationsRoute: typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
-  AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   AuthedWikiAdminReviewQueueChangeRequestIdRoute: typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
   AuthedWikiMyEntriesEntryIdChangeRequestRoute: typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
   AuthedWikiMyEntriesEntryIdEditRoute: typeof AuthedWikiMyEntriesEntryIdEditRoute
   AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute: typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
-  AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
   AuthedWikiAdminCategoriesIndexRoute: typeof AuthedWikiAdminCategoriesIndexRoute
   AuthedWikiAdminReviewQueueIndexRoute: typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
+  AuthedContactsRouteRoute: AuthedContactsRouteRouteWithChildren,
+  AuthedOrdersRouteRoute: AuthedOrdersRouteRouteWithChildren,
+  AuthedPaymentsRouteRoute: AuthedPaymentsRouteRouteWithChildren,
+  AuthedProductsRouteRoute: AuthedProductsRouteRouteWithChildren,
+  AuthedSponsorshipsRouteRoute: AuthedSponsorshipsRouteRouteWithChildren,
+  AuthedTasksRouteRoute: AuthedTasksRouteRouteWithChildren,
   AuthedAccountRoute: AuthedAccountRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
@@ -2161,7 +2365,6 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsHerdsRoute: AuthedAnimalsHerdsRoute,
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
   AuthedAnimalsTurnoutJournalRoute: AuthedAnimalsTurnoutJournalRoute,
-  AuthedContactsCreateRoute: AuthedContactsCreateRoute,
   AuthedDrugsCreateRoute: AuthedDrugsCreateRoute,
   AuthedFieldCalendarCropFamiliesRoute: AuthedFieldCalendarCropFamiliesRoute,
   AuthedFieldCalendarCropProtectionApplicationsRoute:
@@ -2177,26 +2380,14 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedFieldCalendarHarvestsRoute: AuthedFieldCalendarHarvestsRoute,
   AuthedFieldCalendarPlotsRoute: AuthedFieldCalendarPlotsRoute,
   AuthedFieldCalendarTillagesRoute: AuthedFieldCalendarTillagesRoute,
-  AuthedOrdersCreateRoute: AuthedOrdersCreateRoute,
-  AuthedPaymentsCreateRoute: AuthedPaymentsCreateRoute,
-  AuthedProductsCreateRoute: AuthedProductsCreateRoute,
-  AuthedSponsorshipsCreateRoute: AuthedSponsorshipsCreateRoute,
-  AuthedTasksCreateRoute: AuthedTasksCreateRoute,
   AuthedTreatmentsCreateRoute: AuthedTreatmentsCreateRoute,
   AuthedWikiEntryIdRoute: AuthedWikiEntryIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
-  AuthedContactsIndexRoute: AuthedContactsIndexRoute,
   AuthedDrugsIndexRoute: AuthedDrugsIndexRoute,
   AuthedMembershipIndexRoute: AuthedMembershipIndexRoute,
-  AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
-  AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
-  AuthedProductsIndexRoute: AuthedProductsIndexRoute,
-  AuthedSponsorshipsIndexRoute: AuthedSponsorshipsIndexRoute,
-  AuthedTasksIndexRoute: AuthedTasksIndexRoute,
   AuthedWikiIndexRoute: AuthedWikiIndexRoute,
   AuthedAnimalsAnimalIdEditRoute: AuthedAnimalsAnimalIdEditRoute,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
-  AuthedContactsContactIdEditRoute: AuthedContactsContactIdEditRoute,
   AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,
   AuthedFieldCalendarCropFamiliesFamilyIdRoute:
     AuthedFieldCalendarCropFamiliesFamilyIdRoute,
@@ -2225,25 +2416,10 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedFieldCalendarTillagesTillageIdRouteWithChildren,
   AuthedFieldCalendarTillagesCreateRoute:
     AuthedFieldCalendarTillagesCreateRoute,
-  AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
-  AuthedPaymentsPaymentIdEditRoute: AuthedPaymentsPaymentIdEditRoute,
-  AuthedProductsProductIdEditRoute: AuthedProductsProductIdEditRoute,
-  AuthedSponsorshipsSponsorshipIdEditRoute:
-    AuthedSponsorshipsSponsorshipIdEditRoute,
-  AuthedSponsorshipsProgramsCreateRoute: AuthedSponsorshipsProgramsCreateRoute,
-  AuthedTasksTaskIdEditRoute: AuthedTasksTaskIdEditRoute,
   AuthedTreatmentsTreatmentIdEditRoute: AuthedTreatmentsTreatmentIdEditRoute,
   AuthedWikiMyEntriesNewRoute: AuthedWikiMyEntriesNewRoute,
   AuthedAnimalsAnimalIdIndexRoute: AuthedAnimalsAnimalIdIndexRoute,
-  AuthedContactsContactIdIndexRoute: AuthedContactsContactIdIndexRoute,
   AuthedDrugsDrugIdIndexRoute: AuthedDrugsDrugIdIndexRoute,
-  AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,
-  AuthedPaymentsPaymentIdIndexRoute: AuthedPaymentsPaymentIdIndexRoute,
-  AuthedProductsProductIdIndexRoute: AuthedProductsProductIdIndexRoute,
-  AuthedSponsorshipsSponsorshipIdIndexRoute:
-    AuthedSponsorshipsSponsorshipIdIndexRoute,
-  AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
-  AuthedTasksTaskIdIndexRoute: AuthedTasksTaskIdIndexRoute,
   AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
   AuthedWikiAdminIndexRoute: AuthedWikiAdminIndexRoute,
   AuthedWikiMyEntriesIndexRoute: AuthedWikiMyEntriesIndexRoute,
@@ -2259,8 +2435,6 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedFieldCalendarFertilizersFertilizerIdEditRoute,
   AuthedFieldCalendarPlotsPlotIdCropRotationsRoute:
     AuthedFieldCalendarPlotsPlotIdCropRotationsRoute,
-  AuthedSponsorshipsProgramsProgramIdEditRoute:
-    AuthedSponsorshipsProgramsProgramIdEditRoute,
   AuthedWikiAdminReviewQueueChangeRequestIdRoute:
     AuthedWikiAdminReviewQueueChangeRequestIdRoute,
   AuthedWikiMyEntriesEntryIdChangeRequestRoute:
@@ -2268,8 +2442,6 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedWikiMyEntriesEntryIdEditRoute: AuthedWikiMyEntriesEntryIdEditRoute,
   AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute:
     AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute,
-  AuthedSponsorshipsProgramsProgramIdIndexRoute:
-    AuthedSponsorshipsProgramsProgramIdIndexRoute,
   AuthedWikiAdminCategoriesIndexRoute: AuthedWikiAdminCategoriesIndexRoute,
   AuthedWikiAdminReviewQueueIndexRoute: AuthedWikiAdminReviewQueueIndexRoute,
 }

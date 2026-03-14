@@ -954,7 +954,7 @@
   "membership": {
     "title": "Mitgliedschaft",
     "expired": {
-      "message": "Deine Mitgliedschaft ist abgelaufen — erneuere jetzt, um weiterhin Zugang zu erhalten.",
+      "message": "Deine Mitgliedschaft ist abgelaufen — erneuere jetzt, um wieder Zugang zu den zusätzlichen Funktionen zu erhalten.",
       "renew": "Mitgliedschaft erneuern"
     },
     "expiry": {
@@ -984,6 +984,7 @@
     },
     "paywall": {
       "noMembership": "Dein Hof hat keine aktive Mitgliedschaft",
+      "tagline": "Werde Teil einer Gemeinschaft welche für eine offene und faire Landwirtschaft steht. Hilf mit das Projekt weiterzuentwickeln und profitiere von weiteren Vorteilen.",
       "startTrial": "30 Tage kostenlos testen",
       "trialInfo": "Keine Kreditkarte erforderlich",
       "or": "oder",
@@ -1020,6 +1021,17 @@
         "failed": "Fehlgeschlagen",
         "refunded": "Erstattet"
       }
-    }
+    },
+    "membersOnly": {
+      "title": "Mitglieder-Funktion",
+      "description": "Diese Funktion ist nur für Mitglieder verfügbar.",
+      "cta": "Mitglied werden"
+    },
+    "wikiImageDialog": {
+      "title": "Bilder nur für Mitglieder",
+      "description": "Bilder in Wiki-Einträgen sind nur für Mitglieder sichtbar.",
+      "cta": "Mitglied werden"
+    },
+    "ownerOnlyManagement": "Die Mitgliedschaft kann nur vom Hofbesitzer verwaltet werden."
   }
 }

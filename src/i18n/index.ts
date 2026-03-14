@@ -5,7 +5,10 @@ import de from './locales/de.json'
 import it from './locales/it.json'
 import fr from './locales/fr.json'
 
-const savedLanguage = localStorage.getItem('language') || 'en'
+const supportedLanguages = ['de', 'en', 'fr', 'it']
+const browserLanguage = navigator.language.slice(0, 2)
+const detectedLanguage = supportedLanguages.includes(browserLanguage) ? browserLanguage : 'de'
+const savedLanguage = localStorage.getItem('language') || detectedLanguage
 
 i18n.use(initReactI18next).init({
   resources: {
