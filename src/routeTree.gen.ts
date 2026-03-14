@@ -22,6 +22,7 @@ import { Route as AuthTokenRouteImport } from './routes/auth.token'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
+import { Route as AuthedTreffpunktRouteRouteImport } from './routes/_authed/treffpunkt/route'
 import { Route as AuthedTasksRouteRouteImport } from './routes/_authed/tasks/route'
 import { Route as AuthedSponsorshipsRouteRouteImport } from './routes/_authed/sponsorships/route'
 import { Route as AuthedProductsRouteRouteImport } from './routes/_authed/products/route'
@@ -29,6 +30,7 @@ import { Route as AuthedPaymentsRouteRouteImport } from './routes/_authed/paymen
 import { Route as AuthedOrdersRouteRouteImport } from './routes/_authed/orders/route'
 import { Route as AuthedContactsRouteRouteImport } from './routes/_authed/contacts/route'
 import { Route as AuthedWikiIndexRouteImport } from './routes/_authed/wiki/index'
+import { Route as AuthedTreffpunktIndexRouteImport } from './routes/_authed/treffpunkt/index'
 import { Route as AuthedTasksIndexRouteImport } from './routes/_authed/tasks/index'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
@@ -39,6 +41,8 @@ import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/ind
 import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contacts/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
 import { Route as AuthedWikiEntryIdRouteImport } from './routes/_authed/wiki/$entryId'
+import { Route as AuthedTreffpunktCreateRouteImport } from './routes/_authed/treffpunkt/create'
+import { Route as AuthedTreffpunktThreadIdRouteImport } from './routes/_authed/treffpunkt/$threadId'
 import { Route as AuthedTreatmentsCreateRouteImport } from './routes/_authed/treatments/create'
 import { Route as AuthedTasksCreateRouteImport } from './routes/_authed/tasks/create'
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
@@ -182,6 +186,11 @@ const AuthedAccountRoute = AuthedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedTreffpunktRouteRoute = AuthedTreffpunktRouteRouteImport.update({
+  id: '/treffpunkt',
+  path: '/treffpunkt',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedTasksRouteRoute = AuthedTasksRouteRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -216,6 +225,11 @@ const AuthedWikiIndexRoute = AuthedWikiIndexRouteImport.update({
   id: '/wiki/',
   path: '/wiki/',
   getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedTreffpunktIndexRoute = AuthedTreffpunktIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedTreffpunktRouteRoute,
 } as any)
 const AuthedTasksIndexRoute = AuthedTasksIndexRouteImport.update({
   id: '/',
@@ -267,6 +281,17 @@ const AuthedWikiEntryIdRoute = AuthedWikiEntryIdRouteImport.update({
   path: '/wiki/$entryId',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedTreffpunktCreateRoute = AuthedTreffpunktCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthedTreffpunktRouteRoute,
+} as any)
+const AuthedTreffpunktThreadIdRoute =
+  AuthedTreffpunktThreadIdRouteImport.update({
+    id: '/$threadId',
+    path: '/$threadId',
+    getParentRoute: () => AuthedTreffpunktRouteRoute,
+  } as any)
 const AuthedTreatmentsCreateRoute = AuthedTreatmentsCreateRouteImport.update({
   id: '/treatments/create',
   path: '/treatments/create',
@@ -738,6 +763,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthedProductsRouteRouteWithChildren
   '/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
   '/tasks': typeof AuthedTasksRouteRouteWithChildren
+  '/treffpunkt': typeof AuthedTreffpunktRouteRouteWithChildren
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
@@ -766,6 +792,8 @@ export interface FileRoutesByFullPath {
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/tasks/create': typeof AuthedTasksCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/treffpunkt/$threadId': typeof AuthedTreffpunktThreadIdRoute
+  '/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
   '/contacts/': typeof AuthedContactsIndexRoute
@@ -776,6 +804,7 @@ export interface FileRoutesByFullPath {
   '/products/': typeof AuthedProductsIndexRoute
   '/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/tasks/': typeof AuthedTasksIndexRoute
+  '/treffpunkt/': typeof AuthedTreffpunktIndexRoute
   '/wiki/': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -869,6 +898,8 @@ export interface FileRoutesByTo {
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/tasks/create': typeof AuthedTasksCreateRoute
   '/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/treffpunkt/$threadId': typeof AuthedTreffpunktThreadIdRoute
+  '/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals': typeof AuthedAnimalsIndexRoute
   '/contacts': typeof AuthedContactsIndexRoute
@@ -879,6 +910,7 @@ export interface FileRoutesByTo {
   '/products': typeof AuthedProductsIndexRoute
   '/sponsorships': typeof AuthedSponsorshipsIndexRoute
   '/tasks': typeof AuthedTasksIndexRoute
+  '/treffpunkt': typeof AuthedTreffpunktIndexRoute
   '/wiki': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -952,6 +984,7 @@ export interface FileRoutesById {
   '/_authed/products': typeof AuthedProductsRouteRouteWithChildren
   '/_authed/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
   '/_authed/tasks': typeof AuthedTasksRouteRouteWithChildren
+  '/_authed/treffpunkt': typeof AuthedTreffpunktRouteRouteWithChildren
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
@@ -980,6 +1013,8 @@ export interface FileRoutesById {
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/_authed/tasks/create': typeof AuthedTasksCreateRoute
   '/_authed/treatments/create': typeof AuthedTreatmentsCreateRoute
+  '/_authed/treffpunkt/$threadId': typeof AuthedTreffpunktThreadIdRoute
+  '/_authed/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/_authed/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
   '/_authed/contacts/': typeof AuthedContactsIndexRoute
@@ -990,6 +1025,7 @@ export interface FileRoutesById {
   '/_authed/products/': typeof AuthedProductsIndexRoute
   '/_authed/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/_authed/tasks/': typeof AuthedTasksIndexRoute
+  '/_authed/treffpunkt/': typeof AuthedTreffpunktIndexRoute
   '/_authed/wiki/': typeof AuthedWikiIndexRoute
   '/_authed/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
@@ -1063,6 +1099,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/sponsorships'
     | '/tasks'
+    | '/treffpunkt'
     | '/account'
     | '/dashboard'
     | '/settings'
@@ -1091,6 +1128,8 @@ export interface FileRouteTypes {
     | '/sponsorships/create'
     | '/tasks/create'
     | '/treatments/create'
+    | '/treffpunkt/$threadId'
+    | '/treffpunkt/create'
     | '/wiki/$entryId'
     | '/animals/'
     | '/contacts/'
@@ -1101,6 +1140,7 @@ export interface FileRouteTypes {
     | '/products/'
     | '/sponsorships/'
     | '/tasks/'
+    | '/treffpunkt/'
     | '/wiki/'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
@@ -1194,6 +1234,8 @@ export interface FileRouteTypes {
     | '/sponsorships/create'
     | '/tasks/create'
     | '/treatments/create'
+    | '/treffpunkt/$threadId'
+    | '/treffpunkt/create'
     | '/wiki/$entryId'
     | '/animals'
     | '/contacts'
@@ -1204,6 +1246,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/sponsorships'
     | '/tasks'
+    | '/treffpunkt'
     | '/wiki'
     | '/animals/$animalId/edit'
     | '/animals/herds/$herdId'
@@ -1276,6 +1319,7 @@ export interface FileRouteTypes {
     | '/_authed/products'
     | '/_authed/sponsorships'
     | '/_authed/tasks'
+    | '/_authed/treffpunkt'
     | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
@@ -1304,6 +1348,8 @@ export interface FileRouteTypes {
     | '/_authed/sponsorships/create'
     | '/_authed/tasks/create'
     | '/_authed/treatments/create'
+    | '/_authed/treffpunkt/$threadId'
+    | '/_authed/treffpunkt/create'
     | '/_authed/wiki/$entryId'
     | '/_authed/animals/'
     | '/_authed/contacts/'
@@ -1314,6 +1360,7 @@ export interface FileRouteTypes {
     | '/_authed/products/'
     | '/_authed/sponsorships/'
     | '/_authed/tasks/'
+    | '/_authed/treffpunkt/'
     | '/_authed/wiki/'
     | '/_authed/animals/$animalId/edit'
     | '/_authed/animals/herds_/$herdId'
@@ -1477,6 +1524,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAccountRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/treffpunkt': {
+      id: '/_authed/treffpunkt'
+      path: '/treffpunkt'
+      fullPath: '/treffpunkt'
+      preLoaderRoute: typeof AuthedTreffpunktRouteRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/tasks': {
       id: '/_authed/tasks'
       path: '/tasks'
@@ -1525,6 +1579,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/wiki/'
       preLoaderRoute: typeof AuthedWikiIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/treffpunkt/': {
+      id: '/_authed/treffpunkt/'
+      path: '/'
+      fullPath: '/treffpunkt/'
+      preLoaderRoute: typeof AuthedTreffpunktIndexRouteImport
+      parentRoute: typeof AuthedTreffpunktRouteRoute
     }
     '/_authed/tasks/': {
       id: '/_authed/tasks/'
@@ -1595,6 +1656,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/wiki/$entryId'
       preLoaderRoute: typeof AuthedWikiEntryIdRouteImport
       parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/treffpunkt/create': {
+      id: '/_authed/treffpunkt/create'
+      path: '/create'
+      fullPath: '/treffpunkt/create'
+      preLoaderRoute: typeof AuthedTreffpunktCreateRouteImport
+      parentRoute: typeof AuthedTreffpunktRouteRoute
+    }
+    '/_authed/treffpunkt/$threadId': {
+      id: '/_authed/treffpunkt/$threadId'
+      path: '/$threadId'
+      fullPath: '/treffpunkt/$threadId'
+      preLoaderRoute: typeof AuthedTreffpunktThreadIdRouteImport
+      parentRoute: typeof AuthedTreffpunktRouteRoute
     }
     '/_authed/treatments/create': {
       id: '/_authed/treatments/create'
@@ -2263,6 +2338,23 @@ const AuthedTasksRouteRouteChildren: AuthedTasksRouteRouteChildren = {
 const AuthedTasksRouteRouteWithChildren =
   AuthedTasksRouteRoute._addFileChildren(AuthedTasksRouteRouteChildren)
 
+interface AuthedTreffpunktRouteRouteChildren {
+  AuthedTreffpunktThreadIdRoute: typeof AuthedTreffpunktThreadIdRoute
+  AuthedTreffpunktCreateRoute: typeof AuthedTreffpunktCreateRoute
+  AuthedTreffpunktIndexRoute: typeof AuthedTreffpunktIndexRoute
+}
+
+const AuthedTreffpunktRouteRouteChildren: AuthedTreffpunktRouteRouteChildren = {
+  AuthedTreffpunktThreadIdRoute: AuthedTreffpunktThreadIdRoute,
+  AuthedTreffpunktCreateRoute: AuthedTreffpunktCreateRoute,
+  AuthedTreffpunktIndexRoute: AuthedTreffpunktIndexRoute,
+}
+
+const AuthedTreffpunktRouteRouteWithChildren =
+  AuthedTreffpunktRouteRoute._addFileChildren(
+    AuthedTreffpunktRouteRouteChildren,
+  )
+
 interface AuthedFieldCalendarTillagesTillageIdRouteChildren {
   AuthedFieldCalendarTillagesTillageIdEditRoute: typeof AuthedFieldCalendarTillagesTillageIdEditRoute
 }
@@ -2285,6 +2377,7 @@ interface AuthedRouteRouteChildren {
   AuthedProductsRouteRoute: typeof AuthedProductsRouteRouteWithChildren
   AuthedSponsorshipsRouteRoute: typeof AuthedSponsorshipsRouteRouteWithChildren
   AuthedTasksRouteRoute: typeof AuthedTasksRouteRouteWithChildren
+  AuthedTreffpunktRouteRoute: typeof AuthedTreffpunktRouteRouteWithChildren
   AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
@@ -2357,6 +2450,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedProductsRouteRoute: AuthedProductsRouteRouteWithChildren,
   AuthedSponsorshipsRouteRoute: AuthedSponsorshipsRouteRouteWithChildren,
   AuthedTasksRouteRoute: AuthedTasksRouteRouteWithChildren,
+  AuthedTreffpunktRouteRoute: AuthedTreffpunktRouteRouteWithChildren,
   AuthedAccountRoute: AuthedAccountRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,

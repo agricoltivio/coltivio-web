@@ -68,7 +68,8 @@
     "wikiMyEntries": "Mes entrées",
     "wikiAdmin": "Wiki Admin",
     "tasks": "Tâches",
-    "membership": "Abonnement"
+    "membership": "Abonnement",
+    "treffpunkt": "Communauté"
   },
   "animals": {
     "title": "Animaux",
@@ -1033,5 +1034,35 @@
       "cta": "Devenir membre"
     },
     "ownerOnlyManagement": "L'abonnement ne peut être géré que par le propriétaire de la ferme."
+  },
+  "treffpunkt": {
+    "title": "Communauté",
+    "newThread": "Nouveau sujet",
+    "types": {
+      "question": "Question",
+      "feature_request": "Demande de fonctionnalité",
+      "bug_report": "Rapport de bug",
+      "general": "Général"
+    },
+    "status": {
+      "open": "Ouvert",
+      "closed": "Fermé"
+    },
+    "allTypes": "Tous",
+    "replies": "Réponses",
+    "reply": "Répondre",
+    "noReplies": "Aucune réponse pour l'instant",
+    "noThreads": "Aucun sujet pour l'instant",
+    "closeThread": "Fermer le sujet",
+    "reopenThread": "Rouvrir le sujet",
+    "deleteConfirm": "Voulez-vous vraiment supprimer ce sujet?",
+    "deleteReplyConfirm": "Voulez-vous vraiment supprimer cette réponse?",
+    "pinned": "Épinglé",
+    "editThread": "Modifier le sujet",
+    "editReply": "Modifier la réponse",
+    "trialReadOnly": "La publication n'est pas disponible pendant la période d'essai. Devenez membre pour participer.",
+    "threadTitle": "Titre",
+    "body": "Contenu",
+    "type": "Type"
   }
 }

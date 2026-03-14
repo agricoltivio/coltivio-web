@@ -68,7 +68,8 @@
     "wikiMyEntries": "Meine Einträge",
     "wikiAdmin": "Wiki Admin",
     "tasks": "Aufgaben",
-    "membership": "Mitgliedschaft"
+    "membership": "Mitgliedschaft",
+    "treffpunkt": "Treffpunkt"
   },
   "animals": {
     "title": "Tiere",
@@ -1033,5 +1034,35 @@
       "cta": "Mitglied werden"
     },
     "ownerOnlyManagement": "Die Mitgliedschaft kann nur vom Hofbesitzer verwaltet werden."
+  },
+  "treffpunkt": {
+    "title": "Treffpunkt",
+    "newThread": "Neuer Beitrag",
+    "types": {
+      "question": "Frage",
+      "feature_request": "Feature-Wunsch",
+      "bug_report": "Fehler",
+      "general": "Allgemein"
+    },
+    "status": {
+      "open": "Offen",
+      "closed": "Geschlossen"
+    },
+    "allTypes": "Alle",
+    "replies": "Antworten",
+    "reply": "Antworten",
+    "noReplies": "Noch keine Antworten",
+    "noThreads": "Noch keine Beiträge",
+    "closeThread": "Beitrag schliessen",
+    "reopenThread": "Beitrag öffnen",
+    "deleteConfirm": "Möchtest du diesen Beitrag wirklich löschen?",
+    "deleteReplyConfirm": "Möchtest du diese Antwort wirklich löschen?",
+    "pinned": "Angepinnt",
+    "editThread": "Beitrag bearbeiten",
+    "editReply": "Antwort bearbeiten",
+    "trialReadOnly": "Im Testmodus können keine Beiträge oder Antworten verfasst werden. Werde Mitglied, um mitzumachen.",
+    "threadTitle": "Titel",
+    "body": "Inhalt",
+    "type": "Typ"
   }
 }

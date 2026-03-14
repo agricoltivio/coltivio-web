@@ -68,7 +68,8 @@
     "wikiMyEntries": "My Entries",
     "wikiAdmin": "Wiki Admin",
     "tasks": "Tasks",
-    "membership": "Membership"
+    "membership": "Membership",
+    "treffpunkt": "Community"
   },
   "animals": {
     "title": "Animals",
@@ -1033,5 +1034,35 @@
       "cta": "Become a member"
     },
     "ownerOnlyManagement": "Membership can only be managed by the farm owner."
+  },
+  "treffpunkt": {
+    "title": "Community",
+    "newThread": "New Post",
+    "types": {
+      "question": "Question",
+      "feature_request": "Feature Request",
+      "bug_report": "Bug Report",
+      "general": "General"
+    },
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "allTypes": "All",
+    "replies": "Replies",
+    "reply": "Reply",
+    "noReplies": "No replies yet",
+    "noThreads": "No posts yet",
+    "closeThread": "Close post",
+    "reopenThread": "Reopen post",
+    "deleteConfirm": "Do you want to delete this post?",
+    "deleteReplyConfirm": "Do you want to delete this reply?",
+    "pinned": "Pinned",
+    "editThread": "Edit post",
+    "editReply": "Edit reply",
+    "trialReadOnly": "Posting is not available during the trial. Become a member to participate.",
+    "threadTitle": "Title",
+    "body": "Content",
+    "type": "Type"
   }
 }

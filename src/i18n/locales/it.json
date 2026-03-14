@@ -68,7 +68,8 @@
     "wikiMyEntries": "Le mie voci",
     "wikiAdmin": "Wiki Admin",
     "tasks": "Compiti",
-    "membership": "Abbonamento"
+    "membership": "Abbonamento",
+    "treffpunkt": "Comunità"
   },
   "animals": {
     "title": "Animali",
@@ -1033,5 +1034,35 @@
       "cta": "Diventa membro"
     },
     "ownerOnlyManagement": "L'abbonamento può essere gestito solo dal proprietario dell'azienda."
+  },
+  "treffpunkt": {
+    "title": "Comunità",
+    "newThread": "Nuovo post",
+    "types": {
+      "question": "Domanda",
+      "feature_request": "Richiesta di funzionalità",
+      "bug_report": "Segnalazione bug",
+      "general": "Generale"
+    },
+    "status": {
+      "open": "Aperto",
+      "closed": "Chiuso"
+    },
+    "allTypes": "Tutti",
+    "replies": "Risposte",
+    "reply": "Rispondi",
+    "noReplies": "Ancora nessuna risposta",
+    "noThreads": "Ancora nessun post",
+    "closeThread": "Chiudi post",
+    "reopenThread": "Riapri post",
+    "deleteConfirm": "Vuoi davvero eliminare questo post?",
+    "deleteReplyConfirm": "Vuoi davvero eliminare questa risposta?",
+    "pinned": "In evidenza",
+    "editThread": "Modifica post",
+    "editReply": "Modifica risposta",
+    "trialReadOnly": "Non è possibile pubblicare durante il periodo di prova. Diventa membro per partecipare.",
+    "threadTitle": "Titolo",
+    "body": "Contenuto",
+    "type": "Tipo"
   }
 }
