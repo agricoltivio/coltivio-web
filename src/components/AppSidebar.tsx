@@ -45,6 +45,7 @@ export function AppSidebar() {
   const { t } = useTranslation();
   const meQuery = useQuery(meQueryOptions());
   const isWikiModerator = meQuery.data?.isWikiModerator ?? false;
+  const isOwner = meQuery.data?.farmRole === "owner";
   // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
   // The browser scrolls a container synchronously during focus (before rAF), so we
   // capture the scroll position on pointerdown and restore it in onFocusCapture.
@@ -539,20 +540,22 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/membership"
-                  >
-                    <CreditCard /> {t("nav.membership")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {isOwner && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeOptions={{ exact: true, includeSearch: false }}
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/membership"
+                    >
+                      <CreditCard /> {t("nav.membership")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { membershipStatusQueryOptions, membershipPaymentsQueryOptions } from "@/api/membership.queries";
+import { meQueryOptions } from "@/api/user.queries";
 import { apiClient } from "@/api/client";
 import type { MembershipPayment } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
@@ -26,6 +27,12 @@ import {
 } from "@/components/ui/table";
 
 export const Route = createFileRoute("/_authed/membership/")({
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const me = await queryClient.ensureQueryData(meQueryOptions());
+    if (me.farmRole !== "owner") {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(membershipStatusQueryOptions());
     queryClient.ensureQueryData(membershipPaymentsQueryOptions());
