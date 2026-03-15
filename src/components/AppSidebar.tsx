@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,6 +13,13 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -45,7 +53,7 @@ import {
 } from "lucide-react";
 
 export function AppSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const meQuery = useQuery(meQueryOptions());
   const farmQuery = useQuery(farmQueryOptions());
   const isWikiModerator = meQuery.data?.isWikiModerator ?? false;
@@ -57,9 +65,16 @@ export function AppSidebar() {
   // Keyboard navigation is unaffected because it never sets isPointerFocus.
   const savedScrollRef = useRef(0);
   const isPointerFocusRef = useRef(false);
+
+  function changeLanguage(lang: string) {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("language", lang);
+  }
   return (
     <Sidebar>
-      <SidebarHeader>Coltivio</SidebarHeader>
+      <SidebarHeader className="border-b">
+        <div className="text-sm font-semibold truncate">{farmQuery.data?.name ?? "Coltivio"}</div>
+      </SidebarHeader>
       <SidebarContent
         onPointerDownCapture={(e) => {
           savedScrollRef.current = e.currentTarget.scrollTop;
@@ -68,7 +83,13 @@ export function AppSidebar() {
         onFocusCapture={(e) => {
           if (!isPointerFocusRef.current) return;
           isPointerFocusRef.current = false;
-          e.currentTarget.scrollTop = savedScrollRef.current;
+          const container = e.currentTarget;
+          const saved = savedScrollRef.current;
+          container.scrollTop = saved;
+          // Browser may scroll again after this handler — restore once more next frame
+          requestAnimationFrame(() => {
+            container.scrollTop = saved;
+          });
         }}
       >
         <SidebarGroup>
@@ -591,6 +612,24 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t">
+        <div className="flex items-center justify-between gap-2 px-2 py-3">
+          <span className="text-xs text-muted-foreground truncate min-w-0">
+            {meQuery.data?.fullName ?? meQuery.data?.email}
+          </span>
+          <Select value={i18n.language} onValueChange={changeLanguage}>
+            <SelectTrigger className="h-7 w-20 shrink-0 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="de">DE</SelectItem>
+              <SelectItem value="en">EN</SelectItem>
+              <SelectItem value="fr">FR</SelectItem>
+              <SelectItem value="it">IT</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
