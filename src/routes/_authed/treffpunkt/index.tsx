@@ -1,16 +1,26 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MessageSquare, Pin } from "lucide-react";
 import { forumThreadsQueryOptions } from "@/api/forum.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { checkIsTrialOnly } from "@/lib/membership";
+import { useAuth } from "@/context/SupabaseAuthContext";
 import type { ForumThread, ForumThreadType } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authed/treffpunkt/")({
   loader: ({ context: { queryClient } }) => {
@@ -38,6 +48,21 @@ function TreffpunktPage() {
   const navigate = useNavigate();
   const [typeFilter, setTypeFilter] = useState<ForumThreadType | "all">("all");
   const [search, setSearch] = useState("");
+  const { user } = useAuth();
+  const userId = user!.id;
+  const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
+  const [hasReadRules, setHasReadRules] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem(`${userId}:treffpunkt_welcome_shown`) !== "true") {
+      setShowWelcomeDialog(true);
+    }
+  }, [userId]);
+
+  function closeWelcomeDialog() {
+    localStorage.setItem(`${userId}:treffpunkt_welcome_shown`, "true");
+    setShowWelcomeDialog(false);
+  }
 
   const threadsQuery = useQuery(forumThreadsQueryOptions());
   const farmQuery = useQuery(farmQueryOptions());
@@ -171,6 +196,38 @@ function TreffpunktPage() {
           </button>
         ))}
       </div>
+      <Dialog open={showWelcomeDialog}>
+        <DialogContent
+          showCloseButton={false}
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>{t("treffpunkt.welcome.title")}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t("treffpunkt.welcome.description")}</p>
+          <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
+            {(t("treffpunkt.welcome.rules", { returnObjects: true }) as string[]).map((rule, i) => (
+              <li key={i}>{rule}</li>
+            ))}
+          </ul>
+          <div className="flex items-center gap-2 pt-2">
+            <Checkbox
+              id="treffpunkt-rules-read"
+              checked={hasReadRules}
+              onCheckedChange={(checked) => setHasReadRules(checked === true)}
+            />
+            <Label htmlFor="treffpunkt-rules-read" className="text-sm cursor-pointer">
+              {t("treffpunkt.welcome.readConfirm")}
+            </Label>
+          </div>
+          <DialogFooter>
+            <Button onClick={closeWelcomeDialog} disabled={!hasReadRules}>
+              {t("treffpunkt.welcome.cta")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContent>
   );
 }

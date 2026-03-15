@@ -1033,7 +1033,26 @@
       "description": "Images in wiki entries are only visible to members.",
       "cta": "Become a member"
     },
-    "ownerOnlyManagement": "Membership can only be managed by the farm owner."
+    "ownerOnlyManagement": "Membership can only be managed by the farm owner.",
+    "expiredDialog": {
+      "title": "Your membership has expired",
+      "description": "If you'd like to stay part of AgriColtivio and use the additional features, you're free to resubscribe anytime and pick up where you left off.",
+      "cta": "Become a member"
+    },
+    "trialWelcome": {
+      "title": "Welcome to AgriColtivio!",
+      "description": "Explore all membership features of Coltivio during your trial period.",
+      "features": "Tasks, order book, sponsorships, field calendar, wiki, and the Treffpunkt community are now available to you.",
+      "cta": "Let's go"
+    },
+    "membershipSuccess": {
+      "title": "Welcome to AgriColtivio!",
+      "description": "Thank you for becoming part of AgriColtivio. With your membership you help keep this project alive and become part of a community of like-minded farmers who stand for fair and open agriculture.",
+      "treffpunkt": "We warmly invite you to join the Community – share your feedback, suggest new features, or ask questions.",
+      "features": "All membership features are now available to you: tasks, order book, sponsorships, field calendar, wiki, and more.",
+      "communityCta": "Go to Community",
+      "close": "Close"
+    }
   },
   "treffpunkt": {
     "title": "Community",
@@ -1063,6 +1082,18 @@
     "trialReadOnly": "Posting is not available during the trial. Become a member to participate.",
     "threadTitle": "Title",
     "body": "Content",
-    "type": "Type"
+    "type": "Type",
+    "welcome": {
+      "title": "Welcome to the Community",
+      "description": "This is the place where AgriColtivio members can connect. Ask questions about the app or farming, share what's on your mind, request new features, or report bugs.",
+      "rules": [
+        "Check first whether a thread on your topic already exists.",
+        "Be respectful and constructive towards other members.",
+        "Stay on topic and keep posts clear and easy to understand.",
+        "No spam, no advertising, and no offensive content."
+      ],
+      "readConfirm": "I have read and accept the rules.",
+      "cta": "Let's go"
+    }
   }
 }

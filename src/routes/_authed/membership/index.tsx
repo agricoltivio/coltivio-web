@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { z } from "zod";
 import { membershipStatusQueryOptions, membershipPaymentsQueryOptions } from "@/api/membership.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/table";
 
 export const Route = createFileRoute("/_authed/membership/")({
+  validateSearch: z.object({ membership: z.string().optional() }),
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(membershipStatusQueryOptions());
     queryClient.ensureQueryData(membershipPaymentsQueryOptions());
@@ -41,9 +43,16 @@ export const Route = createFileRoute("/_authed/membership/")({
 function MembershipPage() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { membership: membershipSuccess } = Route.useSearch();
   const [isLoadingPaymentMethod, setIsLoadingPaymentMethod] = useState(false);
   const [isLoadingSubscribe, setIsLoadingSubscribe] = useState(false);
   const [showSubscribeDialog, setShowSubscribeDialog] = useState(false);
+  const showSuccessDialog = membershipSuccess === "success";
+
+  function closeSuccessDialog() {
+    void navigate({ to: "/membership", replace: true });
+  }
 
   const meQuery = useQuery(meQueryOptions());
   const farmQuery = useQuery(farmQueryOptions());
@@ -249,6 +258,28 @@ function MembershipPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Membership success dialog shown after Stripe checkout redirect */}
+      <Dialog open={showSuccessDialog} onOpenChange={(open) => { if (!open) closeSuccessDialog(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("membership.membershipSuccess.title")}</DialogTitle>
+            <DialogDescription>
+              {t("membership.membershipSuccess.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.treffpunkt")}</p>
+          <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.features")}</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={closeSuccessDialog}>
+              {t("membership.membershipSuccess.close")}
+            </Button>
+            <Button onClick={() => { void navigate({ to: "/treffpunkt", replace: true }); }}>
+              {t("membership.membershipSuccess.communityCta")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Payment history */}
       <h2 className="text-lg font-semibold mb-4">{t("membership.paymentHistory")}</h2>

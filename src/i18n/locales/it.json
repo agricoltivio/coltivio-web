@@ -1033,7 +1033,26 @@
       "description": "Le immagini nelle voci wiki sono visibili solo ai membri.",
       "cta": "Diventa membro"
     },
-    "ownerOnlyManagement": "L'abbonamento può essere gestito solo dal proprietario dell'azienda."
+    "ownerOnlyManagement": "L'abbonamento può essere gestito solo dal proprietario dell'azienda.",
+    "expiredDialog": {
+      "title": "Il tuo abbonamento è scaduto",
+      "description": "Se vuoi continuare a far parte di AgriColtivio e utilizzare le funzionalità aggiuntive, puoi riscriverti in qualsiasi momento e riprendere da dove ti eri fermato.",
+      "cta": "Diventa membro"
+    },
+    "trialWelcome": {
+      "title": "Benvenuto su AgriColtivio!",
+      "description": "Scopri tutte le funzionalità per i membri di Coltivio durante il tuo periodo di prova.",
+      "features": "Attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e la community Treffpunkt sono ora disponibili.",
+      "cta": "Iniziamo"
+    },
+    "membershipSuccess": {
+      "title": "Benvenuto su AgriColtivio!",
+      "description": "Grazie per essere entrato a far parte di AgriColtivio. Con la tua iscrizione aiuti a mantenere in vita questo progetto e diventi parte di una comunità di agricoltori che condividono gli stessi valori, impegnati per un'agricoltura equa e aperta.",
+      "treffpunkt": "Ti invitiamo cordialmente a partecipare al Treffpunkt – condividi il tuo feedback, suggerisci nuove funzionalità o fai domande.",
+      "features": "Tutte le funzionalità per i membri sono ora disponibili: attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e altro ancora.",
+      "communityCta": "Vai alla community",
+      "close": "Chiudi"
+    }
   },
   "treffpunkt": {
     "title": "Comunità",
@@ -1063,6 +1082,18 @@
     "trialReadOnly": "Non è possibile pubblicare durante il periodo di prova. Diventa membro per partecipare.",
     "threadTitle": "Titolo",
     "body": "Contenuto",
-    "type": "Tipo"
+    "type": "Tipo",
+    "welcome": {
+      "title": "Benvenuto nella Comunità",
+      "description": "Questo è il luogo dove i membri di AgriColtivio possono scambiarsi idee. Fai domande sull'app o sull'agricoltura, condividi ciò che hai a cuore, richiedi nuove funzionalità o segnala bug.",
+      "rules": [
+        "Controlla prima se esiste già un post sullo stesso argomento.",
+        "Sii rispettoso e costruttivo nei confronti degli altri membri.",
+        "Rimani in tema e scrivi messaggi chiari e comprensibili.",
+        "Niente spam, pubblicità o contenuti offensivi."
+      ],
+      "readConfirm": "Ho letto e accetto le regole.",
+      "cta": "Iniziamo"
+    }
   }
 }

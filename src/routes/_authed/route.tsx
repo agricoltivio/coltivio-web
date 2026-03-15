@@ -2,15 +2,25 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NoFarm } from "@/components/NoFarm";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { farmQueryOptions } from "@/api/farm.queries";
-import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useAuth } from "@/context/SupabaseAuthContext";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const EXPIRY_BANNER_DISMISSED_KEY = "membership_expiry_banner_dismissed";
 
-const EXPIRING_SOON_DAYS = 30;
+const EXPIRING_SOON_DAYS = 10;
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
@@ -31,10 +41,15 @@ export const Route = createFileRoute("/_authed")({
 
 function AuthedLayout() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const userId = user!.id;
   const farmQuery = useQuery(farmQueryOptions());
   const [bannerDismissed, setBannerDismissed] = useState(
-    () => sessionStorage.getItem(EXPIRY_BANNER_DISMISSED_KEY) === "true",
+    () => sessionStorage.getItem(`${userId}:${EXPIRY_BANNER_DISMISSED_KEY}`) === "true",
   );
+  const [showTrialDialog, setShowTrialDialog] = useState(false);
+  const [showExpiredDialog, setShowExpiredDialog] = useState(false);
+  const navigate = useNavigate();
 
   const membership = farmQuery.data?.membership;
 
@@ -49,12 +64,30 @@ function AuthedLayout() {
   const hasActivePeriod = !!periodEnd && periodEnd > now;
   const hasActiveTrial = !!trialEnd && trialEnd > now;
   const hasActiveMembership = hasActivePeriod || hasActiveTrial;
+  const isTrial = hasActiveTrial && !hasActivePeriod;
+  // Expired: farm has membership dates but neither is active. Use periodEnd if present (last paid
+  // period), otherwise trialEnd. The ISO string is used as the unique key so a later subscription
+  // that also expires will show the dialog again.
+  const isExpired = !farmQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd);
+  const expiredAtKey = isExpired ? (periodEnd ?? trialEnd)!.toISOString() : null;
+
+  useEffect(() => {
+    if (isTrial && localStorage.getItem(`${userId}:trial_welcome_shown`) !== "true") {
+      localStorage.setItem(`${userId}:trial_welcome_shown`, "true");
+      setShowTrialDialog(true);
+    }
+  }, [isTrial, userId]);
+
+  useEffect(() => {
+    if (expiredAtKey && localStorage.getItem(`${userId}:membership_expired_shown`) !== expiredAtKey) {
+      localStorage.setItem(`${userId}:membership_expired_shown`, expiredAtKey);
+      setShowExpiredDialog(true);
+    }
+  }, [expiredAtKey, userId]);
 
   if (!farmQuery.isLoading && farmQuery.data === null) {
     return <NoFarm />;
   }
-
-  const isTrial = hasActiveTrial && !hasActivePeriod;
   // Subscribed during trial: Stripe creates a $0 period ending at trialEnd,
   // then auto-renews at full price. Treat as active subscription, not expiring.
   const isSubscribedDuringTrial = hasActivePeriod && hasActiveTrial;
@@ -73,7 +106,7 @@ function AuthedLayout() {
     daysUntilExpiry <= EXPIRING_SOON_DAYS;
 
   function dismissBanner() {
-    sessionStorage.setItem(EXPIRY_BANNER_DISMISSED_KEY, "true");
+    sessionStorage.setItem(`${userId}:${EXPIRY_BANNER_DISMISSED_KEY}`, "true");
     setBannerDismissed(true);
   }
 
@@ -110,6 +143,42 @@ function AuthedLayout() {
           <Outlet />
         </main>
       </SidebarProvider>
+
+      <Dialog open={showExpiredDialog} onOpenChange={setShowExpiredDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("membership.expiredDialog.title")}</DialogTitle>
+            <DialogDescription>
+              {t("membership.expiredDialog.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowExpiredDialog(false)}>
+              {t("common.close")}
+            </Button>
+            <Button onClick={() => { setShowExpiredDialog(false); void navigate({ to: "/membership" }); }}>
+              {t("membership.expiredDialog.cta")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showTrialDialog} onOpenChange={setShowTrialDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("membership.trialWelcome.title")}</DialogTitle>
+            <DialogDescription>
+              {t("membership.trialWelcome.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t("membership.trialWelcome.features")}</p>
+          <DialogFooter>
+            <Button onClick={() => setShowTrialDialog(false)}>
+              {t("membership.trialWelcome.cta")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

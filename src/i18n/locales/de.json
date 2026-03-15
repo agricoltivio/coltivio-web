@@ -1033,7 +1033,26 @@
       "description": "Bilder in Wiki-Einträgen sind nur für Mitglieder sichtbar.",
       "cta": "Mitglied werden"
     },
-    "ownerOnlyManagement": "Die Mitgliedschaft kann nur vom Hofbesitzer verwaltet werden."
+    "ownerOnlyManagement": "Die Mitgliedschaft kann nur vom Hofbesitzer verwaltet werden.",
+    "expiredDialog": {
+      "title": "Deine Mitgliedschaft ist abgelaufen",
+      "description": "Wenn du weiterhin Teil von AgriColtivio sein und die zusätzlichen Funktionen nutzen möchtest, kannst du jederzeit wieder Mitglied werden und dort weitermachen, wo du aufgehört hast.",
+      "cta": "Mitglied werden"
+    },
+    "trialWelcome": {
+      "title": "Willkommen bei AgriColtivio!",
+      "description": "Entdecke alle Mitgliederfunktionen von Coltivio während deiner Testphase.",
+      "features": "Aufgaben, Bestellbuch, Gönnerschaften, Feldkalender, Wiki und die Treffpunkt-Community stehen dir jetzt zur Verfügung.",
+      "cta": "Los geht's"
+    },
+    "membershipSuccess": {
+      "title": "Willkommen bei AgriColtivio!",
+      "description": "Danke, dass du Teil von AgriColtivio wirst. Mit deiner Mitgliedschaft hilfst du, dieses Projekt am Leben zu erhalten, und wirst Teil einer Gemeinschaft gleichgesinnter Bäuerinnen und Bauern, die sich für eine faire und offene Landwirtschaft einsetzen.",
+      "treffpunkt": "Wir laden dich herzlich ein, im Treffpunkt mitzumachen – teile dein Feedback, schlage neue Funktionen vor oder stelle Fragen.",
+      "features": "Alle Mitgliederfunktionen stehen dir jetzt zur Verfügung: Aufgaben, Bestellbuch, Gönnerschaften, Feldkalender, Wiki und mehr.",
+      "communityCta": "Zur Community",
+      "close": "Schliessen"
+    }
   },
   "treffpunkt": {
     "title": "Treffpunkt",
@@ -1063,6 +1082,18 @@
     "trialReadOnly": "Im Testmodus können keine Beiträge oder Antworten verfasst werden. Werde Mitglied, um mitzumachen.",
     "threadTitle": "Titel",
     "body": "Inhalt",
-    "type": "Typ"
+    "type": "Typ",
+    "welcome": {
+      "title": "Willkommen im Treffpunkt",
+      "description": "Hier ist der Ort, wo sich die Mitglieder von AgriColtivio austauschen können. Stelle Fragen zur App oder zur Landwirtschaft, teile was dir auf dem Herzen liegt, wünsche dir neue Funktionen oder weise auf Fehler hin.",
+      "rules": [
+        "Prüfe zuerst, ob bereits ein Beitrag zu deinem Thema existiert.",
+        "Sei respektvoll und konstruktiv gegenüber anderen Mitgliedern.",
+        "Bleib beim Thema und halte Beiträge klar und verständlich.",
+        "Kein Spam, keine Werbung und keine beleidigenden Inhalte."
+      ],
+      "readConfirm": "Ich habe die Regeln gelesen und akzeptiere sie.",
+      "cta": "Los geht's"
+    }
   }
 }
