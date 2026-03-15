@@ -1,50 +1,34 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/auth/token")({
-  validateSearch: (search) => ({
-    access_token: (search.access_token as string) ?? "",
-    refresh_token: (search.refresh_token as string) ?? "",
-    redirect: (search.redirect as string) || "/membership",
-  }),
   component: AuthTokenExchange,
 });
 
+// Capture redirect param before TanStack Router strips the hash
+const INITIAL_REDIRECT =
+  typeof window !== "undefined"
+    ? new URLSearchParams(window.location.hash.slice(1)).get("redirect") || "/membership"
+    : "/membership";
+
 function AuthTokenExchange() {
-  const { access_token, refresh_token, redirect } = Route.useSearch();
   const { auth } = Route.useRouteContext();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
 
-  // Call setSession once on mount. onAuthStateChange in AuthProvider fires
-  // → isAuthenticated becomes true → App's useEffect calls router.invalidate().
+  // If Supabase hasn't authenticated after 5s, the tokens were invalid — go to login
+  const [timedOut, setTimedOut] = useState(false);
   useEffect(() => {
-    if (!access_token || !refresh_token) {
-      setError("Missing tokens");
-      return;
-    }
-    supabase.auth
-      .setSession({ access_token, refresh_token })
-      .then(({ error: sessionError }) => {
-        if (sessionError) setError(sessionError.message);
-      });
+    const timer = setTimeout(() => setTimedOut(true), 5000);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Navigate once auth state is confirmed
   useEffect(() => {
     if (auth.isAuthenticated) {
-      navigate({ to: redirect });
+      void navigate({ to: INITIAL_REDIRECT });
+    } else if (timedOut) {
+      void navigate({ to: "/login", search: { redirect: "/dashboard" } });
     }
-  }, [auth.isAuthenticated]);
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-destructive text-sm">{error}</p>
-      </div>
-    );
-  }
+  }, [auth.isAuthenticated, timedOut]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

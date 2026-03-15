@@ -1,4 +1,4 @@
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import { TypographyH2 } from "./ui/typography";
@@ -6,7 +6,7 @@ import { TypographyH2 } from "./ui/typography";
 export function PageContent({
   title,
   children,
-  showBackButton = true,
+  showBackButton = false,
   backTo,
 }: {
   title: string;
@@ -15,6 +15,17 @@ export function PageContent({
   backTo?: () => void;
 }) {
   const router = useRouter();
+  const navigate = useNavigate();
+
+  function handleBack() {
+    if (backTo) {
+      backTo();
+    } else if (router.history.length > 1) {
+      router.history.back();
+    } else {
+      void navigate({ to: "/dashboard" });
+    }
+  }
 
   return (
     <div>
@@ -23,7 +34,7 @@ export function PageContent({
           className="cursor-pointer"
           variant="link"
           size="sm"
-          onClick={() => (backTo ? backTo() : router.history.back())}
+          onClick={handleBack}
         >
           <ArrowLeft /> zurück
         </Button>

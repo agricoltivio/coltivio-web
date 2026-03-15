@@ -28,6 +28,7 @@ export function MembershipPaywall() {
       const response = await apiClient.POST("/v1/membership/trial", { body: {} });
       if (response.error) throw new Error("Failed to activate trial");
       await queryClient.invalidateQueries({ queryKey: ["farm"] });
+      await queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
     } catch {
       setLoadingTrial(false);
     }
