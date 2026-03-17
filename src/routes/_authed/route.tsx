@@ -2,7 +2,9 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NoFarm } from "@/components/NoFarm";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { farmQueryOptions } from "@/api/farm.queries";
-import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { membershipStatusQueryOptions } from "@/api/membership.queries";
+import { meQueryOptions } from "@/api/user.queries";
+import { createFileRoute, Link, Outlet, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/SupabaseAuthContext";
@@ -33,8 +35,12 @@ export const Route = createFileRoute("/_authed")({
       });
     }
   },
-  loader: ({ context }) => {
-    return context.queryClient.ensureQueryData(farmQueryOptions());
+  loader: async ({ context }) => {
+    const me = await context.queryClient.ensureQueryData(meQueryOptions());
+    context.queryClient.ensureQueryData(membershipStatusQueryOptions());
+    if (me.farmId) {
+      return context.queryClient.ensureQueryData(farmQueryOptions());
+    }
   },
   component: AuthedLayout,
 });
@@ -43,7 +49,10 @@ function AuthedLayout() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const userId = user!.id;
-  const farmQuery = useQuery(farmQueryOptions());
+  const meQuery = useQuery(meQueryOptions());
+  const hasFarmId = meQuery.data?.farmId != null;
+  const farmQuery = useQuery(farmQueryOptions(hasFarmId));
+  const statusQuery = useQuery(membershipStatusQueryOptions());
   const [bannerDismissed, setBannerDismissed] = useState(
     () => sessionStorage.getItem(`${userId}:${EXPIRY_BANNER_DISMISSED_KEY}`) === "true",
   );
@@ -51,24 +60,23 @@ function AuthedLayout() {
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const navigate = useNavigate();
 
-  const membership = farmQuery.data?.membership;
+  // Use the user's own membership status for dialogs/banners (not the farm's effective membership)
+  const userMembership = statusQuery.data;
 
   const now = new Date();
-  const periodEnd = membership?.lastPeriodEnd
-    ? new Date(membership.lastPeriodEnd as string)
+  const periodEnd = userMembership?.lastPeriodEnd
+    ? new Date(userMembership.lastPeriodEnd as string)
     : null;
-  const trialEnd = membership?.trialEnd
-    ? new Date(membership.trialEnd as string)
+  const trialEnd = userMembership?.trialEnd
+    ? new Date(userMembership.trialEnd as string)
     : null;
 
   const hasActivePeriod = !!periodEnd && periodEnd > now;
   const hasActiveTrial = !!trialEnd && trialEnd > now;
   const hasActiveMembership = hasActivePeriod || hasActiveTrial;
   const isTrial = hasActiveTrial && !hasActivePeriod;
-  // Expired: farm has membership dates but neither is active. Use periodEnd if present (last paid
-  // period), otherwise trialEnd. The ISO string is used as the unique key so a later subscription
-  // that also expires will show the dialog again.
-  const isExpired = !farmQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd);
+  // Expired: user has membership dates but neither is active.
+  const isExpired = !statusQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd);
   const expiredAtKey = isExpired ? (periodEnd ?? trialEnd)!.toISOString() : null;
 
   useEffect(() => {
@@ -85,9 +93,13 @@ function AuthedLayout() {
     }
   }, [expiredAtKey, userId]);
 
-  if (!farmQuery.isLoading && farmQuery.data === null) {
-    return <NoFarm />;
-  }
+  const location = useLocation();
+  const isExemptFromFarmCheck =
+    location.pathname.startsWith("/membership") ||
+    location.pathname.startsWith("/treffpunkt") ||
+    location.pathname.startsWith("/account") ||
+    location.pathname.startsWith("/settings");
+
   // Subscribed during trial: Stripe creates a $0 period ending at trialEnd,
   // then auto-renews at full price. Treat as active subscription, not expiring.
   const isSubscribedDuringTrial = hasActivePeriod && hasActiveTrial;
@@ -100,7 +112,7 @@ function AuthedLayout() {
 
   const showExpiryBanner =
     !bannerDismissed &&
-    (!membership?.autoRenewing || !!membership?.cancelAtPeriodEnd) &&
+    (!userMembership?.autoRenewing || !!userMembership?.cancelAtPeriodEnd) &&
     daysUntilExpiry !== null &&
     daysUntilExpiry > 0 &&
     daysUntilExpiry <= EXPIRING_SOON_DAYS;
@@ -140,7 +152,9 @@ function AuthedLayout() {
               </div>
             </div>
           )}
-          <Outlet />
+          {!meQuery.isLoading && !hasFarmId && !isExemptFromFarmCheck
+            ? <NoFarm />
+            : <Outlet />}
         </main>
       </SidebarProvider>
 

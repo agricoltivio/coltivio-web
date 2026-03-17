@@ -69,7 +69,8 @@
     "wikiAdmin": "Wiki Admin",
     "tasks": "Compiti",
     "membership": "Abbonamento",
-    "treffpunkt": "Comunità"
+    "treffpunkt": "Comunità",
+    "myFarm": "La mia azienda"
   },
   "animals": {
     "title": "Animali",
@@ -155,6 +156,7 @@
   "auth": {
     "signIn": "Accedi",
     "signUp": "Registrati",
+    "fullName": "Nome",
     "email": "E-mail",
     "password": "Password",
     "confirmPassword": "Conferma password",
@@ -174,7 +176,7 @@
     "settingPassword": "Impostazione password...",
     "passwordUpdated": "Password aggiornata con successo!",
     "passwordMismatch": "Le password non corrispondono",
-    "signUpSuccess": "Registrazione riuscita! Controlla la tua e-mail per confermare il tuo account.",
+    "signUpSuccess": "Registrazione riuscita! Conferma il tuo indirizzo e-mail, poi accedi per ottenere la tua iscrizione.",
     "signupViaApp": "I nuovi account possono essere creati solo tramite l'app iOS o Android."
   },
   "dashboard": {
@@ -953,43 +955,58 @@
     "message": "Il tuo account non ha ancora un'azienda. Creane una prima nell'app."
   },
   "membership": {
-    "title": "Abbonamento",
+    "title": "Iscrizione",
     "expired": {
-      "message": "Il tuo abbonamento è scaduto — rinnova ora per riottenere l'accesso alle funzioni aggiuntive.",
-      "renew": "Rinnova abbonamento"
+      "message": "La tua iscrizione all'associazione AgriColtivio è scaduta — riscriviti ora.",
+      "renew": "Rinnova iscrizione",
+      "farmStillHasMembership": "Un altro membro dell'azienda ha un'iscrizione attiva — la tua azienda mantiene l'accesso completo a tutte le funzionalità."
     },
     "expiry": {
-      "trialEnding": "Il tuo periodo di prova termina tra {{days}} giorni.",
-      "membershipExpiring": "Il tuo abbonamento scade tra {{days}} giorni.",
+      "trialEnding": "La tua iscrizione di prova termina tra {{days}} giorni.",
+      "membershipExpiring": "La tua iscrizione scade tra {{days}} giorni.",
       "renew": "Rinnova"
     },
     "becomeMember": "Diventa membro",
     "updatePaymentMethod": "Aggiorna metodo di pagamento",
     "subscribeDialog": {
-      "title": "Inizia l'abbonamento",
-      "description": "Non ti verrà addebitato nulla fino alla fine del periodo di prova il {{date}}."
+      "title": "Diventa membro",
+      "description": "Con la tua iscrizione sostieni l'associazione AgriColtivio. La quota annuale di CHF 150.– verrà addebitata alla fine dell'iscrizione di prova il {{date}}."
     },
-    "cancelRenewal": "Annulla rinnovo",
-    "reactivate": "Riattiva abbonamento",
-    "paymentHistory": "Storico pagamenti",
+    "cancelRenewal": "Dichiarare le dimissioni",
+    "reactivate": "Ritirare le dimissioni",
+    "paymentHistory": "Storico contributi",
+    "cancelDialog": {
+      "title": "Dichiarare le dimissioni",
+      "description": "Vuoi dimetterti dall'associazione AgriColtivio?",
+      "art6Note": "Ai sensi dell'Art. 6 dello statuto, le tue dimissioni hanno effetto immediato. Mantieni l'accesso fino al {{date}}. Le quote già pagate non verranno rimborsate.",
+      "confirm": "Dichiarare le dimissioni"
+    },
+    "statuten": {
+      "title": "Statuto di AgriColtivio",
+      "acceptLabel": "Ho letto lo statuto e lo accetto.",
+      "confirmButton": "Continua",
+      "text": "STATUTEN DES VEREINS AGRICOLTIVIO\n(gegründet gemäss Art. 60 ff. ZGB)\n\nArt. 1 – Name und Sitz\nUnter dem Namen «AgriColtivio» besteht ein Verein im Sinne von Art. 60 ff. ZGB mit Sitz in der Schweiz.\n\nArt. 2 – Zweck\nDer Verein bezweckt die Förderung einer offenen, transparenten und nachhaltigen Landwirtschaft durch die gemeinschaftliche Entwicklung und den Betrieb der Open-Source-Software Coltivio. Er ist gemeinnützig und verfolgt keine kommerziellen Interessen.\n\nArt. 3 – Mittel\nDer Verein finanziert sich durch Mitgliederbeiträge, Spenden sowie sonstige Zuwendungen. Das Geschäftsjahr entspricht dem Kalenderjahr.\n\nArt. 4 – Mitgliedschaft\n4.1 Mitglied des Vereins kann jede natürliche oder juristische Person werden, die den Vereinszweck unterstützt.\n4.2 Die Aufnahme erfolgt durch schriftliche oder elektronische Anmeldung beim Vorstand. Der Vorstand kann die Aufnahme ohne Angabe von Gründen ablehnen.\n4.3 Der jährliche Mitgliederbeitrag wird von der Generalversammlung festgesetzt.\n4.4 Mit der Anmeldung bestätigt die aufzunehmende Person, die Statuten gelesen zu haben und diese anzuerkennen.\n\nArt. 5 – Rechte und Pflichten der Mitglieder\n5.1 Die Mitglieder haben das Recht, an der Generalversammlung teilzunehmen, Anträge zu stellen und zu wählen.\n5.2 Die Mitglieder sind verpflichtet, den Jahresbeitrag fristgerecht zu entrichten und die Vereinsziele zu unterstützen.\n\nArt. 6 – Austritt und Ausschluss\n6.1 Der Austritt aus dem Verein ist jederzeit möglich. Die Austrittserklärung kann schriftlich oder elektronisch an den Vorstand gerichtet werden.\n6.2 Der Austritt wird sofort mit Zugang der Erklärung wirksam. Der Zugang zur Vereinsplattform bleibt bis zum Ende der bezahlten Periode erhalten.\n6.3 Bereits bezahlte Mitgliederbeiträge werden nicht zurückerstattet.\n6.4 Bei schwerwiegenden Verstössen gegen die Vereinsinteressen kann der Vorstand Mitglieder mit sofortiger Wirkung ausschliessen.\n\nArt. 7 – Organe\nOrgane des Vereins sind: a) die Generalversammlung; b) der Vorstand.\n\nArt. 8 – Generalversammlung\n8.1 Die ordentliche Generalversammlung findet jährlich statt. Der Vorstand lädt die Mitglieder mindestens 14 Tage im Voraus ein.\n8.2 Die Generalversammlung beschliesst über: Jahresbericht und Rechnung; Festsetzung des Mitgliederbeitrags; Wahl des Vorstands; Statutenänderungen; Auflösung des Vereins.\n\nArt. 9 – Vorstand\n9.1 Der Vorstand besteht aus mindestens zwei Personen und führt die laufenden Geschäfte.\n9.2 Vorstandsmitglieder werden von der Generalversammlung für jeweils zwei Jahre gewählt.\n\nArt. 10 – Haftung\nFür die Verbindlichkeiten des Vereins haftet ausschliesslich das Vereinsvermögen. Eine persönliche Haftung der Mitglieder ist ausgeschlossen.\n\nArt. 11 – Auflösung\nBei Auflösung des Vereins fällt das Vereinsvermögen nach Begleichung aller Verbindlichkeiten an eine gemeinnützige Organisation mit ähnlichem Zweck.\n\nArt. 12 – Inkrafttreten\nDiese Statuten wurden von der Gründungsversammlung beschlossen und treten mit der Gründung des Vereins in Kraft."
+    },
     "status": {
       "label": "Stato",
-      "active": "Attivo",
-      "trial": "Periodo di prova",
+      "active": "Membro attivo",
+      "trial": "Iscrizione di prova",
       "inactive": "Inattivo",
-      "autoRenewing": "Rinnovo automatico",
-      "cancelsAtPeriodEnd": "Scade a fine periodo",
+      "autoRenewing": "Membro attivo",
+      "cancelsAtPeriodEnd": "Dimissioni dichiarate",
       "validUntil": "Valido fino al",
-      "trialEnds": "Periodo di prova termina il",
-      "subscriptionStartsAfterTrial": "L'abbonamento inizia dopo la prova il {{date}}"
+      "trialEnds": "Iscrizione di prova termina il",
+      "subscriptionStartsAfterTrial": "La tua iscrizione è attiva. La quota annuale di CHF 150.– verrà addebitata alla fine del periodo di prova il {{date}}."
     },
     "paywall": {
-      "noMembership": "La tua azienda non ha un abbonamento attivo",
-      "tagline": "Entra a far parte di una comunità che promuove un'agricoltura aperta ed equa. Contribuisci allo sviluppo del progetto e approfitta di ulteriori vantaggi.",
-      "startTrial": "Prova gratuita 30 giorni",
+      "noMembership": "La tua azienda non è ancora membro dell'associazione AgriColtivio",
+      "farmAlreadyHasMembership": "Uno dei membri della tua azienda è già membro dell'associazione — la tua azienda ha già pieno accesso. Puoi comunque ottenere la tua iscrizione personale e supportare l'associazione.",
+      "tagline": "Diventa membro dell'associazione AgriColtivio — una comunità di agricoltori per un'agricoltura aperta ed equa.",
+      "startTrial": "Inizia 30 giorni di iscrizione di prova",
       "trialInfo": "Nessuna carta di credito richiesta",
       "or": "oppure",
       "subscribe": "Diventa membro",
+      "priceInfo": "CHF 150.– / anno",
       "features": {
         "app": {
           "title": "App",
@@ -1041,7 +1058,7 @@
     },
     "trialWelcome": {
       "title": "Benvenuto su AgriColtivio!",
-      "description": "Scopri tutte le funzionalità per i membri di Coltivio durante il tuo periodo di prova.",
+      "description": "Scopri tutte le funzionalità per i membri di Coltivio durante la tua iscrizione di prova di 30 giorni.",
       "features": "Attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e la community Treffpunkt sono ora disponibili.",
       "cta": "Iniziamo"
     },

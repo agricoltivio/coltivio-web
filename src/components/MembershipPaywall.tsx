@@ -4,8 +4,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { StatutenDialog } from "@/components/StatutenDialog";
 
-type CheckoutFlow = "subscription";
+type PendingAction = "trial" | "subscription" | null;
 
 function FeatureItem({ text }: { text: string }) {
   return (
@@ -16,40 +17,51 @@ function FeatureItem({ text }: { text: string }) {
   );
 }
 
-export function MembershipPaywall() {
+export function MembershipPaywall({ farmHasMembership }: { farmHasMembership?: boolean }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const [loadingTrial, setLoadingTrial] = useState(false);
-  const [loadingCheckout, setLoadingCheckout] = useState<CheckoutFlow | null>(null);
+  const [statutenOpen, setStatutenOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingAction>(null);
+  const [isExecuting, setIsExecuting] = useState(false);
 
-  async function handleTrial() {
-    setLoadingTrial(true);
-    try {
-      const response = await apiClient.POST("/v1/membership/trial", { body: {} });
-      if (response.error) throw new Error("Failed to activate trial");
-      await queryClient.invalidateQueries({ queryKey: ["farm"] });
-      await queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
-    } catch {
-      setLoadingTrial(false);
+  // Called after statutes acceptance — runs the actual API call
+  async function executeAction() {
+    if (pendingAction === "trial") {
+      setIsExecuting(true);
+      setStatutenOpen(false);
+      try {
+        const response = await apiClient.POST("/v1/membership/trial", { body: {} });
+        if (response.error) throw new Error("Failed to activate trial");
+        await queryClient.invalidateQueries({ queryKey: ["farm"] });
+        await queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
+      } catch {
+        setIsExecuting(false);
+        setPendingAction(null);
+      }
+    } else if (pendingAction === "subscription") {
+      setIsExecuting(true);
+      setStatutenOpen(false);
+      try {
+        const successUrl = `${window.location.href.split("?")[0]}?membership=success`;
+        const cancelUrl = window.location.href;
+        const response = await apiClient.POST("/v1/membership/checkout/subscription", {
+          body: { successUrl, cancelUrl },
+        });
+        if (response.error || !response.data) throw new Error("Checkout failed");
+        window.location.href = response.data.data.url;
+      } catch {
+        setIsExecuting(false);
+        setPendingAction(null);
+      }
     }
   }
 
-  async function handleCheckout(flow: CheckoutFlow) {
-    setLoadingCheckout(flow);
-    try {
-      const successUrl = `${window.location.href.split("?")[0]}?membership=success`;
-      const cancelUrl = window.location.href;
-      const response = await apiClient.POST("/v1/membership/checkout/subscription", {
-        body: { successUrl, cancelUrl },
-      });
-      if (response.error || !response.data) throw new Error("Checkout failed");
-      window.location.href = response.data.data.url;
-    } catch {
-      setLoadingCheckout(null);
-    }
+  function openStatuten(action: PendingAction) {
+    setPendingAction(action);
+    setStatutenOpen(true);
   }
 
-  const anyLoading = loadingTrial || loadingCheckout !== null;
+  const anyLoading = isExecuting;
 
   const appFeatures = t("membership.paywall.features.app.items", {
     returnObjects: true,
@@ -66,6 +78,11 @@ export function MembershipPaywall() {
           <p className="text-gray-600">{t("membership.paywall.noMembership")}</p>
           <p className="text-gray-500 text-sm mt-2 max-w-md mx-auto">{t("membership.paywall.tagline")}</p>
         </div>
+        {farmHasMembership && (
+          <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-800 text-sm max-w-2xl mx-auto">
+            {t("membership.paywall.farmAlreadyHasMembership")}
+          </div>
+        )}
 
         {/* Feature columns */}
         <div className="grid sm:grid-cols-2 gap-6 mb-10">
@@ -91,10 +108,10 @@ export function MembershipPaywall() {
           </div>
         </div>
 
-        {/* CTAs */}
+        {/* CTAs — both open StatutenDialog first */}
         <div className="flex flex-col gap-3 max-w-sm mx-auto">
-          <Button onClick={handleTrial} disabled={anyLoading} size="lg">
-            {loadingTrial ? t("common.loading") : t("membership.paywall.startTrial")}
+          <Button onClick={() => openStatuten("trial")} disabled={anyLoading} size="lg">
+            {anyLoading && pendingAction === "trial" ? t("common.loading") : t("membership.paywall.startTrial")}
           </Button>
           <p className="text-xs text-center text-muted-foreground">
             {t("membership.paywall.trialInfo")}
@@ -110,17 +127,27 @@ export function MembershipPaywall() {
             </div>
           </div>
           <Button
-            onClick={() => handleCheckout("subscription")}
+            onClick={() => openStatuten("subscription")}
             disabled={anyLoading}
             size="lg"
             variant="outline"
           >
-            {loadingCheckout === "subscription"
+            {anyLoading && pendingAction === "subscription"
               ? t("common.loading")
               : t("membership.paywall.subscribe")}
           </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            {t("membership.paywall.priceInfo")}
+          </p>
         </div>
       </div>
+
+      <StatutenDialog
+        open={statutenOpen}
+        onOpenChange={setStatutenOpen}
+        onConfirm={executeAction}
+        isLoading={isExecuting}
+      />
     </div>
   );
 }

@@ -69,7 +69,8 @@
     "wikiAdmin": "Wiki Admin",
     "tasks": "Tasks",
     "membership": "Membership",
-    "treffpunkt": "Community"
+    "treffpunkt": "Community",
+    "myFarm": "My Farm"
   },
   "animals": {
     "title": "Animals",
@@ -155,6 +156,7 @@
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
+    "fullName": "Name",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -174,7 +176,7 @@
     "settingPassword": "Setting password...",
     "passwordUpdated": "Password updated successfully!",
     "passwordMismatch": "Passwords do not match",
-    "signUpSuccess": "Registration successful! Please check your email to confirm your account.",
+    "signUpSuccess": "Registration successful! Please confirm your email address, then sign in to get your membership.",
     "signupViaApp": "New accounts can only be created via the iOS or Android app."
   },
   "dashboard": {
@@ -955,41 +957,56 @@
   "membership": {
     "title": "Membership",
     "expired": {
-      "message": "Your membership has expired — renew now to regain access to the additional features.",
-      "renew": "Renew membership"
+      "message": "Your Verein membership has expired — rejoin now to regain access.",
+      "renew": "Renew membership",
+      "farmStillHasMembership": "Another farm member has an active membership — your farm retains full access to all features."
     },
     "expiry": {
-      "trialEnding": "Your trial ends in {{days}} days.",
+      "trialEnding": "Your trial membership ends in {{days}} days.",
       "membershipExpiring": "Your membership expires in {{days}} days.",
       "renew": "Renew"
     },
     "becomeMember": "Become a member",
     "updatePaymentMethod": "Update payment method",
     "subscribeDialog": {
-      "title": "Start membership",
-      "description": "You won't be charged until your trial ends on {{date}}."
+      "title": "Become a member",
+      "description": "With your membership you support the AgriColtivio association. The annual fee of CHF 150.– will be charged after your trial ends on {{date}}."
     },
-    "cancelRenewal": "Cancel renewal",
-    "reactivate": "Reactivate subscription",
-    "paymentHistory": "Payment History",
+    "cancelRenewal": "Declare resignation",
+    "reactivate": "Withdraw resignation",
+    "paymentHistory": "Contribution history",
+    "cancelDialog": {
+      "title": "Declare resignation",
+      "description": "Would you like to resign from the AgriColtivio association?",
+      "art6Note": "According to Art. 6 of the statutes, your resignation takes effect immediately. You retain access until {{date}}. Fees already paid will not be refunded.",
+      "confirm": "Declare resignation"
+    },
+    "statuten": {
+      "title": "Statutes of AgriColtivio",
+      "acceptLabel": "I have read the statutes and accept them.",
+      "confirmButton": "Continue",
+      "text": "STATUTEN DES VEREINS AGRICOLTIVIO\n(gegründet gemäss Art. 60 ff. ZGB)\n\nArt. 1 – Name und Sitz\nUnter dem Namen «AgriColtivio» besteht ein Verein im Sinne von Art. 60 ff. ZGB mit Sitz in der Schweiz.\n\nArt. 2 – Zweck\nDer Verein bezweckt die Förderung einer offenen, transparenten und nachhaltigen Landwirtschaft durch die gemeinschaftliche Entwicklung und den Betrieb der Open-Source-Software Coltivio. Er ist gemeinnützig und verfolgt keine kommerziellen Interessen.\n\nArt. 3 – Mittel\nDer Verein finanziert sich durch Mitgliederbeiträge, Spenden sowie sonstige Zuwendungen. Das Geschäftsjahr entspricht dem Kalenderjahr.\n\nArt. 4 – Mitgliedschaft\n4.1 Mitglied des Vereins kann jede natürliche oder juristische Person werden, die den Vereinszweck unterstützt.\n4.2 Die Aufnahme erfolgt durch schriftliche oder elektronische Anmeldung beim Vorstand. Der Vorstand kann die Aufnahme ohne Angabe von Gründen ablehnen.\n4.3 Der jährliche Mitgliederbeitrag wird von der Generalversammlung festgesetzt.\n4.4 Mit der Anmeldung bestätigt die aufzunehmende Person, die Statuten gelesen zu haben und diese anzuerkennen.\n\nArt. 5 – Rechte und Pflichten der Mitglieder\n5.1 Die Mitglieder haben das Recht, an der Generalversammlung teilzunehmen, Anträge zu stellen und zu wählen.\n5.2 Die Mitglieder sind verpflichtet, den Jahresbeitrag fristgerecht zu entrichten und die Vereinsziele zu unterstützen.\n\nArt. 6 – Austritt und Ausschluss\n6.1 Der Austritt aus dem Verein ist jederzeit möglich. Die Austrittserklärung kann schriftlich oder elektronisch an den Vorstand gerichtet werden.\n6.2 Der Austritt wird sofort mit Zugang der Erklärung wirksam. Der Zugang zur Vereinsplattform bleibt bis zum Ende der bezahlten Periode erhalten.\n6.3 Bereits bezahlte Mitgliederbeiträge werden nicht zurückerstattet.\n6.4 Bei schwerwiegenden Verstössen gegen die Vereinsinteressen kann der Vorstand Mitglieder mit sofortiger Wirkung ausschliessen.\n\nArt. 7 – Organe\nOrgane des Vereins sind: a) die Generalversammlung; b) der Vorstand.\n\nArt. 8 – Generalversammlung\n8.1 Die ordentliche Generalversammlung findet jährlich statt. Der Vorstand lädt die Mitglieder mindestens 14 Tage im Voraus ein.\n8.2 Die Generalversammlung beschliesst über: Jahresbericht und Rechnung; Festsetzung des Mitgliederbeitrags; Wahl des Vorstands; Statutenänderungen; Auflösung des Vereins.\n\nArt. 9 – Vorstand\n9.1 Der Vorstand besteht aus mindestens zwei Personen und führt die laufenden Geschäfte.\n9.2 Vorstandsmitglieder werden von der Generalversammlung für jeweils zwei Jahre gewählt.\n\nArt. 10 – Haftung\nFür die Verbindlichkeiten des Vereins haftet ausschliesslich das Vereinsvermögen. Eine persönliche Haftung der Mitglieder ist ausgeschlossen.\n\nArt. 11 – Auflösung\nBei Auflösung des Vereins fällt das Vereinsvermögen nach Begleichung aller Verbindlichkeiten an eine gemeinnützige Organisation mit ähnlichem Zweck.\n\nArt. 12 – Inkrafttreten\nDiese Statuten wurden von der Gründungsversammlung beschlossen und treten mit der Gründung des Vereins in Kraft."
+    },
     "status": {
       "label": "Status",
-      "active": "Active",
-      "trial": "Trial",
+      "active": "Active member",
+      "trial": "Trial membership",
       "inactive": "Inactive",
-      "autoRenewing": "Auto-renewing",
-      "cancelsAtPeriodEnd": "Cancels at period end",
+      "autoRenewing": "Active member",
+      "cancelsAtPeriodEnd": "Resignation declared",
       "validUntil": "Valid until",
       "trialEnds": "Trial ends",
-      "subscriptionStartsAfterTrial": "Membership starts after trial on {{date}}"
+      "subscriptionStartsAfterTrial": "Your membership is active. The annual fee of CHF 150.– will be charged after your trial ends on {{date}}."
     },
     "paywall": {
-      "noMembership": "Your farm has no active membership",
-      "tagline": "Join a community that stands for open and fair farming. Help shape the project and benefit from additional features.",
-      "startTrial": "Try free for 30 days",
+      "noMembership": "Your farm is not yet a member of the AgriColtivio association",
+      "farmAlreadyHasMembership": "One of your farm members is already an association member — your farm already has full access. You can still get your own membership and support the association.",
+      "tagline": "Become a member of the AgriColtivio association — a community of farmers for open and fair agriculture.",
+      "startTrial": "Start 30-day trial membership",
       "trialInfo": "No credit card required",
       "or": "or",
       "subscribe": "Become a member",
+      "priceInfo": "CHF 150.– / year",
       "features": {
         "app": {
           "title": "App",
@@ -1041,7 +1058,7 @@
     },
     "trialWelcome": {
       "title": "Welcome to AgriColtivio!",
-      "description": "Explore all membership features of Coltivio during your trial period.",
+      "description": "Explore all membership features of Coltivio during your 30-day trial membership.",
       "features": "Tasks, order book, sponsorships, field calendar, wiki, and the Treffpunkt community are now available to you.",
       "cta": "Let's go"
     },

@@ -2468,6 +2468,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/handoff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthHandoff"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthExchange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/forum/threads": {
         parameters: {
             query?: never;
@@ -2745,10 +2777,8 @@ export interface components {
                     ];
                 };
                 membership: {
-                    lastPeriodEnd: unknown;
-                    cancelAtPeriodEnd: boolean;
-                    autoRenewing: boolean;
-                    trialEnd: unknown;
+                    /** @enum {string} */
+                    status: "none" | "trial" | "active";
                 };
             };
         };
@@ -2769,6 +2799,10 @@ export interface components {
                         number,
                         number
                     ];
+                };
+                membership: {
+                    /** @enum {string} */
+                    status: "none" | "trial" | "active";
                 };
             };
         };
@@ -10098,8 +10132,7 @@ export interface components {
             data: {
                 result: {
                     id: string;
-                    farmId: string;
-                    userId: string | null;
+                    userId: string;
                     stripePaymentId: string;
                     stripeSubscriptionId: string | null;
                     amount: number;
@@ -10135,6 +10168,23 @@ export interface components {
             successUrl: string;
             /** Format: uri */
             cancelUrl: string;
+        };
+        PostV1AuthHandoffPositiveResponse: {
+            data: {
+                token: string;
+                expiresAt: unknown;
+            };
+        };
+        PostV1AuthHandoffRequestBody: Record<string, never>;
+        PostV1AuthExchangePositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1AuthExchangeRequestBody: {
+            token: string;
+            /** Format: uri */
+            redirectTo: string;
         };
         /** @enum {string} */
         GetV1ForumThreadsParameterType: "question" | "feature_request" | "bug_report" | "general";
@@ -21330,6 +21380,74 @@ export interface operations {
                 };
             };
             /** @description POST /v1/donations/checkout Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthHandoff: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/handoff Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthHandoffRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/handoff Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthHandoffPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/handoff Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthExchange: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/exchange Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthExchangeRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/exchange Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthExchangePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/exchange Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

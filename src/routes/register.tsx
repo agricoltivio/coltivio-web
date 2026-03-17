@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 interface RegisterFormData {
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -23,7 +24,7 @@ interface RegisterFormData {
 export const Route = createFileRoute("/register")({
   beforeLoad: ({ context }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: "/dashboard" });
+      throw redirect({ to: "/membership" });
     }
   },
   component: RegisterForm,
@@ -40,6 +41,7 @@ export function RegisterForm({
 
   const form = useForm<RegisterFormData>({
     defaultValues: {
+      fullName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -54,7 +56,7 @@ export function RegisterForm({
       return;
     }
 
-    const { error } = await auth.signUp(data.email, data.password);
+    const { error } = await auth.signUp(data.email, data.password, data.fullName);
 
     if (error) {
       setServerError(error.message);
@@ -75,10 +77,10 @@ export function RegisterForm({
               <h1 className="text-2xl font-bold mb-4">Coltivio</h1>
               <p className="text-green-600 mb-4">{t("auth.signUpSuccess")}</p>
               <Link
-                to="/login" search={{ redirect: "/dashboard" }}
+                to="/login" search={{ redirect: "/membership" }}
                 className="text-sm underline-offset-2 hover:underline"
               >
-                {t("auth.backToLogin")}
+                {t("auth.signIn")}
               </Link>
             </div>
           ) : (
@@ -94,6 +96,26 @@ export function RegisterForm({
                     {t("auth.signUp")}
                   </p>
                 </div>
+                <Controller
+                  name="fullName"
+                  control={form.control}
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <FieldLabel htmlFor="fullName">{t("auth.fullName")}</FieldLabel>
+                      <Input
+                        {...field}
+                        id="fullName"
+                        type="text"
+                        autoComplete="name"
+                        required
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
                 <Controller
                   name="email"
                   control={form.control}

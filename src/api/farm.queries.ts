@@ -1,7 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiClient } from "./client";
 
-export const farmQueryOptions = () => {
+export const farmQueryOptions = (enabled = true) => {
   return queryOptions({
     queryKey: ["farm"],
     queryFn: async () => {
@@ -10,6 +10,7 @@ export const farmQueryOptions = () => {
       if (response.error) return null;
       return response.data.data;
     },
+    enabled,
   });
 };
 

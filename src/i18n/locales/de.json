@@ -69,7 +69,8 @@
     "wikiAdmin": "Wiki Admin",
     "tasks": "Aufgaben",
     "membership": "Mitgliedschaft",
-    "treffpunkt": "Treffpunkt"
+    "treffpunkt": "Treffpunkt",
+    "myFarm": "Mein Hof"
   },
   "animals": {
     "title": "Tiere",
@@ -155,6 +156,7 @@
   "auth": {
     "signIn": "Anmelden",
     "signUp": "Registrieren",
+    "fullName": "Name",
     "email": "E-Mail",
     "password": "Passwort",
     "confirmPassword": "Passwort bestätigen",
@@ -174,7 +176,7 @@
     "settingPassword": "Passwort wird gesetzt...",
     "passwordUpdated": "Passwort erfolgreich aktualisiert!",
     "passwordMismatch": "Passwörter stimmen nicht überein",
-    "signUpSuccess": "Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu bestätigen.",
+    "signUpSuccess": "Registrierung erfolgreich! Bitte bestätige deine E-Mail-Adresse. Danach kannst du dich anmelden und eine Mitgliedschaft abschliessen.",
     "signupViaApp": "Neue Konten können nur über die iOS- oder Android-App erstellt werden."
   },
   "dashboard": {
@@ -955,41 +957,56 @@
   "membership": {
     "title": "Mitgliedschaft",
     "expired": {
-      "message": "Deine Mitgliedschaft ist abgelaufen — erneuere jetzt, um wieder Zugang zu den zusätzlichen Funktionen zu erhalten.",
-      "renew": "Mitgliedschaft erneuern"
+      "message": "Deine Vereinsmitgliedschaft ist abgelaufen — werde jetzt wieder Mitglied.",
+      "renew": "Mitgliedschaft erneuern",
+      "farmStillHasMembership": "Ein anderes Hofmitglied hat eine aktive Mitgliedschaft — dein Hof behält seinen Zugang zu allen Funktionen."
     },
     "expiry": {
-      "trialEnding": "Deine Testphase endet in {{days}} Tagen.",
+      "trialEnding": "Deine Schnuppermitgliedschaft endet in {{days}} Tagen.",
       "membershipExpiring": "Deine Mitgliedschaft läuft in {{days}} Tagen ab.",
       "renew": "Erneuern"
     },
     "becomeMember": "Mitglied werden",
     "updatePaymentMethod": "Zahlungsmethode aktualisieren",
     "subscribeDialog": {
-      "title": "Mitgliedschaft abschliessen",
-      "description": "Du wirst erst nach Ablauf deiner Testphase am {{date}} belastet."
+      "title": "Mitglied werden",
+      "description": "Mit deiner Mitgliedschaft unterstützt du den Verein AgriColtivio. Der Jahresbeitrag von CHF 150.– wird nach Ablauf deiner Schnuppermitgliedschaft am {{date}} belastet."
     },
-    "cancelRenewal": "Verlängerung kündigen",
-    "reactivate": "Abonnement reaktivieren",
-    "paymentHistory": "Zahlungshistorie",
+    "cancelRenewal": "Austritt erklären",
+    "reactivate": "Austritt zurückziehen",
+    "paymentHistory": "Beitragshistorie",
+    "cancelDialog": {
+      "title": "Austritt erklären",
+      "description": "Möchtest du aus dem Verein AgriColtivio austreten?",
+      "art6Note": "Gemäss Art. 6 der Statuten wird dein Austritt sofort wirksam. Du behältst den Zugang bis zum {{date}}. Bereits bezahlte Beiträge werden nicht zurückerstattet.",
+      "confirm": "Austritt erklären"
+    },
+    "statuten": {
+      "title": "Vereinsstatuten AgriColtivio",
+      "acceptLabel": "Ich habe die Statuten gelesen und akzeptiere sie.",
+      "confirmButton": "Weiter",
+      "text": "STATUTEN DES VEREINS AGRICOLTIVIO\n(gegründet gemäss Art. 60 ff. ZGB)\n\nArt. 1 – Name und Sitz\nUnter dem Namen «AgriColtivio» besteht ein Verein im Sinne von Art. 60 ff. ZGB mit Sitz in der Schweiz.\n\nArt. 2 – Zweck\nDer Verein bezweckt die Förderung einer offenen, transparenten und nachhaltigen Landwirtschaft durch die gemeinschaftliche Entwicklung und den Betrieb der Open-Source-Software Coltivio. Er ist gemeinnützig und verfolgt keine kommerziellen Interessen.\n\nArt. 3 – Mittel\nDer Verein finanziert sich durch Mitgliederbeiträge, Spenden sowie sonstige Zuwendungen. Das Geschäftsjahr entspricht dem Kalenderjahr.\n\nArt. 4 – Mitgliedschaft\n4.1 Mitglied des Vereins kann jede natürliche oder juristische Person werden, die den Vereinszweck unterstützt.\n4.2 Die Aufnahme erfolgt durch schriftliche oder elektronische Anmeldung beim Vorstand. Der Vorstand kann die Aufnahme ohne Angabe von Gründen ablehnen.\n4.3 Der jährliche Mitgliederbeitrag wird von der Generalversammlung festgesetzt.\n4.4 Mit der Anmeldung bestätigt die aufzunehmende Person, die Statuten gelesen zu haben und diese anzuerkennen.\n\nArt. 5 – Rechte und Pflichten der Mitglieder\n5.1 Die Mitglieder haben das Recht, an der Generalversammlung teilzunehmen, Anträge zu stellen und zu wählen.\n5.2 Die Mitglieder sind verpflichtet, den Jahresbeitrag fristgerecht zu entrichten und die Vereinsziele zu unterstützen.\n\nArt. 6 – Austritt und Ausschluss\n6.1 Der Austritt aus dem Verein ist jederzeit möglich. Die Austrittserklärung kann schriftlich oder elektronisch an den Vorstand gerichtet werden.\n6.2 Der Austritt wird sofort mit Zugang der Erklärung wirksam. Der Zugang zur Vereinsplattform bleibt bis zum Ende der bezahlten Periode erhalten.\n6.3 Bereits bezahlte Mitgliederbeiträge werden nicht zurückerstattet.\n6.4 Bei schwerwiegenden Verstössen gegen die Vereinsinteressen kann der Vorstand Mitglieder mit sofortiger Wirkung ausschliessen.\n\nArt. 7 – Organe\nOrgane des Vereins sind: a) die Generalversammlung; b) der Vorstand.\n\nArt. 8 – Generalversammlung\n8.1 Die ordentliche Generalversammlung findet jährlich statt. Der Vorstand lädt die Mitglieder mindestens 14 Tage im Voraus ein.\n8.2 Die Generalversammlung beschliesst über: Jahresbericht und Rechnung; Festsetzung des Mitgliederbeitrags; Wahl des Vorstands; Statutenänderungen; Auflösung des Vereins.\n\nArt. 9 – Vorstand\n9.1 Der Vorstand besteht aus mindestens zwei Personen und führt die laufenden Geschäfte.\n9.2 Vorstandsmitglieder werden von der Generalversammlung für jeweils zwei Jahre gewählt.\n\nArt. 10 – Haftung\nFür die Verbindlichkeiten des Vereins haftet ausschliesslich das Vereinsvermögen. Eine persönliche Haftung der Mitglieder ist ausgeschlossen.\n\nArt. 11 – Auflösung\nBei Auflösung des Vereins fällt das Vereinsvermögen nach Begleichung aller Verbindlichkeiten an eine gemeinnützige Organisation mit ähnlichem Zweck.\n\nArt. 12 – Inkrafttreten\nDiese Statuten wurden von der Gründungsversammlung beschlossen und treten mit der Gründung des Vereins in Kraft."
+    },
     "status": {
       "label": "Status",
-      "active": "Aktiv",
-      "trial": "Testphase",
+      "active": "Aktives Mitglied",
+      "trial": "Schnuppermitgliedschaft",
       "inactive": "Inaktiv",
-      "autoRenewing": "Automatische Verlängerung",
-      "cancelsAtPeriodEnd": "Läuft aus",
+      "autoRenewing": "Aktives Mitglied",
+      "cancelsAtPeriodEnd": "Austritt erklärt",
       "validUntil": "Gültig bis",
-      "trialEnds": "Testphase endet am",
-      "subscriptionStartsAfterTrial": "Mitgliedschaft startet nach der Testphase am {{date}}"
+      "trialEnds": "Schnuppermitgliedschaft endet am",
+      "subscriptionStartsAfterTrial": "Deine Mitgliedschaft ist aktiv. Der Jahresbeitrag von CHF 150.– wird nach Ablauf der Schnuppermitgliedschaft am {{date}} belastet."
     },
     "paywall": {
-      "noMembership": "Dein Hof hat keine aktive Mitgliedschaft",
-      "tagline": "Werde Teil einer Gemeinschaft welche für eine offene und faire Landwirtschaft steht. Hilf mit das Projekt weiterzuentwickeln und profitiere von weiteren Vorteilen.",
-      "startTrial": "30 Tage kostenlos testen",
+      "noMembership": "Dein Hof ist noch kein Mitglied des Vereins AgriColtivio",
+      "farmAlreadyHasMembership": "Einer deiner Hofmitglieder ist bereits Vereinsmitglied — dein Hof hat bereits vollen Zugang. Du kannst trotzdem eine eigene Mitgliedschaft abschliessen und den Verein unterstützen.",
+      "tagline": "Werde Mitglied des Vereins AgriColtivio — eine Gemeinschaft von Bäuerinnen und Bauern für eine offene und faire Landwirtschaft.",
+      "startTrial": "30 Tage Schnuppermitgliedschaft starten",
       "trialInfo": "Keine Kreditkarte erforderlich",
       "or": "oder",
       "subscribe": "Mitglied werden",
+      "priceInfo": "CHF 150.– / Jahr",
       "features": {
         "app": {
           "title": "App",
@@ -1041,7 +1058,7 @@
     },
     "trialWelcome": {
       "title": "Willkommen bei AgriColtivio!",
-      "description": "Entdecke alle Mitgliederfunktionen von Coltivio während deiner Testphase.",
+      "description": "Entdecke alle Mitgliederfunktionen von Coltivio während deiner 30-tägigen Schnuppermitgliedschaft.",
       "features": "Aufgaben, Bestellbuch, Gönnerschaften, Feldkalender, Wiki und die Treffpunkt-Community stehen dir jetzt zur Verfügung.",
       "cta": "Los geht's"
     },

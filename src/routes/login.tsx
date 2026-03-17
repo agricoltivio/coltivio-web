@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -123,7 +123,10 @@ export function LoginForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                {t("auth.signupViaApp")}
+                {t("auth.noAccount")}{" "}
+                <Link to="/register" className="underline-offset-2 hover:underline">
+                  {t("auth.signUp")}
+                </Link>
               </FieldDescription>
             </FieldGroup>
           </form>

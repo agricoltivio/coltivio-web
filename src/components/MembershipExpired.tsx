@@ -2,13 +2,17 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { StatutenDialog } from "@/components/StatutenDialog";
 
-export function MembershipExpired() {
+export function MembershipExpired({ farmHasMembership }: { farmHasMembership?: boolean }) {
   const { t } = useTranslation();
+  const [statutenOpen, setStatutenOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Rejoining = new acceptance of statutes (Art. 4.4)
   async function handleRenew() {
     setLoading(true);
+    setStatutenOpen(false);
     try {
       const response = await apiClient.POST("/v1/membership/checkout/subscription", {
         body: {
@@ -27,11 +31,23 @@ export function MembershipExpired() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-sm w-full mx-auto px-6 text-center">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Coltivio</h1>
-        <p className="text-gray-600 mb-8">{t("membership.expired.message")}</p>
-        <Button onClick={handleRenew} disabled={loading} size="lg">
+        <p className="text-gray-600 mb-4">{t("membership.expired.message")}</p>
+        {farmHasMembership && (
+          <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-800 text-sm text-left">
+            {t("membership.expired.farmStillHasMembership")}
+          </div>
+        )}
+        <Button onClick={() => setStatutenOpen(true)} disabled={loading} size="lg">
           {loading ? t("common.loading") : t("membership.expired.renew")}
         </Button>
       </div>
+
+      <StatutenDialog
+        open={statutenOpen}
+        onOpenChange={setStatutenOpen}
+        onConfirm={handleRenew}
+        isLoading={loading}
+      />
     </div>
   );
 }
