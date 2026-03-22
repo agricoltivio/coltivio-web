@@ -1087,6 +1087,9 @@
       "features": "Tutte le funzionalità per i membri sono ora disponibili: attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e altro ancora.",
       "communityCta": "Vai alla community",
       "close": "Chiudi"
+    },
+    "grace": {
+      "banner": "La tua iscrizione è scaduta — hai ancora {{days}} giorno/i di periodo di grazia con accesso completo. Dopo di che, le funzionalità per i membri verranno disabilitate."
     }
   },
   "treffpunkt": {

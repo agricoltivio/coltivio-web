@@ -1087,6 +1087,9 @@
       "features": "All membership features are now available to you: tasks, order book, sponsorships, field calendar, wiki, and more.",
       "communityCta": "Go to Community",
       "close": "Close"
+    },
+    "grace": {
+      "banner": "Your membership has expired — you still have {{days}} day(s) of grace period with full access. After that, member features will be disabled."
     }
   },
   "treffpunkt": {

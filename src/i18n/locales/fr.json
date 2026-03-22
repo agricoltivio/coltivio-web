@@ -1087,6 +1087,9 @@
       "features": "Toutes les fonctionnalités membres sont maintenant disponibles : tâches, carnet de commandes, parrainages, calendrier des champs, wiki et plus encore.",
       "communityCta": "Aller à la communauté",
       "close": "Fermer"
+    },
+    "grace": {
+      "banner": "Ton adhésion a expiré — tu bénéficies encore de {{days}} jour(s) de délai de grâce avec un accès complet. Ensuite, les fonctionnalités membres seront désactivées."
     }
   },
   "treffpunkt": {

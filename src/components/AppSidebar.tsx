@@ -24,7 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { membershipStatusQueryOptions } from "@/api/membership.queries";
-import { checkActiveMembership, checkUserActiveMembership } from "@/lib/membership";
+import { checkActiveMembership, checkUserActiveMembership, checkUserGracePeriod } from "@/lib/membership";
 import {
   BookOpen,
   CreditCard,
@@ -65,8 +65,9 @@ export function AppSidebar() {
   const hasMembership = checkActiveMembership(farmQuery.data?.membership);
   const statusQuery = useQuery(membershipStatusQueryOptions());
   const hasUserMembership = checkUserActiveMembership(statusQuery.data);
-  // Combined flag: farm membership OR personal user membership
-  const hasAnyMembership = hasMembership || hasUserMembership;
+  const isInGracePeriod = checkUserGracePeriod(statusQuery.data);
+  // Combined flag: farm membership OR personal user membership OR within grace period
+  const hasAnyMembership = hasMembership || hasUserMembership || isInGracePeriod;
   // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
   // The browser scrolls a container synchronously during focus (before rAF), so we
   // capture the scroll position on pointerdown and restore it in onFocusCapture.
@@ -119,7 +120,7 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  {hasMembership && (
+                  {hasAnyMembership && (
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
                         <Link
@@ -427,7 +428,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>}
-        {hasMembership && (
+        {hasAnyMembership && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -449,7 +450,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {hasMembership && (
+        {hasAnyMembership && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -497,7 +498,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {hasMembership && (
+        {hasAnyMembership && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -536,7 +537,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {hasMembership && (
+        {hasAnyMembership && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
             <SidebarGroupContent>

@@ -1087,6 +1087,9 @@
       "features": "Alle Mitgliederfunktionen stehen dir jetzt zur Verfügung: Aufgaben, Bestellbuch, Gönnerschaften, Feldkalender, Wiki und mehr.",
       "communityCta": "Zur Community",
       "close": "Schliessen"
+    },
+    "grace": {
+      "banner": "Deine Mitgliedschaft ist abgelaufen — du hast noch {{days}} Tag(e) Schonfrist und weiterhin vollen Zugriff. Danach werden die Mitgliederfunktionen deaktiviert."
     }
   },
   "treffpunkt": {

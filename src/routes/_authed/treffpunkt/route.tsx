@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { membershipStatusQueryOptions } from "@/api/membership.queries";
 import { meQueryOptions } from "@/api/user.queries";
-import { checkActiveMembership, checkUserActiveMembership } from "@/lib/membership";
+import { checkActiveMembership, checkUserActiveMembership, checkUserGracePeriod } from "@/lib/membership";
 import { MembersOnly } from "@/components/MembersOnly";
 
 export const Route = createFileRoute("/_authed/treffpunkt")({
@@ -13,7 +13,8 @@ export const Route = createFileRoute("/_authed/treffpunkt")({
     const statusQuery = useQuery(membershipStatusQueryOptions());
     const hasAccess =
       checkActiveMembership(farm?.membership) ||
-      checkUserActiveMembership(statusQuery.data);
+      checkUserActiveMembership(statusQuery.data) ||
+      checkUserGracePeriod(statusQuery.data);
     return hasAccess ? <Outlet /> : <MembersOnly />;
   },
 });

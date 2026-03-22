@@ -21,8 +21,10 @@ import {
 } from "@/components/ui/dialog";
 
 const EXPIRY_BANNER_DISMISSED_KEY = "membership_expiry_banner_dismissed";
+const GRACE_BANNER_DISMISSED_KEY = "membership_grace_banner_dismissed";
 
 const EXPIRING_SOON_DAYS = 10;
+const GRACE_PERIOD_DAYS = 10;
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
@@ -56,6 +58,9 @@ function AuthedLayout() {
   const [bannerDismissed, setBannerDismissed] = useState(
     () => sessionStorage.getItem(`${userId}:${EXPIRY_BANNER_DISMISSED_KEY}`) === "true",
   );
+  const [graceBannerDismissed, setGraceBannerDismissed] = useState(
+    () => sessionStorage.getItem(`${userId}:${GRACE_BANNER_DISMISSED_KEY}`) === "true",
+  );
   const [showTrialDialog, setShowTrialDialog] = useState(false);
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const navigate = useNavigate();
@@ -75,9 +80,23 @@ function AuthedLayout() {
   const hasActiveTrial = !!trialEnd && trialEnd > now;
   const hasActiveMembership = hasActivePeriod || hasActiveTrial;
   const isTrial = hasActiveTrial && !hasActivePeriod;
-  // Expired: user has membership dates but neither is active.
-  const isExpired = !statusQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd);
-  const expiredAtKey = isExpired ? (periodEnd ?? trialEnd)!.toISOString() : null;
+  // Most recent expiry date (whichever is later)
+  const mostRecentExpiry = periodEnd && trialEnd
+    ? periodEnd > trialEnd ? periodEnd : trialEnd
+    : (periodEnd ?? trialEnd);
+
+  const daysSinceExpiry = !hasActiveMembership && mostRecentExpiry
+    ? Math.floor((now.getTime() - mostRecentExpiry.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  // Grace period: expired but within the 10-day window — features still accessible
+  const isInGracePeriod =
+    daysSinceExpiry !== null && daysSinceExpiry >= 0 && daysSinceExpiry < GRACE_PERIOD_DAYS;
+  const daysRemainingInGrace = isInGracePeriod ? GRACE_PERIOD_DAYS - daysSinceExpiry! : 0;
+
+  // Fully expired: grace period has also passed
+  const isExpired = !statusQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd) && !isInGracePeriod;
+  const expiredAtKey = isExpired ? mostRecentExpiry!.toISOString() : null;
 
   useEffect(() => {
     if (isTrial && localStorage.getItem(`${userId}:trial_welcome_shown`) !== "true") {
@@ -122,6 +141,11 @@ function AuthedLayout() {
     setBannerDismissed(true);
   }
 
+  function dismissGraceBanner() {
+    sessionStorage.setItem(`${userId}:${GRACE_BANNER_DISMISSED_KEY}`, "true");
+    setGraceBannerDismissed(true);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900">
       <SidebarProvider>
@@ -146,6 +170,28 @@ function AuthedLayout() {
                   onClick={dismissBanner}
                   aria-label={t("common.close")}
                   className="rounded p-0.5 hover:bg-amber-100"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            </div>
+          )}
+          {isInGracePeriod && !graceBannerDismissed && (
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-orange-300 bg-orange-50 px-4 py-3 text-orange-900">
+              <p className="text-sm font-medium">
+                {t("membership.grace.banner", { days: daysRemainingInGrace })}
+              </p>
+              <div className="flex shrink-0 items-center gap-3">
+                <Link
+                  to="/membership"
+                  className="text-sm font-semibold underline underline-offset-2 hover:text-orange-700"
+                >
+                  {t("membership.expiry.renew")}
+                </Link>
+                <button
+                  onClick={dismissGraceBanner}
+                  aria-label={t("common.close")}
+                  className="rounded p-0.5 hover:bg-orange-100"
                 >
                   <X className="size-4" />
                 </button>
