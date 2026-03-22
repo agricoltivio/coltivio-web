@@ -19216,6 +19216,8 @@ export interface operations {
             header?: never;
             path: {
                 /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
                 orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
@@ -19247,6 +19249,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
                 orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
