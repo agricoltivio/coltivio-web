@@ -1,15 +1,24 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ordersQueryOptions } from "@/api/orders.queries";
+import { apiClient } from "@/api/client";
 import type { Order, OrderStatus } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { type ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/_authed/orders/")({
   loader: ({ context: { queryClient } }) => {
@@ -33,17 +42,66 @@ function getStatusVariant(
   }
 }
 
+function downloadBase64File(base64: string, fileName: string) {
+  const link = document.createElement("a");
+  link.href = `data:application/octet-stream;base64,${base64}`;
+  link.download = fileName;
+  link.click();
+}
+
 function Orders() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const ordersQuery = useQuery(ordersQueryOptions());
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [invoiceModeDialogOpen, setInvoiceModeDialogOpen] = useState(false);
 
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
   }
 
+  const bulkInvoiceMutation = useMutation({
+    mutationFn: async ({
+      orderIds,
+      mode,
+    }: {
+      orderIds: string[];
+      mode: "single" | "zip";
+    }) => {
+      const response = await apiClient.POST("/v1/orders/invoices", {
+        body: { orderIds, mode },
+      });
+      if (response.error) throw new Error("Failed to generate invoices");
+      return response.data.data;
+    },
+    onSuccess: ({ base64, fileName }) => {
+      downloadBase64File(base64, fileName);
+      setInvoiceModeDialogOpen(false);
+    },
+  });
+
+  const selectedCount = Object.keys(rowSelection).length;
+  const allOrders = ordersQuery.data?.result ?? [];
+
   const columns = useMemo<ColumnDef<Order>[]>(
     () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(v) => row.toggleSelected(!!v)}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ),
+        enableSorting: false,
+      },
       {
         accessorKey: "contact.firstName",
         header: ({ column }) => (
@@ -170,11 +228,26 @@ function Orders() {
     [t],
   );
 
-  const data = ordersQuery.data?.result ?? [];
+  const data = allOrders;
+
+  // Derive selected order IDs from row indices
+  const selectedOrderIds = Object.keys(rowSelection).map(
+    (idx) => allOrders[Number(idx)].id,
+  );
 
   return (
     <PageContent title={t("orders.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+        <div>
+          {selectedCount > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => setInvoiceModeDialogOpen(true)}
+            >
+              {t("orders.downloadInvoices", { count: selectedCount })}
+            </Button>
+          )}
+        </div>
         <Button onClick={() => navigate({ to: "/orders/create" })}>
           {t("common.create")}
         </Button>
@@ -197,7 +270,37 @@ function Orders() {
           );
         }}
         defaultSorting={[{ id: "orderDate", desc: true }]}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
       />
+
+      <Dialog open={invoiceModeDialogOpen} onOpenChange={setInvoiceModeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("orders.downloadInvoices", { count: selectedCount })}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{t("orders.selectInvoiceMode")}</p>
+          <DialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              onClick={() =>
+                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "single" })
+              }
+              disabled={bulkInvoiceMutation.isPending}
+            >
+              {t("orders.invoiceModeSingle")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() =>
+                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "zip" })
+              }
+              disabled={bulkInvoiceMutation.isPending}
+            >
+              {t("orders.invoiceModeZip")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContent>
   );
 }

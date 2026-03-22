@@ -30,6 +30,7 @@ import {
   CreditCard,
   Download,
   Droplets,
+  FileText,
   FlaskConical,
   HeartHandshake,
   Home,
@@ -476,6 +477,19 @@ export function AppSidebar() {
                       to="/products"
                     >
                       <Package /> {t("nav.products")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/orders/invoice-settings"
+                    >
+                      <FileText /> {t("nav.invoiceSettings")}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

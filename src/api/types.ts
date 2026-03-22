@@ -271,6 +271,11 @@ export type ForumReply =
 export type ForumThreadType = ForumThread["type"];
 export type ForumThreadStatus = ForumThread["status"];
 
+// Invoice types
+export type InvoiceSettings = NonNullable<
+  components["schemas"]["GetV1OrdersInvoiceSettingsPositiveResponse"]["data"]["result"]
+>;
+
 // Membership types
 export type MembershipStatus =
   components["schemas"]["GetV1MembershipStatusPositiveResponse"]["data"];

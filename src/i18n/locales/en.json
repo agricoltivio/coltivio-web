@@ -70,7 +70,8 @@
     "tasks": "Tasks",
     "membership": "Membership",
     "treffpunkt": "Community",
-    "myFarm": "My Farm"
+    "myFarm": "My Farm",
+    "invoiceSettings": "Invoice Settings"
   },
   "animals": {
     "title": "Animals",
@@ -215,7 +216,8 @@
       "email": "Email",
       "phone": "Phone",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "website": "Website"
   },
   "sponsorshipPrograms": {
     "title": "Sponsorship Types",
@@ -327,7 +329,23 @@
       "confirmed": "Confirmed",
       "fulfilled": "Fulfilled",
       "cancelled": "Cancelled"
-    }
+    },
+    "downloadInvoice": "Download Invoice",
+    "downloadInvoices": "Download Invoices ({{count}})",
+    "invoiceSettings": "Invoice Settings",
+    "senderName": "Sender Name",
+    "paymentTermsDays": "Payment Terms (Days)",
+    "introText": "Intro Text",
+    "closingText": "Closing Text",
+    "iban": "IBAN",
+    "bankName": "Bank",
+    "logo": "Logo",
+    "logoUploaded": "Logo uploaded",
+    "uploadLogo": "Upload logo",
+    "replaceLogo": "Replace logo",
+    "selectInvoiceMode": "How would you like to download the invoices?",
+    "invoiceModeSingle": "All in one file (.docx)",
+    "invoiceModeZip": "One file per invoice (.zip)"
   },
   "treatments": {
     "title": "Treatments",

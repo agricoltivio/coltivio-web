@@ -70,7 +70,8 @@
     "tasks": "Aufgaben",
     "membership": "Mitgliedschaft",
     "treffpunkt": "Treffpunkt",
-    "myFarm": "Mein Hof"
+    "myFarm": "Mein Hof",
+    "invoiceSettings": "Rechnungseinstellungen"
   },
   "animals": {
     "title": "Tiere",
@@ -215,7 +216,8 @@
       "email": "E-Mail",
       "phone": "Telefon",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "website": "Website"
   },
   "sponsorshipPrograms": {
     "title": "Patenschaftstypen",
@@ -327,7 +329,23 @@
       "confirmed": "Bestätigt",
       "fulfilled": "Ausgeliefert",
       "cancelled": "Storniert"
-    }
+    },
+    "downloadInvoice": "Rechnung herunterladen",
+    "downloadInvoices": "Rechnungen herunterladen ({{count}})",
+    "invoiceSettings": "Rechnungseinstellungen",
+    "senderName": "Absendername",
+    "paymentTermsDays": "Zahlungsfrist (Tage)",
+    "introText": "Einleitungstext",
+    "closingText": "Schlusstext",
+    "iban": "IBAN",
+    "bankName": "Bank",
+    "logo": "Logo",
+    "logoUploaded": "Logo hochgeladen",
+    "uploadLogo": "Logo hochladen",
+    "replaceLogo": "Logo ersetzen",
+    "selectInvoiceMode": "Wie sollen die Rechnungen heruntergeladen werden?",
+    "invoiceModeSingle": "Alle in einer Datei (.docx)",
+    "invoiceModeZip": "Eine Datei pro Rechnung (.zip)"
   },
   "treatments": {
     "title": "Behandlungen",

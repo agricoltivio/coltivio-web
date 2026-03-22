@@ -48,6 +48,7 @@ import { Route as AuthedTasksCreateRouteImport } from './routes/_authed/tasks/cr
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
 import { Route as AuthedProductsCreateRouteImport } from './routes/_authed/products/create'
 import { Route as AuthedPaymentsCreateRouteImport } from './routes/_authed/payments/create'
+import { Route as AuthedOrdersInvoiceSettingsRouteImport } from './routes/_authed/orders/invoice-settings'
 import { Route as AuthedOrdersCreateRouteImport } from './routes/_authed/orders/create'
 import { Route as AuthedFieldCalendarTillagesRouteImport } from './routes/_authed/field-calendar/tillages'
 import { Route as AuthedFieldCalendarPlotsRouteImport } from './routes/_authed/field-calendar/plots'
@@ -318,6 +319,12 @@ const AuthedPaymentsCreateRoute = AuthedPaymentsCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => AuthedPaymentsRouteRoute,
 } as any)
+const AuthedOrdersInvoiceSettingsRoute =
+  AuthedOrdersInvoiceSettingsRouteImport.update({
+    id: '/invoice-settings',
+    path: '/invoice-settings',
+    getParentRoute: () => AuthedOrdersRouteRoute,
+  } as any)
 const AuthedOrdersCreateRoute = AuthedOrdersCreateRouteImport.update({
   id: '/create',
   path: '/create',
@@ -787,6 +794,7 @@ export interface FileRoutesByFullPath {
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
+  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -893,6 +901,7 @@ export interface FileRoutesByTo {
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
+  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -1008,6 +1017,7 @@ export interface FileRoutesById {
   '/_authed/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/_authed/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/_authed/orders/create': typeof AuthedOrdersCreateRoute
+  '/_authed/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
   '/_authed/payments/create': typeof AuthedPaymentsCreateRoute
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -1123,6 +1133,7 @@ export interface FileRouteTypes {
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
     | '/orders/create'
+    | '/orders/invoice-settings'
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
@@ -1229,6 +1240,7 @@ export interface FileRouteTypes {
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
     | '/orders/create'
+    | '/orders/invoice-settings'
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
@@ -1343,6 +1355,7 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/plots'
     | '/_authed/field-calendar/tillages'
     | '/_authed/orders/create'
+    | '/_authed/orders/invoice-settings'
     | '/_authed/payments/create'
     | '/_authed/products/create'
     | '/_authed/sponsorships/create'
@@ -1705,6 +1718,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/payments/create'
       preLoaderRoute: typeof AuthedPaymentsCreateRouteImport
       parentRoute: typeof AuthedPaymentsRouteRoute
+    }
+    '/_authed/orders/invoice-settings': {
+      id: '/_authed/orders/invoice-settings'
+      path: '/invoice-settings'
+      fullPath: '/orders/invoice-settings'
+      preLoaderRoute: typeof AuthedOrdersInvoiceSettingsRouteImport
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/orders/create': {
       id: '/_authed/orders/create'
@@ -2239,6 +2259,7 @@ const AuthedContactsRouteRouteWithChildren =
 
 interface AuthedOrdersRouteRouteChildren {
   AuthedOrdersCreateRoute: typeof AuthedOrdersCreateRoute
+  AuthedOrdersInvoiceSettingsRoute: typeof AuthedOrdersInvoiceSettingsRoute
   AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
   AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
   AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
@@ -2246,6 +2267,7 @@ interface AuthedOrdersRouteRouteChildren {
 
 const AuthedOrdersRouteRouteChildren: AuthedOrdersRouteRouteChildren = {
   AuthedOrdersCreateRoute: AuthedOrdersCreateRoute,
+  AuthedOrdersInvoiceSettingsRoute: AuthedOrdersInvoiceSettingsRoute,
   AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
   AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
   AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,

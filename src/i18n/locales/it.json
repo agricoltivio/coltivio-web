@@ -70,7 +70,8 @@
     "tasks": "Compiti",
     "membership": "Abbonamento",
     "treffpunkt": "Comunità",
-    "myFarm": "La mia azienda"
+    "myFarm": "La mia azienda",
+    "invoiceSettings": "Impostazioni fattura"
   },
   "animals": {
     "title": "Animali",
@@ -215,7 +216,8 @@
       "email": "E-mail",
       "phone": "Telefono",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "website": "Sito web"
   },
   "sponsorshipPrograms": {
     "title": "Tipi di sponsorizzazione",
@@ -327,7 +329,23 @@
       "confirmed": "Confermato",
       "fulfilled": "Consegnato",
       "cancelled": "Annullato"
-    }
+    },
+    "downloadInvoice": "Scarica fattura",
+    "downloadInvoices": "Scarica fatture ({{count}})",
+    "invoiceSettings": "Impostazioni fattura",
+    "senderName": "Nome mittente",
+    "paymentTermsDays": "Termini di pagamento (giorni)",
+    "introText": "Testo introduttivo",
+    "closingText": "Testo di chiusura",
+    "iban": "IBAN",
+    "bankName": "Banca",
+    "logo": "Logo",
+    "logoUploaded": "Logo caricato",
+    "uploadLogo": "Carica logo",
+    "replaceLogo": "Sostituisci logo",
+    "selectInvoiceMode": "Come vuoi scaricare le fatture?",
+    "invoiceModeSingle": "Tutto in un file (.docx)",
+    "invoiceModeZip": "Un file per fattura (.zip)"
   },
   "treatments": {
     "title": "Trattamenti",

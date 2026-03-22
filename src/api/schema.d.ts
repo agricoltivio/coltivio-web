@@ -1748,6 +1748,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/orders/invoiceSettings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OrdersInvoiceSettings"];
+        put: operations["PutV1OrdersInvoiceSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OrdersInvoiceSettings"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/invoiceSettings/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["PutV1OrdersInvoiceSettingsLogo"];
+        post?: never;
+        delete: operations["DeleteV1OrdersInvoiceSettingsLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1OrdersInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/orders/byId/{orderId}": {
         parameters: {
             query?: never;
@@ -1822,6 +1870,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["PostV1OrdersByIdOrderIdCancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/byId/{orderId}/invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1OrdersByIdOrderIdInvoice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8280,6 +8344,106 @@ export interface components {
                 quantity: number;
             }[];
         };
+        GetV1OrdersInvoiceSettingsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    senderName: string;
+                    street: string;
+                    zip: string;
+                    city: string;
+                    phone: string | null;
+                    email: string | null;
+                    website: string | null;
+                    iban: string | null;
+                    bankName: string | null;
+                    paymentTermsDays: number;
+                    introText: string | null;
+                    closingText: string | null;
+                    hasLogo: boolean;
+                    updatedAt: unknown;
+                } | null;
+            };
+        };
+        PutV1OrdersInvoiceSettingsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                senderName: string;
+                street: string;
+                zip: string;
+                city: string;
+                phone: string | null;
+                email: string | null;
+                website: string | null;
+                iban: string | null;
+                bankName: string | null;
+                paymentTermsDays: number;
+                introText: string | null;
+                closingText: string | null;
+                hasLogo: boolean;
+                updatedAt: unknown;
+            };
+        };
+        PutV1OrdersInvoiceSettingsRequestBody: {
+            senderName?: string;
+            street?: string;
+            zip?: string;
+            city?: string;
+            phone?: string | null;
+            email?: string | null;
+            website?: string | null;
+            iban?: string | null;
+            bankName?: string | null;
+            paymentTermsDays?: number;
+            introText?: string | null;
+            closingText?: string | null;
+        };
+        PutV1OrdersInvoiceSettingsLogoPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                senderName: string;
+                street: string;
+                zip: string;
+                city: string;
+                phone: string | null;
+                email: string | null;
+                website: string | null;
+                iban: string | null;
+                bankName: string | null;
+                paymentTermsDays: number;
+                introText: string | null;
+                closingText: string | null;
+                hasLogo: boolean;
+                updatedAt: unknown;
+            };
+        };
+        PutV1OrdersInvoiceSettingsLogoRequestBody: {
+            base64: string;
+            /** @enum {string} */
+            mimeType: "jpg" | "png";
+        };
+        DeleteV1OrdersInvoiceSettingsLogoPositiveResponse: {
+            data: {
+                success: boolean;
+            };
+        };
+        PostV1OrdersInvoicesPositiveResponse: {
+            data: {
+                base64: string;
+                fileName: string;
+            };
+        };
+        PostV1OrdersInvoicesRequestBody: {
+            orderIds: string[];
+            /**
+             * @default single
+             * @enum {string}
+             */
+            mode: "single" | "zip";
+        };
         GetV1OrdersByIdOrderIdPositiveResponse: {
             data: {
                 id: string;
@@ -8455,6 +8619,13 @@ export interface components {
             };
         };
         PostV1OrdersByIdOrderIdCancelRequestBody: Record<string, never>;
+        PostV1OrdersByIdOrderIdInvoicePositiveResponse: {
+            data: {
+                base64: string;
+                fileName: string;
+            };
+        };
+        PostV1OrdersByIdOrderIdInvoiceRequestBody: Record<string, never>;
         GetV1PaymentsPositiveResponse: {
             data: {
                 result: {
@@ -18599,6 +18770,191 @@ export interface operations {
             };
         };
     };
+    GetV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OrdersInvoiceSettingsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PutV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description PUT /v1/orders/invoiceSettings Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PutV1OrdersInvoiceSettingsLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description PUT /v1/orders/invoiceSettings/logo Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/orders/invoiceSettings/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/orders/invoiceSettings/logo Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1OrdersInvoiceSettingsLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/orders/invoiceSettings/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/orders/invoiceSettings/logo Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OrdersInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/orders/invoices Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1OrdersInvoicesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/orders/invoices Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OrdersInvoicesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/orders/invoices Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     GetV1OrdersByIdOrderId: {
         parameters: {
             query?: never;
@@ -18857,6 +19213,43 @@ export interface operations {
                 };
             };
             /** @description POST /v1/orders/byId/:orderId/cancel Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OrdersByIdOrderIdInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/orders/byId/:orderId/invoice Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/orders/byId/:orderId/invoice Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1OrdersByIdOrderIdInvoiceRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/orders/byId/:orderId/invoice Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OrdersByIdOrderIdInvoicePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/orders/byId/:orderId/invoice Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
