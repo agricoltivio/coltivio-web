@@ -72,9 +72,9 @@ function EditTreatment() {
       return response.data.data;
     },
     onSuccess: () => {
+      navigate({ to: "/treatments/$treatmentId", params: { treatmentId } });
       queryClient.invalidateQueries({ queryKey: ["treatments"] });
       queryClient.invalidateQueries({ queryKey: ["animals"] });
-      navigate({ to: "/treatments/$treatmentId", params: { treatmentId } });
     },
   });
 

@@ -60,11 +60,11 @@ function EditCropFamilyPage() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cropFamilies"] });
       navigate({
         to: "/field-calendar/crop-families/$familyId",
         params: { familyId },
       });
+      queryClient.invalidateQueries({ queryKey: ["cropFamilies"] });
     },
   });
 

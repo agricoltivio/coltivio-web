@@ -149,10 +149,10 @@ function EditCropProtectionApplication() {
       return response.data.data;
     },
     onSuccess: () => {
+      navigate({ to: "/field-calendar/crop-protection-applications" });
       queryClient.invalidateQueries({
         queryKey: ["cropProtectionApplications"],
       });
-      navigate({ to: "/field-calendar/crop-protection-applications" });
     },
   });
 

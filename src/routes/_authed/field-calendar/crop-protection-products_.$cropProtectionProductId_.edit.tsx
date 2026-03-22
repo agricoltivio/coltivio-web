@@ -75,11 +75,11 @@ function EditCropProtectionProductPage() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
       navigate({
         to: "/field-calendar/crop-protection-products/$cropProtectionProductId",
         params: { cropProtectionProductId },
       });
+      queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
     },
   });
 

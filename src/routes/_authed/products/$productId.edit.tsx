@@ -45,8 +45,8 @@ function EditProduct() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
       navigate({ to: "/products/$productId", params: { productId } });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 

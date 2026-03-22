@@ -1821,11 +1821,27 @@ export interface paths {
         };
         get: operations["GetV1OrdersByIdOrderIdItems"];
         put?: never;
-        post?: never;
+        post: operations["PostV1OrdersByIdOrderIdItems"];
         delete?: never;
         options?: never;
         head: operations["HeadV1OrdersByIdOrderIdItems"];
         patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/byId/{orderId}/items/byId/{orderItemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1OrdersByIdOrderIdItemsByIdOrderItemId"];
+        options?: never;
+        head?: never;
+        patch: operations["PatchV1OrdersByIdOrderIdItemsByIdOrderItemId"];
         trace?: never;
     };
     "/v1/orders/byId/{orderId}/confirm": {
@@ -8554,6 +8570,51 @@ export interface components {
                     unitPrice: number;
                 }[];
                 count: number;
+            };
+        };
+        PostV1OrdersByIdOrderIdItemsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                orderId: string;
+                productId: string;
+                quantity: number;
+                unitPrice: number;
+                product: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "meat" | "vegetables" | "dairy" | "eggs" | "other";
+                    /** @enum {string} */
+                    unit: "kg" | "g" | "piece" | "bunch" | "liter";
+                    pricePerUnit: number;
+                    description: string | null;
+                    active: boolean;
+                };
+            };
+        };
+        PostV1OrdersByIdOrderIdItemsRequestBody: {
+            productId: string;
+            quantity: number;
+        };
+        PatchV1OrdersByIdOrderIdItemsByIdOrderItemIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                orderId: string;
+                productId: string;
+                quantity: number;
+                unitPrice: number;
+            };
+        };
+        PatchV1OrdersByIdOrderIdItemsByIdOrderItemIdRequestBody: {
+            quantity?: number;
+            unitPrice?: number;
+        };
+        DeleteV1OrdersByIdOrderIdItemsByIdOrderItemIdPositiveResponse: {
+            data: {
+                success: boolean;
             };
         };
         PostV1OrdersByIdOrderIdConfirmPositiveResponse: {
@@ -19084,6 +19145,43 @@ export interface operations {
             };
         };
     };
+    PostV1OrdersByIdOrderIdItems: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/orders/byId/:orderId/items Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/orders/byId/:orderId/items Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1OrdersByIdOrderIdItemsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/orders/byId/:orderId/items Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OrdersByIdOrderIdItemsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/orders/byId/:orderId/items Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     HeadV1OrdersByIdOrderIdItems: {
         parameters: {
             query?: never;
@@ -19109,6 +19207,75 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    DeleteV1OrdersByIdOrderIdItemsByIdOrderItemId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OrdersByIdOrderIdItemsByIdOrderItemIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PatchV1OrdersByIdOrderIdItemsByIdOrderItemId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1OrdersByIdOrderIdItemsByIdOrderItemIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1OrdersByIdOrderIdItemsByIdOrderItemIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

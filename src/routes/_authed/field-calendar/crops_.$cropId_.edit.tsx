@@ -77,8 +77,8 @@ function EditCropPage() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["crops"] });
       navigate({ to: "/field-calendar/crops/$cropId", params: { cropId } });
+      queryClient.invalidateQueries({ queryKey: ["crops"] });
     },
   });
 

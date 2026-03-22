@@ -79,14 +79,14 @@ function EditPayment() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payments"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      queryClient.invalidateQueries({ queryKey: ["sponsorships"] });
       if (redirect) {
         navigate({ to: redirect });
       } else {
         navigate({ to: "/payments/$paymentId", params: { paymentId } });
       }
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["sponsorships"] });
     },
   });
 

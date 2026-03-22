@@ -85,8 +85,8 @@ function EditTillage() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tillages"] });
       navigate({ to: "/field-calendar/tillages" });
+      queryClient.invalidateQueries({ queryKey: ["tillages"] });
     },
   });
 

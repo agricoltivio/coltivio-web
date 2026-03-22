@@ -61,8 +61,8 @@ function EditTask() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       navigate({ to: "/tasks/$taskId", params: { taskId } });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 
