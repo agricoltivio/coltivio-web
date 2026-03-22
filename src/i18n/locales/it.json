@@ -67,7 +67,11 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Le mie voci",
     "wikiAdmin": "Wiki Admin",
-    "tasks": "Compiti"
+    "tasks": "Compiti",
+    "membership": "Abbonamento",
+    "treffpunkt": "Comunità",
+    "myFarm": "La mia azienda",
+    "invoiceSettings": "Impostazioni fattura"
   },
   "animals": {
     "title": "Animali",
@@ -153,6 +157,7 @@
   "auth": {
     "signIn": "Accedi",
     "signUp": "Registrati",
+    "fullName": "Nome",
     "email": "E-mail",
     "password": "Password",
     "confirmPassword": "Conferma password",
@@ -172,7 +177,7 @@
     "settingPassword": "Impostazione password...",
     "passwordUpdated": "Password aggiornata con successo!",
     "passwordMismatch": "Le password non corrispondono",
-    "signUpSuccess": "Registrazione riuscita! Controlla la tua e-mail per confermare il tuo account.",
+    "signUpSuccess": "Registrazione riuscita! Conferma il tuo indirizzo e-mail, poi accedi per ottenere la tua iscrizione.",
     "signupViaApp": "I nuovi account possono essere creati solo tramite l'app iOS o Android."
   },
   "dashboard": {
@@ -211,7 +216,8 @@
       "email": "E-mail",
       "phone": "Telefono",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "website": "Sito web"
   },
   "sponsorshipPrograms": {
     "title": "Tipi di sponsorizzazione",
@@ -323,7 +329,23 @@
       "confirmed": "Confermato",
       "fulfilled": "Consegnato",
       "cancelled": "Annullato"
-    }
+    },
+    "downloadInvoice": "Scarica fattura",
+    "downloadInvoices": "Scarica fatture ({{count}})",
+    "invoiceSettings": "Impostazioni fattura",
+    "senderName": "Nome mittente",
+    "paymentTermsDays": "Termini di pagamento (giorni)",
+    "introText": "Testo introduttivo",
+    "closingText": "Testo di chiusura",
+    "iban": "IBAN",
+    "bankName": "Banca",
+    "logo": "Logo",
+    "logoUploaded": "Logo caricato",
+    "uploadLogo": "Carica logo",
+    "replaceLogo": "Sostituisci logo",
+    "selectInvoiceMode": "Come vuoi scaricare le fatture?",
+    "invoiceModeSingle": "Tutto in un file (.docx)",
+    "invoiceModeZip": "Un file per fattura (.zip)"
   },
   "treatments": {
     "title": "Trattamenti",
@@ -945,6 +967,173 @@
         "treatment": "Trattamenti",
         "wiki_entry": "Voci Wiki"
       }
+    }
+  },
+  "noFarm": {
+    "message": "Il tuo account non ha ancora un'azienda. Creane una prima nell'app."
+  },
+  "membership": {
+    "title": "Iscrizione",
+    "expired": {
+      "message": "La tua iscrizione all'associazione AgriColtivio è scaduta — riscriviti ora.",
+      "renew": "Rinnova iscrizione",
+      "farmStillHasMembership": "Un altro membro dell'azienda ha un'iscrizione attiva — la tua azienda mantiene l'accesso completo a tutte le funzionalità."
+    },
+    "expiry": {
+      "trialEnding": "La tua iscrizione di prova termina tra {{days}} giorni.",
+      "membershipExpiring": "La tua iscrizione scade tra {{days}} giorni.",
+      "renew": "Rinnova"
+    },
+    "becomeMember": "Diventa membro",
+    "updatePaymentMethod": "Aggiorna metodo di pagamento",
+    "subscribeDialog": {
+      "title": "Diventa membro",
+      "description": "Con la tua iscrizione sostieni l'associazione AgriColtivio. La quota annuale di CHF 150.– verrà addebitata alla fine dell'iscrizione di prova il {{date}}."
+    },
+    "cancelRenewal": "Dichiarare le dimissioni",
+    "reactivate": "Ritirare le dimissioni",
+    "paymentHistory": "Storico contributi",
+    "cancelDialog": {
+      "title": "Dichiarare le dimissioni",
+      "description": "Vuoi dimetterti dall'associazione AgriColtivio?",
+      "art6Note": "Ai sensi dell'Art. 6 dello statuto, le tue dimissioni hanno effetto immediato. Mantieni l'accesso fino al {{date}}. Le quote già pagate non verranno rimborsate.",
+      "confirm": "Dichiarare le dimissioni"
+    },
+    "statuten": {
+      "title": "Statuto di AgriColtivio",
+      "acceptLabel": "Ho letto lo statuto e lo accetto.",
+      "confirmButton": "Continua",
+      "autoRenewalLabel": "Rinnovo automatico",
+      "autoRenewalNote": "Twint non è supportato per il rinnovo automatico. Scegli il pagamento unico per pagare con Twint.",
+      "text": "STATUTEN DES VEREINS AGRICOLTIVIO\n(gegründet gemäss Art. 60 ff. ZGB)\n\nArt. 1 – Name und Sitz\nUnter dem Namen «AgriColtivio» besteht ein Verein im Sinne von Art. 60 ff. ZGB mit Sitz in der Schweiz.\n\nArt. 2 – Zweck\nDer Verein bezweckt die Förderung einer offenen, transparenten und nachhaltigen Landwirtschaft durch die gemeinschaftliche Entwicklung und den Betrieb der Open-Source-Software Coltivio. Er ist gemeinnützig und verfolgt keine kommerziellen Interessen.\n\nArt. 3 – Mittel\nDer Verein finanziert sich durch Mitgliederbeiträge, Spenden sowie sonstige Zuwendungen. Das Geschäftsjahr entspricht dem Kalenderjahr.\n\nArt. 4 – Mitgliedschaft\n4.1 Mitglied des Vereins kann jede natürliche oder juristische Person werden, die den Vereinszweck unterstützt.\n4.2 Die Aufnahme erfolgt durch schriftliche oder elektronische Anmeldung beim Vorstand. Der Vorstand kann die Aufnahme ohne Angabe von Gründen ablehnen.\n4.3 Der jährliche Mitgliederbeitrag wird von der Generalversammlung festgesetzt.\n4.4 Mit der Anmeldung bestätigt die aufzunehmende Person, die Statuten gelesen zu haben und diese anzuerkennen.\n\nArt. 5 – Rechte und Pflichten der Mitglieder\n5.1 Die Mitglieder haben das Recht, an der Generalversammlung teilzunehmen, Anträge zu stellen und zu wählen.\n5.2 Die Mitglieder sind verpflichtet, den Jahresbeitrag fristgerecht zu entrichten und die Vereinsziele zu unterstützen.\n\nArt. 6 – Austritt und Ausschluss\n6.1 Der Austritt aus dem Verein ist jederzeit möglich. Die Austrittserklärung kann schriftlich oder elektronisch an den Vorstand gerichtet werden.\n6.2 Der Austritt wird sofort mit Zugang der Erklärung wirksam. Der Zugang zur Vereinsplattform bleibt bis zum Ende der bezahlten Periode erhalten.\n6.3 Bereits bezahlte Mitgliederbeiträge werden nicht zurückerstattet.\n6.4 Bei schwerwiegenden Verstössen gegen die Vereinsinteressen kann der Vorstand Mitglieder mit sofortiger Wirkung ausschliessen.\n\nArt. 7 – Organe\nOrgane des Vereins sind: a) die Generalversammlung; b) der Vorstand.\n\nArt. 8 – Generalversammlung\n8.1 Die ordentliche Generalversammlung findet jährlich statt. Der Vorstand lädt die Mitglieder mindestens 14 Tage im Voraus ein.\n8.2 Die Generalversammlung beschliesst über: Jahresbericht und Rechnung; Festsetzung des Mitgliederbeitrags; Wahl des Vorstands; Statutenänderungen; Auflösung des Vereins.\n\nArt. 9 – Vorstand\n9.1 Der Vorstand besteht aus mindestens zwei Personen und führt die laufenden Geschäfte.\n9.2 Vorstandsmitglieder werden von der Generalversammlung für jeweils zwei Jahre gewählt.\n\nArt. 10 – Haftung\nFür die Verbindlichkeiten des Vereins haftet ausschliesslich das Vereinsvermögen. Eine persönliche Haftung der Mitglieder ist ausgeschlossen.\n\nArt. 11 – Auflösung\nBei Auflösung des Vereins fällt das Vereinsvermögen nach Begleichung aller Verbindlichkeiten an eine gemeinnützige Organisation mit ähnlichem Zweck.\n\nArt. 12 – Inkrafttreten\nDiese Statuten wurden von der Gründungsversammlung beschlossen und treten mit der Gründung des Vereins in Kraft."
+    },
+    "status": {
+      "label": "Stato",
+      "active": "Membro attivo",
+      "trial": "Iscrizione di prova",
+      "inactive": "Inattivo",
+      "autoRenewing": "Membro attivo",
+      "cancelsAtPeriodEnd": "Dimissioni dichiarate",
+      "validUntil": "Valido fino al",
+      "trialEnds": "Iscrizione di prova termina il",
+      "subscriptionStartsAfterTrial": "La tua iscrizione è attiva. La quota annuale di CHF 150.– verrà addebitata alla fine del periodo di prova il {{date}}."
+    },
+    "paywall": {
+      "noMembership": "La tua azienda non è ancora membro dell'associazione AgriColtivio",
+      "farmAlreadyHasMembership": "Uno dei membri della tua azienda è già membro dell'associazione — la tua azienda ha già pieno accesso. Puoi comunque ottenere la tua iscrizione personale e supportare l'associazione.",
+      "tagline": "Diventa membro dell'associazione AgriColtivio — una comunità di agricoltori per un'agricoltura aperta ed equa.",
+      "startTrial": "Inizia 30 giorni di iscrizione di prova",
+      "trialInfo": "Nessuna carta di credito richiesta",
+      "or": "oppure",
+      "subscribe": "Diventa membro",
+      "priceInfo": "CHF 150.– / anno",
+      "features": {
+        "app": {
+          "title": "App",
+          "items": [
+            "Attività con assegnazione di animali o superfici e liste automatiche",
+            "Invita più utenti e pianifica insieme",
+            "Usa immagini nelle voci wiki"
+          ]
+        },
+        "web": {
+          "title": "Web App",
+          "items": [
+            "Tutte le funzioni dell'app nel browser",
+            "Gestisci i contatti",
+            "Registra gli ordini e monitora i pagamenti",
+            "Gestisci le adozioni di animali"
+          ]
+        }
+      }
+    },
+    "payments": {
+      "date": "Data",
+      "amount": "Importo",
+      "currency": "Valuta",
+      "card": "Carta",
+      "status": "Stato",
+      "statuses": {
+        "pending": "In attesa",
+        "succeeded": "Completato",
+        "failed": "Fallito",
+        "refunded": "Rimborsato"
+      }
+    },
+    "membersOnly": {
+      "title": "Funzione membri",
+      "description": "Questa funzione è riservata ai membri.",
+      "cta": "Diventa membro"
+    },
+    "wikiImageDialog": {
+      "title": "Immagini solo per membri",
+      "description": "Le immagini nelle voci wiki sono visibili solo ai membri.",
+      "cta": "Diventa membro"
+    },
+    "ownerOnlyManagement": "L'abbonamento può essere gestito solo dal proprietario dell'azienda.",
+    "expiredDialog": {
+      "title": "Il tuo abbonamento è scaduto",
+      "description": "Se vuoi continuare a far parte di AgriColtivio e utilizzare le funzionalità aggiuntive, puoi riscriverti in qualsiasi momento e riprendere da dove ti eri fermato.",
+      "cta": "Diventa membro"
+    },
+    "trialWelcome": {
+      "title": "Benvenuto su AgriColtivio!",
+      "description": "Scopri tutte le funzionalità per i membri di Coltivio durante la tua iscrizione di prova di 30 giorni.",
+      "features": "Attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e la community Treffpunkt sono ora disponibili.",
+      "cta": "Iniziamo"
+    },
+    "membershipSuccess": {
+      "title": "Benvenuto su AgriColtivio!",
+      "description": "Grazie per essere entrato a far parte di AgriColtivio. Con la tua iscrizione aiuti a mantenere in vita questo progetto e diventi parte di una comunità di agricoltori che condividono gli stessi valori, impegnati per un'agricoltura equa e aperta.",
+      "treffpunkt": "Ti invitiamo cordialmente a partecipare al Treffpunkt – condividi il tuo feedback, suggerisci nuove funzionalità o fai domande.",
+      "features": "Tutte le funzionalità per i membri sono ora disponibili: attività, libro degli ordini, sponsorizzazioni, calendario dei campi, wiki e altro ancora.",
+      "communityCta": "Vai alla community",
+      "close": "Chiudi"
+    },
+    "grace": {
+      "banner": "La tua iscrizione è scaduta — hai ancora {{days}} giorno/i di periodo di grazia con accesso completo. Dopo di che, le funzionalità per i membri verranno disabilitate."
+    }
+  },
+  "treffpunkt": {
+    "title": "Comunità",
+    "newThread": "Nuovo post",
+    "types": {
+      "question": "Domanda",
+      "feature_request": "Richiesta di funzionalità",
+      "bug_report": "Segnalazione bug",
+      "general": "Generale"
+    },
+    "status": {
+      "open": "Aperto",
+      "closed": "Chiuso"
+    },
+    "allTypes": "Tutti",
+    "replies": "Risposte",
+    "reply": "Rispondi",
+    "noReplies": "Ancora nessuna risposta",
+    "noThreads": "Ancora nessun post",
+    "closeThread": "Chiudi post",
+    "reopenThread": "Riapri post",
+    "deleteConfirm": "Vuoi davvero eliminare questo post?",
+    "deleteReplyConfirm": "Vuoi davvero eliminare questa risposta?",
+    "pinned": "In evidenza",
+    "editThread": "Modifica post",
+    "editReply": "Modifica risposta",
+    "trialReadOnly": "Non è possibile pubblicare durante il periodo di prova. Diventa membro per partecipare.",
+    "threadTitle": "Titolo",
+    "body": "Contenuto",
+    "type": "Tipo",
+    "welcome": {
+      "title": "Benvenuto nella Comunità",
+      "description": "Questo è il luogo dove i membri di AgriColtivio possono scambiarsi idee. Fai domande sull'app o sull'agricoltura, condividi ciò che hai a cuore, richiedi nuove funzionalità o segnala bug.",
+      "rules": [
+        "Controlla prima se esiste già un post sullo stesso argomento.",
+        "Sii rispettoso e costruttivo nei confronti degli altri membri.",
+        "Rimani in tema e scrivi messaggi chiari e comprensibili.",
+        "Niente spam, pubblicità o contenuti offensivi."
+      ],
+      "readConfirm": "Ho letto e accetto le regole.",
+      "cta": "Iniziamo"
     }
   }
 }

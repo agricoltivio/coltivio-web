@@ -137,3 +137,17 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+/* Restore heading/prose styles inside MDXEditor — Tailwind preflight resets these */
+.mdxeditor h1 { font-size: 2em; font-weight: 700; margin-top: 0.67em; margin-bottom: 0.67em; }
+.mdxeditor h2 { font-size: 1.5em; font-weight: 700; margin-top: 0.83em; margin-bottom: 0.83em; }
+.mdxeditor h3 { font-size: 1.17em; font-weight: 700; margin-top: 1em; margin-bottom: 1em; }
+.mdxeditor h4 { font-weight: 700; margin-top: 1.33em; margin-bottom: 1.33em; }
+.mdxeditor h5 { font-size: 0.83em; font-weight: 700; margin-top: 1.67em; margin-bottom: 1.67em; }
+.mdxeditor h6 { font-size: 0.67em; font-weight: 700; margin-top: 2.33em; margin-bottom: 2.33em; }
+.mdxeditor ul { list-style-type: disc; padding-left: 1.5em; margin-top: 0.5em; margin-bottom: 0.5em; }
+.mdxeditor ol { list-style-type: decimal; padding-left: 1.5em; margin-top: 0.5em; margin-bottom: 0.5em; }
+.mdxeditor li { margin-top: 0.25em; margin-bottom: 0.25em; }
+.mdxeditor blockquote { border-left: 4px solid currentColor; padding-left: 1em; opacity: 0.7; margin: 0.5em 0; }
+.mdxeditor strong { font-weight: 700; }
+.mdxeditor em { font-style: italic; }

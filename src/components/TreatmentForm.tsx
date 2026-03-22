@@ -114,6 +114,7 @@ export function TreatmentForm({
   const watchedAnimalIds = watch("animalIds");
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
+  const watchedEndDate = watch("endDate");
 
   // Sync drug-derived fields when the user explicitly changes the drug (guarded by dirtyFields.drugId)
   useEffect(() => {
@@ -153,27 +154,27 @@ export function TreatmentForm({
     setValue("drugDoseUnit", drugTreatment.doseUnit);
     setValue("drugDosePerUnit", drugTreatment.dosePerUnit);
 
-    const startDate = new Date(watchedStartDate);
+    const endDate = new Date(watchedEndDate);
     if (drugTreatment.milkWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
       setValue("milkUsableDate", d.toISOString().split("T")[0]);
     }
     if (drugTreatment.meatWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
       setValue("meatUsableDate", d.toISOString().split("T")[0]);
     }
     if (drugTreatment.organsWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
       setValue("organsUsableDate", d.toISOString().split("T")[0]);
     }
-  }, [watchedDrugId, dirtyFields.drugId, watchedAnimalIds, watchedStartDate, drugs, animals, setValue]);
+  }, [watchedDrugId, dirtyFields.drugId, watchedAnimalIds, watchedEndDate, drugs, animals, setValue]);
 
-  // Recalculate waiting dates when startDate changes (drug already selected, doesn't touch dose/antibiotic fields)
+  // Recalculate waiting dates when endDate changes (drug already selected, doesn't touch dose/antibiotic fields)
   useEffect(() => {
-    if (!watchedDrugId || !watchedStartDate || watchedAnimalIds.length === 0) return;
+    if (!watchedDrugId || !watchedEndDate || watchedAnimalIds.length === 0) return;
     // Skip if the drug field itself was just dirtied — the drug-sync effect handles dates too
     if (dirtyFields.drugId) return;
 
@@ -188,23 +189,23 @@ export function TreatmentForm({
     );
     if (!drugTreatment) return;
 
-    const startDate = new Date(watchedStartDate);
+    const endDate = new Date(watchedEndDate);
     if (drugTreatment.milkWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
       setValue("milkUsableDate", d.toISOString().split("T")[0]);
     }
     if (drugTreatment.meatWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
       setValue("meatUsableDate", d.toISOString().split("T")[0]);
     }
     if (drugTreatment.organsWaitingDays > 0) {
-      const d = new Date(startDate);
+      const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
       setValue("organsUsableDate", d.toISOString().split("T")[0]);
     }
-  }, [watchedStartDate, watchedDrugId, watchedAnimalIds, dirtyFields.drugId, drugs, animals, setValue]);
+  }, [watchedEndDate, watchedDrugId, watchedAnimalIds, dirtyFields.drugId, drugs, animals, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 

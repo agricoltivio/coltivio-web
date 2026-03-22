@@ -1,14 +1,16 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiClient } from "./client";
 
-export const farmQueryOptions = () => {
+export const farmQueryOptions = (enabled = true) => {
   return queryOptions({
     queryKey: ["farm"],
     queryFn: async () => {
       const response = await apiClient.GET("/v1/farm");
-      if (response.error) throw new Error("Failed to fetch farm");
+      // null = authenticated but no farm created yet (handled in _authed layout)
+      if (response.error) return null;
       return response.data.data;
     },
+    enabled,
   });
 };
 

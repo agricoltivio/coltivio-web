@@ -224,6 +224,23 @@ function OrderDetailPage() {
   );
   const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
   const isPaid = paidTotal >= itemsTotal && itemsTotal > 0;
+  const invoiceMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.POST(
+        "/v1/orders/byId/{orderId}/invoice",
+        { params: { path: { orderId } }, body: {} },
+      );
+      if (response.error) throw new Error("Failed to generate invoice");
+      return response.data.data;
+    },
+    onSuccess: ({ base64, fileName }) => {
+      const link = document.createElement("a");
+      link.href = `data:application/octet-stream;base64,${base64}`;
+      link.download = fileName;
+      link.click();
+    },
+  });
+
   const isActionPending =
     confirmMutation.isPending ||
     fulfillMutation.isPending ||
@@ -278,6 +295,15 @@ function OrderDetailPage() {
               </Button>
             </>
           )}
+          <Button
+            variant="outline"
+            onClick={() => invoiceMutation.mutate()}
+            disabled={invoiceMutation.isPending}
+          >
+            {invoiceMutation.isPending
+              ? t("common.loading")
+              : t("orders.downloadInvoice")}
+          </Button>
           <Button variant="outline" asChild>
             <Link to="/orders/$orderId/edit" params={{ orderId }}>
               {t("common.edit")}

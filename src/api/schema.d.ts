@@ -1748,6 +1748,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/orders/invoiceSettings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1OrdersInvoiceSettings"];
+        put: operations["PutV1OrdersInvoiceSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1OrdersInvoiceSettings"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/invoiceSettings/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["PutV1OrdersInvoiceSettingsLogo"];
+        post?: never;
+        delete: operations["DeleteV1OrdersInvoiceSettingsLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1OrdersInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/orders/byId/{orderId}": {
         parameters: {
             query?: never;
@@ -1838,6 +1886,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["PostV1OrdersByIdOrderIdCancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/byId/{orderId}/invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1OrdersByIdOrderIdInvoice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2356,6 +2420,262 @@ export interface paths {
         patch: operations["PatchV1TasksByIdTaskIdChecklistItemsByIdItemId"];
         trace?: never;
     };
+    "/v1/membership/checkout/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipCheckoutSubscription"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/checkout/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipCheckoutManual"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MembershipStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1MembershipStatus"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/paymentMethod": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipPaymentMethod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipSubscription"];
+        delete: operations["DeleteV1MembershipSubscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MembershipPayments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1MembershipPayments"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/trial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipTrial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/donations/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1DonationsCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/handoff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthHandoff"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthExchange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/threads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1ForumThreads"];
+        put?: never;
+        post: operations["PostV1ForumThreads"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1ForumThreads"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/threads/byId/{threadId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1ForumThreadsByIdThreadId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1ForumThreadsByIdThreadId"];
+        options?: never;
+        head: operations["HeadV1ForumThreadsByIdThreadId"];
+        patch: operations["PatchV1ForumThreadsByIdThreadId"];
+        trace?: never;
+    };
+    "/v1/forum/threads/byId/{threadId}/replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1ForumThreadsByIdThreadIdReplies"];
+        put?: never;
+        post: operations["PostV1ForumThreadsByIdThreadIdReplies"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1ForumThreadsByIdThreadIdReplies"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/threads/byId/{threadId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1ForumThreadsByIdThreadIdStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/threads/byId/{threadId}/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1ForumThreadsByIdThreadIdPin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/replies/byId/{replyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1ForumRepliesByIdReplyId"];
+        options?: never;
+        head?: never;
+        patch: operations["PatchV1ForumRepliesByIdReplyId"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2536,6 +2856,10 @@ export interface components {
                         number
                     ];
                 };
+                membership: {
+                    /** @enum {string} */
+                    status: "none" | "trial" | "active";
+                };
             };
         };
         DeleteV1FarmPositiveResponse: {
@@ -2555,6 +2879,10 @@ export interface components {
                         number,
                         number
                     ];
+                };
+                membership: {
+                    /** @enum {string} */
+                    status: "none" | "trial" | "active";
                 };
             };
         };
@@ -8032,6 +8360,106 @@ export interface components {
                 quantity: number;
             }[];
         };
+        GetV1OrdersInvoiceSettingsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    senderName: string;
+                    street: string;
+                    zip: string;
+                    city: string;
+                    phone: string | null;
+                    email: string | null;
+                    website: string | null;
+                    iban: string | null;
+                    bankName: string | null;
+                    paymentTermsDays: number;
+                    introText: string | null;
+                    closingText: string | null;
+                    hasLogo: boolean;
+                    updatedAt: unknown;
+                } | null;
+            };
+        };
+        PutV1OrdersInvoiceSettingsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                senderName: string;
+                street: string;
+                zip: string;
+                city: string;
+                phone: string | null;
+                email: string | null;
+                website: string | null;
+                iban: string | null;
+                bankName: string | null;
+                paymentTermsDays: number;
+                introText: string | null;
+                closingText: string | null;
+                hasLogo: boolean;
+                updatedAt: unknown;
+            };
+        };
+        PutV1OrdersInvoiceSettingsRequestBody: {
+            senderName?: string;
+            street?: string;
+            zip?: string;
+            city?: string;
+            phone?: string | null;
+            email?: string | null;
+            website?: string | null;
+            iban?: string | null;
+            bankName?: string | null;
+            paymentTermsDays?: number;
+            introText?: string | null;
+            closingText?: string | null;
+        };
+        PutV1OrdersInvoiceSettingsLogoPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                senderName: string;
+                street: string;
+                zip: string;
+                city: string;
+                phone: string | null;
+                email: string | null;
+                website: string | null;
+                iban: string | null;
+                bankName: string | null;
+                paymentTermsDays: number;
+                introText: string | null;
+                closingText: string | null;
+                hasLogo: boolean;
+                updatedAt: unknown;
+            };
+        };
+        PutV1OrdersInvoiceSettingsLogoRequestBody: {
+            base64: string;
+            /** @enum {string} */
+            mimeType: "jpg" | "png";
+        };
+        DeleteV1OrdersInvoiceSettingsLogoPositiveResponse: {
+            data: {
+                success: boolean;
+            };
+        };
+        PostV1OrdersInvoicesPositiveResponse: {
+            data: {
+                base64: string;
+                fileName: string;
+            };
+        };
+        PostV1OrdersInvoicesRequestBody: {
+            orderIds: string[];
+            /**
+             * @default single
+             * @enum {string}
+             */
+            mode: "single" | "zip";
+        };
         GetV1OrdersByIdOrderIdPositiveResponse: {
             data: {
                 id: string;
@@ -8252,6 +8680,13 @@ export interface components {
             };
         };
         PostV1OrdersByIdOrderIdCancelRequestBody: Record<string, never>;
+        PostV1OrdersByIdOrderIdInvoicePositiveResponse: {
+            data: {
+                base64: string;
+                fileName: string;
+            };
+        };
+        PostV1OrdersByIdOrderIdInvoiceRequestBody: Record<string, never>;
         GetV1PaymentsPositiveResponse: {
             data: {
                 result: {
@@ -9872,6 +10307,291 @@ export interface components {
         };
         PatchV1TasksByIdTaskIdChecklistItemsByIdItemIdRequestBody: {
             done: boolean;
+        };
+        PostV1MembershipCheckoutSubscriptionPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipCheckoutSubscriptionRequestBody: {
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        PostV1MembershipCheckoutManualPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipCheckoutManualRequestBody: {
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        GetV1MembershipStatusPositiveResponse: {
+            data: {
+                lastPeriodEnd: unknown;
+                cancelAtPeriodEnd: boolean;
+                autoRenewing: boolean;
+                trialEnd: unknown;
+            };
+        };
+        PostV1MembershipPaymentMethodPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1MembershipPaymentMethodRequestBody: {
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        DeleteV1MembershipSubscriptionPositiveResponse: {
+            data: {
+                cancelAtPeriodEnd: boolean;
+            };
+        };
+        PostV1MembershipSubscriptionPositiveResponse: {
+            data: {
+                cancelAtPeriodEnd: boolean;
+            };
+        };
+        PostV1MembershipSubscriptionRequestBody: Record<string, never>;
+        GetV1MembershipPaymentsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    userId: string;
+                    stripePaymentId: string;
+                    stripeSubscriptionId: string | null;
+                    amount: number;
+                    currency: string;
+                    /** @enum {string} */
+                    status: "pending" | "succeeded" | "failed" | "refunded";
+                    periodEnd: unknown;
+                    cardLast4: string | null;
+                    cardBrand: string | null;
+                    cardExpMonth: number | null;
+                    cardExpYear: number | null;
+                    createdAt: unknown;
+                }[];
+                count: number;
+            };
+        };
+        PostV1MembershipTrialPositiveResponse: {
+            data: {
+                trialEnd: unknown;
+            };
+        };
+        PostV1MembershipTrialRequestBody: Record<string, never>;
+        PostV1DonationsCheckoutPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1DonationsCheckoutRequestBody: {
+            amount: number;
+            /** Format: email */
+            email: string;
+            /** Format: uri */
+            successUrl: string;
+            /** Format: uri */
+            cancelUrl: string;
+        };
+        PostV1AuthHandoffPositiveResponse: {
+            data: {
+                token: string;
+                expiresAt: unknown;
+            };
+        };
+        PostV1AuthHandoffRequestBody: Record<string, never>;
+        PostV1AuthExchangePositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1AuthExchangeRequestBody: {
+            token: string;
+            /** Format: uri */
+            redirectTo: string;
+        };
+        /** @enum {string} */
+        GetV1ForumThreadsParameterType: "question" | "feature_request" | "bug_report" | "general";
+        /** @enum {string} */
+        GetV1ForumThreadsParameterStatus: "open" | "closed";
+        /** @default 20 */
+        GetV1ForumThreadsParameterLimit: number;
+        /** @default 0 */
+        GetV1ForumThreadsParameterOffset: number;
+        GetV1ForumThreadsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    title: string;
+                    body: string;
+                    /** @enum {string} */
+                    type: "question" | "feature_request" | "bug_report" | "general";
+                    /** @enum {string} */
+                    status: "open" | "closed";
+                    isPinned: boolean;
+                    createdBy: string;
+                    createdAt: string | unknown;
+                    updatedAt: string | unknown;
+                    creator: {
+                        id: string;
+                        fullName: string | null;
+                    };
+                    replyCount?: number;
+                }[];
+                total: number;
+            };
+        };
+        PostV1ForumThreadsPositiveResponse: {
+            data: {
+                id: string;
+                title: string;
+                body: string;
+                /** @enum {string} */
+                type: "question" | "feature_request" | "bug_report" | "general";
+                /** @enum {string} */
+                status: "open" | "closed";
+                isPinned: boolean;
+                createdBy: string;
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                creator: {
+                    id: string;
+                    fullName: string | null;
+                };
+                replyCount?: number;
+            };
+        };
+        PostV1ForumThreadsRequestBody: {
+            title: string;
+            /** @default  */
+            body: string;
+            /**
+             * @default general
+             * @enum {string}
+             */
+            type: "question" | "feature_request" | "bug_report" | "general";
+        };
+        GetV1ForumThreadsByIdThreadIdPositiveResponse: {
+            data: {
+                id: string;
+                title: string;
+                body: string;
+                /** @enum {string} */
+                type: "question" | "feature_request" | "bug_report" | "general";
+                /** @enum {string} */
+                status: "open" | "closed";
+                isPinned: boolean;
+                createdBy: string;
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                creator: {
+                    id: string;
+                    fullName: string | null;
+                };
+                replyCount?: number;
+            };
+        };
+        PatchV1ForumThreadsByIdThreadIdPositiveResponse: {
+            data: {
+                id: string;
+                title: string;
+                body: string;
+                /** @enum {string} */
+                type: "question" | "feature_request" | "bug_report" | "general";
+                /** @enum {string} */
+                status: "open" | "closed";
+                isPinned: boolean;
+                createdBy: string;
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                creator: {
+                    id: string;
+                    fullName: string | null;
+                };
+                replyCount?: number;
+            };
+        };
+        PatchV1ForumThreadsByIdThreadIdRequestBody: {
+            title?: string;
+            body?: string;
+        };
+        DeleteV1ForumThreadsByIdThreadIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1ForumThreadsByIdThreadIdRepliesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    threadId: string;
+                    body: string;
+                    createdBy: string;
+                    createdAt: string | unknown;
+                    updatedAt: string | unknown;
+                    creator: {
+                        id: string;
+                        fullName: string | null;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1ForumThreadsByIdThreadIdRepliesPositiveResponse: {
+            data: {
+                id: string;
+                threadId: string;
+                body: string;
+                createdBy: string;
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                creator: {
+                    id: string;
+                    fullName: string | null;
+                };
+            };
+        };
+        PostV1ForumThreadsByIdThreadIdRepliesRequestBody: {
+            body: string;
+        };
+        PostV1ForumThreadsByIdThreadIdStatusPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1ForumThreadsByIdThreadIdStatusRequestBody: {
+            /** @enum {string} */
+            status: "open" | "closed";
+        };
+        PostV1ForumThreadsByIdThreadIdPinPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1ForumThreadsByIdThreadIdPinRequestBody: {
+            pinned: boolean;
+        };
+        PatchV1ForumRepliesByIdReplyIdPositiveResponse: {
+            data: {
+                id: string;
+                threadId: string;
+                body: string;
+                createdBy: string;
+                createdAt: string | unknown;
+                updatedAt: string | unknown;
+                creator: {
+                    id: string;
+                    fullName: string | null;
+                };
+            };
+        };
+        PatchV1ForumRepliesByIdReplyIdRequestBody: {
+            body: string;
+        };
+        DeleteV1ForumRepliesByIdReplyIdPositiveResponse: {
+            data: Record<string, never>;
         };
     };
     responses: never;
@@ -18111,6 +18831,191 @@ export interface operations {
             };
         };
     };
+    GetV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1OrdersInvoiceSettingsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PutV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description PUT /v1/orders/invoiceSettings Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1OrdersInvoiceSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/orders/invoiceSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/orders/invoiceSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PutV1OrdersInvoiceSettingsLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description PUT /v1/orders/invoiceSettings/logo Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/orders/invoiceSettings/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/orders/invoiceSettings/logo Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1OrdersInvoiceSettingsLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/orders/invoiceSettings/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/orders/invoiceSettings/logo Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OrdersInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/orders/invoices Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1OrdersInvoicesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/orders/invoices Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OrdersInvoicesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/orders/invoices Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     GetV1OrdersByIdOrderId: {
         parameters: {
             query?: never;
@@ -18311,6 +19216,8 @@ export interface operations {
             header?: never;
             path: {
                 /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description DELETE /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
                 orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
@@ -18342,6 +19249,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description PATCH /v1/orders/byId/:orderId/items/byId/:orderItemId Parameter */
                 orderItemId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
@@ -18475,6 +19384,43 @@ export interface operations {
                 };
             };
             /** @description POST /v1/orders/byId/:orderId/cancel Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1OrdersByIdOrderIdInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/orders/byId/:orderId/invoice Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/orders/byId/:orderId/invoice Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1OrdersByIdOrderIdInvoiceRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/orders/byId/:orderId/invoice Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1OrdersByIdOrderIdInvoicePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/orders/byId/:orderId/invoice Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -20657,6 +21603,894 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/tasks/byId/:taskId/checklistItems/byId/:itemId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipCheckoutSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/checkout/subscription Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipCheckoutSubscriptionRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/checkout/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipCheckoutSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/checkout/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipCheckoutManual: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/checkout/manual Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipCheckoutManualRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/checkout/manual Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipCheckoutManualPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/checkout/manual Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1MembershipStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/membership/status Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MembershipStatusPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/membership/status Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MembershipStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/membership/status Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/membership/status Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1MembershipPaymentMethod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/paymentMethod Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipPaymentMethodRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/paymentMethod Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipPaymentMethodPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/paymentMethod Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/subscription Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipSubscriptionRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1MembershipSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/membership/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1MembershipSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/membership/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1MembershipPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/membership/payments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MembershipPaymentsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/membership/payments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MembershipPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/membership/payments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/membership/payments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1MembershipTrial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/trial Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipTrialRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/trial Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipTrialPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/trial Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1DonationsCheckout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/donations/checkout Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1DonationsCheckoutRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/donations/checkout Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1DonationsCheckoutPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/donations/checkout Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthHandoff: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/handoff Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthHandoffRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/handoff Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthHandoffPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/handoff Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthExchange: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/exchange Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthExchangeRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/exchange Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthExchangePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/exchange Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1ForumThreads: {
+        parameters: {
+            query?: {
+                /** @description GET /v1/forum/threads Parameter */
+                type?: components["schemas"]["GetV1ForumThreadsParameterType"];
+                /** @description GET /v1/forum/threads Parameter */
+                status?: components["schemas"]["GetV1ForumThreadsParameterStatus"];
+                /** @description GET /v1/forum/threads Parameter */
+                search?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/forum/threads Parameter */
+                limit?: components["schemas"]["GetV1ForumThreadsParameterLimit"];
+                /** @description GET /v1/forum/threads Parameter */
+                offset?: components["schemas"]["GetV1ForumThreadsParameterOffset"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/forum/threads Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1ForumThreadsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/forum/threads Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ForumThreads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/forum/threads Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ForumThreadsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/forum/threads Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ForumThreadsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/forum/threads Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1ForumThreads: {
+        parameters: {
+            query?: {
+                /** @description HEAD /v1/forum/threads Parameter */
+                type?: components["schemas"]["GetV1ForumThreadsParameterType"];
+                /** @description HEAD /v1/forum/threads Parameter */
+                status?: components["schemas"]["GetV1ForumThreadsParameterStatus"];
+                /** @description HEAD /v1/forum/threads Parameter */
+                search?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/forum/threads Parameter */
+                limit?: components["schemas"]["GetV1ForumThreadsParameterLimit"];
+                /** @description HEAD /v1/forum/threads Parameter */
+                offset?: components["schemas"]["GetV1ForumThreadsParameterOffset"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/forum/threads Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/forum/threads Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1ForumThreadsByIdThreadId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/forum/threads/byId/:threadId Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/forum/threads/byId/:threadId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1ForumThreadsByIdThreadIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/forum/threads/byId/:threadId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1ForumThreadsByIdThreadId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/forum/threads/byId/:threadId Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/forum/threads/byId/:threadId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1ForumThreadsByIdThreadIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/forum/threads/byId/:threadId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1ForumThreadsByIdThreadId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/forum/threads/byId/:threadId Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/forum/threads/byId/:threadId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/forum/threads/byId/:threadId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1ForumThreadsByIdThreadId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/forum/threads/byId/:threadId Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/forum/threads/byId/:threadId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1ForumThreadsByIdThreadIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/forum/threads/byId/:threadId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1ForumThreadsByIdThreadIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/forum/threads/byId/:threadId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1ForumThreadsByIdThreadIdReplies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/forum/threads/byId/:threadId/replies Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/forum/threads/byId/:threadId/replies Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1ForumThreadsByIdThreadIdRepliesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/forum/threads/byId/:threadId/replies Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ForumThreadsByIdThreadIdReplies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/forum/threads/byId/:threadId/replies Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/forum/threads/byId/:threadId/replies Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdRepliesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/forum/threads/byId/:threadId/replies Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdRepliesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/forum/threads/byId/:threadId/replies Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1ForumThreadsByIdThreadIdReplies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/forum/threads/byId/:threadId/replies Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/forum/threads/byId/:threadId/replies Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/forum/threads/byId/:threadId/replies Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostV1ForumThreadsByIdThreadIdStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/forum/threads/byId/:threadId/status Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/forum/threads/byId/:threadId/status Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdStatusRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/forum/threads/byId/:threadId/status Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdStatusPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/forum/threads/byId/:threadId/status Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ForumThreadsByIdThreadIdPin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/forum/threads/byId/:threadId/pin Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/forum/threads/byId/:threadId/pin Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdPinRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/forum/threads/byId/:threadId/pin Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ForumThreadsByIdThreadIdPinPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/forum/threads/byId/:threadId/pin Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1ForumRepliesByIdReplyId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/forum/replies/byId/:replyId Parameter */
+                replyId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/forum/replies/byId/:replyId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1ForumRepliesByIdReplyIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/forum/replies/byId/:replyId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PatchV1ForumRepliesByIdReplyId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/forum/replies/byId/:replyId Parameter */
+                replyId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/forum/replies/byId/:replyId Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatchV1ForumRepliesByIdReplyIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/forum/replies/byId/:replyId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1ForumRepliesByIdReplyIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/forum/replies/byId/:replyId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

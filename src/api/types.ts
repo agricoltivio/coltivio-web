@@ -260,3 +260,25 @@ export type TaskRecurrence = NonNullable<Task["recurrence"]>;
 
 export type FarmUser =
   components["schemas"]["GetV1UsersPositiveResponse"]["data"]["result"][number];
+
+// Forum types
+export type ForumThread =
+  components["schemas"]["GetV1ForumThreadsPositiveResponse"]["data"]["result"][number];
+export type ForumThreadDetail =
+  components["schemas"]["GetV1ForumThreadsByIdThreadIdPositiveResponse"]["data"];
+export type ForumReply =
+  components["schemas"]["GetV1ForumThreadsByIdThreadIdRepliesPositiveResponse"]["data"]["result"][number];
+export type ForumThreadType = ForumThread["type"];
+export type ForumThreadStatus = ForumThread["status"];
+
+// Invoice types
+export type InvoiceSettings = NonNullable<
+  components["schemas"]["GetV1OrdersInvoiceSettingsPositiveResponse"]["data"]["result"]
+>;
+
+// Membership types
+export type MembershipStatus =
+  components["schemas"]["GetV1MembershipStatusPositiveResponse"]["data"];
+
+export type MembershipPayment =
+  components["schemas"]["GetV1MembershipPaymentsPositiveResponse"]["data"]["result"][number];

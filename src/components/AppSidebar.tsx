@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,20 +13,33 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { meQueryOptions } from "@/api/user.queries";
+import { farmQueryOptions } from "@/api/farm.queries";
+import { membershipStatusQueryOptions } from "@/api/membership.queries";
+import { checkActiveMembership, checkUserActiveMembership, checkUserGracePeriod } from "@/lib/membership";
 import {
   BookOpen,
   CreditCard,
   Download,
   Droplets,
+  FileText,
   FlaskConical,
   HeartHandshake,
+  Home,
   LayoutDashboard,
   Layers,
   Leaf,
   ListTodo,
   Map,
+  MessageSquare,
   NotebookPen,
   NotepadText,
   Package,
@@ -42,18 +56,34 @@ import {
 } from "lucide-react";
 
 export function AppSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const meQuery = useQuery(meQueryOptions());
+  const hasFarm = meQuery.data?.farmId != null;
+  const farmQuery = useQuery(farmQueryOptions(hasFarm));
   const isWikiModerator = meQuery.data?.isWikiModerator ?? false;
+  const isOwner = meQuery.data?.farmRole === "owner";
+  const hasMembership = checkActiveMembership(farmQuery.data?.membership);
+  const statusQuery = useQuery(membershipStatusQueryOptions());
+  const hasUserMembership = checkUserActiveMembership(statusQuery.data);
+  const isInGracePeriod = checkUserGracePeriod(statusQuery.data);
+  // Combined flag: farm membership OR personal user membership OR within grace period
+  const hasAnyMembership = hasMembership || hasUserMembership || isInGracePeriod;
   // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
   // The browser scrolls a container synchronously during focus (before rAF), so we
   // capture the scroll position on pointerdown and restore it in onFocusCapture.
   // Keyboard navigation is unaffected because it never sets isPointerFocus.
   const savedScrollRef = useRef(0);
   const isPointerFocusRef = useRef(false);
+
+  function changeLanguage(lang: string) {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("language", lang);
+  }
   return (
     <Sidebar>
-      <SidebarHeader>Coltivio</SidebarHeader>
+      <SidebarHeader className="border-b">
+        <div className="text-sm font-semibold truncate">{farmQuery.data?.name ?? "Coltivio"}</div>
+      </SidebarHeader>
       <SidebarContent
         onPointerDownCapture={(e) => {
           savedScrollRef.current = e.currentTarget.scrollTop;
@@ -62,12 +92,67 @@ export function AppSidebar() {
         onFocusCapture={(e) => {
           if (!isPointerFocusRef.current) return;
           isPointerFocusRef.current = false;
-          e.currentTarget.scrollTop = savedScrollRef.current;
+          const container = e.currentTarget;
+          const saved = savedScrollRef.current;
+          container.scrollTop = saved;
+          // Browser may scroll again after this handler — restore once more next frame
+          requestAnimationFrame(() => {
+            container.scrollTop = saved;
+          });
         }}
       >
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              {hasFarm ? (
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        activeOptions={{ exact: true, includeSearch: false }}
+                        activeProps={{
+                          className:
+                            "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                        }}
+                        to="/dashboard"
+                      >
+                        <LayoutDashboard /> {t("nav.dashboard")}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  {hasAnyMembership && (
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link
+                          activeOptions={{ exact: true, includeSearch: false }}
+                          activeProps={{
+                            className:
+                              "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                          }}
+                          to="/tasks"
+                        >
+                          <ListTodo /> {t("nav.tasks")}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )}
+                </>
+              ) : (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeOptions={{ exact: true, includeSearch: false }}
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/dashboard"
+                    >
+                      <Home /> {t("nav.myFarm")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link
@@ -76,30 +161,16 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
-                    to="/dashboard"
+                    to="/treffpunkt"
                   >
-                    <LayoutDashboard /> {t("nav.dashboard")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/tasks"
-                  >
-                    <ListTodo /> {t("nav.tasks")}
+                    <MessageSquare /> {t("nav.treffpunkt")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
+        {hasFarm && <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.livestock")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -195,118 +266,8 @@ export function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/contacts"
-                  >
-                    <Users /> {t("nav.contacts")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/orders"
-                  >
-                    <ShoppingCart /> {t("nav.orders")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/products"
-                  >
-                    <Package /> {t("nav.products")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/sponsorships/programs"
-                  >
-                    <NotepadText /> {t("nav.sponsorshipPrograms")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/sponsorships"
-                  >
-                    <HeartHandshake /> {t("nav.sponsorships")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/payments"
-                  >
-                    <CreditCard /> {t("nav.payments")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
+        </SidebarGroup>}
+        {hasFarm && <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.fieldCalendar")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -466,8 +427,139 @@ export function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
+        </SidebarGroup>}
+        {hasAnyMembership && (
+          <SidebarGroup>
+            <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/contacts"
+                    >
+                      <Users /> {t("nav.contacts")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {hasAnyMembership && (
+          <SidebarGroup>
+            <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/orders"
+                    >
+                      <ShoppingCart /> {t("nav.orders")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/products"
+                    >
+                      <Package /> {t("nav.products")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/orders/invoice-settings"
+                    >
+                      <FileText /> {t("nav.invoiceSettings")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {hasAnyMembership && (
+          <SidebarGroup>
+            <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeOptions={{ exact: true, includeSearch: false }}
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/sponsorships/programs"
+                    >
+                      <NotepadText /> {t("nav.sponsorshipPrograms")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeOptions={{ exact: true, includeSearch: false }}
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/sponsorships"
+                    >
+                      <HeartHandshake /> {t("nav.sponsorships")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {hasAnyMembership && (
+          <SidebarGroup>
+            <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      activeProps={{
+                        className:
+                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                      }}
+                      to="/payments"
+                    >
+                      <CreditCard /> {t("nav.payments")}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+        {hasFarm && <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.wiki")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -508,7 +600,7 @@ export function AppSidebar() {
               )}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup>}
         <SidebarGroup>
           <SidebarGroupLabel>{t("nav.groups.admin")}</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -539,10 +631,42 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/membership"
+                  >
+                    <CreditCard /> {t("nav.membership")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t">
+        <div className="flex items-center justify-between gap-2 px-2 py-3">
+          <span className="text-xs text-muted-foreground truncate min-w-0">
+            {meQuery.data?.fullName ?? meQuery.data?.email}
+          </span>
+          <Select value={i18n.language} onValueChange={changeLanguage}>
+            <SelectTrigger className="h-7 w-20 shrink-0 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="de">DE</SelectItem>
+              <SelectItem value="en">EN</SelectItem>
+              <SelectItem value="fr">FR</SelectItem>
+              <SelectItem value="it">IT</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

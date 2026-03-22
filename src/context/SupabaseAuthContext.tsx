@@ -14,7 +14,7 @@ export interface SupabaseAuthState {
   loading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
@@ -58,10 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? new Error(error.message) : null };
   }
 
-  async function signUp(email: string, password: string) {
+  async function signUp(email: string, password: string, fullName: string) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: { data: { full_name: fullName } },
     });
     return { error: error ? new Error(error.message) : null };
   }
