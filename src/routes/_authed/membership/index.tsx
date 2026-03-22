@@ -102,11 +102,14 @@ function MembershipPage() {
   });
 
   // Stripe checkout for trial users converting to paid — triggered after statutes acceptance
-  async function handleSubscribeFromTrial() {
+  async function handleSubscribeFromTrial(autoRenew: boolean) {
     setIsLoadingSubscribe(true);
     setShowStatutenForSubscribe(false);
     try {
-      const response = await apiClient.POST("/v1/membership/checkout/subscription", {
+      const endpoint = autoRenew
+        ? "/v1/membership/checkout/subscription"
+        : "/v1/membership/checkout/manual";
+      const response = await apiClient.POST(endpoint, {
         body: {
           successUrl: `${window.location.href.split("?")[0]}?membership=success`,
           cancelUrl: window.location.href,

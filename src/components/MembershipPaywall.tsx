@@ -25,7 +25,7 @@ export function MembershipPaywall({ farmHasMembership }: { farmHasMembership?: b
   const [isExecuting, setIsExecuting] = useState(false);
 
   // Called after statutes acceptance — runs the actual API call
-  async function executeAction() {
+  async function executeAction(autoRenew: boolean) {
     if (pendingAction === "trial") {
       setIsExecuting(true);
       setStatutenOpen(false);
@@ -44,7 +44,10 @@ export function MembershipPaywall({ farmHasMembership }: { farmHasMembership?: b
       try {
         const successUrl = `${window.location.href.split("?")[0]}?membership=success`;
         const cancelUrl = window.location.href;
-        const response = await apiClient.POST("/v1/membership/checkout/subscription", {
+        const endpoint = autoRenew
+          ? "/v1/membership/checkout/subscription"
+          : "/v1/membership/checkout/manual";
+        const response = await apiClient.POST(endpoint, {
           body: { successUrl, cancelUrl },
         });
         if (response.error || !response.data) throw new Error("Checkout failed");

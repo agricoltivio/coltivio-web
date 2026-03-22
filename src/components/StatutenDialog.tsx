@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -14,22 +15,26 @@ import { Label } from "@/components/ui/label";
 interface StatutenDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: (autoRenew: boolean) => void;
   isLoading?: boolean;
 }
 
 export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = false }: StatutenDialogProps) {
   const { t } = useTranslation();
   const [accepted, setAccepted] = useState(false);
+  const [autoRenew, setAutoRenew] = useState(true);
 
   function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) setAccepted(false);
+    if (!nextOpen) {
+      setAccepted(false);
+      setAutoRenew(true);
+    }
     onOpenChange(nextOpen);
   }
 
   function handleConfirm() {
     if (!accepted) return;
-    onConfirm();
+    onConfirm(autoRenew);
   }
 
   // The statutes text is always displayed in German (legal document).
@@ -59,6 +64,23 @@ export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = fals
             {t("membership.statuten.acceptLabel")}
           </Label>
         </div>
+
+        {/* Auto-renewal toggle */}
+        <div className="flex items-center gap-3">
+          <Switch
+            id="auto-renew"
+            checked={autoRenew}
+            onCheckedChange={setAutoRenew}
+          />
+          <Label htmlFor="auto-renew" className="text-sm cursor-pointer">
+            {t("membership.statuten.autoRenewalLabel")}
+          </Label>
+        </div>
+        {autoRenew && (
+          <p className="text-xs text-muted-foreground -mt-1">
+            {t("membership.statuten.autoRenewalNote")}
+          </p>
+        )}
 
         <DialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>

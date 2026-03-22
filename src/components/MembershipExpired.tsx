@@ -10,11 +10,14 @@ export function MembershipExpired({ farmHasMembership }: { farmHasMembership?: b
   const [loading, setLoading] = useState(false);
 
   // Rejoining = new acceptance of statutes (Art. 4.4)
-  async function handleRenew() {
+  async function handleRenew(autoRenew: boolean) {
     setLoading(true);
     setStatutenOpen(false);
     try {
-      const response = await apiClient.POST("/v1/membership/checkout/subscription", {
+      const endpoint = autoRenew
+        ? "/v1/membership/checkout/subscription"
+        : "/v1/membership/checkout/manual";
+      const response = await apiClient.POST(endpoint, {
         body: {
           successUrl: `${window.location.href.split("?")[0]}?membership=success`,
           cancelUrl: window.location.href,
