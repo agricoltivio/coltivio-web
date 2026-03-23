@@ -150,6 +150,7 @@ export function MembershipPaywall({ farmHasMembership }: { farmHasMembership?: b
         onOpenChange={setStatutenOpen}
         onConfirm={executeAction}
         isLoading={isExecuting}
+        showAutoRenewal={pendingAction === "subscription"}
       />
     </div>
   );

@@ -185,8 +185,8 @@ function MembershipPage() {
           ) : (
             <Badge variant="secondary">{t("membership.status.inactive")}</Badge>
           )}
-          {/* Only show the cancelsAtPeriodEnd badge when active and not in trial phase */}
-          {!isTrial && !isSubscribedDuringTrial && status?.cancelAtPeriodEnd && (
+          {/* Only show the cancelsAtPeriodEnd badge when active, not in trial, and auto-renewing (one-time payments always expire) */}
+          {!isTrial && !isSubscribedDuringTrial && status?.cancelAtPeriodEnd && status?.autoRenewing && (
             <Badge variant="outline">{t("membership.status.cancelsAtPeriodEnd")}</Badge>
           )}
         </div>
@@ -199,7 +199,11 @@ function MembershipPage() {
         )}
         {!isTrial && !isSubscribedDuringTrial && periodEndDate && (
           <p className="text-sm text-muted-foreground mb-4">
-            {t("membership.status.validUntil")}: {periodEndDate}
+            {status?.cancelledByUser
+              ? t("membership.status.cancelledByUser", { date: periodEndDate })
+              : status?.autoRenewing && !status?.cancelAtPeriodEnd
+                ? t("membership.status.autoRenewsOn", { date: periodEndDate })
+                : `${t("membership.status.validUntil")}: ${periodEndDate}`}
           </p>
         )}
         <div className="flex flex-wrap gap-3">
@@ -209,14 +213,17 @@ function MembershipPage() {
             </Button>
           ) : (
             <>
-              <Button
-                variant="outline"
-                onClick={handleUpdatePaymentMethod}
-                disabled={isLoadingPaymentMethod}
-              >
-                {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
-              </Button>
-              {isActive && status?.cancelAtPeriodEnd && (
+              {/* Hide payment method update if cancelled — no ongoing subscription to update */}
+              {!status?.cancelledByUser && (
+                <Button
+                  variant="outline"
+                  onClick={handleUpdatePaymentMethod}
+                  disabled={isLoadingPaymentMethod}
+                >
+                  {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
+                </Button>
+              )}
+              {isActive && (status?.cancelAtPeriodEnd || status?.cancelledByUser) && (
                 <Button
                   variant="outline"
                   onClick={() => reactivateMutation.mutate()}
@@ -225,7 +232,7 @@ function MembershipPage() {
                   {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
                 </Button>
               )}
-              {isActive && !status?.cancelAtPeriodEnd && (
+              {isActive && !status?.cancelledByUser && (
                 <Button
                   variant="ghost"
                   onClick={() => setShowAustrittDialog(true)}

@@ -10336,6 +10336,7 @@ export interface components {
                 cancelAtPeriodEnd: boolean;
                 autoRenewing: boolean;
                 trialEnd: unknown;
+                cancelledByUser: boolean;
             };
         };
         PostV1MembershipPaymentMethodPositiveResponse: {

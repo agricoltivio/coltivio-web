@@ -36,11 +36,13 @@ export function checkUserActiveMembership(
   return hasActivePeriod || hasActiveTrial;
 }
 
-// User-level grace period check: true if membership expired within the last GRACE_PERIOD_DAYS days
+// User-level grace period check: true if membership expired within the last GRACE_PERIOD_DAYS days.
+// No grace period if the user explicitly cancelled their membership.
 export function checkUserGracePeriod(
   status: UserMembershipStatus | undefined,
 ): boolean {
   if (!status) return false;
+  if (status.cancelledByUser) return false;
   if (checkUserActiveMembership(status)) return false; // still active, not in grace
   const now = new Date();
   const graceCutoff = new Date(

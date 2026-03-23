@@ -17,9 +17,10 @@ interface StatutenDialogProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: (autoRenew: boolean) => void;
   isLoading?: boolean;
+  showAutoRenewal?: boolean;
 }
 
-export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = false }: StatutenDialogProps) {
+export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = false, showAutoRenewal = true }: StatutenDialogProps) {
   const { t } = useTranslation();
   const [accepted, setAccepted] = useState(false);
   const [autoRenew, setAutoRenew] = useState(true);
@@ -65,21 +66,25 @@ export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = fals
           </Label>
         </div>
 
-        {/* Auto-renewal toggle */}
-        <div className="flex items-center gap-3">
-          <Switch
-            id="auto-renew"
-            checked={autoRenew}
-            onCheckedChange={setAutoRenew}
-          />
-          <Label htmlFor="auto-renew" className="text-sm cursor-pointer">
-            {t("membership.statuten.autoRenewalLabel")}
-          </Label>
-        </div>
-        {autoRenew && (
-          <p className="text-xs text-muted-foreground -mt-1">
-            {t("membership.statuten.autoRenewalNote")}
-          </p>
+        {/* Auto-renewal toggle — hidden for trial flow */}
+        {showAutoRenewal && (
+          <>
+            <div className="flex items-center gap-3">
+              <Switch
+                id="auto-renew"
+                checked={autoRenew}
+                onCheckedChange={setAutoRenew}
+              />
+              <Label htmlFor="auto-renew" className="text-sm cursor-pointer">
+                {t("membership.statuten.autoRenewalLabel")}
+              </Label>
+            </div>
+            {autoRenew && (
+              <p className="text-xs text-muted-foreground -mt-1">
+                {t("membership.statuten.autoRenewalNote")}
+              </p>
+            )}
+          </>
         )}
 
         <DialogFooter>

@@ -1015,6 +1015,8 @@
       "autoRenewing": "Membro attivo",
       "cancelsAtPeriodEnd": "Dimissioni dichiarate",
       "validUntil": "Valido fino al",
+      "autoRenewsOn": "Il tuo abbonamento verrà rinnovato automaticamente il {{date}}.",
+      "cancelledByUser": "Hai cancellato la tua iscrizione ad AgriColtivio. Hai accesso a tutte le funzionalità fino al {{date}}.",
       "trialEnds": "Iscrizione di prova termina il",
       "subscriptionStartsAfterTrial": "La tua iscrizione è attiva. La quota annuale di CHF 150.– verrà addebitata alla fine del periodo di prova il {{date}}."
     },

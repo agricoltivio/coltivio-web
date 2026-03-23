@@ -1015,6 +1015,8 @@
       "autoRenewing": "Membre actif",
       "cancelsAtPeriodEnd": "Démission déclarée",
       "validUntil": "Valide jusqu'au",
+      "autoRenewsOn": "Votre adhésion sera automatiquement renouvelée le {{date}}.",
+      "cancelledByUser": "Vous avez résilié votre adhésion à AgriColtivio. Vous avez accès à toutes les fonctionnalités jusqu'au {{date}}.",
       "trialEnds": "Adhésion d'essai se termine le",
       "subscriptionStartsAfterTrial": "Ton adhésion est active. La cotisation annuelle de CHF 150.– sera prélevée à la fin de ton essai le {{date}}."
     },

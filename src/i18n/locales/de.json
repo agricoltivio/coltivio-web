@@ -1015,6 +1015,8 @@
       "autoRenewing": "Aktives Mitglied",
       "cancelsAtPeriodEnd": "Austritt erklärt",
       "validUntil": "Gültig bis",
+      "autoRenewsOn": "Deine Mitgliedschaft wird am {{date}} automatisch erneuert.",
+      "cancelledByUser": "Du hast deine Mitgliedschaft bei AgriColtivio gekündigt. Du hast bis am {{date}} Zugang zu allen Funktionen.",
       "trialEnds": "Schnuppermitgliedschaft endet am",
       "subscriptionStartsAfterTrial": "Deine Mitgliedschaft ist aktiv. Der Jahresbeitrag von CHF 150.– wird nach Ablauf der Schnuppermitgliedschaft am {{date}} belastet."
     },

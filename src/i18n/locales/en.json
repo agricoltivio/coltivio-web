@@ -1015,6 +1015,8 @@
       "autoRenewing": "Active member",
       "cancelsAtPeriodEnd": "Resignation declared",
       "validUntil": "Valid until",
+      "autoRenewsOn": "Your membership will automatically renew on {{date}}.",
+      "cancelledByUser": "You have cancelled your membership with AgriColtivio. You have access to all features until {{date}}.",
       "trialEnds": "Trial ends",
       "subscriptionStartsAfterTrial": "Your membership is active. The annual fee of CHF 150.– will be charged after your trial ends on {{date}}."
     },
