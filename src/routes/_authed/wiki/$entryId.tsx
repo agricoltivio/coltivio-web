@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import {
   MDXEditor,
   headingsPlugin,
@@ -16,20 +15,9 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { wikiEntryByIdQueryOptions } from "@/api/wiki.queries";
-import { farmQueryOptions } from "@/api/farm.queries";
-import { checkActiveMembership } from "@/lib/membership";
 import { PageContent } from "@/components/PageContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authed/wiki/$entryId")({
   validateSearch: z.object({ returnTo: z.string().optional() }),
@@ -45,9 +33,6 @@ function WikiDetail() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const entryQuery = useQuery(wikiEntryByIdQueryOptions(entryId));
-  const farmQuery = useQuery(farmQueryOptions());
-  const hasActiveMembership = checkActiveMembership(farmQuery.data?.membership);
-  const [showMembersOnlyDialog, setShowMembersOnlyDialog] = useState(false);
   const entry = entryQuery.data;
 
   if (!entry) return null;
@@ -86,50 +71,21 @@ function WikiDetail() {
       </div>
 
       {translation && (
-        // Intercept image clicks for non-members and show the members-only dialog
-        <div
-          onClick={(e) => {
-            if (!hasActiveMembership && e.target instanceof HTMLImageElement) {
-              e.preventDefault();
-              setShowMembersOnlyDialog(true);
-            }
-          }}
-        >
-          <MDXEditor
-            readOnly
-            markdown={translation.body}
-            plugins={[
-              headingsPlugin(),
-              listsPlugin(),
-              quotePlugin(),
-              thematicBreakPlugin(),
-              linkPlugin(),
-              tablePlugin(),
-              codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
-              imagePlugin(),
-            ]}
-          />
-        </div>
+        <MDXEditor
+          readOnly
+          markdown={translation.body}
+          plugins={[
+            headingsPlugin(),
+            listsPlugin(),
+            quotePlugin(),
+            thematicBreakPlugin(),
+            linkPlugin(),
+            tablePlugin(),
+            codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
+            imagePlugin(),
+          ]}
+        />
       )}
-
-      <Dialog open={showMembersOnlyDialog} onOpenChange={setShowMembersOnlyDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("membership.wikiImageDialog.title")}</DialogTitle>
-            <DialogDescription>
-              {t("membership.wikiImageDialog.description")}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowMembersOnlyDialog(false)}>
-              {t("common.close")}
-            </Button>
-            <Button asChild>
-              <Link to="/membership">{t("membership.wikiImageDialog.cta")}</Link>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </PageContent>
   );
 }

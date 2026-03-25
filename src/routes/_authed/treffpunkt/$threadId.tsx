@@ -259,7 +259,7 @@ function ThreadDetail() {
 
       {/* Creator info */}
       <p className="text-sm text-muted-foreground mb-4">
-        {thread.creator.fullName ?? thread.createdBy}
+        {thread.creator.fullName ?? t("common.unknown")}
         {" · "}
         {formatDate(thread.createdAt)}
       </p>
@@ -376,7 +376,7 @@ function ThreadDetail() {
           return (
             <div key={reply.id} className="border rounded-lg p-4">
               <p className="text-sm text-muted-foreground mb-2">
-                {reply.creator.fullName ?? reply.createdBy}
+                {reply.creator.fullName ?? t("common.unknown")}
                 {" · "}
                 {formatDate(reply.createdAt)}
               </p>

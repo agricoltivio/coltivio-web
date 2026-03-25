@@ -9341,6 +9341,27 @@ export interface components {
                             createdAt: string | unknown;
                         };
                     }[];
+                    activeChangeRequest: {
+                        id: string;
+                        entryId: string | null;
+                        /** @enum {string} */
+                        type: "new_entry" | "change_request";
+                        /** @enum {string} */
+                        status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                        submittedBy: string;
+                        proposedCategoryId: string | null;
+                        proposedFarmId: string | null;
+                        createdAt: string | unknown;
+                        resolvedAt: string | unknown;
+                        translations: {
+                            id: string;
+                            changeRequestId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            title: string;
+                            body: string;
+                        }[];
+                    } | null;
                 }[];
                 count: number;
             };
@@ -9399,6 +9420,27 @@ export interface components {
                         createdAt: string | unknown;
                     };
                 }[];
+                activeChangeRequest: {
+                    id: string;
+                    entryId: string | null;
+                    /** @enum {string} */
+                    type: "new_entry" | "change_request";
+                    /** @enum {string} */
+                    status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                    submittedBy: string;
+                    proposedCategoryId: string | null;
+                    proposedFarmId: string | null;
+                    createdAt: string | unknown;
+                    resolvedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        changeRequestId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                    }[];
+                } | null;
             };
         };
         PostV1WikiRequestBody: {
@@ -9469,6 +9511,27 @@ export interface components {
                             createdAt: string | unknown;
                         };
                     }[];
+                    activeChangeRequest: {
+                        id: string;
+                        entryId: string | null;
+                        /** @enum {string} */
+                        type: "new_entry" | "change_request";
+                        /** @enum {string} */
+                        status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                        submittedBy: string;
+                        proposedCategoryId: string | null;
+                        proposedFarmId: string | null;
+                        createdAt: string | unknown;
+                        resolvedAt: string | unknown;
+                        translations: {
+                            id: string;
+                            changeRequestId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            title: string;
+                            body: string;
+                        }[];
+                    } | null;
                 }[];
                 count: number;
             };
@@ -9481,7 +9544,7 @@ export interface components {
                     /** @enum {string} */
                     type: "new_entry" | "change_request";
                     /** @enum {string} */
-                    status: "draft" | "under_review" | "approved" | "rejected";
+                    status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                     submittedBy: string;
                     proposedCategoryId: string | null;
                     proposedFarmId: string | null;
@@ -9506,7 +9569,7 @@ export interface components {
                 /** @enum {string} */
                 type: "new_entry" | "change_request";
                 /** @enum {string} */
-                status: "draft" | "under_review" | "approved" | "rejected";
+                status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                 submittedBy: string;
                 proposedCategoryId: string | null;
                 proposedFarmId: string | null;
@@ -9541,7 +9604,7 @@ export interface components {
                 /** @enum {string} */
                 type: "new_entry" | "change_request";
                 /** @enum {string} */
-                status: "draft" | "under_review" | "approved" | "rejected";
+                status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                 submittedBy: string;
                 proposedCategoryId: string | null;
                 proposedFarmId: string | null;
@@ -9636,6 +9699,27 @@ export interface components {
                         createdAt: string | unknown;
                     };
                 }[];
+                activeChangeRequest: {
+                    id: string;
+                    entryId: string | null;
+                    /** @enum {string} */
+                    type: "new_entry" | "change_request";
+                    /** @enum {string} */
+                    status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                    submittedBy: string;
+                    proposedCategoryId: string | null;
+                    proposedFarmId: string | null;
+                    createdAt: string | unknown;
+                    resolvedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        changeRequestId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                    }[];
+                } | null;
             };
         };
         PatchV1WikiByIdEntryIdPositiveResponse: {
@@ -9692,6 +9776,27 @@ export interface components {
                         createdAt: string | unknown;
                     };
                 }[];
+                activeChangeRequest: {
+                    id: string;
+                    entryId: string | null;
+                    /** @enum {string} */
+                    type: "new_entry" | "change_request";
+                    /** @enum {string} */
+                    status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                    submittedBy: string;
+                    proposedCategoryId: string | null;
+                    proposedFarmId: string | null;
+                    createdAt: string | unknown;
+                    resolvedAt: string | unknown;
+                    translations: {
+                        id: string;
+                        changeRequestId: string;
+                        /** @enum {string} */
+                        locale: "de" | "en" | "it" | "fr";
+                        title: string;
+                        body: string;
+                    }[];
+                } | null;
             };
         };
         PatchV1WikiByIdEntryIdRequestBody: {
@@ -9715,7 +9820,7 @@ export interface components {
                 /** @enum {string} */
                 type: "new_entry" | "change_request";
                 /** @enum {string} */
-                status: "draft" | "under_review" | "approved" | "rejected";
+                status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                 submittedBy: string;
                 proposedCategoryId: string | null;
                 proposedFarmId: string | null;
@@ -9739,7 +9844,7 @@ export interface components {
                 /** @enum {string} */
                 type: "new_entry" | "change_request";
                 /** @enum {string} */
-                status: "draft" | "under_review" | "approved" | "rejected";
+                status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                 submittedBy: string;
                 proposedCategoryId: string | null;
                 proposedFarmId: string | null;
@@ -9836,7 +9941,7 @@ export interface components {
                     /** @enum {string} */
                     type: "new_entry" | "change_request";
                     /** @enum {string} */
-                    status: "draft" | "under_review" | "approved" | "rejected";
+                    status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                     submittedBy: string;
                     proposedCategoryId: string | null;
                     proposedFarmId: string | null;
@@ -9903,6 +10008,27 @@ export interface components {
                                 createdAt: string | unknown;
                             };
                         }[];
+                        activeChangeRequest: {
+                            id: string;
+                            entryId: string | null;
+                            /** @enum {string} */
+                            type: "new_entry" | "change_request";
+                            /** @enum {string} */
+                            status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                            submittedBy: string;
+                            proposedCategoryId: string | null;
+                            proposedFarmId: string | null;
+                            createdAt: string | unknown;
+                            resolvedAt: string | unknown;
+                            translations: {
+                                id: string;
+                                changeRequestId: string;
+                                /** @enum {string} */
+                                locale: "de" | "en" | "it" | "fr";
+                                title: string;
+                                body: string;
+                            }[];
+                        } | null;
                     } | null;
                 }[];
                 count: number;
@@ -9915,7 +10041,7 @@ export interface components {
                 /** @enum {string} */
                 type: "new_entry" | "change_request";
                 /** @enum {string} */
-                status: "draft" | "under_review" | "approved" | "rejected";
+                status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
                 submittedBy: string;
                 proposedCategoryId: string | null;
                 proposedFarmId: string | null;
@@ -9982,6 +10108,27 @@ export interface components {
                             createdAt: string | unknown;
                         };
                     }[];
+                    activeChangeRequest: {
+                        id: string;
+                        entryId: string | null;
+                        /** @enum {string} */
+                        type: "new_entry" | "change_request";
+                        /** @enum {string} */
+                        status: "draft" | "under_review" | "approved" | "rejected" | "changes_requested";
+                        submittedBy: string;
+                        proposedCategoryId: string | null;
+                        proposedFarmId: string | null;
+                        createdAt: string | unknown;
+                        resolvedAt: string | unknown;
+                        translations: {
+                            id: string;
+                            changeRequestId: string;
+                            /** @enum {string} */
+                            locale: "de" | "en" | "it" | "fr";
+                            title: string;
+                            body: string;
+                        }[];
+                    } | null;
                 } | null;
             };
         };

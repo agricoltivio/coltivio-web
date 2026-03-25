@@ -26,7 +26,8 @@
     "fromDate": "Dal",
     "toDate": "Al",
     "download": "Scarica",
-    "name": "Nome"
+    "name": "Nome",
+    "unknown": "Sconosciuto"
   },
   "nav": {
     "groups": {
@@ -834,6 +835,7 @@
     "admin": "Admin",
     "reviewQueue": "Coda di revisione",
     "categories": "Categorie",
+    "manageEntries": "Gestisci voci",
     "newEntry": "Nuova voce",
     "editEntry": "Modifica voce",
     "entryDetail": "Dettagli voce",
@@ -878,7 +880,8 @@
         "under_review": "In revisione",
         "approved": "Approvato",
         "rejected": "Rifiutato",
-        "draft": "Bozza"
+        "draft": "Bozza",
+        "changes_requested": "Modifiche richieste"
       }
     },
     "addCategory": "Aggiungi categoria",

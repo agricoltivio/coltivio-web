@@ -183,7 +183,7 @@ function TreffpunktPage() {
                 </div>
                 <p className="font-medium truncate">{thread.title}</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {thread.creator.fullName ?? thread.createdBy}
+                  {thread.creator.fullName ?? t("common.unknown")}
                   {" · "}
                   {formatDate(thread.createdAt)}
                 </p>

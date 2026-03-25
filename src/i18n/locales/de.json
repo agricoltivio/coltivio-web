@@ -26,7 +26,8 @@
     "fromDate": "Von",
     "toDate": "Bis",
     "download": "Herunterladen",
-    "name": "Name"
+    "name": "Name",
+    "unknown": "Unbekannt"
   },
   "nav": {
     "groups": {
@@ -834,6 +835,7 @@
     "admin": "Admin",
     "reviewQueue": "Prüfwarteschlange",
     "categories": "Kategorien",
+    "manageEntries": "Einträge verwalten",
     "newEntry": "Neuer Eintrag",
     "editEntry": "Eintrag bearbeiten",
     "entryDetail": "Eintragdetails",
@@ -878,7 +880,8 @@
         "under_review": "In Prüfung",
         "approved": "Genehmigt",
         "rejected": "Abgelehnt",
-        "draft": "Entwurf"
+        "draft": "Entwurf",
+        "changes_requested": "Änderungen angefordert"
       }
     },
     "addCategory": "Kategorie hinzufügen",

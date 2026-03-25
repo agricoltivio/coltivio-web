@@ -26,7 +26,8 @@
     "fromDate": "From",
     "toDate": "To",
     "download": "Download",
-    "name": "Name"
+    "name": "Name",
+    "unknown": "Unknown"
   },
   "nav": {
     "groups": {
@@ -834,6 +835,7 @@
     "admin": "Admin",
     "reviewQueue": "Review Queue",
     "categories": "Categories",
+    "manageEntries": "Manage Entries",
     "newEntry": "New Entry",
     "editEntry": "Edit Entry",
     "entryDetail": "Entry Details",
@@ -878,7 +880,8 @@
         "under_review": "Under Review",
         "approved": "Approved",
         "rejected": "Rejected",
-        "draft": "Draft"
+        "draft": "Draft",
+        "changes_requested": "Changes Requested"
       }
     },
     "addCategory": "Add Category",

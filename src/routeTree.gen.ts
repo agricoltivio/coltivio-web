@@ -111,6 +111,7 @@ import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authe
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
 import { Route as AuthedAnimalsAnimalIdEditRouteImport } from './routes/_authed/animals/$animalId.edit'
 import { Route as AuthedWikiAdminReviewQueueIndexRouteImport } from './routes/_authed/wiki/admin/review-queue/index'
+import { Route as AuthedWikiAdminEntriesIndexRouteImport } from './routes/_authed/wiki/admin/entries/index'
 import { Route as AuthedWikiAdminCategoriesIndexRouteImport } from './routes/_authed/wiki/admin/categories/index'
 import { Route as AuthedSponsorshipsProgramsProgramIdIndexRouteImport } from './routes/_authed/sponsorships/programs/$programId.index'
 import { Route as AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRouteImport } from './routes/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
@@ -689,6 +690,12 @@ const AuthedWikiAdminReviewQueueIndexRoute =
     path: '/wiki/admin/review-queue/',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedWikiAdminEntriesIndexRoute =
+  AuthedWikiAdminEntriesIndexRouteImport.update({
+    id: '/wiki/admin/entries/',
+    path: '/wiki/admin/entries/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedWikiAdminCategoriesIndexRoute =
   AuthedWikiAdminCategoriesIndexRouteImport.update({
     id: '/wiki/admin/categories/',
@@ -891,6 +898,7 @@ export interface FileRoutesByFullPath {
   '/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
   '/wiki/admin/categories/': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/wiki/admin/entries/': typeof AuthedWikiAdminEntriesIndexRoute
   '/wiki/admin/review-queue/': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRoutesByTo {
@@ -1000,6 +1008,7 @@ export interface FileRoutesByTo {
   '/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/sponsorships/programs/$programId': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
   '/wiki/admin/categories': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/wiki/admin/entries': typeof AuthedWikiAdminEntriesIndexRoute
   '/wiki/admin/review-queue': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRoutesById {
@@ -1119,6 +1128,7 @@ export interface FileRoutesById {
   '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId': typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   '/_authed/sponsorships/programs/$programId/': typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
   '/_authed/wiki/admin/categories/': typeof AuthedWikiAdminCategoriesIndexRoute
+  '/_authed/wiki/admin/entries/': typeof AuthedWikiAdminEntriesIndexRoute
   '/_authed/wiki/admin/review-queue/': typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 export interface FileRouteTypes {
@@ -1238,6 +1248,7 @@ export interface FileRouteTypes {
     | '/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/sponsorships/programs/$programId/'
     | '/wiki/admin/categories/'
+    | '/wiki/admin/entries/'
     | '/wiki/admin/review-queue/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -1347,6 +1358,7 @@ export interface FileRouteTypes {
     | '/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/sponsorships/programs/$programId'
     | '/wiki/admin/categories'
+    | '/wiki/admin/entries'
     | '/wiki/admin/review-queue'
   id:
     | '__root__'
@@ -1465,6 +1477,7 @@ export interface FileRouteTypes {
     | '/_authed/wiki/my-entries/change-request-drafts/$changeRequestId'
     | '/_authed/sponsorships/programs/$programId/'
     | '/_authed/wiki/admin/categories/'
+    | '/_authed/wiki/admin/entries/'
     | '/_authed/wiki/admin/review-queue/'
   fileRoutesById: FileRoutesById
 }
@@ -2197,6 +2210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedWikiAdminReviewQueueIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/wiki/admin/entries/': {
+      id: '/_authed/wiki/admin/entries/'
+      path: '/wiki/admin/entries'
+      fullPath: '/wiki/admin/entries/'
+      preLoaderRoute: typeof AuthedWikiAdminEntriesIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/wiki/admin/categories/': {
       id: '/_authed/wiki/admin/categories/'
       path: '/wiki/admin/categories'
@@ -2542,6 +2562,7 @@ interface AuthedRouteRouteChildren {
   AuthedWikiMyEntriesEntryIdEditRoute: typeof AuthedWikiMyEntriesEntryIdEditRoute
   AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute: typeof AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute
   AuthedWikiAdminCategoriesIndexRoute: typeof AuthedWikiAdminCategoriesIndexRoute
+  AuthedWikiAdminEntriesIndexRoute: typeof AuthedWikiAdminEntriesIndexRoute
   AuthedWikiAdminReviewQueueIndexRoute: typeof AuthedWikiAdminReviewQueueIndexRoute
 }
 
@@ -2639,6 +2660,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute:
     AuthedWikiMyEntriesChangeRequestDraftsChangeRequestIdRoute,
   AuthedWikiAdminCategoriesIndexRoute: AuthedWikiAdminCategoriesIndexRoute,
+  AuthedWikiAdminEntriesIndexRoute: AuthedWikiAdminEntriesIndexRoute,
   AuthedWikiAdminReviewQueueIndexRoute: AuthedWikiAdminReviewQueueIndexRoute,
 }
 

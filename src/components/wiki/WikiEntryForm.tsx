@@ -92,6 +92,48 @@ function ImageUploadButton({ onUpload }: { onUpload: (file: File) => Promise<str
   );
 }
 
+function resizeImageFile(file: File, maxDimension: number): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const { width, height } = img;
+      // Pass through unchanged if already within bounds
+      if (width <= maxDimension && height <= maxDimension) {
+        resolve(file);
+        return;
+      }
+      const scale = Math.min(maxDimension / width, maxDimension / height);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas not available"));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Canvas toBlob failed"));
+            return;
+          }
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.85,
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Image load failed"));
+    };
+    img.src = objectUrl;
+  });
+}
+
 export interface WikiEntryFormData {
   // Pre-generated UUID so images can be uploaded before the entry is saved
   entryId: string;
@@ -140,9 +182,12 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
   });
 
   async function handleImageUpload(file: File): Promise<string> {
+    // Resize and convert to JPEG before upload (handles HEIC and oversized images)
+    const resized = await resizeImageFile(file, 1200);
+
     // Step 1: get a short-lived signed upload URL from the API
     const signedUrlRes = await apiClient.POST("/v1/wiki/images/signedUrl", {
-      body: { entryId, filename: file.name },
+      body: { entryId, filename: resized.name },
     });
     if (signedUrlRes.error) throw new Error("Failed to get signed URL");
     const { signedUrl, path } = signedUrlRes.data.data;
@@ -150,8 +195,8 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
     // Step 2: upload the file binary directly to Supabase Storage
     const uploadRes = await fetch(signedUrl, {
       method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
+      body: resized,
+      headers: { "Content-Type": resized.type },
     });
     if (!uploadRes.ok) throw new Error("Image upload failed");
 

@@ -230,6 +230,10 @@ export type WikiTag = WikiEntryTag["tag"];
 export type WikiEntryStatus = WikiEntry["status"];
 export type WikiEntryVisibility = WikiEntry["visibility"];
 
+export type MyWikiEntry =
+  components["schemas"]["GetV1WikiMyEntriesPositiveResponse"]["data"]["result"][number];
+export type MyWikiEntryActiveChangeRequest = NonNullable<MyWikiEntry["activeChangeRequest"]>;
+
 export type WikiChangeRequest =
   components["schemas"]["GetV1WikiMyChangeRequestsPositiveResponse"]["data"]["result"][number];
 export type WikiChangeRequestTranslation =

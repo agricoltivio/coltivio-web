@@ -26,7 +26,8 @@
     "fromDate": "Du",
     "toDate": "Au",
     "download": "Télécharger",
-    "name": "Nom"
+    "name": "Nom",
+    "unknown": "Inconnu"
   },
   "nav": {
     "groups": {
@@ -834,6 +835,7 @@
     "admin": "Admin",
     "reviewQueue": "File de révision",
     "categories": "Catégories",
+    "manageEntries": "Gérer les entrées",
     "newEntry": "Nouvelle entrée",
     "editEntry": "Modifier l'entrée",
     "entryDetail": "Détails de l'entrée",
@@ -878,7 +880,8 @@
         "under_review": "En cours de révision",
         "approved": "Approuvé",
         "rejected": "Rejeté",
-        "draft": "Brouillon"
+        "draft": "Brouillon",
+        "changes_requested": "Modifications demandées"
       }
     },
     "addCategory": "Ajouter une catégorie",
