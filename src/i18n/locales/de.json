@@ -998,7 +998,7 @@
     "updatePaymentMethod": "Zahlungsmethode aktualisieren",
     "subscribeDialog": {
       "title": "Mitglied werden",
-      "description": "Mit deiner Mitgliedschaft unterstützt du den Verein AgriColtivio. Der Jahresbeitrag von CHF 150.– wird nach Ablauf deiner Schnuppermitgliedschaft am {{date}} belastet."
+      "description": "Mit deiner Mitgliedschaft unterstützt du den Verein AgriColtivio. Der Jahresbeitrag von CHF 50.– wird nach Ablauf deiner Schnuppermitgliedschaft am {{date}} belastet."
     },
     "cancelRenewal": "Austritt erklären",
     "reactivate": "Austritt zurückziehen",
@@ -1028,7 +1028,7 @@
       "autoRenewsOn": "Deine Mitgliedschaft wird am {{date}} automatisch erneuert.",
       "cancelledByUser": "Du hast deine Mitgliedschaft bei AgriColtivio gekündigt. Du hast bis am {{date}} Zugang zu allen Funktionen.",
       "trialEnds": "Schnuppermitgliedschaft endet am",
-      "subscriptionStartsAfterTrial": "Deine Mitgliedschaft ist aktiv. Der Jahresbeitrag von CHF 150.– wird nach Ablauf der Schnuppermitgliedschaft am {{date}} belastet."
+      "subscriptionStartsAfterTrial": "Deine Mitgliedschaft ist aktiv. Der Jahresbeitrag von CHF 50.– wird nach Ablauf der Schnuppermitgliedschaft am {{date}} belastet."
     },
     "paywall": {
       "noMembership": "Dein Hof ist noch kein Mitglied des Vereins AgriColtivio",
@@ -1038,7 +1038,7 @@
       "trialInfo": "Keine Kreditkarte erforderlich",
       "or": "oder",
       "subscribe": "Mitglied werden",
-      "priceInfo": "CHF 150.– / Jahr",
+      "priceInfo": "CHF 50.– / Jahr",
       "features": {
         "app": {
           "title": "App",

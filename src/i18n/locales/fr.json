@@ -998,7 +998,7 @@
     "updatePaymentMethod": "Mettre à jour le moyen de paiement",
     "subscribeDialog": {
       "title": "Devenir membre",
-      "description": "Avec ton adhésion tu soutiens l'association AgriColtivio. La cotisation annuelle de CHF 150.– sera prélevée à la fin de ton adhésion d'essai le {{date}}."
+      "description": "Avec ton adhésion tu soutiens l'association AgriColtivio. La cotisation annuelle de CHF 50.– sera prélevée à la fin de ton adhésion d'essai le {{date}}."
     },
     "cancelRenewal": "Déclarer sa démission",
     "reactivate": "Retirer sa démission",
@@ -1028,7 +1028,7 @@
       "autoRenewsOn": "Votre adhésion sera automatiquement renouvelée le {{date}}.",
       "cancelledByUser": "Vous avez résilié votre adhésion à AgriColtivio. Vous avez accès à toutes les fonctionnalités jusqu'au {{date}}.",
       "trialEnds": "Adhésion d'essai se termine le",
-      "subscriptionStartsAfterTrial": "Ton adhésion est active. La cotisation annuelle de CHF 150.– sera prélevée à la fin de ton essai le {{date}}."
+      "subscriptionStartsAfterTrial": "Ton adhésion est active. La cotisation annuelle de CHF 50.– sera prélevée à la fin de ton essai le {{date}}."
     },
     "paywall": {
       "noMembership": "Ta ferme n'est pas encore membre de l'association AgriColtivio",
@@ -1038,7 +1038,7 @@
       "trialInfo": "Aucune carte de crédit requise",
       "or": "ou",
       "subscribe": "Devenir membre",
-      "priceInfo": "CHF 150.– / an",
+      "priceInfo": "CHF 50.– / an",
       "features": {
         "app": {
           "title": "App",
