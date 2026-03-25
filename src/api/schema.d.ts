@@ -1756,15 +1756,15 @@ export interface paths {
             cookie?: never;
         };
         get: operations["GetV1OrdersInvoiceSettings"];
-        put: operations["PutV1OrdersInvoiceSettings"];
-        post?: never;
+        put?: never;
+        post: operations["PostV1OrdersInvoiceSettings"];
         delete?: never;
         options?: never;
         head: operations["HeadV1OrdersInvoiceSettings"];
         patch?: never;
         trace?: never;
     };
-    "/v1/orders/invoiceSettings/logo": {
+    "/v1/orders/invoiceSettings/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1772,9 +1772,25 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["PutV1OrdersInvoiceSettingsLogo"];
+        put: operations["PutV1OrdersInvoiceSettingsId"];
         post?: never;
-        delete: operations["DeleteV1OrdersInvoiceSettingsLogo"];
+        delete: operations["DeleteV1OrdersInvoiceSettingsId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orders/invoiceSettings/{id}/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["PutV1OrdersInvoiceSettingsIdLogo"];
+        post?: never;
+        delete: operations["DeleteV1OrdersInvoiceSettingsIdLogo"];
         options?: never;
         head?: never;
         patch?: never;
@@ -8365,6 +8381,7 @@ export interface components {
                 result: {
                     id: string;
                     farmId: string;
+                    name: string;
                     senderName: string;
                     street: string;
                     zip: string;
@@ -8379,13 +8396,14 @@ export interface components {
                     closingText: string | null;
                     hasLogo: boolean;
                     updatedAt: unknown;
-                } | null;
+                }[];
             };
         };
-        PutV1OrdersInvoiceSettingsPositiveResponse: {
+        PostV1OrdersInvoiceSettingsPositiveResponse: {
             data: {
                 id: string;
                 farmId: string;
+                name: string;
                 senderName: string;
                 street: string;
                 zip: string;
@@ -8402,7 +8420,8 @@ export interface components {
                 updatedAt: unknown;
             };
         };
-        PutV1OrdersInvoiceSettingsRequestBody: {
+        PostV1OrdersInvoiceSettingsRequestBody: {
+            name: string;
             senderName?: string;
             street?: string;
             zip?: string;
@@ -8416,10 +8435,11 @@ export interface components {
             introText?: string | null;
             closingText?: string | null;
         };
-        PutV1OrdersInvoiceSettingsLogoPositiveResponse: {
+        PutV1OrdersInvoiceSettingsIdPositiveResponse: {
             data: {
                 id: string;
                 farmId: string;
+                name: string;
                 senderName: string;
                 street: string;
                 zip: string;
@@ -8436,12 +8456,53 @@ export interface components {
                 updatedAt: unknown;
             };
         };
-        PutV1OrdersInvoiceSettingsLogoRequestBody: {
+        PutV1OrdersInvoiceSettingsIdRequestBody: {
+            name?: string;
+            senderName?: string;
+            street?: string;
+            zip?: string;
+            city?: string;
+            phone?: string | null;
+            email?: string | null;
+            website?: string | null;
+            iban?: string | null;
+            bankName?: string | null;
+            paymentTermsDays?: number;
+            introText?: string | null;
+            closingText?: string | null;
+        };
+        DeleteV1OrdersInvoiceSettingsIdPositiveResponse: {
+            data: {
+                success: boolean;
+            };
+        };
+        PutV1OrdersInvoiceSettingsIdLogoPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                senderName: string;
+                street: string;
+                zip: string;
+                city: string;
+                phone: string | null;
+                email: string | null;
+                website: string | null;
+                iban: string | null;
+                bankName: string | null;
+                paymentTermsDays: number;
+                introText: string | null;
+                closingText: string | null;
+                hasLogo: boolean;
+                updatedAt: unknown;
+            };
+        };
+        PutV1OrdersInvoiceSettingsIdLogoRequestBody: {
             base64: string;
             /** @enum {string} */
             mimeType: "jpg" | "png";
         };
-        DeleteV1OrdersInvoiceSettingsLogoPositiveResponse: {
+        DeleteV1OrdersInvoiceSettingsIdLogoPositiveResponse: {
             data: {
                 success: boolean;
             };
@@ -8454,6 +8515,7 @@ export interface components {
         };
         PostV1OrdersInvoicesRequestBody: {
             orderIds: string[];
+            settingsId: string;
             /**
              * @default single
              * @enum {string}
@@ -8686,7 +8748,9 @@ export interface components {
                 fileName: string;
             };
         };
-        PostV1OrdersByIdOrderIdInvoiceRequestBody: Record<string, never>;
+        PostV1OrdersByIdOrderIdInvoiceRequestBody: {
+            settingsId: string;
+        };
         GetV1PaymentsPositiveResponse: {
             data: {
                 result: {
@@ -18861,30 +18925,30 @@ export interface operations {
             };
         };
     };
-    PutV1OrdersInvoiceSettings: {
+    PostV1OrdersInvoiceSettings: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** @description PUT /v1/orders/invoiceSettings Request body */
-        requestBody?: {
+        /** @description POST /v1/orders/invoiceSettings Request body */
+        requestBody: {
             content: {
-                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsRequestBody"];
+                "application/json": components["schemas"]["PostV1OrdersInvoiceSettingsRequestBody"];
             };
         };
         responses: {
-            /** @description PUT /v1/orders/invoiceSettings Positive response */
+            /** @description POST /v1/orders/invoiceSettings Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsPositiveResponse"];
+                    "application/json": components["schemas"]["PostV1OrdersInvoiceSettingsPositiveResponse"];
                 };
             };
-            /** @description PUT /v1/orders/invoiceSettings Negative response */
+            /** @description POST /v1/orders/invoiceSettings Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18920,30 +18984,33 @@ export interface operations {
             };
         };
     };
-    PutV1OrdersInvoiceSettingsLogo: {
+    PutV1OrdersInvoiceSettingsId: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description PUT /v1/orders/invoiceSettings/:id Parameter */
+                id: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
             cookie?: never;
         };
-        /** @description PUT /v1/orders/invoiceSettings/logo Request body */
-        requestBody: {
+        /** @description PUT /v1/orders/invoiceSettings/:id Request body */
+        requestBody?: {
             content: {
-                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoRequestBody"];
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsIdRequestBody"];
             };
         };
         responses: {
-            /** @description PUT /v1/orders/invoiceSettings/logo Positive response */
+            /** @description PUT /v1/orders/invoiceSettings/:id Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsIdPositiveResponse"];
                 };
             };
-            /** @description PUT /v1/orders/invoiceSettings/logo Negative response */
+            /** @description PUT /v1/orders/invoiceSettings/:id Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -18954,25 +19021,97 @@ export interface operations {
             };
         };
     };
-    DeleteV1OrdersInvoiceSettingsLogo: {
+    DeleteV1OrdersInvoiceSettingsId: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description DELETE /v1/orders/invoiceSettings/:id Parameter */
+                id: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description DELETE /v1/orders/invoiceSettings/logo Positive response */
+            /** @description DELETE /v1/orders/invoiceSettings/:id Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeleteV1OrdersInvoiceSettingsLogoPositiveResponse"];
+                    "application/json": components["schemas"]["DeleteV1OrdersInvoiceSettingsIdPositiveResponse"];
                 };
             };
-            /** @description DELETE /v1/orders/invoiceSettings/logo Negative response */
+            /** @description DELETE /v1/orders/invoiceSettings/:id Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PutV1OrdersInvoiceSettingsIdLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PUT /v1/orders/invoiceSettings/:id/logo Parameter */
+                id: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PUT /v1/orders/invoiceSettings/:id/logo Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsIdLogoRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/orders/invoiceSettings/:id/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1OrdersInvoiceSettingsIdLogoPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/orders/invoiceSettings/:id/logo Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1OrdersInvoiceSettingsIdLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/orders/invoiceSettings/:id/logo Parameter */
+                id: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/orders/invoiceSettings/:id/logo Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1OrdersInvoiceSettingsIdLogoPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/orders/invoiceSettings/:id/logo Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -19406,7 +19545,7 @@ export interface operations {
             cookie?: never;
         };
         /** @description POST /v1/orders/byId/:orderId/invoice Request body */
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["PostV1OrdersByIdOrderIdInvoiceRequestBody"];
             };

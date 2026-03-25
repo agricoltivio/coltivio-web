@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ordersQueryOptions } from "@/api/orders.queries";
+import { ordersQueryOptions, invoiceSettingsQueryOptions } from "@/api/orders.queries";
+import { InvoiceSettingSelect } from "@/components/InvoiceSettingSelect";
 import { apiClient } from "@/api/client";
 import type { Order, OrderStatus } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
@@ -23,6 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export const Route = createFileRoute("/_authed/orders/")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(ordersQueryOptions());
+    queryClient.ensureQueryData(invoiceSettingsQueryOptions());
   },
   component: Orders,
 });
@@ -55,6 +57,7 @@ function Orders() {
   const ordersQuery = useQuery(ordersQueryOptions());
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [invoiceModeDialogOpen, setInvoiceModeDialogOpen] = useState(false);
+  const [invoiceSettingsId, setInvoiceSettingsId] = useState("");
 
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
@@ -64,12 +67,14 @@ function Orders() {
     mutationFn: async ({
       orderIds,
       mode,
+      settingsId,
     }: {
       orderIds: string[];
       mode: "single" | "zip";
+      settingsId: string;
     }) => {
       const response = await apiClient.POST("/v1/orders/invoices", {
-        body: { orderIds, mode },
+        body: { orderIds, mode, settingsId },
       });
       if (response.error) throw new Error("Failed to generate invoices");
       return response.data.data;
@@ -77,6 +82,7 @@ function Orders() {
     onSuccess: ({ base64, fileName }) => {
       downloadBase64File(base64, fileName);
       setInvoiceModeDialogOpen(false);
+      setInvoiceSettingsId("");
     },
   });
 
@@ -279,22 +285,28 @@ function Orders() {
           <DialogHeader>
             <DialogTitle>{t("orders.downloadInvoices", { count: selectedCount })}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">{t("orders.selectInvoiceMode")}</p>
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm font-medium mb-1">{t("orders.invoiceSetting")}</p>
+              <InvoiceSettingSelect value={invoiceSettingsId} onChange={setInvoiceSettingsId} />
+            </div>
+            <p className="text-sm text-muted-foreground">{t("orders.selectInvoiceMode")}</p>
+          </div>
           <DialogFooter className="flex-col sm:flex-col gap-2">
             <Button
               onClick={() =>
-                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "single" })
+                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "single", settingsId: invoiceSettingsId })
               }
-              disabled={bulkInvoiceMutation.isPending}
+              disabled={bulkInvoiceMutation.isPending || !invoiceSettingsId}
             >
               {t("orders.invoiceModeSingle")}
             </Button>
             <Button
               variant="outline"
               onClick={() =>
-                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "zip" })
+                bulkInvoiceMutation.mutate({ orderIds: selectedOrderIds, mode: "zip", settingsId: invoiceSettingsId })
               }
-              disabled={bulkInvoiceMutation.isPending}
+              disabled={bulkInvoiceMutation.isPending || !invoiceSettingsId}
             >
               {t("orders.invoiceModeZip")}
             </Button>

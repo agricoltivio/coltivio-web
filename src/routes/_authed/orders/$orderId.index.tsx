@@ -4,7 +4,8 @@ import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { PlusIcon, PencilIcon, TrashIcon, CheckIcon, XIcon } from "lucide-react";
-import { orderQueryOptions } from "@/api/orders.queries";
+import { orderQueryOptions, invoiceSettingsQueryOptions } from "@/api/orders.queries";
+import { InvoiceSettingSelect } from "@/components/InvoiceSettingSelect";
 import { activeProductsQueryOptions } from "@/api/products.queries";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
@@ -22,6 +23,13 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Combobox,
   ComboboxInput,
   ComboboxContent,
@@ -37,6 +45,7 @@ export const Route = createFileRoute("/_authed/orders/$orderId/")({
     return Promise.all([
       queryClient.ensureQueryData(orderQueryOptions(params.orderId)),
       queryClient.ensureQueryData(activeProductsQueryOptions()),
+      queryClient.ensureQueryData(invoiceSettingsQueryOptions()),
     ]);
   },
   component: OrderDetailPage,
@@ -71,6 +80,10 @@ function OrderDetailPage() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editQty, setEditQty] = useState(1);
   const [editPrice, setEditPrice] = useState(0);
+
+  // Invoice download dialog state
+  const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+  const [invoiceSettingsId, setInvoiceSettingsId] = useState("");
 
   // Add-item row state
   const [addingItem, setAddingItem] = useState(false);
@@ -225,10 +238,10 @@ function OrderDetailPage() {
   const paidTotal = order.payments.reduce((sum, p) => sum + p.amount, 0);
   const isPaid = paidTotal >= itemsTotal && itemsTotal > 0;
   const invoiceMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (settingsId: string) => {
       const response = await apiClient.POST(
         "/v1/orders/byId/{orderId}/invoice",
-        { params: { path: { orderId } }, body: {} },
+        { params: { path: { orderId } }, body: { settingsId } },
       );
       if (response.error) throw new Error("Failed to generate invoice");
       return response.data.data;
@@ -238,6 +251,8 @@ function OrderDetailPage() {
       link.href = `data:application/octet-stream;base64,${base64}`;
       link.download = fileName;
       link.click();
+      setInvoiceDialogOpen(false);
+      setInvoiceSettingsId("");
     },
   });
 
@@ -297,12 +312,9 @@ function OrderDetailPage() {
           )}
           <Button
             variant="outline"
-            onClick={() => invoiceMutation.mutate()}
-            disabled={invoiceMutation.isPending}
+            onClick={() => setInvoiceDialogOpen(true)}
           >
-            {invoiceMutation.isPending
-              ? t("common.loading")
-              : t("orders.downloadInvoice")}
+            {t("orders.downloadInvoice")}
           </Button>
           <Button variant="outline" asChild>
             <Link to="/orders/$orderId/edit" params={{ orderId }}>
@@ -651,6 +663,29 @@ function OrderDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={invoiceDialogOpen} onOpenChange={setInvoiceDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("orders.downloadInvoice")}</DialogTitle>
+          </DialogHeader>
+          <div>
+            <p className="text-sm font-medium mb-1">{t("orders.invoiceSetting")}</p>
+            <InvoiceSettingSelect value={invoiceSettingsId} onChange={setInvoiceSettingsId} />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setInvoiceDialogOpen(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={() => invoiceMutation.mutate(invoiceSettingsId)}
+              disabled={!invoiceSettingsId || invoiceMutation.isPending}
+            >
+              {invoiceMutation.isPending ? t("common.loading") : t("orders.downloadInvoice")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContent>
   );
 }

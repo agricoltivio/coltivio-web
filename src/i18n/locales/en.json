@@ -25,7 +25,8 @@
     "exporting": "Exporting...",
     "fromDate": "From",
     "toDate": "To",
-    "download": "Download"
+    "download": "Download",
+    "name": "Name"
   },
   "nav": {
     "groups": {
@@ -333,6 +334,12 @@
     "downloadInvoice": "Download Invoice",
     "downloadInvoices": "Download Invoices ({{count}})",
     "invoiceSettings": "Invoice Settings",
+    "noInvoiceSettings": "No invoice settings created yet.",
+    "createInvoiceSettings": "Create Invoice Settings",
+    "invoiceSettingsNamePlaceholder": "e.g. Default",
+    "invoiceSetting": "Invoice Settings",
+    "selectInvoiceSetting": "Select settings",
+    "invoicePreview": "Preview",
     "senderName": "Sender Name",
     "paymentTermsDays": "Payment Terms (Days)",
     "introText": "Intro Text",

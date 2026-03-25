@@ -20,7 +20,20 @@ export const invoiceSettingsQueryOptions = () =>
     queryFn: async () => {
       const response = await apiClient.GET("/v1/orders/invoiceSettings");
       if (response.error) throw new Error("Failed to fetch invoice settings");
-      return response.data.data.result; // null if not yet configured
+      return response.data.data.result;
+    },
+  });
+
+export const invoiceSettingQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["orders", "invoiceSettings", id],
+    queryFn: async () => {
+      // No single-item GET endpoint — load list and find by id
+      const response = await apiClient.GET("/v1/orders/invoiceSettings");
+      if (response.error) throw new Error("Failed to fetch invoice settings");
+      const found = response.data.data.result.find((s) => s.id === id);
+      if (!found) throw new Error("Invoice settings not found");
+      return found;
     },
   });
 

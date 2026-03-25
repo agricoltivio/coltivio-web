@@ -25,7 +25,8 @@
     "exporting": "Exportation...",
     "fromDate": "Du",
     "toDate": "Au",
-    "download": "Télécharger"
+    "download": "Télécharger",
+    "name": "Nom"
   },
   "nav": {
     "groups": {
@@ -333,6 +334,12 @@
     "downloadInvoice": "Télécharger la facture",
     "downloadInvoices": "Télécharger les factures ({{count}})",
     "invoiceSettings": "Paramètres de facturation",
+    "noInvoiceSettings": "Aucun paramètre de facturation créé.",
+    "createInvoiceSettings": "Créer des paramètres de facturation",
+    "invoiceSettingsNamePlaceholder": "p.ex. Standard",
+    "invoiceSetting": "Paramètres de facturation",
+    "selectInvoiceSetting": "Choisir les paramètres",
+    "invoicePreview": "Aperçu",
     "senderName": "Nom de l'expéditeur",
     "paymentTermsDays": "Délai de paiement (jours)",
     "introText": "Texte d'introduction",

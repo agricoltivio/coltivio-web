@@ -25,7 +25,8 @@
     "exporting": "Exportieren...",
     "fromDate": "Von",
     "toDate": "Bis",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "name": "Name"
   },
   "nav": {
     "groups": {
@@ -333,6 +334,12 @@
     "downloadInvoice": "Rechnung herunterladen",
     "downloadInvoices": "Rechnungen herunterladen ({{count}})",
     "invoiceSettings": "Rechnungseinstellungen",
+    "noInvoiceSettings": "Noch keine Rechnungseinstellungen erstellt.",
+    "createInvoiceSettings": "Rechnungseinstellungen erstellen",
+    "invoiceSettingsNamePlaceholder": "z.B. Standard",
+    "invoiceSetting": "Rechnungseinstellungen",
+    "selectInvoiceSetting": "Einstellungen auswählen",
+    "invoicePreview": "Vorschau",
     "senderName": "Absendername",
     "paymentTermsDays": "Zahlungsfrist (Tage)",
     "introText": "Einleitungstext",

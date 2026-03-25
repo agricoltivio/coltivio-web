@@ -76,6 +76,7 @@ import { Route as AuthedSponsorshipsProgramsIndexRouteImport } from './routes/_a
 import { Route as AuthedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.index'
 import { Route as AuthedProductsProductIdIndexRouteImport } from './routes/_authed/products/$productId.index'
 import { Route as AuthedPaymentsPaymentIdIndexRouteImport } from './routes/_authed/payments/$paymentId.index'
+import { Route as AuthedOrdersInvoiceSettingsIndexRouteImport } from './routes/_authed/orders/invoice-settings.index'
 import { Route as AuthedOrdersOrderIdIndexRouteImport } from './routes/_authed/orders/$orderId.index'
 import { Route as AuthedDrugsDrugIdIndexRouteImport } from './routes/_authed/drugs/$drugId.index'
 import { Route as AuthedContactsContactIdIndexRouteImport } from './routes/_authed/contacts/$contactId.index'
@@ -87,6 +88,8 @@ import { Route as AuthedSponsorshipsProgramsCreateRouteImport } from './routes/_
 import { Route as AuthedSponsorshipsSponsorshipIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.edit'
 import { Route as AuthedProductsProductIdEditRouteImport } from './routes/_authed/products/$productId.edit'
 import { Route as AuthedPaymentsPaymentIdEditRouteImport } from './routes/_authed/payments/$paymentId.edit'
+import { Route as AuthedOrdersInvoiceSettingsCreateRouteImport } from './routes/_authed/orders/invoice-settings.create'
+import { Route as AuthedOrdersInvoiceSettingsSettingsIdRouteImport } from './routes/_authed/orders/invoice-settings.$settingsId'
 import { Route as AuthedOrdersOrderIdEditRouteImport } from './routes/_authed/orders/$orderId.edit'
 import { Route as AuthedFieldCalendarTillagesCreateRouteImport } from './routes/_authed/field-calendar/tillages_.create'
 import { Route as AuthedFieldCalendarTillagesTillageIdRouteImport } from './routes/_authed/field-calendar/tillages_.$tillageId'
@@ -479,6 +482,12 @@ const AuthedPaymentsPaymentIdIndexRoute =
     path: '/$paymentId/',
     getParentRoute: () => AuthedPaymentsRouteRoute,
   } as any)
+const AuthedOrdersInvoiceSettingsIndexRoute =
+  AuthedOrdersInvoiceSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthedOrdersInvoiceSettingsRoute,
+  } as any)
 const AuthedOrdersOrderIdIndexRoute =
   AuthedOrdersOrderIdIndexRouteImport.update({
     id: '/$orderId/',
@@ -541,6 +550,18 @@ const AuthedPaymentsPaymentIdEditRoute =
     id: '/$paymentId/edit',
     path: '/$paymentId/edit',
     getParentRoute: () => AuthedPaymentsRouteRoute,
+  } as any)
+const AuthedOrdersInvoiceSettingsCreateRoute =
+  AuthedOrdersInvoiceSettingsCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => AuthedOrdersInvoiceSettingsRoute,
+  } as any)
+const AuthedOrdersInvoiceSettingsSettingsIdRoute =
+  AuthedOrdersInvoiceSettingsSettingsIdRouteImport.update({
+    id: '/$settingsId',
+    path: '/$settingsId',
+    getParentRoute: () => AuthedOrdersInvoiceSettingsRoute,
   } as any)
 const AuthedOrdersOrderIdEditRoute = AuthedOrdersOrderIdEditRouteImport.update({
   id: '/$orderId/edit',
@@ -794,7 +815,7 @@ export interface FileRoutesByFullPath {
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
-  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
+  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRouteWithChildren
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -834,6 +855,8 @@ export interface FileRoutesByFullPath {
   '/field-calendar/tillages/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/field-calendar/tillages/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
+  '/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
+  '/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
   '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
@@ -845,6 +868,7 @@ export interface FileRoutesByFullPath {
   '/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
   '/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
+  '/orders/invoice-settings/': typeof AuthedOrdersInvoiceSettingsIndexRoute
   '/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
@@ -901,7 +925,6 @@ export interface FileRoutesByTo {
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
-  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
   '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -941,6 +964,8 @@ export interface FileRoutesByTo {
   '/field-calendar/tillages/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/field-calendar/tillages/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
+  '/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
+  '/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
   '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
@@ -952,6 +977,7 @@ export interface FileRoutesByTo {
   '/contacts/$contactId': typeof AuthedContactsContactIdIndexRoute
   '/drugs/$drugId': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId': typeof AuthedOrdersOrderIdIndexRoute
+  '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsIndexRoute
   '/payments/$paymentId': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
@@ -1017,7 +1043,7 @@ export interface FileRoutesById {
   '/_authed/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/_authed/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/_authed/orders/create': typeof AuthedOrdersCreateRoute
-  '/_authed/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRoute
+  '/_authed/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRouteWithChildren
   '/_authed/payments/create': typeof AuthedPaymentsCreateRoute
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
@@ -1057,6 +1083,8 @@ export interface FileRoutesById {
   '/_authed/field-calendar/tillages_/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/_authed/field-calendar/tillages_/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/_authed/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
+  '/_authed/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
+  '/_authed/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
   '/_authed/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/_authed/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/_authed/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
@@ -1068,6 +1096,7 @@ export interface FileRoutesById {
   '/_authed/contacts/$contactId/': typeof AuthedContactsContactIdIndexRoute
   '/_authed/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/_authed/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
+  '/_authed/orders/invoice-settings/': typeof AuthedOrdersInvoiceSettingsIndexRoute
   '/_authed/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/_authed/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
@@ -1173,6 +1202,8 @@ export interface FileRouteTypes {
     | '/field-calendar/tillages/$tillageId'
     | '/field-calendar/tillages/create'
     | '/orders/$orderId/edit'
+    | '/orders/invoice-settings/$settingsId'
+    | '/orders/invoice-settings/create'
     | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
@@ -1184,6 +1215,7 @@ export interface FileRouteTypes {
     | '/contacts/$contactId/'
     | '/drugs/$drugId/'
     | '/orders/$orderId/'
+    | '/orders/invoice-settings/'
     | '/payments/$paymentId/'
     | '/products/$productId/'
     | '/sponsorships/$sponsorshipId/'
@@ -1240,7 +1272,6 @@ export interface FileRouteTypes {
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
     | '/orders/create'
-    | '/orders/invoice-settings'
     | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
@@ -1280,6 +1311,8 @@ export interface FileRouteTypes {
     | '/field-calendar/tillages/$tillageId'
     | '/field-calendar/tillages/create'
     | '/orders/$orderId/edit'
+    | '/orders/invoice-settings/$settingsId'
+    | '/orders/invoice-settings/create'
     | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
@@ -1291,6 +1324,7 @@ export interface FileRouteTypes {
     | '/contacts/$contactId'
     | '/drugs/$drugId'
     | '/orders/$orderId'
+    | '/orders/invoice-settings'
     | '/payments/$paymentId'
     | '/products/$productId'
     | '/sponsorships/$sponsorshipId'
@@ -1395,6 +1429,8 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/tillages_/$tillageId'
     | '/_authed/field-calendar/tillages_/create'
     | '/_authed/orders/$orderId/edit'
+    | '/_authed/orders/invoice-settings/$settingsId'
+    | '/_authed/orders/invoice-settings/create'
     | '/_authed/payments/$paymentId/edit'
     | '/_authed/products/$productId/edit'
     | '/_authed/sponsorships/$sponsorshipId/edit'
@@ -1406,6 +1442,7 @@ export interface FileRouteTypes {
     | '/_authed/contacts/$contactId/'
     | '/_authed/drugs/$drugId/'
     | '/_authed/orders/$orderId/'
+    | '/_authed/orders/invoice-settings/'
     | '/_authed/payments/$paymentId/'
     | '/_authed/products/$productId/'
     | '/_authed/sponsorships/$sponsorshipId/'
@@ -1915,6 +1952,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedPaymentsPaymentIdIndexRouteImport
       parentRoute: typeof AuthedPaymentsRouteRoute
     }
+    '/_authed/orders/invoice-settings/': {
+      id: '/_authed/orders/invoice-settings/'
+      path: '/'
+      fullPath: '/orders/invoice-settings/'
+      preLoaderRoute: typeof AuthedOrdersInvoiceSettingsIndexRouteImport
+      parentRoute: typeof AuthedOrdersInvoiceSettingsRoute
+    }
     '/_authed/orders/$orderId/': {
       id: '/_authed/orders/$orderId/'
       path: '/$orderId'
@@ -1991,6 +2035,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/payments/$paymentId/edit'
       preLoaderRoute: typeof AuthedPaymentsPaymentIdEditRouteImport
       parentRoute: typeof AuthedPaymentsRouteRoute
+    }
+    '/_authed/orders/invoice-settings/create': {
+      id: '/_authed/orders/invoice-settings/create'
+      path: '/create'
+      fullPath: '/orders/invoice-settings/create'
+      preLoaderRoute: typeof AuthedOrdersInvoiceSettingsCreateRouteImport
+      parentRoute: typeof AuthedOrdersInvoiceSettingsRoute
+    }
+    '/_authed/orders/invoice-settings/$settingsId': {
+      id: '/_authed/orders/invoice-settings/$settingsId'
+      path: '/$settingsId'
+      fullPath: '/orders/invoice-settings/$settingsId'
+      preLoaderRoute: typeof AuthedOrdersInvoiceSettingsSettingsIdRouteImport
+      parentRoute: typeof AuthedOrdersInvoiceSettingsRoute
     }
     '/_authed/orders/$orderId/edit': {
       id: '/_authed/orders/$orderId/edit'
@@ -2257,9 +2315,30 @@ const AuthedContactsRouteRouteChildren: AuthedContactsRouteRouteChildren = {
 const AuthedContactsRouteRouteWithChildren =
   AuthedContactsRouteRoute._addFileChildren(AuthedContactsRouteRouteChildren)
 
+interface AuthedOrdersInvoiceSettingsRouteChildren {
+  AuthedOrdersInvoiceSettingsSettingsIdRoute: typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
+  AuthedOrdersInvoiceSettingsCreateRoute: typeof AuthedOrdersInvoiceSettingsCreateRoute
+  AuthedOrdersInvoiceSettingsIndexRoute: typeof AuthedOrdersInvoiceSettingsIndexRoute
+}
+
+const AuthedOrdersInvoiceSettingsRouteChildren: AuthedOrdersInvoiceSettingsRouteChildren =
+  {
+    AuthedOrdersInvoiceSettingsSettingsIdRoute:
+      AuthedOrdersInvoiceSettingsSettingsIdRoute,
+    AuthedOrdersInvoiceSettingsCreateRoute:
+      AuthedOrdersInvoiceSettingsCreateRoute,
+    AuthedOrdersInvoiceSettingsIndexRoute:
+      AuthedOrdersInvoiceSettingsIndexRoute,
+  }
+
+const AuthedOrdersInvoiceSettingsRouteWithChildren =
+  AuthedOrdersInvoiceSettingsRoute._addFileChildren(
+    AuthedOrdersInvoiceSettingsRouteChildren,
+  )
+
 interface AuthedOrdersRouteRouteChildren {
   AuthedOrdersCreateRoute: typeof AuthedOrdersCreateRoute
-  AuthedOrdersInvoiceSettingsRoute: typeof AuthedOrdersInvoiceSettingsRoute
+  AuthedOrdersInvoiceSettingsRoute: typeof AuthedOrdersInvoiceSettingsRouteWithChildren
   AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
   AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
   AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
@@ -2267,7 +2346,8 @@ interface AuthedOrdersRouteRouteChildren {
 
 const AuthedOrdersRouteRouteChildren: AuthedOrdersRouteRouteChildren = {
   AuthedOrdersCreateRoute: AuthedOrdersCreateRoute,
-  AuthedOrdersInvoiceSettingsRoute: AuthedOrdersInvoiceSettingsRoute,
+  AuthedOrdersInvoiceSettingsRoute:
+    AuthedOrdersInvoiceSettingsRouteWithChildren,
   AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
   AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
   AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,

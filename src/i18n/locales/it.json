@@ -25,7 +25,8 @@
     "exporting": "Esportazione...",
     "fromDate": "Dal",
     "toDate": "Al",
-    "download": "Scarica"
+    "download": "Scarica",
+    "name": "Nome"
   },
   "nav": {
     "groups": {
@@ -333,6 +334,12 @@
     "downloadInvoice": "Scarica fattura",
     "downloadInvoices": "Scarica fatture ({{count}})",
     "invoiceSettings": "Impostazioni fattura",
+    "noInvoiceSettings": "Nessuna impostazione fattura creata.",
+    "createInvoiceSettings": "Crea impostazioni fattura",
+    "invoiceSettingsNamePlaceholder": "es. Standard",
+    "invoiceSetting": "Impostazioni fattura",
+    "selectInvoiceSetting": "Seleziona impostazioni",
+    "invoicePreview": "Anteprima",
     "senderName": "Nome mittente",
     "paymentTermsDays": "Termini di pagamento (giorni)",
     "introText": "Testo introduttivo",
