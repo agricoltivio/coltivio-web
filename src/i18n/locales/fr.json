@@ -672,12 +672,16 @@
       "editRotation": "Modifier la rotation",
       "noRotations": "Aucune rotation planifiée",
       "overlapsWith": "Chevauchement avec {{crop}}",
+      "waitingTimeViolation": "Délai d'attente de {{years}} an(s) avec {{crop}} non respecté",
+      "resolveWaitingTimeViolations": "Certains délais d'attente ne sont pas respectés",
       "resolveConflicts": "Veuillez résoudre les conflits avant d'enregistrer",
       "savePlan": "Enregistrer le plan",
       "new": "Nouveau",
       "addRecurrence": "Ajouter une récurrence",
       "recurrence": "Récurrence",
-      "addEndDate": "Ajouter une date de fin"
+      "addEndDate": "Ajouter une date de fin",
+      "plan": "Planifier",
+      "saveAll": "Tout enregistrer"
     },
     "cropRotationDrafts": {
       "title": "Brouillons de rotation",
@@ -692,6 +696,7 @@
       "deleteDraft": "Supprimer le brouillon",
       "deleteDraftConfirm": "Voulez-vous vraiment supprimer ce brouillon?",
       "editPlots": "Modifier les parcelles",
+      "editSelected": "Modifier la sélection",
       "selectAll": "Tout sélectionner",
       "deselectAll": "Tout désélectionner",
       "entries": "{{count}} entrées"

@@ -31,28 +31,19 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
+  detectConflicts,
+  detectWaitingTimeViolations,
+  expandRanges,
   getAllGridLines,
-  getCropCategoryColor,
   getScaleForZoomLevel,
   getTodayX,
+  hexToRgba,
+  stringToColor,
+  type RecurrenceRule,
+  type RotationEntry,
+  type WaitingTimeViolation,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
-
-// --- Domain types scoped to this module ---
-
-type RecurrenceRule = {
-  interval: number; // every N years
-  until?: Date;
-};
-
-type RotationEntry = {
-  entryId: string; // local client-side ID (not the server rotation ID)
-  cropId: string;
-  fromDate: Date;
-  toDate: Date;
-  recurrence?: RecurrenceRule;
-  isNew: boolean; // true = added in this session, not yet on the server
-};
 
 type PlanTimelineBar = {
   entryId: string;
@@ -67,72 +58,6 @@ type PlanTimelineBar = {
 };
 
 // --- Pure utilities ---
-
-function addYears(date: Date, years: number): Date {
-  const result = new Date(date);
-  result.setFullYear(result.getFullYear() + years);
-  return result;
-}
-
-// Expand one entry into its concrete date occurrences up to timelineEnd.
-// Recurring entries produce multiple ranges; single entries produce one.
-function expandRanges(
-  entry: RotationEntry,
-  timelineEnd: Date,
-): Array<{ from: Date; to: Date }> {
-  if (!entry.recurrence) {
-    return [{ from: entry.fromDate, to: entry.toDate }];
-  }
-  const effectiveUntil =
-    entry.recurrence.until && entry.recurrence.until < timelineEnd
-      ? entry.recurrence.until
-      : timelineEnd;
-  const ranges: Array<{ from: Date; to: Date }> = [];
-  const durationMs = entry.toDate.getTime() - entry.fromDate.getTime();
-  let currentFrom = new Date(entry.fromDate);
-  let iteration = 0;
-  while (currentFrom <= effectiveUntil && iteration < 100) {
-    ranges.push({
-      from: new Date(currentFrom),
-      to: new Date(currentFrom.getTime() + durationMs),
-    });
-    currentFrom = addYears(currentFrom, entry.recurrence.interval);
-    iteration++;
-  }
-  return ranges;
-}
-
-// Returns a map of entryId → name of the conflicting crop.
-// Two entries conflict when any of their expanded date ranges overlap.
-function detectConflicts(
-  entries: RotationEntry[],
-  crops: Crop[],
-  timelineEnd: Date,
-): Map<string, string> {
-  const conflicts = new Map<string, string>();
-  const expanded = entries.map((e) => expandRanges(e, timelineEnd));
-
-  for (let i = 0; i < entries.length; i++) {
-    for (let j = i + 1; j < entries.length; j++) {
-      let overlapping = false;
-      outer: for (const rangeA of expanded[i]) {
-        for (const rangeB of expanded[j]) {
-          if (rangeA.from <= rangeB.to && rangeA.to >= rangeB.from) {
-            overlapping = true;
-            break outer;
-          }
-        }
-      }
-      if (overlapping) {
-        const nameI = crops.find((c) => c.id === entries[i].cropId)?.name ?? "?";
-        const nameJ = crops.find((c) => c.id === entries[j].cropId)?.name ?? "?";
-        if (!conflicts.has(entries[i].entryId)) conflicts.set(entries[i].entryId, nameJ);
-        if (!conflicts.has(entries[j].entryId)) conflicts.set(entries[j].entryId, nameI);
-      }
-    }
-  }
-  return conflicts;
-}
 
 // Build flat list of bars for the timeline (recurrences expanded, one bar per occurrence).
 function buildPlanTimelineBars(
@@ -292,6 +217,12 @@ function PlanCropRotations() {
     [rotations, crops],
   );
   const hasConflicts = conflicts.size > 0;
+
+  const waitingTimeViolations = useMemo(
+    () => detectWaitingTimeViolations(rotations, crops, TIMELINE_END),
+    [rotations, crops],
+  );
+  const hasWaitingTimeViolations = waitingTimeViolations.size > 0;
 
   const gridLines = useMemo(
     () => getAllGridLines(zoom, TIMELINE_START, TIMELINE_END, pxPerDay),
@@ -505,12 +436,17 @@ function PlanCropRotations() {
               {timelineBars.map((bar, i) => (
                 <button
                   key={`${bar.entryId}-${i}`}
-                  className={`absolute top-1.5 bottom-1.5 rounded-sm opacity-80 hover:opacity-100 transition-opacity overflow-hidden flex items-center px-1 cursor-pointer ${
-                    bar.hasConflict
-                      ? "bg-destructive"
-                      : getCropCategoryColor(bar.cropCategory)
-                  } ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
-                  style={{ left: bar.left, width: Math.max(bar.width, 4) }}
+                  className={`absolute top-1.5 bottom-1.5 rounded-sm transition-opacity overflow-hidden flex items-center px-1 cursor-pointer hover:opacity-90 ${bar.hasConflict ? "bg-destructive" : ""} ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
+                  style={{
+                    left: bar.left,
+                    width: Math.max(bar.width, 4),
+                    ...(bar.hasConflict
+                      ? {}
+                      : {
+                          backgroundColor: hexToRgba(stringToColor(bar.cropName), 0.82),
+                          borderLeft: `3px solid ${stringToColor(bar.cropName)}`,
+                        }),
+                  }}
                   title={`${bar.cropName}: ${bar.fromDate.toLocaleDateString()} – ${bar.toDate.toLocaleDateString()}`}
                   onClick={() => {
                     const entry = rotations.find((r) => r.entryId === bar.entryId);
@@ -550,10 +486,11 @@ function PlanCropRotations() {
             {rotations.map((entry) => {
               const crop = crops.find((c) => c.id === entry.cropId);
               const conflictMsg = conflicts.get(entry.entryId);
+              const waitingViolation = waitingTimeViolations.get(entry.entryId);
               return (
                 <button
                   key={entry.entryId}
-                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : ""}`}
+                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : waitingViolation ? "border-l-2 border-l-amber-500" : ""}`}
                   onClick={() => openEditDialog(entry)}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -577,6 +514,14 @@ function PlanCropRotations() {
                         <div className="text-xs text-destructive mt-1">
                           {t("fieldCalendar.cropRotations.overlapsWith", {
                             crop: conflictMsg,
+                          })}
+                        </div>
+                      )}
+                      {waitingViolation && !conflictMsg && (
+                        <div className="text-xs text-amber-600 mt-1">
+                          {t("fieldCalendar.cropRotations.waitingTimeViolation", {
+                            crop: waitingViolation.conflictingCropName,
+                            years: waitingViolation.requiredYears,
                           })}
                         </div>
                       )}

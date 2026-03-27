@@ -672,12 +672,16 @@
       "editRotation": "Edit Rotation",
       "noRotations": "No rotations planned yet",
       "overlapsWith": "Overlaps with {{crop}}",
+      "waitingTimeViolation": "{{years}} year(s) waiting time with {{crop}} not met",
+      "resolveWaitingTimeViolations": "Some waiting times are not met",
       "resolveConflicts": "Please resolve conflicts before saving",
       "savePlan": "Save Plan",
       "new": "New",
       "addRecurrence": "Add Recurrence",
       "recurrence": "Recurrence",
-      "addEndDate": "Add End Date"
+      "addEndDate": "Add End Date",
+      "plan": "Plan",
+      "saveAll": "Save All"
     },
     "cropRotationDrafts": {
       "title": "Crop Rotation Drafts",
@@ -692,6 +696,7 @@
       "deleteDraft": "Delete Draft",
       "deleteDraftConfirm": "Are you sure you want to delete this draft?",
       "editPlots": "Edit Plots",
+      "editSelected": "Edit selected",
       "selectAll": "Select All",
       "deselectAll": "Deselect All",
       "entries": "{{count}} entries"

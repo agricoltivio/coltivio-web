@@ -32,6 +32,7 @@ function CropRotations() {
   const navigate = useNavigate();
   const { plotId } = Route.useSearch();
   const [zoom, setZoom] = useState<ZoomLevel>("years");
+  const [selectedPlotIds, setSelectedPlotIds] = useState<string[]>([]);
 
   const currentYear = new Date().getFullYear();
   const timelineStart = new Date(currentYear - 10, 0, 1);
@@ -59,29 +60,27 @@ function CropRotations() {
       title={t("fieldCalendar.cropRotations.title")}
       showBackButton={false}
     >
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-between mb-4">
         <Button variant="outline" size="sm" asChild>
           <Link to="/field-calendar/crop-rotation-drafts">
             {t("fieldCalendar.cropRotationDrafts.drafts")}
           </Link>
         </Button>
-      </div>
-      {/* Planning is per-plot — only show when a plot is filtered */}
-      {plotId && (
-        <div className="flex justify-end mb-4">
+        {selectedPlotIds.length > 0 && (
           <Button
+            size="sm"
             onClick={() =>
               navigate({
-                to: "/field-calendar/plots/$plotId/crop-rotations",
-                params: { plotId },
+                to: "/field-calendar/crop-rotations/plan",
+                search: { plotIds: selectedPlotIds },
               })
             }
           >
             <Plus className="h-4 w-4 mr-2" />
-            {t("fieldCalendar.cropRotations.planFor", { name: "" }).trim()}
+            {t("fieldCalendar.cropRotations.plan")} ({selectedPlotIds.length})
           </Button>
-        </div>
-      )}
+        )}
+      </div>
       <CropRotationTimeline
         rotations={filteredRotations}
         plots={filteredPlots}
@@ -89,6 +88,12 @@ function CropRotations() {
         onZoomChange={setZoom}
         timelineStart={timelineStart}
         timelineEnd={timelineEnd}
+        selectedPlotIds={selectedPlotIds}
+        onPlotSelect={(id, selected) =>
+          setSelectedPlotIds((prev) =>
+            selected ? [...prev, id] : prev.filter((p) => p !== id),
+          )
+        }
         onBarClick={(rotationId) => {
           const rotation = allRotations.find((r) => r.id === rotationId);
           if (rotation) {

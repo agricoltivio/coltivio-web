@@ -672,12 +672,16 @@
       "editRotation": "Rotation bearbeiten",
       "noRotations": "Noch keine Rotationen geplant",
       "overlapsWith": "Überschneidung mit {{crop}}",
+      "waitingTimeViolation": "{{years}} J. Wartezeit zu {{crop}} nicht eingehalten",
+      "resolveWaitingTimeViolations": "Wartezeiten werden nicht eingehalten",
       "resolveConflicts": "Bitte Überschneidungen auflösen vor dem Speichern",
       "savePlan": "Plan speichern",
       "new": "Neu",
       "addRecurrence": "Wiederholung hinzufügen",
       "recurrence": "Wiederholung",
-      "addEndDate": "Enddatum hinzufügen"
+      "addEndDate": "Enddatum hinzufügen",
+      "plan": "Planen",
+      "saveAll": "Alle speichern"
     },
     "cropRotationDrafts": {
       "title": "Fruchtfolge-Entwürfe",
@@ -692,6 +696,7 @@
       "deleteDraft": "Entwurf löschen",
       "deleteDraftConfirm": "Soll dieser Entwurf wirklich gelöscht werden?",
       "editPlots": "Schläge bearbeiten",
+      "editSelected": "Ausgewählte bearbeiten",
       "selectAll": "Alle auswählen",
       "deselectAll": "Alle abwählen",
       "entries": "{{count}} Einträge"

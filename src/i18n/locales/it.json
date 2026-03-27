@@ -672,12 +672,16 @@
       "editRotation": "Modifica rotazione",
       "noRotations": "Nessuna rotazione pianificata",
       "overlapsWith": "Sovrapposizione con {{crop}}",
+      "waitingTimeViolation": "Tempo di attesa di {{years}} anno/i con {{crop}} non rispettato",
+      "resolveWaitingTimeViolations": "Alcuni tempi di attesa non sono rispettati",
       "resolveConflicts": "Risolvere i conflitti prima di salvare",
       "savePlan": "Salva piano",
       "new": "Nuovo",
       "addRecurrence": "Aggiungi ricorrenza",
       "recurrence": "Ricorrenza",
-      "addEndDate": "Aggiungi data di fine"
+      "addEndDate": "Aggiungi data di fine",
+      "plan": "Pianifica",
+      "saveAll": "Salva tutto"
     },
     "cropRotationDrafts": {
       "title": "Bozze di rotazione",
@@ -692,6 +696,7 @@
       "deleteDraft": "Elimina bozza",
       "deleteDraftConfirm": "Sei sicuro di voler eliminare questa bozza?",
       "editPlots": "Modifica appezzamenti",
+      "editSelected": "Modifica selezionati",
       "selectAll": "Seleziona tutto",
       "deselectAll": "Deseleziona tutto",
       "entries": "{{count}} voci"

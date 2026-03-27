@@ -32,9 +32,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   getAllGridLines,
-  getCropCategoryColor,
   getScaleForZoomLevel,
   getTodayX,
+  hexToRgba,
+  stringToColor,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
 
@@ -516,12 +517,17 @@ function PlanDraftCropRotations() {
               {timelineBars.map((bar, i) => (
                 <button
                   key={`${bar.entryId}-${i}`}
-                  className={`absolute top-1.5 bottom-1.5 rounded-sm opacity-80 hover:opacity-100 transition-opacity overflow-hidden flex items-center px-1 cursor-pointer ${
-                    bar.hasConflict
-                      ? "bg-destructive"
-                      : getCropCategoryColor(bar.cropCategory)
-                  } ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
-                  style={{ left: bar.left, width: Math.max(bar.width, 4) }}
+                  className={`absolute top-1.5 bottom-1.5 rounded-sm transition-opacity overflow-hidden flex items-center px-1 cursor-pointer hover:opacity-90 ${bar.hasConflict ? "bg-destructive" : ""} ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
+                  style={{
+                    left: bar.left,
+                    width: Math.max(bar.width, 4),
+                    ...(bar.hasConflict
+                      ? {}
+                      : {
+                          backgroundColor: hexToRgba(stringToColor(bar.cropName), 0.82),
+                          borderLeft: `3px solid ${stringToColor(bar.cropName)}`,
+                        }),
+                  }}
                   title={`${bar.cropName}: ${bar.fromDate.toLocaleDateString()} – ${bar.toDate.toLocaleDateString()}`}
                   onClick={() => {
                     const entry = rotations.find((r) => r.entryId === bar.entryId);

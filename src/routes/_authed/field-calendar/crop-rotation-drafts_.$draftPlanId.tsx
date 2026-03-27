@@ -3,7 +3,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
-import { plotPlanCropRotationsQueryOptions } from "@/api/cropRotations.queries";
 import { draftPlanQueryOptions } from "@/api/cropRotationDrafts.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
 import { CropRotationTimeline } from "@/components/CropRotationTimeline";
@@ -16,9 +15,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import type { CropRotation } from "@/api/types";
-import type { ZoomLevel } from "@/lib/cropRotationTimelineUtils";
+import type { TimelineRotation, ZoomLevel } from "@/lib/cropRotationTimelineUtils";
+import { Plus } from "lucide-react";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId",
@@ -43,38 +42,59 @@ function DraftPlanDetail() {
   const allPlots = plotsQuery.data?.result ?? [];
 
   const [zoom, setZoom] = useState<ZoomLevel>("years");
-  const [applyConfirmOpen, setApplyConfirmOpen] = useState(false);
-  const [editPlotsOpen, setEditPlotsOpen] = useState(false);
   const [selectedPlotIds, setSelectedPlotIds] = useState<string[]>([]);
+  const [applyConfirmOpen, setApplyConfirmOpen] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const timelineStart = new Date(currentYear - 10, 0, 1);
   const timelineEnd = new Date(currentYear + 25, 11, 31, 23, 59, 59);
 
-  // Build CropRotation-compatible objects for the timeline by adding plot.name from allPlots
-  const draftRotations: CropRotation[] = (draft?.plots ?? []).flatMap((draftPlot) => {
-    const plot = allPlots.find((p) => p.id === draftPlot.plotId);
-    const plotName = plot?.name ?? "";
-    return draftPlot.rotations.map((r) => ({
-      ...r,
-      plotId: draftPlot.plotId,
-      plot: { name: plotName },
-    }));
-  });
+  // Build TimelineRotation[] with recurrences expanded from the draft response
+  const timelineRotations: TimelineRotation[] = (draft?.plots ?? []).flatMap((draftPlot) =>
+    draftPlot.rotations.flatMap((r) => {
+      const fromDate = new Date(r.fromDate);
+      const toDate = new Date(r.toDate);
+      if (!r.recurrence) {
+        return [{
+          id: r.id,
+          plotId: draftPlot.plotId,
+          fromDate: r.fromDate,
+          toDate: r.toDate,
+          crop: { name: r.crop.name, category: r.crop.category as CropRotation["crop"]["category"] },
+        }];
+      }
+      // Expand recurring entries
+      const durationMs = toDate.getTime() - fromDate.getTime();
+      const effectiveUntil = r.recurrence.until
+        ? new Date(r.recurrence.until) < timelineEnd ? new Date(r.recurrence.until) : timelineEnd
+        : timelineEnd;
+      const ranges: TimelineRotation[] = [];
+      let current = new Date(fromDate);
+      let iteration = 0;
+      while (current <= effectiveUntil && iteration < 100) {
+        ranges.push({
+          id: `${r.id}-${iteration}`,
+          plotId: draftPlot.plotId,
+          fromDate: current.toISOString(),
+          toDate: new Date(current.getTime() + durationMs).toISOString(),
+          crop: { name: r.crop.name, category: r.crop.category as CropRotation["crop"]["category"] },
+        });
+        current = new Date(current);
+        current.setFullYear(current.getFullYear() + r.recurrence.interval);
+        iteration++;
+      }
+      return ranges;
+    }),
+  );
 
-  // Only show plots that are in the draft
   const draftPlotIds = new Set((draft?.plots ?? []).map((p) => p.plotId));
   const draftPlots = allPlots.filter((p) => draftPlotIds.has(p.id));
-
 
   const applyMutation = useMutation({
     mutationFn: async () => {
       const response = await apiClient.POST(
         "/v1/cropRotations/draftPlans/byId/{draftPlanId}/apply",
-        {
-          params: { path: { draftPlanId } },
-          body: {},
-        },
+        { params: { path: { draftPlanId } }, body: {} },
       );
       if (response.error) throw new Error("Failed to apply draft plan");
     },
@@ -85,74 +105,13 @@ function DraftPlanDetail() {
     },
   });
 
-  const editPlotsMutation = useMutation({
-    mutationFn: async (newPlotIds: string[]) => {
-      if (!draft) return;
-
-      const currentPlotIds = new Set(draft.plots.map((p) => p.plotId));
-      const addedPlotIds = newPlotIds.filter((id) => !currentPlotIds.has(id));
-      const keptPlotIds = new Set(newPlotIds.filter((id) => currentPlotIds.has(id)));
-
-      // Keep existing rotations for plots still in selection
-      const keptPlots = draft.plots
-        .filter((p) => keptPlotIds.has(p.plotId))
-        .map((p) => ({
-          plotId: p.plotId,
-          rotations: p.rotations.map((r) => ({
-            cropId: r.cropId,
-            fromDate: r.fromDate,
-            toDate: r.toDate,
-            sowingDate: r.sowingDate ?? undefined,
-            recurrenceInterval: r.recurrence?.interval,
-            recurrenceUntil: r.recurrence?.until ?? undefined,
-          })),
-        }));
-
-      // Fetch live rotations for newly added plots (one query per plot — proven serialization)
-      let addedPlots: typeof keptPlots = [];
-      if (addedPlotIds.length > 0) {
-        const results = await Promise.all(
-          addedPlotIds.map((plotId) =>
-            queryClient.fetchQuery(plotPlanCropRotationsQueryOptions(plotId)),
-          ),
-        );
-        addedPlots = addedPlotIds.map((plotId, i) => ({
-          plotId,
-          rotations: (results[i].result ?? []).map((r) => ({
-            cropId: r.cropId,
-            fromDate: r.fromDate,
-            toDate: r.toDate,
-            sowingDate: r.sowingDate ?? undefined,
-            recurrenceInterval: r.recurrence?.interval,
-            recurrenceUntil: r.recurrence?.until ?? undefined,
-          })),
-        }));
-      }
-
-      const response = await apiClient.PATCH(
-        "/v1/cropRotations/draftPlans/byId/{draftPlanId}",
-        {
-          params: { path: { draftPlanId } },
-          body: { plots: [...keptPlots, ...addedPlots] },
-        },
-      );
-      if (response.error) throw new Error("Failed to update draft plan plots");
-      return response.data.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["cropRotations", "draftPlans", "byId", draftPlanId],
-      });
-      setEditPlotsOpen(false);
-    },
-  });
-
-  function openEditPlots() {
-    setSelectedPlotIds((draft?.plots ?? []).map((p) => p.plotId));
-    setEditPlotsOpen(true);
+  function navigateToEdit(plotIds: string[]) {
+    void navigate({
+      to: "/field-calendar/crop-rotation-drafts/$draftPlanId/edit",
+      params: { draftPlanId },
+      search: { plotIds },
+    });
   }
-
-  const allSelected = selectedPlotIds.length === allPlots.length;
 
   return (
     <PageContent
@@ -161,45 +120,37 @@ function DraftPlanDetail() {
       backTo={() => void navigate({ to: "/field-calendar/crop-rotation-drafts" })}
     >
       <div className="flex items-center justify-end gap-2 mb-4">
-        <Button variant="outline" size="sm" onClick={openEditPlots}>
-          {t("fieldCalendar.cropRotationDrafts.editPlots")}
-        </Button>
+        {selectedPlotIds.length > 0 && (
+          <Button size="sm" onClick={() => navigateToEdit(selectedPlotIds)}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.cropRotations.plan")} ({selectedPlotIds.length})
+          </Button>
+        )}
         <Button size="sm" onClick={() => setApplyConfirmOpen(true)}>
           {t("fieldCalendar.cropRotationDrafts.applyDraft")}
         </Button>
       </div>
 
       <CropRotationTimeline
-        rotations={draftRotations}
+        rotations={timelineRotations}
         plots={draftPlots}
         zoom={zoom}
         onZoomChange={setZoom}
         timelineStart={timelineStart}
         timelineEnd={timelineEnd}
-        onPlotClick={(plotId) =>
-          void navigate({
-            to: "/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations",
-            params: { draftPlanId, plotId },
-          })
+        selectedPlotIds={selectedPlotIds}
+        onPlotSelect={(plotId, selected) =>
+          setSelectedPlotIds((prev) =>
+            selected ? [...prev, plotId] : prev.filter((id) => id !== plotId),
+          )
         }
-        onBarClick={(rotationId) => {
-          const rotation = draftRotations.find((r) => r.id === rotationId);
-          if (rotation) {
-            void navigate({
-              to: "/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations",
-              params: { draftPlanId, plotId: rotation.plotId },
-            });
-          }
-        }}
+        onPlotClick={(plotId) => navigateToEdit([plotId])}
       />
 
-      {/* Apply confirmation */}
       <Dialog open={applyConfirmOpen} onOpenChange={setApplyConfirmOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>
-              {t("fieldCalendar.cropRotationDrafts.applyDraft")}
-            </DialogTitle>
+            <DialogTitle>{t("fieldCalendar.cropRotationDrafts.applyDraft")}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
             {t("fieldCalendar.cropRotationDrafts.applyDraftConfirm")}
@@ -208,78 +159,8 @@ function DraftPlanDetail() {
             <Button variant="outline" onClick={() => setApplyConfirmOpen(false)}>
               {t("common.cancel")}
             </Button>
-            <Button
-              onClick={() => applyMutation.mutate()}
-              disabled={applyMutation.isPending}
-            >
+            <Button onClick={() => applyMutation.mutate()} disabled={applyMutation.isPending}>
               {t("fieldCalendar.cropRotationDrafts.applyDraft")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit plots dialog */}
-      <Dialog open={editPlotsOpen} onOpenChange={setEditPlotsOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {t("fieldCalendar.cropRotationDrafts.editPlots")}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-1.5 mt-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                {t("fieldCalendar.cropRotationDrafts.selectPlots")}
-              </span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-auto py-0 text-xs"
-                onClick={() =>
-                  allSelected
-                    ? setSelectedPlotIds([])
-                    : setSelectedPlotIds(allPlots.map((p) => p.id))
-                }
-              >
-                {allSelected
-                  ? t("fieldCalendar.cropRotationDrafts.deselectAll")
-                  : t("fieldCalendar.cropRotationDrafts.selectAll")}
-              </Button>
-            </div>
-            <div className="rounded-md border max-h-48 overflow-y-auto divide-y">
-              {allPlots.map((plot) => (
-                <label
-                  key={plot.id}
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-muted/50 cursor-pointer"
-                >
-                  <Checkbox
-                    checked={selectedPlotIds.includes(plot.id)}
-                    onCheckedChange={(checked) =>
-                      setSelectedPlotIds((prev) =>
-                        checked
-                          ? [...prev, plot.id]
-                          : prev.filter((id) => id !== plot.id),
-                      )
-                    }
-                  />
-                  <span className="text-sm">{plot.name}</span>
-                </label>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t("fieldCalendar.cropRotationDrafts.selectPlotsHint")}
-            </p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditPlotsOpen(false)}>
-              {t("common.cancel")}
-            </Button>
-            <Button
-              onClick={() => editPlotsMutation.mutate(selectedPlotIds)}
-              disabled={editPlotsMutation.isPending}
-            >
-              {t("common.save")}
             </Button>
           </DialogFooter>
         </DialogContent>
