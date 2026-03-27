@@ -3,27 +3,36 @@ import { useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   buildTimelineData,
-  getCropCategoryColor,
   getScaleForZoomLevel,
   getTodayX,
+  hexToRgba,
+  stringToColor,
   type TimelineData,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
-import type { CropRotation, Plot } from "@/api/types";
+import type { Plot } from "@/api/types";
+import type { TimelineRotation } from "@/lib/cropRotationTimelineUtils";
 
 const ROW_HEIGHT = 36;
 const LEFT_COLUMN_WIDTH = 140;
 
 type CropRotationTimelineProps = {
-  rotations: CropRotation[];
+  rotations: TimelineRotation[];
   plots: Plot[];
   zoom: ZoomLevel;
   onZoomChange: (zoom: ZoomLevel) => void;
   timelineStart: Date;
   timelineEnd: Date;
   onBarClick?: (rotationId: string) => void;
+  // Override the default plot-name link (which goes to the live plan screen).
+  // When provided, plot names render as buttons instead of links.
+  onPlotClick?: (plotId: string) => void;
+  // When provided, checkboxes appear next to plot names for multi-plot selection.
+  selectedPlotIds?: string[];
+  onPlotSelect?: (plotId: string, selected: boolean) => void;
 };
 
 export function CropRotationTimeline({
@@ -34,6 +43,9 @@ export function CropRotationTimeline({
   timelineStart,
   timelineEnd,
   onBarClick,
+  onPlotClick,
+  selectedPlotIds,
+  onPlotSelect,
 }: CropRotationTimelineProps) {
   const { t } = useTranslation();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -60,16 +72,23 @@ export function CropRotationTimeline({
   const initialScrollDoneRef = useRef(false);
   useEffect(() => {
     if (plots.length === 0 || initialScrollDoneRef.current) return;
-    initialScrollDoneRef.current = true;
-    const frame = requestAnimationFrame(() => {
-      if (!scrollAreaRef.current) return;
-      const todayOffset = getTodayX(timelineStart, pxPerDay);
-      scrollAreaRef.current.scrollLeft = Math.max(0, todayOffset - scrollAreaRef.current.clientWidth / 2);
-      if (headerScrollRef.current) {
-        headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
-      }
+    // Double RAF so clientWidth is measured after layout is complete.
+    // Mark done only after the scroll actually executes — if the RAF is
+    // cancelled by cleanup (StrictMode or fast unmount), the flag stays false
+    // so the next effect invocation retries.
+    let inner: number;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        if (!scrollAreaRef.current || scrollAreaRef.current.clientWidth === 0) return;
+        initialScrollDoneRef.current = true;
+        const todayOffset = getTodayX(timelineStart, pxPerDay);
+        scrollAreaRef.current.scrollLeft = Math.max(0, todayOffset - scrollAreaRef.current.clientWidth / 2);
+        if (headerScrollRef.current) {
+          headerScrollRef.current.scrollLeft = scrollAreaRef.current.scrollLeft;
+        }
+      });
     });
-    return () => cancelAnimationFrame(frame);
+    return () => { cancelAnimationFrame(outer); cancelAnimationFrame(inner); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plots.length]);
 
@@ -188,16 +207,31 @@ export function CropRotationTimeline({
             {timelineData.plots.map((plotData) => (
               <div
                 key={plotData.plotId}
-                className="flex items-center px-2 border-b"
+                className="flex items-center gap-1.5 px-2 border-b"
                 style={{ height: ROW_HEIGHT }}
               >
-                <Link
-                  to="/field-calendar/plots/$plotId/crop-rotations"
-                  params={{ plotId: plotData.plotId }}
-                  className="text-xs font-medium truncate hover:underline"
-                >
-                  {plotData.plotName}
-                </Link>
+                {onPlotSelect && (
+                  <Checkbox
+                    checked={selectedPlotIds?.includes(plotData.plotId) ?? false}
+                    onCheckedChange={(checked) => onPlotSelect(plotData.plotId, !!checked)}
+                  />
+                )}
+                {onPlotClick ? (
+                  <button
+                    className="text-xs font-medium truncate hover:underline text-left flex-1 min-w-0"
+                    onClick={() => onPlotClick(plotData.plotId)}
+                  >
+                    {plotData.plotName}
+                  </button>
+                ) : (
+                  <Link
+                    to="/field-calendar/plots/$plotId/crop-rotations"
+                    params={{ plotId: plotData.plotId }}
+                    className="text-xs font-medium truncate hover:underline flex-1 min-w-0"
+                  >
+                    {plotData.plotName}
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -242,9 +276,14 @@ export function CropRotationTimeline({
                 >
                   {plotData.bars.map((bar) => (
                     <button
-                      key={bar.rotationId}
-                      className={`absolute top-1.5 bottom-1.5 rounded-sm ${getCropCategoryColor(bar.cropCategory)} opacity-80 flex items-center px-1 cursor-pointer hover:opacity-100 transition-opacity overflow-hidden`}
-                      style={{ left: bar.left, width: Math.max(bar.width, 4) }}
+                      key={`${bar.rotationId}-${bar.fromDate}`}
+                      className="absolute top-1.5 bottom-1.5 rounded-sm flex items-center px-1 cursor-pointer transition-opacity overflow-hidden hover:opacity-90"
+                      style={{
+                        left: bar.left,
+                        width: Math.max(bar.width, 4),
+                        backgroundColor: hexToRgba(stringToColor(bar.cropName), 0.82),
+                        borderLeft: `3px solid ${stringToColor(bar.cropName)}`,
+                      }}
                       title={`${bar.cropName}: ${new Date(bar.fromDate).toLocaleDateString()} – ${new Date(bar.toDate).toLocaleDateString()}`}
                       onClick={() => onBarClick?.(bar.rotationId)}
                     >

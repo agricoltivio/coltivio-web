@@ -55,6 +55,33 @@ export const plotCropRotationsQueryOptions = (plotId: string, fromDate: string, 
   });
 };
 
+// Used by the draft creation flow: fetches base rotations for multiple plots at once.
+export const multiPlotPlanCropRotationsQueryOptions = (plotIds: string[]) => {
+  const fromDate = new Date(new Date().getFullYear() - 10, 0, 1).toISOString();
+  const toDate = new Date(new Date().getFullYear() + 25, 11, 31).toISOString();
+  return queryOptions({
+    queryKey: ["plots", "cropRotations", "plan", plotIds.slice().sort()],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/cropRotations/plots", {
+        params: {
+          query: {
+            plotIds: plotIds as unknown,
+            onlyCurrent: "false",
+            expand: "false",
+            withRecurrences: "true",
+            fromDate,
+            toDate,
+          },
+        },
+      });
+      if (response.error) {
+        throw new Error("Failed to fetch crop rotations for planning");
+      }
+      return response.data.data;
+    },
+  });
+};
+
 // Used by the plan screen: fetches base rotations (not expanded) with recurrence rules.
 // expand=false means recurring rotations are returned once with their recurrence rule,
 // not as multiple individual occurrences.

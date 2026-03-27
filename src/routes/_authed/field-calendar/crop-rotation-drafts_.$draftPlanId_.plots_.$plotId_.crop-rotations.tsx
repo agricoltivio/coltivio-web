@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { cropFamiliesQueryOptions, cropsQueryOptions } from "@/api/crops.queries";
-import { plotPlanCropRotationsQueryOptions } from "@/api/cropRotations.queries";
+import { draftPlanQueryOptions } from "@/api/cropRotationDrafts.queries";
 import { plotQueryOptions } from "@/api/plots.queries";
 import { CROP_CATEGORIES, type Crop, type CropCategory } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
@@ -31,19 +31,29 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  detectConflicts,
-  detectWaitingTimeViolations,
-  expandRanges,
   getAllGridLines,
   getScaleForZoomLevel,
   getTodayX,
   hexToRgba,
   stringToColor,
-  type RecurrenceRule,
-  type RotationEntry,
-  type WaitingTimeViolation,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
+
+// --- Domain types scoped to this module ---
+
+type RecurrenceRule = {
+  interval: number;
+  until?: Date;
+};
+
+type RotationEntry = {
+  entryId: string;
+  cropId: string;
+  fromDate: Date;
+  toDate: Date;
+  recurrence?: RecurrenceRule;
+  isNew: boolean;
+};
 
 type PlanTimelineBar = {
   entryId: string;
@@ -57,9 +67,70 @@ type PlanTimelineBar = {
   toDate: Date;
 };
 
-// --- Pure utilities ---
+// --- Pure utilities (same as live plan screen) ---
 
-// Build flat list of bars for the timeline (recurrences expanded, one bar per occurrence).
+function addYears(date: Date, years: number): Date {
+  const result = new Date(date);
+  result.setFullYear(result.getFullYear() + years);
+  return result;
+}
+
+function expandRanges(
+  entry: RotationEntry,
+  timelineEnd: Date,
+): Array<{ from: Date; to: Date }> {
+  if (!entry.recurrence) {
+    return [{ from: entry.fromDate, to: entry.toDate }];
+  }
+  const effectiveUntil =
+    entry.recurrence.until && entry.recurrence.until < timelineEnd
+      ? entry.recurrence.until
+      : timelineEnd;
+  const ranges: Array<{ from: Date; to: Date }> = [];
+  const durationMs = entry.toDate.getTime() - entry.fromDate.getTime();
+  let currentFrom = new Date(entry.fromDate);
+  let iteration = 0;
+  while (currentFrom <= effectiveUntil && iteration < 100) {
+    ranges.push({
+      from: new Date(currentFrom),
+      to: new Date(currentFrom.getTime() + durationMs),
+    });
+    currentFrom = addYears(currentFrom, entry.recurrence.interval);
+    iteration++;
+  }
+  return ranges;
+}
+
+function detectConflicts(
+  entries: RotationEntry[],
+  crops: Crop[],
+  timelineEnd: Date,
+): Map<string, string> {
+  const conflicts = new Map<string, string>();
+  const expanded = entries.map((e) => expandRanges(e, timelineEnd));
+
+  for (let i = 0; i < entries.length; i++) {
+    for (let j = i + 1; j < entries.length; j++) {
+      let overlapping = false;
+      outer: for (const rangeA of expanded[i]) {
+        for (const rangeB of expanded[j]) {
+          if (rangeA.from <= rangeB.to && rangeA.to >= rangeB.from) {
+            overlapping = true;
+            break outer;
+          }
+        }
+      }
+      if (overlapping) {
+        const nameI = crops.find((c) => c.id === entries[i].cropId)?.name ?? "?";
+        const nameJ = crops.find((c) => c.id === entries[j].cropId)?.name ?? "?";
+        if (!conflicts.has(entries[i].entryId)) conflicts.set(entries[i].entryId, nameJ);
+        if (!conflicts.has(entries[j].entryId)) conflicts.set(entries[j].entryId, nameI);
+      }
+    }
+  }
+  return conflicts;
+}
+
 function buildPlanTimelineBars(
   entries: RotationEntry[],
   crops: Crop[],
@@ -103,7 +174,6 @@ function buildPlanTimelineBars(
 
 // --- Route ---
 
-// Computed once per session — the planning window spans 10 years back to 25 years forward.
 const CURRENT_YEAR = new Date().getFullYear();
 const TIMELINE_START = new Date(CURRENT_YEAR - 10, 0, 1);
 const TIMELINE_END = new Date(CURRENT_YEAR + 25, 11, 31);
@@ -112,29 +182,31 @@ const MS_PER_DAY = 86_400_000;
 const searchSchema = z.object({});
 
 export const Route = createFileRoute(
-  "/_authed/field-calendar/plots_/$plotId_/crop-rotations",
+  "/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId_/plots_/$plotId_/crop-rotations",
 )({
   validateSearch: searchSchema,
-  loader: ({ context: { queryClient }, params: { plotId } }) => {
+  loader: ({ context: { queryClient }, params: { draftPlanId, plotId } }) => {
+    queryClient.ensureQueryData(draftPlanQueryOptions(draftPlanId));
     queryClient.ensureQueryData(plotQueryOptions(plotId));
-    queryClient.ensureQueryData(plotPlanCropRotationsQueryOptions(plotId));
     queryClient.ensureQueryData(cropsQueryOptions());
     queryClient.ensureQueryData(cropFamiliesQueryOptions());
   },
-  component: PlanCropRotations,
+  component: PlanDraftCropRotations,
 });
 
 // --- Main planning component ---
 
-function PlanCropRotations() {
+function PlanDraftCropRotations() {
   const { t } = useTranslation();
-  const router = useRouter();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { plotId } = Route.useParams();
+  const { draftPlanId, plotId } = Route.useParams();
+
+  const draftQuery = useQuery(draftPlanQueryOptions(draftPlanId));
   const plotQuery = useQuery(plotQueryOptions(plotId));
-  const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
   const cropsQuery = useQuery(cropsQueryOptions());
 
+  const draft = draftQuery.data;
   const plot = plotQuery.data;
   const crops = cropsQuery.data?.result ?? [];
 
@@ -146,14 +218,14 @@ function PlanCropRotations() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const headerScrollRef = useRef<HTMLDivElement>(null);
-  // Stores the visible center date before a zoom change so scroll can be restored.
   const centerDateRef = useRef<Date | null>(null);
 
-  // Initialize local rotation list from server data exactly once.
+  // Initialize from the draft plan's entries for this plot
   useEffect(() => {
-    if (initialized || !rotationsQuery.data) return;
+    if (initialized || !draft) return;
+    const draftPlot = draft.plots.find((p) => p.plotId === plotId);
     setRotations(
-      rotationsQuery.data.result.map((r) => ({
+      (draftPlot?.rotations ?? []).map((r) => ({
         entryId: `existing-${r.id}`,
         cropId: r.cropId,
         fromDate: new Date(r.fromDate),
@@ -168,11 +240,8 @@ function PlanCropRotations() {
       })),
     );
     setInitialized(true);
-  }, [rotationsQuery.data, initialized]);
+  }, [draft, plotId, initialized]);
 
-  // Scroll to today once, after the first time `initialized` becomes true.
-  // Using initialized as the trigger (rather than []) ensures the component has
-  // its final layout even on a hard reload where data loads asynchronously.
   const initialScrollDoneRef = useRef(false);
   useEffect(() => {
     if (!initialized || initialScrollDoneRef.current) return;
@@ -193,7 +262,6 @@ function PlanCropRotations() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialized]);
 
-  // After zoom changes, restore scroll so the same date stays centered.
   useEffect(() => {
     if (!scrollAreaRef.current || !centerDateRef.current) return;
     const pxPerDay = getScaleForZoomLevel(zoom);
@@ -217,12 +285,6 @@ function PlanCropRotations() {
     [rotations, crops],
   );
   const hasConflicts = conflicts.size > 0;
-
-  const waitingTimeViolations = useMemo(
-    () => detectWaitingTimeViolations(rotations, crops, TIMELINE_END),
-    [rotations, crops],
-  );
-  const hasWaitingTimeViolations = waitingTimeViolations.size > 0;
 
   const gridLines = useMemo(
     () => getAllGridLines(zoom, TIMELINE_START, TIMELINE_END, pxPerDay),
@@ -264,35 +326,60 @@ function PlanCropRotations() {
     }
   }
 
-  // Batch-replace all rotations for this plot. The server treats this as the full
-  // intended state (creates, updates, and deletes happen server-side by comparison).
+  // PATCH the draft plan: merge updated plot rotations with all other plots' rotations
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiClient.POST("/v1/cropRotations/batch/byPlot", {
-        body: {
-          plotId,
-          crops: rotations.map((r) => ({
-            cropId: r.cropId,
-            fromDate: r.fromDate.toISOString(),
-            toDate: r.toDate.toISOString(),
-            ...(r.recurrence && {
-              recurrence: {
-                interval: r.recurrence.interval,
-                ...(r.recurrence.until && {
-                  until: r.recurrence.until.toISOString(),
-                }),
-              },
+      if (!draft) throw new Error("Draft not loaded");
+
+      // Build updated entries for this plot
+      const updatedPlotEntry = {
+        plotId,
+        rotations: rotations.map((r) => ({
+          cropId: r.cropId,
+          fromDate: r.fromDate.toISOString(),
+          toDate: r.toDate.toISOString(),
+          ...(r.recurrence && {
+            recurrenceInterval: r.recurrence.interval,
+            ...(r.recurrence.until && {
+              recurrenceUntil: r.recurrence.until.toISOString(),
             }),
+          }),
+        })),
+      };
+
+      // Preserve all other plots' rotations as-is
+      const otherPlots = draft.plots
+        .filter((p) => p.plotId !== plotId)
+        .map((p) => ({
+          plotId: p.plotId,
+          rotations: p.rotations.map((r) => ({
+            cropId: r.cropId,
+            fromDate: r.fromDate,
+            toDate: r.toDate,
+            sowingDate: r.sowingDate ?? undefined,
+            recurrenceInterval: r.recurrence?.interval,
+            recurrenceUntil: r.recurrence?.until ?? undefined,
           })),
+        }));
+
+      const response = await apiClient.PATCH(
+        "/v1/cropRotations/draftPlans/byId/{draftPlanId}",
+        {
+          params: { path: { draftPlanId } },
+          body: { plots: [...otherPlots, updatedPlotEntry] },
         },
-      });
-      if (response.error) throw new Error("Failed to save crop rotations");
+      );
+      if (response.error) throw new Error("Failed to save draft crop rotations");
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cropRotations"] });
-      queryClient.invalidateQueries({ queryKey: ["plots"] });
-      router.history.back();
+      queryClient.invalidateQueries({
+        queryKey: ["cropRotations", "draftPlans", "byId", draftPlanId],
+      });
+      void navigate({
+        to: "/field-calendar/crop-rotation-drafts/$draftPlanId",
+        params: { draftPlanId },
+      });
     },
   });
 
@@ -341,10 +428,12 @@ function PlanCropRotations() {
       }
       showBackButton
       backTo={() =>
-        router.history.back()
+        void navigate({
+          to: "/field-calendar/crop-rotation-drafts/$draftPlanId",
+          params: { draftPlanId },
+        })
       }
     >
-      {/* Timeline — single row showing all entries with recurrences expanded */}
       <div className="flex flex-col gap-3 mb-6">
         <div className="flex items-center justify-between">
           <ToggleGroup
@@ -354,7 +443,6 @@ function PlanCropRotations() {
             value={zoom}
             onValueChange={(value) => {
               if (!value) return;
-              // Capture center date before the zoom change so the effect can restore it.
               if (scrollAreaRef.current) {
                 const centerX =
                   scrollAreaRef.current.scrollLeft +
@@ -382,7 +470,6 @@ function PlanCropRotations() {
         </div>
 
         <div className="rounded-md border overflow-hidden">
-          {/* Scrollable header with time labels */}
           <div className="flex border-b bg-muted/30">
             <div
               ref={headerScrollRef}
@@ -407,7 +494,6 @@ function PlanCropRotations() {
             </div>
           </div>
 
-          {/* Single-row scrollable body */}
           <div
             ref={scrollAreaRef}
             className="overflow-x-auto"
@@ -417,7 +503,6 @@ function PlanCropRotations() {
               className="relative"
               style={{ width: totalWidth, height: ROW_HEIGHT }}
             >
-              {/* Grid lines */}
               {gridLines.map((line, i) => (
                 <div
                   key={`g-${i}`}
@@ -425,14 +510,10 @@ function PlanCropRotations() {
                   style={{ left: line.x }}
                 />
               ))}
-
-              {/* Today line */}
               <div
                 className="absolute top-0 bottom-0 border-l-2 border-destructive z-10"
                 style={{ left: todayX }}
               />
-
-              {/* Bars — click opens the edit dialog for that entry */}
               {timelineBars.map((bar, i) => (
                 <button
                   key={`${bar.entryId}-${i}`}
@@ -465,7 +546,6 @@ function PlanCropRotations() {
         </div>
       </div>
 
-      {/* Rotation list */}
       <div className="mb-24">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-sm">
@@ -486,11 +566,10 @@ function PlanCropRotations() {
             {rotations.map((entry) => {
               const crop = crops.find((c) => c.id === entry.cropId);
               const conflictMsg = conflicts.get(entry.entryId);
-              const waitingViolation = waitingTimeViolations.get(entry.entryId);
               return (
                 <button
                   key={entry.entryId}
-                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : waitingViolation ? "border-l-2 border-l-amber-500" : ""}`}
+                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : ""}`}
                   onClick={() => openEditDialog(entry)}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -517,14 +596,6 @@ function PlanCropRotations() {
                           })}
                         </div>
                       )}
-                      {waitingViolation && !conflictMsg && (
-                        <div className="text-xs text-amber-600 mt-1">
-                          {t("fieldCalendar.cropRotations.waitingTimeViolation", {
-                            crop: waitingViolation.conflictingCropName,
-                            years: waitingViolation.requiredYears,
-                          })}
-                        </div>
-                      )}
                     </div>
                     {entry.isNew && (
                       <span className="shrink-0 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
@@ -539,7 +610,6 @@ function PlanCropRotations() {
         )}
       </div>
 
-      {/* Sticky save bar — always visible at the bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t px-6 py-3 flex items-center gap-4 z-20">
         {hasConflicts && (
           <p className="text-sm text-destructive flex-1">
@@ -550,7 +620,10 @@ function PlanCropRotations() {
           <Button
             variant="outline"
             onClick={() =>
-              router.history.back()
+              void navigate({
+                to: "/field-calendar/crop-rotation-drafts/$draftPlanId",
+                params: { draftPlanId },
+              })
             }
           >
             {t("common.cancel")}
@@ -584,8 +657,6 @@ type CropModalFormData = {
   waitingTimeInYears: string;
   additionalNotes: string;
 };
-
-// --- Add / Edit rotation dialog ---
 
 function RotationDialog({
   open,
@@ -663,7 +734,6 @@ function RotationDialog({
     },
   });
 
-  // Sync form fields whenever the dialog opens (with a different entry or as a fresh add).
   useEffect(() => {
     if (!open) return;
     if (entry) {
@@ -725,38 +795,36 @@ function RotationDialog({
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
-          {/* Crop */}
           <div className="space-y-1.5">
             <Label>{t("fieldCalendar.cropRotations.crop")}</Label>
             <div className="flex gap-1">
-            <div className="flex-1 min-w-0">
-            <Select value={cropId} onValueChange={(v) => { if (v) setCropId(v); }}>
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={t("fieldCalendar.cropRotations.selectCrop")}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {crops.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => setCreateCropOpen(true)}
-            >
-              <Plus className="size-4" />
-            </Button>
+              <div className="flex-1 min-w-0">
+                <Select value={cropId} onValueChange={(v) => { if (v) setCropId(v); }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue
+                      placeholder={t("fieldCalendar.cropRotations.selectCrop")}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {crops.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateCropOpen(true)}
+              >
+                <Plus className="size-4" />
+              </Button>
             </div>
           </div>
 
-          {/* Date range */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.fromDate")}</Label>
@@ -777,7 +845,6 @@ function RotationDialog({
             </div>
           </div>
 
-          {/* Optional recurrence */}
           <div>
             {!hasRecurrence ? (
               <Button
@@ -881,7 +948,7 @@ function RotationDialog({
         </div>
       </DialogContent>
 
-      {/* Inline create crop dialog (nested inside RotationDialog's Dialog) */}
+      {/* Inline create crop dialog */}
       <Dialog
         open={createCropOpen}
         onOpenChange={(isOpen) => {
@@ -902,9 +969,7 @@ function RotationDialog({
               <Label>{t("crops.category")} *</Label>
               <Select
                 value={cropForm.watch("category")}
-                onValueChange={(v) =>
-                  cropForm.setValue("category", v as CropCategory)
-                }
+                onValueChange={(v) => cropForm.setValue("category", v as CropCategory)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -934,9 +999,7 @@ function RotationDialog({
                   <SelectValue placeholder={t("common.noSelection")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">
-                    {t("common.noSelection")}
-                  </SelectItem>
+                  <SelectItem value="__none__">{t("common.noSelection")}</SelectItem>
                   {families.map((family) => (
                     <SelectItem key={family.id} value={family.id}>
                       {family.name}
@@ -969,9 +1032,7 @@ function RotationDialog({
               {t("common.cancel")}
             </Button>
             <Button
-              onClick={cropForm.handleSubmit((data) =>
-                createCropMutation.mutate(data),
-              )}
+              onClick={cropForm.handleSubmit((data) => createCropMutation.mutate(data))}
               disabled={createCropMutation.isPending}
             >
               {t("common.create")}
