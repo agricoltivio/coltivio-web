@@ -119,9 +119,14 @@ export function detectWaitingTimeViolations(
     for (let i = 0; i < sorted.length; i++) {
       for (let j = i + 1; j < sorted.length; j++) {
         if (sorted[i].to > sorted[j].from) continue;
-        const gapMs = sorted[j].from.getTime() - sorted[i].to.getTime();
+        // Measure start-to-start: a 4-year recurrence with 4-year waiting time should not warn,
+        // regardless of how long the crop itself takes.
+        const gapMs = sorted[j].from.getTime() - sorted[i].from.getTime();
         const requiredYears = Math.max(sorted[i].waitingTimeYears, sorted[j].waitingTimeYears);
-        if (gapMs < requiredYears * 365.25 * 24 * 60 * 60 * 1000) {
+        // Compare in whole days to avoid floating-point and leap-year drift
+        const gapDays = Math.round(gapMs / (24 * 60 * 60 * 1000));
+        const requiredDays = Math.round(requiredYears * 365.25);
+        if (gapDays < requiredDays) {
           if (!violations.has(sorted[i].entryId)) violations.set(sorted[i].entryId, { conflictingCropName: sorted[j].cropName, requiredYears });
           if (!violations.has(sorted[j].entryId)) violations.set(sorted[j].entryId, { conflictingCropName: sorted[i].cropName, requiredYears });
         }
