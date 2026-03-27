@@ -964,6 +964,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/cropRotations/draftPlans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1CropRotationsDraftPlans"];
+        put?: never;
+        post: operations["PostV1CropRotationsDraftPlans"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1CropRotationsDraftPlans"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/cropRotations/draftPlans/byId/{draftPlanId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1CropRotationsDraftPlansByIdDraftPlanId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1CropRotationsDraftPlansByIdDraftPlanId"];
+        options?: never;
+        head: operations["HeadV1CropRotationsDraftPlansByIdDraftPlanId"];
+        patch: operations["PatchV1CropRotationsDraftPlansByIdDraftPlanId"];
+        trace?: never;
+    };
+    "/v1/cropRotations/draftPlans/byId/{draftPlanId}/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1CropRotationsDraftPlansByIdDraftPlanIdApply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/harvests": {
         parameters: {
             query?: never;
@@ -4851,6 +4899,15 @@ export interface components {
                             additionalNotes: string | null;
                         } | null;
                     };
+                    recurrence: {
+                        id: string;
+                        interval: number;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        until: string | null;
+                    } | null;
                     plot: {
                         name: string;
                     };
@@ -4977,7 +5034,6 @@ export interface components {
             plots: {
                 plotId: string;
                 rotations: {
-                    id?: string;
                     cropId: string;
                     /**
                      * Format: date-time
@@ -5342,6 +5398,345 @@ export interface components {
                 count: number;
             };
         };
+        GetV1CropRotationsDraftPlansPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                }[];
+                count: number;
+            };
+        };
+        PostV1CropRotationsDraftPlansPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                plots: {
+                    id: string;
+                    plotId: string;
+                    rotations: {
+                        id: string;
+                        farmId: string;
+                        plotId: string;
+                        cropId: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        sowingDate: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        fromDate: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        toDate: string;
+                        crop: {
+                            id: string;
+                            farmId: string;
+                            name: string;
+                            /** @enum {string} */
+                            category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                            familyId: string | null;
+                            variety: string | null;
+                            usageCodes: number[];
+                            waitingTimeInYears: number | null;
+                            additionalNotes: string | null;
+                            family: {
+                                id: string;
+                                farmId: string;
+                                name: string;
+                                waitingTimeInYears: number;
+                                additionalNotes: string | null;
+                            } | null;
+                        };
+                        recurrence: {
+                            id: string;
+                            interval: number;
+                            /**
+                             * Format: date-time
+                             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                             */
+                            until: string | null;
+                        } | null;
+                    }[];
+                }[];
+            };
+        };
+        PostV1CropRotationsDraftPlansRequestBody: {
+            name: string;
+            plots?: {
+                plotId: string;
+                rotations: {
+                    cropId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    sowingDate?: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    fromDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    toDate: string;
+                    recurrenceInterval?: number;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    recurrenceUntil?: string;
+                }[];
+            }[];
+        };
+        GetV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                plots: {
+                    id: string;
+                    plotId: string;
+                    rotations: {
+                        id: string;
+                        farmId: string;
+                        plotId: string;
+                        cropId: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        sowingDate: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        fromDate: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        toDate: string;
+                        crop: {
+                            id: string;
+                            farmId: string;
+                            name: string;
+                            /** @enum {string} */
+                            category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                            familyId: string | null;
+                            variety: string | null;
+                            usageCodes: number[];
+                            waitingTimeInYears: number | null;
+                            additionalNotes: string | null;
+                            family: {
+                                id: string;
+                                farmId: string;
+                                name: string;
+                                waitingTimeInYears: number;
+                                additionalNotes: string | null;
+                            } | null;
+                        };
+                        recurrence: {
+                            id: string;
+                            interval: number;
+                            /**
+                             * Format: date-time
+                             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                             */
+                            until: string | null;
+                        } | null;
+                    }[];
+                }[];
+            };
+        };
+        PatchV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                plots: {
+                    id: string;
+                    plotId: string;
+                    rotations: {
+                        id: string;
+                        farmId: string;
+                        plotId: string;
+                        cropId: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        sowingDate: string | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        fromDate: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        toDate: string;
+                        crop: {
+                            id: string;
+                            farmId: string;
+                            name: string;
+                            /** @enum {string} */
+                            category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                            familyId: string | null;
+                            variety: string | null;
+                            usageCodes: number[];
+                            waitingTimeInYears: number | null;
+                            additionalNotes: string | null;
+                            family: {
+                                id: string;
+                                farmId: string;
+                                name: string;
+                                waitingTimeInYears: number;
+                                additionalNotes: string | null;
+                            } | null;
+                        };
+                        recurrence: {
+                            id: string;
+                            interval: number;
+                            /**
+                             * Format: date-time
+                             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                             */
+                            until: string | null;
+                        } | null;
+                    }[];
+                }[];
+            };
+        };
+        PatchV1CropRotationsDraftPlansByIdDraftPlanIdRequestBody: {
+            name?: string;
+            plots?: {
+                plotId: string;
+                rotations: {
+                    cropId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    sowingDate?: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    fromDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    toDate: string;
+                    recurrenceInterval?: number;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    recurrenceUntil?: string;
+                }[];
+            }[];
+        };
+        DeleteV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1CropRotationsDraftPlansByIdDraftPlanIdApplyPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    plotId: string;
+                    cropId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    sowingDate: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    fromDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    toDate: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                        family: {
+                            id: string;
+                            farmId: string;
+                            name: string;
+                            waitingTimeInYears: number;
+                            additionalNotes: string | null;
+                        } | null;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1CropRotationsDraftPlansByIdDraftPlanIdApplyRequestBody: Record<string, never>;
         GetV1HarvestsPositiveResponse: {
             data: {
                 result: {
@@ -14715,6 +15110,10 @@ export interface operations {
                 fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
                 toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                /** @description GET /v1/cropRotations Parameter */
+                expand?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/cropRotations Parameter */
+                withRecurrences?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path?: never;
@@ -14783,6 +15182,10 @@ export interface operations {
                 fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
                 toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                /** @description HEAD /v1/cropRotations Parameter */
+                expand?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/cropRotations Parameter */
+                withRecurrences?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path?: never;
@@ -15168,6 +15571,260 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    GetV1CropRotationsDraftPlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/cropRotations/draftPlans Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1CropRotationsDraftPlansPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/cropRotations/draftPlans Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1CropRotationsDraftPlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/cropRotations/draftPlans Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1CropRotationsDraftPlansRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/cropRotations/draftPlans Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1CropRotationsDraftPlansPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/cropRotations/draftPlans Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1CropRotationsDraftPlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/cropRotations/draftPlans Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/cropRotations/draftPlans Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1CropRotationsDraftPlansByIdDraftPlanId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/cropRotations/draftPlans/byId/:draftPlanId Parameter */
+                draftPlanId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/cropRotations/draftPlans/byId/:draftPlanId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/cropRotations/draftPlans/byId/:draftPlanId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1CropRotationsDraftPlansByIdDraftPlanId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/cropRotations/draftPlans/byId/:draftPlanId Parameter */
+                draftPlanId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/cropRotations/draftPlans/byId/:draftPlanId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/cropRotations/draftPlans/byId/:draftPlanId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1CropRotationsDraftPlansByIdDraftPlanId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/cropRotations/draftPlans/byId/:draftPlanId Parameter */
+                draftPlanId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/cropRotations/draftPlans/byId/:draftPlanId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/cropRotations/draftPlans/byId/:draftPlanId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1CropRotationsDraftPlansByIdDraftPlanId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/cropRotations/draftPlans/byId/:draftPlanId Parameter */
+                draftPlanId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/cropRotations/draftPlans/byId/:draftPlanId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1CropRotationsDraftPlansByIdDraftPlanIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/cropRotations/draftPlans/byId/:draftPlanId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1CropRotationsDraftPlansByIdDraftPlanIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/cropRotations/draftPlans/byId/:draftPlanId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1CropRotationsDraftPlansByIdDraftPlanIdApply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/cropRotations/draftPlans/byId/:draftPlanId/apply Parameter */
+                draftPlanId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/cropRotations/draftPlans/byId/:draftPlanId/apply Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1CropRotationsDraftPlansByIdDraftPlanIdApplyRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/cropRotations/draftPlans/byId/:draftPlanId/apply Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1CropRotationsDraftPlansByIdDraftPlanIdApplyPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/cropRotations/draftPlans/byId/:draftPlanId/apply Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

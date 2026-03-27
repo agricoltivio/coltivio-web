@@ -679,6 +679,23 @@
       "recurrence": "Recurrence",
       "addEndDate": "Add End Date"
     },
+    "cropRotationDrafts": {
+      "title": "Crop Rotation Drafts",
+      "drafts": "Drafts",
+      "createDraft": "New Draft",
+      "draftName": "Draft Name",
+      "selectPlots": "Select Plots",
+      "selectPlotsHint": "Current rotations will be copied into the draft",
+      "noDrafts": "No drafts yet",
+      "applyDraft": "Apply Draft",
+      "applyDraftConfirm": "Apply this draft to production? Plots with entries in this draft will be overwritten.",
+      "deleteDraft": "Delete Draft",
+      "deleteDraftConfirm": "Are you sure you want to delete this draft?",
+      "editPlots": "Edit Plots",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "entries": "{{count}} entries"
+    },
     "tillages": {
       "title": "Tillages",
       "create": "Create tillage",

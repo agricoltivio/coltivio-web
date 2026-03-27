@@ -679,6 +679,23 @@
       "recurrence": "Ricorrenza",
       "addEndDate": "Aggiungi data di fine"
     },
+    "cropRotationDrafts": {
+      "title": "Bozze di rotazione",
+      "drafts": "Bozze",
+      "createDraft": "Nuova bozza",
+      "draftName": "Nome della bozza",
+      "selectPlots": "Seleziona appezzamenti",
+      "selectPlotsHint": "Le rotazioni attuali verranno copiate nella bozza",
+      "noDrafts": "Nessuna bozza ancora",
+      "applyDraft": "Applica bozza",
+      "applyDraftConfirm": "Applicare questa bozza in produzione? Gli appezzamenti con voci in questa bozza verranno sovrascritti.",
+      "deleteDraft": "Elimina bozza",
+      "deleteDraftConfirm": "Sei sicuro di voler eliminare questa bozza?",
+      "editPlots": "Modifica appezzamenti",
+      "selectAll": "Seleziona tutto",
+      "deselectAll": "Deseleziona tutto",
+      "entries": "{{count}} voci"
+    },
     "tillages": {
       "title": "Lavorazione del suolo",
       "create": "Registra lavorazione",

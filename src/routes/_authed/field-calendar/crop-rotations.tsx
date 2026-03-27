@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -59,6 +59,13 @@ function CropRotations() {
       title={t("fieldCalendar.cropRotations.title")}
       showBackButton={false}
     >
+      <div className="flex justify-end mb-4">
+        <Button variant="outline" size="sm" asChild>
+          <Link to="/field-calendar/crop-rotation-drafts">
+            {t("fieldCalendar.cropRotationDrafts.drafts")}
+          </Link>
+        </Button>
+      </div>
       {/* Planning is per-plot — only show when a plot is filtered */}
       {plotId && (
         <div className="flex justify-end mb-4">
