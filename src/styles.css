@@ -44,6 +44,8 @@ code {
   --chart-3: oklch(0.37 0.063 198);          /* #2a5159 teal */
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  --mocha: oklch(0.53 0.06 59);              /* #8b6b55 */
+  --mocha-foreground: oklch(0.985 0 0);
   --radius: 0.625rem;
   --sidebar: oklch(0.978 0.009 196);
   --sidebar-foreground: oklch(0.162 0.003 264);
@@ -80,6 +82,8 @@ code {
   --chart-3: oklch(0.72 0.08 198);           /* teal */
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+  --mocha: oklch(0.60 0.06 59);
+  --mocha-foreground: oklch(0.985 0 0);
   --sidebar: oklch(0.20 0.028 198);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.72 0.08 198);
@@ -127,6 +131,8 @@ code {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-mocha: var(--mocha);
+  --color-mocha-foreground: var(--mocha-foreground);
 }
 
 @layer base {
