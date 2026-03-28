@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { plotQueryOptions } from "@/api/plots.queries";
 import { PageContent } from "@/components/PageContent";
 import {
+  BookOpen,
   CalendarDays,
   ChevronRight,
   Droplets,
@@ -126,6 +127,17 @@ function PlotDetail() {
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </Link>
         ))}
+        <Link
+          to="/field-calendar/plots/$plotId/journal"
+          params={{ plotId }}
+          className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">{t("journal.title")}</span>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
       </div>
     </PageContent>
   );

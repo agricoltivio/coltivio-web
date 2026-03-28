@@ -27,7 +27,9 @@
     "toDate": "Al",
     "download": "Scarica",
     "name": "Nome",
-    "unknown": "Sconosciuto"
+    "unknown": "Sconosciuto",
+    "title": "Titolo",
+    "date": "Data"
   },
   "nav": {
     "groups": {
@@ -1169,5 +1171,14 @@
       "readConfirm": "Ho letto e accetto le regole.",
       "cta": "Iniziamo"
     }
+  },
+  "journal": {
+    "title": "Diario",
+    "add": "Aggiungi voce",
+    "noEntries": "Nessuna voce",
+    "deleteConfirm": "Eliminare questa voce del diario?",
+    "content": "Contenuto",
+    "viewAll": "Vedi tutto",
+    "images": "Immagini"
   }
 }

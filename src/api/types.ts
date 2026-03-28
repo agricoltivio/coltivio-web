@@ -216,6 +216,14 @@ export type Herd =
 export type OutdoorJournalData =
   components["schemas"]["GetV1AnimalsOutdoorJournalPositiveResponse"]["data"];
 
+// Animal Journal types
+export type AnimalJournalEntry =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdJournalPositiveResponse"]["data"]["entries"][number];
+
+// Plot Journal types
+export type PlotJournalEntry =
+  components["schemas"]["GetV1PlotsByIdPlotIdJournalPositiveResponse"]["data"]["entries"][number];
+
 export type AnimalUsage = Animal["usage"];
 
 // Wiki types

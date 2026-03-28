@@ -16,6 +16,7 @@ import { Plus } from "lucide-react";
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
+  returnTo: z.string().optional(),
 });
 
 export const Route = createFileRoute(
@@ -38,7 +39,7 @@ export const Route = createFileRoute(
 function CropProtectionApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { plotId } = Route.useSearch();
+  const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
     ...cropProtectionApplicationsQueryOptions(),
@@ -92,7 +93,7 @@ function CropProtectionApplications() {
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.title")}
       showBackButton={!!plotId}
-      backTo={plotId ? () => navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
+      backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
         <Button

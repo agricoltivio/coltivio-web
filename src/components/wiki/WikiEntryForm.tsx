@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { processImageFile } from "@/lib/processImage";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -55,15 +56,13 @@ function ImageUploadButton({ onUpload }: { onUpload: (file: File) => Promise<str
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Image must be smaller than 10 MB");
-      e.target.value = "";
-      return;
-    }
     setIsUploading(true);
     try {
-      const url = await onUpload(file);
+      const processed = await processImageFile(file);
+      const url = await onUpload(processed);
       insertImage({ src: url, altText: "" });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Image upload failed");
     } finally {
       setIsUploading(false);
       e.target.value = "";
@@ -78,7 +77,7 @@ function ImageUploadButton({ onUpload }: { onUpload: (file: File) => Promise<str
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         hidden
         disabled={isUploading}
         onChange={handleFileChange}
@@ -92,47 +91,6 @@ function ImageUploadButton({ onUpload }: { onUpload: (file: File) => Promise<str
   );
 }
 
-function resizeImageFile(file: File, maxDimension: number): Promise<File> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      const { width, height } = img;
-      // Pass through unchanged if already within bounds
-      if (width <= maxDimension && height <= maxDimension) {
-        resolve(file);
-        return;
-      }
-      const scale = Math.min(maxDimension / width, maxDimension / height);
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round(height * scale);
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Canvas not available"));
-        return;
-      }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            reject(new Error("Canvas toBlob failed"));
-            return;
-          }
-          resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }));
-        },
-        "image/jpeg",
-        0.85,
-      );
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("Image load failed"));
-    };
-    img.src = objectUrl;
-  });
-}
 
 export interface WikiEntryFormData {
   // Pre-generated UUID so images can be uploaded before the entry is saved
@@ -181,26 +139,21 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
     },
   });
 
+  // file is already processed (HEIC converted, resized, compressed) by the caller
   async function handleImageUpload(file: File): Promise<string> {
-    // Resize and convert to JPEG before upload (handles HEIC and oversized images)
-    const resized = await resizeImageFile(file, 1200);
-
-    // Step 1: get a short-lived signed upload URL from the API
     const signedUrlRes = await apiClient.POST("/v1/wiki/images/signedUrl", {
-      body: { entryId, filename: resized.name },
+      body: { entryId, filename: file.name },
     });
     if (signedUrlRes.error) throw new Error("Failed to get signed URL");
     const { signedUrl, path } = signedUrlRes.data.data;
 
-    // Step 2: upload the file binary directly to Supabase Storage
     const uploadRes = await fetch(signedUrl, {
       method: "PUT",
-      body: resized,
-      headers: { "Content-Type": resized.type },
+      body: file,
+      headers: { "Content-Type": file.type },
     });
     if (!uploadRes.ok) throw new Error("Image upload failed");
 
-    // Step 3: register the stored path and get back the public URL
     const registerRes = await apiClient.POST("/v1/wiki/images", {
       body: { entryId, storagePath: path },
     });

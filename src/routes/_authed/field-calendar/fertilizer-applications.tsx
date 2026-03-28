@@ -22,6 +22,7 @@ type FertApp = GlobalFertApp | PlotFertApp;
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
+  returnTo: z.string().optional(),
 });
 
 export const Route = createFileRoute(
@@ -42,7 +43,7 @@ export const Route = createFileRoute(
 function FertilizerApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { plotId } = Route.useSearch();
+  const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
     ...fertilizerApplicationsQueryOptions(),
@@ -98,7 +99,7 @@ function FertilizerApplications() {
     <PageContent
       title={t("fieldCalendar.fertilizerApplications.title")}
       showBackButton={!!plotId}
-      backTo={plotId ? () => navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
+      backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
         <Button

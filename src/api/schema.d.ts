@@ -468,6 +468,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/plots/byId/{plotId}/journal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1PlotsByIdPlotIdJournal"];
+        put?: never;
+        post: operations["PostV1PlotsByIdPlotIdJournal"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1PlotsByIdPlotIdJournal"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/plots/journal/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1PlotsJournalByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1PlotsJournalByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1PlotsJournalByIdEntryId"];
+        patch: operations["PatchV1PlotsJournalByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/plots/journal/images/signedUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1PlotsJournalImagesSignedUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/plots/journal/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1PlotsJournalImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/plots/journal/images/byId/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1PlotsJournalImagesByIdImageId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots/merge": {
         parameters: {
             query?: never;
@@ -1439,6 +1519,86 @@ export interface paths {
         put: operations["PutV1AnimalsByIdAnimalIdCustomOutdoorJournalCategories"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/byId/{animalId}/journal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdJournal"];
+        put?: never;
+        post: operations["PostV1AnimalsByIdAnimalIdJournal"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdJournal"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/journal/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsJournalByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalsJournalByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1AnimalsJournalByIdEntryId"];
+        patch: operations["PatchV1AnimalsJournalByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/animals/journal/images/signedUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsJournalImagesSignedUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/journal/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsJournalImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/journal/images/byId/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalsJournalImagesByIdImageId"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3840,6 +4000,181 @@ export interface components {
                 size: number;
             }[];
         }, "strategy">);
+        GetV1PlotsByIdPlotIdJournalPositiveResponse: {
+            data: {
+                entries: {
+                    id: string;
+                    plotId: string;
+                    farmId: string;
+                    title: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    content: string | null;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                    images: {
+                        id: string;
+                        journalEntryId: string;
+                        storagePath: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        createdAt: string;
+                        signedUrl: string;
+                    }[];
+                }[];
+            };
+        };
+        PostV1PlotsByIdPlotIdJournalPositiveResponse: {
+            data: {
+                id: string;
+                plotId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PostV1PlotsByIdPlotIdJournalRequestBody: {
+            title: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            content?: string;
+        };
+        GetV1PlotsJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                plotId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                images: {
+                    id: string;
+                    journalEntryId: string;
+                    storagePath: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    signedUrl: string;
+                }[];
+            };
+        };
+        PatchV1PlotsJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                plotId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PatchV1PlotsJournalByIdEntryIdRequestBody: {
+            title?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            content?: string;
+        };
+        DeleteV1PlotsJournalByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1PlotsJournalImagesSignedUrlPositiveResponse: {
+            data: {
+                signedUrl: string;
+                path: string;
+            };
+        };
+        PostV1PlotsJournalImagesSignedUrlRequestBody: {
+            journalEntryId: string;
+            filename: string;
+        };
+        PostV1PlotsJournalImagesPositiveResponse: {
+            data: {
+                id: string;
+                journalEntryId: string;
+                storagePath: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                signedUrl: string;
+            };
+        };
+        PostV1PlotsJournalImagesRequestBody: {
+            journalEntryId: string;
+            storagePath: string;
+        };
+        DeleteV1PlotsJournalImagesByIdImageIdPositiveResponse: {
+            data: Record<string, never>;
+        };
         PostV1PlotsMergePositiveResponse: {
             data: {
                 id: string;
@@ -7100,6 +7435,181 @@ export interface components {
                 /** @enum {string} */
                 category: "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "A7" | "A8" | "A9" | "B1" | "B2" | "B3" | "C1" | "C2" | "D1" | "D2" | "D3" | "E1" | "E2" | "E3" | "E4" | "F1" | "F2";
             }[];
+        };
+        GetV1AnimalsByIdAnimalIdJournalPositiveResponse: {
+            data: {
+                entries: {
+                    id: string;
+                    animalId: string;
+                    farmId: string;
+                    title: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    content: string | null;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                    images: {
+                        id: string;
+                        journalEntryId: string;
+                        storagePath: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        createdAt: string;
+                        signedUrl: string;
+                    }[];
+                }[];
+            };
+        };
+        PostV1AnimalsByIdAnimalIdJournalPositiveResponse: {
+            data: {
+                id: string;
+                animalId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PostV1AnimalsByIdAnimalIdJournalRequestBody: {
+            title: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            content?: string;
+        };
+        GetV1AnimalsJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                animalId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                images: {
+                    id: string;
+                    journalEntryId: string;
+                    storagePath: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    signedUrl: string;
+                }[];
+            };
+        };
+        PatchV1AnimalsJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                animalId: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PatchV1AnimalsJournalByIdEntryIdRequestBody: {
+            title?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            content?: string;
+        };
+        DeleteV1AnimalsJournalByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1AnimalsJournalImagesSignedUrlPositiveResponse: {
+            data: {
+                signedUrl: string;
+                path: string;
+            };
+        };
+        PostV1AnimalsJournalImagesSignedUrlRequestBody: {
+            journalEntryId: string;
+            filename: string;
+        };
+        PostV1AnimalsJournalImagesPositiveResponse: {
+            data: {
+                id: string;
+                journalEntryId: string;
+                storagePath: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                signedUrl: string;
+            };
+        };
+        PostV1AnimalsJournalImagesRequestBody: {
+            journalEntryId: string;
+            storagePath: string;
+        };
+        DeleteV1AnimalsJournalImagesByIdImageIdPositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1AnimalsOutdoorJournalPositiveResponse: {
             data: {
@@ -13086,6 +13596,332 @@ export interface operations {
             };
         };
     };
+    GetV1PlotsByIdPlotIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/plots/byId/:plotId/journal Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/plots/byId/:plotId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1PlotsByIdPlotIdJournalPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/plots/byId/:plotId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1PlotsByIdPlotIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/plots/byId/:plotId/journal Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/plots/byId/:plotId/journal Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1PlotsByIdPlotIdJournalRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/plots/byId/:plotId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1PlotsByIdPlotIdJournalPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/plots/byId/:plotId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1PlotsByIdPlotIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/plots/byId/:plotId/journal Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/plots/byId/:plotId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/plots/byId/:plotId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1PlotsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/plots/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/plots/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1PlotsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/plots/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1PlotsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/plots/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/plots/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1PlotsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/plots/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1PlotsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/plots/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/plots/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/plots/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1PlotsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/plots/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/plots/journal/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1PlotsJournalByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/plots/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1PlotsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/plots/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1PlotsJournalImagesSignedUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/plots/journal/images/signedUrl Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1PlotsJournalImagesSignedUrlRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/plots/journal/images/signedUrl Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1PlotsJournalImagesSignedUrlPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/plots/journal/images/signedUrl Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1PlotsJournalImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/plots/journal/images Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1PlotsJournalImagesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/plots/journal/images Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1PlotsJournalImagesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/plots/journal/images Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1PlotsJournalImagesByIdImageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/plots/journal/images/byId/:imageId Parameter */
+                imageId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/plots/journal/images/byId/:imageId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1PlotsJournalImagesByIdImageIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/plots/journal/images/byId/:imageId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     PostV1PlotsMerge: {
         parameters: {
             query?: never;
@@ -17751,6 +18587,332 @@ export interface operations {
                 };
             };
             /** @description PUT /v1/animals/byId/:animalId/customOutdoorJournalCategories Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1AnimalsByIdAnimalIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/journal Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdJournalPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsByIdAnimalIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/animals/byId/:animalId/journal Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/byId/:animalId/journal Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdJournalRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/byId/:animalId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdJournalPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/byId/:animalId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/journal Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animals/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animals/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animals/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1AnimalsJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animals/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animals/journal/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalsJournalByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animals/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalsJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animals/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsJournalImagesSignedUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/journal/images/signedUrl Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsJournalImagesSignedUrlRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/journal/images/signedUrl Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsJournalImagesSignedUrlPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/journal/images/signedUrl Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsJournalImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/journal/images Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsJournalImagesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/journal/images Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsJournalImagesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/journal/images Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalsJournalImagesByIdImageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animals/journal/images/byId/:imageId Parameter */
+                imageId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animals/journal/images/byId/:imageId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalsJournalImagesByIdImageIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animals/journal/images/byId/:imageId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
+import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -240,6 +241,9 @@ function AnimalDetailPage() {
           </CardContent>
         </Card>
 
+        {/* Journal Card */}
+        <AnimalJournalCard animalId={animalId} />
+
         {/* Children Card */}
         <Card>
           <CardHeader>
@@ -393,6 +397,90 @@ function AnimalDetailPage() {
         </Card>
       </div>
     </PageContent>
+  );
+}
+
+function AnimalJournalCard({ animalId }: { animalId: string }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const journalQuery = useQuery(animalJournalQueryOptions(animalId));
+  const entries = journalQuery.data ?? [];
+  const recentEntries = [...entries]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("journal.title")}</CardTitle>
+        <CardAction>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              navigate({
+                to: "/animals/$animalId/journal/create",
+                params: { animalId },
+              })
+            }
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            {t("journal.add")}
+          </Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        {recentEntries.length === 0 ? (
+          <div className="py-6 text-center text-muted-foreground">
+            {t("journal.noEntries")}
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("common.date")}</TableHead>
+                <TableHead>{t("common.title")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recentEntries.map((entry) => (
+                <TableRow
+                  key={entry.id}
+                  className="cursor-pointer"
+                  onClick={() =>
+                    navigate({
+                      to: "/animals/$animalId/journal/$entryId",
+                      params: { animalId, entryId: entry.id },
+                    })
+                  }
+                >
+                  <TableCell className="text-muted-foreground">
+                    {new Date(entry.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="font-medium">{entry.title}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {entries.length > 5 && (
+          <div className="mt-3 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                navigate({
+                  to: "/animals/$animalId/journal",
+                  params: { animalId },
+                })
+              }
+            >
+              {t("journal.viewAll")}
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

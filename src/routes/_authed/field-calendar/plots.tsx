@@ -477,12 +477,20 @@ function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void })
             <Link
               key={to}
               to={to}
-              search={{ plotId: plot.id }}
+              search={{ plotId: plot.id, returnTo: "/field-calendar/plots" }}
               className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors"
             >
               {label}
             </Link>
           ))}
+          <Link
+            to="/field-calendar/plots/$plotId/journal"
+            params={{ plotId: plot.id }}
+            search={{ returnTo: "/field-calendar/plots" }}
+            className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors"
+          >
+            {t("journal.title")}
+          </Link>
         </div>
 
         <Link

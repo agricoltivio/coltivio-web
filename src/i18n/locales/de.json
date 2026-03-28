@@ -27,7 +27,9 @@
     "toDate": "Bis",
     "download": "Herunterladen",
     "name": "Name",
-    "unknown": "Unbekannt"
+    "unknown": "Unbekannt",
+    "title": "Titel",
+    "date": "Datum"
   },
   "nav": {
     "groups": {
@@ -1169,5 +1171,14 @@
       "readConfirm": "Ich habe die Regeln gelesen und akzeptiere sie.",
       "cta": "Los geht's"
     }
+  },
+  "journal": {
+    "title": "Journal",
+    "add": "Eintrag hinzufügen",
+    "noEntries": "Keine Einträge vorhanden",
+    "deleteConfirm": "Diesen Journaleintrag wirklich löschen?",
+    "content": "Inhalt",
+    "viewAll": "Alle anzeigen",
+    "images": "Bilder"
   }
 }

@@ -27,7 +27,9 @@
     "toDate": "Au",
     "download": "Télécharger",
     "name": "Nom",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "title": "Titre",
+    "date": "Date"
   },
   "nav": {
     "groups": {
@@ -1169,5 +1171,14 @@
       "readConfirm": "J'ai lu et j'accepte les règles.",
       "cta": "C'est parti"
     }
+  },
+  "journal": {
+    "title": "Journal",
+    "add": "Ajouter une entrée",
+    "noEntries": "Aucune entrée",
+    "deleteConfirm": "Voulez-vous vraiment supprimer cette entrée de journal ?",
+    "content": "Contenu",
+    "viewAll": "Voir tout",
+    "images": "Images"
   }
 }

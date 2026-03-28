@@ -17,6 +17,7 @@ type HarvestRow = GlobalHarvest | PlotHarvest;
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
+  returnTo: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_authed/field-calendar/harvests")({
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/_authed/field-calendar/harvests")({
 function Harvests() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { plotId } = Route.useSearch();
+  const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
     ...harvestsQueryOptions(),
@@ -90,7 +91,7 @@ function Harvests() {
     <PageContent
       title={t("fieldCalendar.harvests.title")}
       showBackButton={!!plotId}
-      backTo={plotId ? () => navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
+      backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
         <Button
