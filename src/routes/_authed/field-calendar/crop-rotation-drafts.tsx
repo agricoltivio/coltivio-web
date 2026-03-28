@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMembership } from "@/lib/useMembership";
+import { MembersOnly } from "@/components/MembersOnly";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -34,6 +36,9 @@ function CropRotationDrafts() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { hasAccess } = useMembership();
+
+  if (!hasAccess) return <MembersOnly />;
 
   const draftsQuery = useQuery(draftPlansQueryOptions());
   const plotsQuery = useQuery(plotsQueryOptions());

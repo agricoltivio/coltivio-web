@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
 import type { Plot } from "@/api/types";
+import { useMembership } from "@/lib/useMembership";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -410,6 +411,7 @@ function PlotsMap() {
 
 function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void }) {
   const { t } = useTranslation();
+  const { hasAccess } = useMembership();
 
   const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
@@ -483,14 +485,16 @@ function PlotDetailPanel({ plot, onClose }: { plot: Plot; onClose: () => void })
               {label}
             </Link>
           ))}
-          <Link
-            to="/field-calendar/plots/$plotId/journal"
-            params={{ plotId: plot.id }}
-            search={{ returnTo: "/field-calendar/plots" }}
-            className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors"
-          >
-            {t("journal.title")}
-          </Link>
+          {hasAccess && (
+            <Link
+              to="/field-calendar/plots/$plotId/journal"
+              params={{ plotId: plot.id }}
+              search={{ returnTo: "/field-calendar/plots" }}
+              className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors"
+            >
+              {t("journal.title")}
+            </Link>
+          )}
         </div>
 
         <Link

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMembership } from "@/lib/useMembership";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/_authed/field-calendar/crop-rotations")({
 
 function CropRotations() {
   const { t } = useTranslation();
+  const { hasAccess } = useMembership();
   const navigate = useNavigate();
   const { plotId } = Route.useSearch();
   const [zoom, setZoom] = useState<ZoomLevel>("years");
@@ -61,11 +63,13 @@ function CropRotations() {
       showBackButton={false}
     >
       <div className="flex items-center justify-between mb-4">
-        <Button variant="outline" size="sm" asChild>
-          <Link to="/field-calendar/crop-rotation-drafts">
-            {t("fieldCalendar.cropRotationDrafts.drafts")}
-          </Link>
-        </Button>
+        {hasAccess && (
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/field-calendar/crop-rotation-drafts">
+              {t("fieldCalendar.cropRotationDrafts.drafts")}
+            </Link>
+          </Button>
+        )}
         {selectedPlotIds.length > 0 && (
           <Button
             size="sm"
