@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
 import { useTranslation } from "react-i18next";
 import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOptions } from "@/api/farm.queries";
+import { tasksQueryOptions } from "@/api/tasks.queries";
 import { FieldworkMap } from "@/components/FieldworkMap";
 import {
   Select,
@@ -59,6 +60,13 @@ function RouteComponent() {
   const toDate = `${year}-12-31`;
   const fieldEventsQuery = useQuery(farmFieldEventsQueryOptions(fromDate, toDate));
   const farmQuery = useQuery(farmQueryOptions());
+  const tasksQuery = useQuery(tasksQueryOptions({ status: "todo" }));
+
+  const now = new Date();
+  const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const upcomingTasks = (tasksQuery.data?.result ?? [])
+    .filter((task) => typeof task.dueDate === "string" && new Date(task.dueDate) <= weekFromNow)
+    .sort((a, b) => new Date(a.dueDate as string).getTime() - new Date(b.dueDate as string).getTime());
 
   if (isLoading) {
     return <p className="text-muted-foreground">{t("common.loading")}</p>;
@@ -284,6 +292,41 @@ function RouteComponent() {
           />
         )}
       </div>
+
+      {/* Upcoming tasks */}
+      {upcomingTasks.length > 0 && (
+        <div className="bg-white rounded-xl border p-4">
+          <p className="text-sm font-semibold mb-3">
+            {t("dashboard.upcomingTasks", { defaultValue: "Anstehende Aufgaben" })}
+          </p>
+          <div className="divide-y">
+            {upcomingTasks.map((task) => {
+              const dueDate = new Date(task.dueDate as string);
+              const isOverdue = dueDate < now;
+              return (
+                <Link
+                  key={task.id}
+                  to="/tasks/$taskId"
+                  params={{ taskId: task.id }}
+                  className="flex items-center justify-between px-3 py-2 hover:bg-accent transition-colors text-sm"
+                >
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium truncate">{task.name}</span>
+                    {task.assignee && (
+                      <span className="text-muted-foreground ml-2 text-xs">
+                        {task.assignee.fullName || task.assignee.email}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-xs shrink-0 ml-4 ${isOverdue ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+                    {dueDate.toLocaleDateString()}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Donuts: animals by type + plots by current crop */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
