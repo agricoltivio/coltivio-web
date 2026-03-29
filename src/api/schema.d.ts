@@ -11109,6 +11109,7 @@ export interface components {
                     labels: string[];
                     /** @enum {string} */
                     status: "todo" | "done";
+                    pinned: boolean;
                     assigneeId: string | null;
                     dueDate: string | unknown;
                     createdAt: string | unknown;
@@ -11150,6 +11151,7 @@ export interface components {
                 labels: string[];
                 /** @enum {string} */
                 status: "todo" | "done";
+                pinned: boolean;
                 assigneeId: string | null;
                 dueDate: string | unknown;
                 createdAt: string | unknown;
@@ -11237,6 +11239,7 @@ export interface components {
                 labels: string[];
                 /** @enum {string} */
                 status: "todo" | "done";
+                pinned: boolean;
                 assigneeId: string | null;
                 dueDate: string | unknown;
                 createdAt: string | unknown;
@@ -11284,6 +11287,7 @@ export interface components {
                 labels: string[];
                 /** @enum {string} */
                 status: "todo" | "done";
+                pinned: boolean;
                 assigneeId: string | null;
                 dueDate: string | unknown;
                 createdAt: string | unknown;
@@ -11332,6 +11336,7 @@ export interface components {
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
             dueDate?: string;
+            pinned?: boolean;
             recurrence?: {
                 /** @enum {string} */
                 frequency: "weekly" | "monthly" | "yearly";
@@ -11375,6 +11380,7 @@ export interface components {
                     labels: string[];
                     /** @enum {string} */
                     status: "todo" | "done";
+                    pinned: boolean;
                     assigneeId: string | null;
                     dueDate: string | unknown;
                     createdAt: string | unknown;

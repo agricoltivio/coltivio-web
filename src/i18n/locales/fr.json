@@ -1001,7 +1001,10 @@
         "treatment": "Traitements",
         "wiki_entry": "Articles Wiki"
       }
-    }
+    },
+    "pin": "Épingler",
+    "unpin": "Désépingler",
+    "pinned": "Épinglé"
   },
   "noFarm": {
     "message": "Ton compte n'a pas encore de ferme. Crée-en une d'abord dans l'app."

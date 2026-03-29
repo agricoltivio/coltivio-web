@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
+import { Pin } from "lucide-react";
 import { tasksQueryOptions } from "@/api/tasks.queries";
 import { farmUsersQueryOptions } from "@/api/user.queries";
+import { apiClient } from "@/api/client";
 import type { Task, TaskStatus } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -30,6 +32,20 @@ function TasksPage() {
 
   const tasksQuery = useQuery(tasksQueryOptions({ status }));
   const usersQuery = useQuery(farmUsersQueryOptions());
+  const queryClient = useQueryClient();
+
+  const pinMutation = useMutation({
+    mutationFn: async ({ taskId, pinned }: { taskId: string; pinned: boolean }) => {
+      const response = await apiClient.PATCH("/v1/tasks/byId/{taskId}", {
+        params: { path: { taskId } },
+        body: { pinned },
+      });
+      if (response.error) throw new Error("Failed to update task");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
 
   const allTasks = tasksQuery.data?.result ?? [];
   const users = usersQuery.data?.result ?? [];
@@ -67,9 +83,9 @@ function TasksPage() {
       result = result.filter((task) => task.labels.includes(labelFilter));
     }
 
-    // Sort: tasks with a due date first (ascending), then tasks without (alphabetical),
-    // then within each due-date group also sort alphabetically as tiebreaker.
+    // Sort: pinned first, then tasks with a due date (ascending), then without (alphabetical).
     result = [...result].sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
       const aHasDate = typeof a.dueDate === "string";
       const bHasDate = typeof b.dueDate === "string";
       if (aHasDate && bHasDate) {
@@ -204,39 +220,59 @@ function TasksPage() {
 
       <div className="space-y-2">
         {filteredAndSorted.map((task) => (
-          <button
+          <div
             key={task.id}
-            type="button"
-            onClick={() =>
-              navigate({ to: "/tasks/$taskId", params: { taskId: task.id } })
-            }
-            className="w-full text-left border rounded-lg px-4 py-3 hover:bg-accent transition-colors"
+            className="w-full text-left border rounded-lg px-4 py-3 hover:bg-accent transition-colors flex items-start gap-2"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{task.name}</p>
-                {task.assignee && (
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {task.assignee.fullName || task.assignee.email}
-                  </p>
-                )}
+            <button
+              type="button"
+              className="flex-1 min-w-0 text-left"
+              onClick={() =>
+                navigate({ to: "/tasks/$taskId", params: { taskId: task.id } })
+              }
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    {task.pinned && (
+                      <Pin className="size-3.5 text-muted-foreground shrink-0" />
+                    )}
+                    <p className="font-medium truncate">{task.name}</p>
+                  </div>
+                  {task.assignee && (
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {task.assignee.fullName || task.assignee.email}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {typeof task.dueDate === "string" && (
+                    <span
+                      className={`text-xs ${isOverdue(task.dueDate) && status === "todo" ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                    >
+                      {formatDate(task.dueDate)}
+                    </span>
+                  )}
+                  {task.labels.map((label) => (
+                    <Badge key={label} variant="outline" className="text-xs">
+                      {label}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                {typeof task.dueDate === "string" && (
-                  <span
-                    className={`text-xs ${isOverdue(task.dueDate) && status === "todo" ? "text-destructive font-medium" : "text-muted-foreground"}`}
-                  >
-                    {formatDate(task.dueDate)}
-                  </span>
-                )}
-                {task.labels.map((label) => (
-                  <Badge key={label} variant="outline" className="text-xs">
-                    {label}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </button>
+            </button>
+            <button
+              type="button"
+              title={task.pinned ? t("tasks.unpin") : t("tasks.pin")}
+              onClick={(e) => {
+                e.stopPropagation();
+                pinMutation.mutate({ taskId: task.id, pinned: !task.pinned });
+              }}
+              className={`shrink-0 p-1 rounded hover:bg-muted transition-colors ${task.pinned ? "text-foreground" : "text-muted-foreground"}`}
+            >
+              <Pin className="size-4" />
+            </button>
+          </div>
         ))}
       </div>
     </PageContent>

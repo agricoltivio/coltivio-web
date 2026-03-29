@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, type LinkProps } from "@tanstack/re
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { Pin, Check, SquarePen, Trash2 } from "lucide-react";
 import { taskQueryOptions } from "@/api/tasks.queries";
 import { apiClient } from "@/api/client";
 import type { TaskLinkType, TaskChecklistItem } from "@/api/types";
@@ -101,6 +102,19 @@ function TaskDetailPage() {
     },
   });
 
+  const pinMutation = useMutation({
+    mutationFn: async (pinned: boolean) => {
+      const response = await apiClient.PATCH("/v1/tasks/byId/{taskId}", {
+        params: { path: { taskId } },
+        body: { pinned },
+      });
+      if (response.error) throw new Error("Failed to update task");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
   const checklistMutation = useMutation({
     mutationFn: async ({
       itemId,
@@ -170,24 +184,35 @@ function TaskDetailPage() {
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end gap-2">
         <Button
-          variant="outline"
+          variant={task.status === "done" ? "default" : "outline"}
+          size="icon"
           onClick={() =>
             statusMutation.mutate(task.status === "todo" ? "done" : "todo")
           }
           disabled={statusMutation.isPending}
+          title={task.status === "todo" ? t("tasks.markDone") : t("tasks.markTodo")}
         >
-          {task.status === "todo"
-            ? t("tasks.markDone")
-            : t("tasks.markTodo")}
+          <Check className="size-4" />
         </Button>
-        <Button variant="outline" asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => pinMutation.mutate(!task.pinned)}
+          disabled={pinMutation.isPending}
+          title={task.pinned ? t("tasks.unpin") : t("tasks.pin")}
+        >
+          <Pin className={`size-4 ${task.pinned ? "fill-current" : ""}`} />
+        </Button>
+        <Button variant="outline" size="icon" asChild title={t("common.edit")}>
           <Link to="/tasks/$taskId/edit" params={{ taskId }}>
-            {t("common.edit")}
+            <SquarePen className="size-4" />
           </Link>
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive">{t("common.delete")}</Button>
+            <Button variant="destructive" size="icon" title={t("common.delete")}>
+              <Trash2 className="size-4" />
+            </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

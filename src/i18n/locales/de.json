@@ -1001,7 +1001,10 @@
         "treatment": "Behandlungen",
         "wiki_entry": "Wiki-Einträge"
       }
-    }
+    },
+    "pin": "Anheften",
+    "unpin": "Loslösen",
+    "pinned": "Angeheftet"
   },
   "noFarm": {
     "message": "Dein Konto hat noch keinen Hof. Erstelle zuerst einen Hof in der App."

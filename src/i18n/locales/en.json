@@ -1001,7 +1001,10 @@
         "treatment": "Treatments",
         "wiki_entry": "Wiki Entries"
       }
-    }
+    },
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned"
   },
   "noFarm": {
     "message": "Your account doesn't have a farm yet. Create one first in the app."

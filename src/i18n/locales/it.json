@@ -1001,7 +1001,10 @@
         "treatment": "Trattamenti",
         "wiki_entry": "Voci Wiki"
       }
-    }
+    },
+    "pin": "Fissa",
+    "unpin": "Rimuovi",
+    "pinned": "In evidenza"
   },
   "noFarm": {
     "message": "Il tuo account non ha ancora un'azienda. Creane una prima nell'app."
