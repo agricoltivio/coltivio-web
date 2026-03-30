@@ -324,7 +324,7 @@ function TaskDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {task.checklistItems.map((item) => (
+                {[...task.checklistItems].sort((a, b) => a.position - b.position).map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
                     <Checkbox
                       checked={item.done}

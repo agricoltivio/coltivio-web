@@ -11129,6 +11129,7 @@ export interface components {
                         id: string;
                         taskId: string;
                         name: string;
+                        position: number;
                         dueDate: string | unknown;
                         done: boolean;
                         createdAt: string | unknown;
@@ -11171,6 +11172,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     name: string;
+                    position: number;
                     dueDate: string | unknown;
                     done: boolean;
                     createdAt: string | unknown;
@@ -11259,6 +11261,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     name: string;
+                    position: number;
                     dueDate: string | unknown;
                     done: boolean;
                     createdAt: string | unknown;
@@ -11307,6 +11310,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     name: string;
+                    position: number;
                     dueDate: string | unknown;
                     done: boolean;
                     createdAt: string | unknown;
@@ -11400,6 +11404,7 @@ export interface components {
                         id: string;
                         taskId: string;
                         name: string;
+                        position: number;
                         dueDate: string | unknown;
                         done: boolean;
                         createdAt: string | unknown;
@@ -11422,6 +11427,7 @@ export interface components {
                 id: string;
                 taskId: string;
                 name: string;
+                position: number;
                 dueDate: string | unknown;
                 done: boolean;
                 createdAt: string | unknown;

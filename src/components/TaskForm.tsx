@@ -441,7 +441,7 @@ export function TaskForm({
                     : "",
               }
             : { enabled: false, frequency: "weekly", interval: 1, until: "" },
-          checklistItems: task.checklistItems.map((ci) => ({
+          checklistItems: [...task.checklistItems].sort((a, b) => a.position - b.position).map((ci) => ({
             name: ci.name,
             dueDate:
               typeof ci.dueDate === "string" ? ci.dueDate.split("T")[0] : "",
