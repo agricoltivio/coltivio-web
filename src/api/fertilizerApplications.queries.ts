@@ -32,6 +32,26 @@ export const plotFertilizerApplicationsQueryOptions = (plotId: string) => {
   });
 };
 
+export const fertilizerApplicationSummariesQueryOptions = () =>
+  queryOptions({
+    queryKey: ["fertilizerApplications", "summaries"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/fertilizerApplications/summaries");
+      if (response.error) throw new Error("Failed to fetch fertilizer application summaries");
+      return response.data.data;
+    },
+  });
+
+export const fertilizerApplicationYearsQueryOptions = () =>
+  queryOptions({
+    queryKey: ["fertilizerApplications", "years"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/fertilizerApplications/years");
+      if (response.error) throw new Error("Failed to fetch fertilizer application years");
+      return response.data.data.result;
+    },
+  });
+
 export const fertilizerApplicationPresetsQueryOptions = () => {
   return queryOptions({
     queryKey: ["fertilizerApplications", "presets"],

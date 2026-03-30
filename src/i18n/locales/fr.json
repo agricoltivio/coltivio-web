@@ -657,6 +657,11 @@
     }
   },
   "fieldCalendar": {
+    "chart": {
+      "stacked": "Composition",
+      "compare": "Comparaison annuelle",
+      "noData": "Aucune donnée pour la période sélectionnée"
+    },
     "plots": {
       "title": "Champs",
       "create": "Créer un champ",

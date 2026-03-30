@@ -50,6 +50,26 @@ export const plotHarvestsQueryOptions = (plotId: string) => {
   });
 };
 
+export const harvestSummariesQueryOptions = () =>
+  queryOptions({
+    queryKey: ["harvests", "summaries"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/harvests/summaries");
+      if (response.error) throw new Error("Failed to fetch harvest summaries");
+      return response.data.data;
+    },
+  });
+
+export const harvestYearsQueryOptions = () =>
+  queryOptions({
+    queryKey: ["harvests", "years"],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/harvests/years");
+      if (response.error) throw new Error("Failed to fetch harvest years");
+      return response.data.data.result;
+    },
+  });
+
 export const harvestPresetsQueryOptions = () => {
   return queryOptions({
     queryKey: ["harvests", "presets"],
