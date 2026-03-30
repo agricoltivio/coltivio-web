@@ -11224,7 +11224,9 @@ export interface components {
                 linkedId: string;
             }[];
             checklistItems?: {
+                id?: string;
                 name: string;
+                done?: boolean;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -11361,7 +11363,9 @@ export interface components {
                 linkedId: string;
             }[];
             checklistItems?: {
+                id?: string;
                 name: string;
+                done?: boolean;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ

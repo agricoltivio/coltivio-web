@@ -32,7 +32,7 @@ export interface TaskFormData {
     interval: number;
     until: string;
   };
-  checklistItems: { name: string; dueDate: string }[];
+  checklistItems: { id?: string; name: string; dueDate: string }[];
   links: { linkType: TaskLinkType; linkedId: string; displayName: string }[];
 }
 
@@ -442,9 +442,9 @@ export function TaskForm({
               }
             : { enabled: false, frequency: "weekly", interval: 1, until: "" },
           checklistItems: [...task.checklistItems].sort((a, b) => a.position - b.position).map((ci) => ({
+            id: ci.id,
             name: ci.name,
-            dueDate:
-              typeof ci.dueDate === "string" ? ci.dueDate.split("T")[0] : "",
+            dueDate: typeof ci.dueDate === "string" ? ci.dueDate.split("T")[0] : "",
           })),
           links: defaultLinks,
         }

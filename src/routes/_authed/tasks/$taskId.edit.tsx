@@ -36,6 +36,7 @@ function buildApiBody(data: TaskFormData) {
       linkedId: l.linkedId,
     })),
     checklistItems: data.checklistItems.map((ci) => ({
+      id: ci.id,
       name: ci.name,
       dueDate: ci.dueDate ? new Date(ci.dueDate).toISOString() : undefined,
     })),
