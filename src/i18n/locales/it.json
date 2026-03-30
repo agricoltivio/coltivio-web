@@ -182,7 +182,13 @@
     "passwordUpdated": "Password aggiornata con successo!",
     "passwordMismatch": "Le password non corrispondono",
     "signUpSuccess": "Registrazione riuscita! Conferma il tuo indirizzo e-mail, poi accedi per ottenere la tua iscrizione.",
-    "signupViaApp": "I nuovi account possono essere creati solo tramite l'app iOS o Android."
+    "signupViaApp": "I nuovi account possono essere creati solo tramite l'app iOS o Android.",
+    "verifyingEmail": "Verifica dell'e-mail in corso…",
+    "emailVerified": "E-mail verificata con successo!",
+    "emailChanged": "Indirizzo e-mail modificato con successo!",
+    "goToDashboard": "Vai alla dashboard",
+    "emailVerificationFailed": "Verifica dell'e-mail non riuscita.",
+    "linkExpired": "Questo link è scaduto o è già stato utilizzato."
   },
   "dashboard": {
     "welcome": "Ciao {{name}}, {{farmName}}"
@@ -191,7 +197,15 @@
     "title": "Impostazioni",
     "language": "Lingua",
     "account": "Account",
-    "loggedInAs": "Accesso come"
+    "loggedInAs": "Accesso come",
+    "emailVerified": "Verificato",
+    "emailNotVerifiedBadge": "Non verificato",
+    "newEmail": "Nuovo indirizzo e-mail",
+    "changeEmail": "Cambia e-mail",
+    "changeEmailSent": "E-mail di conferma inviata. Controlla la tua casella di posta e clicca sul link.",
+    "emailNotVerified": "Il tuo indirizzo e-mail non è ancora stato verificato.",
+    "resendVerification": "Invia di nuovo l'e-mail di verifica",
+    "verificationEmailSent": "E-mail di verifica inviata. Controlla la tua casella di posta."
   },
   "contacts": {
     "title": "Contatti",

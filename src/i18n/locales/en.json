@@ -182,7 +182,13 @@
     "passwordUpdated": "Password updated successfully!",
     "passwordMismatch": "Passwords do not match",
     "signUpSuccess": "Registration successful! Please confirm your email address, then sign in to get your membership.",
-    "signupViaApp": "New accounts can only be created via the iOS or Android app."
+    "signupViaApp": "New accounts can only be created via the iOS or Android app.",
+    "verifyingEmail": "Verifying email…",
+    "emailVerified": "Email successfully verified!",
+    "emailChanged": "Email address successfully changed!",
+    "goToDashboard": "Go to dashboard",
+    "emailVerificationFailed": "Email verification failed.",
+    "linkExpired": "This link has expired or has already been used."
   },
   "dashboard": {
     "welcome": "Hello {{name}}, {{farmName}}"
@@ -191,7 +197,15 @@
     "title": "Settings",
     "language": "Language",
     "account": "Account",
-    "loggedInAs": "Logged in as"
+    "loggedInAs": "Logged in as",
+    "emailVerified": "Verified",
+    "emailNotVerifiedBadge": "Not verified",
+    "newEmail": "New email address",
+    "changeEmail": "Change email",
+    "changeEmailSent": "Confirmation email sent. Check your inbox and click the link.",
+    "emailNotVerified": "Your email address has not been verified yet.",
+    "resendVerification": "Resend verification email",
+    "verificationEmailSent": "Verification email sent. Check your inbox."
   },
   "contacts": {
     "title": "Contacts",

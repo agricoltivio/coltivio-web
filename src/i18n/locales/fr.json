@@ -182,7 +182,13 @@
     "passwordUpdated": "Mot de passe mis à jour avec succès !",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "signUpSuccess": "Inscription réussie ! Confirme ton adresse e-mail, puis connecte-toi pour obtenir ton adhésion.",
-    "signupViaApp": "Les nouveaux comptes ne peuvent être créés que via l'application iOS ou Android."
+    "signupViaApp": "Les nouveaux comptes ne peuvent être créés que via l'application iOS ou Android.",
+    "verifyingEmail": "Vérification de l'e-mail…",
+    "emailVerified": "E-mail vérifié avec succès !",
+    "emailChanged": "Adresse e-mail modifiée avec succès !",
+    "goToDashboard": "Aller au tableau de bord",
+    "emailVerificationFailed": "La vérification de l'e-mail a échoué.",
+    "linkExpired": "Ce lien a expiré ou a déjà été utilisé."
   },
   "dashboard": {
     "welcome": "Bonjour {{name}}, {{farmName}}"
@@ -191,7 +197,15 @@
     "title": "Paramètres",
     "language": "Langue",
     "account": "Compte",
-    "loggedInAs": "Connecté en tant que"
+    "loggedInAs": "Connecté en tant que",
+    "emailVerified": "Vérifié",
+    "emailNotVerifiedBadge": "Non vérifié",
+    "newEmail": "Nouvelle adresse e-mail",
+    "changeEmail": "Modifier l'e-mail",
+    "changeEmailSent": "E-mail de confirmation envoyé. Vérifie ta boîte de réception et clique sur le lien.",
+    "emailNotVerified": "Ton adresse e-mail n'a pas encore été vérifiée.",
+    "resendVerification": "Renvoyer l'e-mail de vérification",
+    "verificationEmailSent": "E-mail de vérification envoyé. Vérifie ta boîte de réception."
   },
   "contacts": {
     "title": "Contacts",

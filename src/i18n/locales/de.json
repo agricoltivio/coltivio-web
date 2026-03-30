@@ -182,7 +182,13 @@
     "passwordUpdated": "Passwort erfolgreich aktualisiert!",
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "signUpSuccess": "Registrierung erfolgreich! Bitte bestätige deine E-Mail-Adresse. Danach kannst du dich anmelden und eine Mitgliedschaft abschliessen.",
-    "signupViaApp": "Neue Konten können nur über die iOS- oder Android-App erstellt werden."
+    "signupViaApp": "Neue Konten können nur über die iOS- oder Android-App erstellt werden.",
+    "verifyingEmail": "E-Mail wird verifiziert…",
+    "emailVerified": "E-Mail erfolgreich bestätigt!",
+    "emailChanged": "E-Mail-Adresse erfolgreich geändert!",
+    "goToDashboard": "Zum Dashboard",
+    "emailVerificationFailed": "Die E-Mail-Bestätigung ist fehlgeschlagen.",
+    "linkExpired": "Dieser Link ist abgelaufen oder wurde bereits verwendet."
   },
   "dashboard": {
     "welcome": "Hallo {{name}}, {{farmName}}"
@@ -191,7 +197,15 @@
     "title": "Einstellungen",
     "language": "Sprache",
     "account": "Konto",
-    "loggedInAs": "Angemeldet als"
+    "loggedInAs": "Angemeldet als",
+    "emailVerified": "Bestätigt",
+    "emailNotVerifiedBadge": "Nicht bestätigt",
+    "newEmail": "Neue E-Mail-Adresse",
+    "changeEmail": "E-Mail ändern",
+    "changeEmailSent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach und klicke auf den Link.",
+    "emailNotVerified": "Deine E-Mail-Adresse ist noch nicht bestätigt.",
+    "resendVerification": "Bestätigungs-E-Mail erneut senden",
+    "verificationEmailSent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach."
   },
   "contacts": {
     "title": "Kontakte",
