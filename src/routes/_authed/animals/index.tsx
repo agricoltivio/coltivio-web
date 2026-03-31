@@ -6,6 +6,7 @@ import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -259,50 +260,73 @@ function ageYears(dateOfBirth: string): number {
 
 function AgeDistributionChart({ animals }: { animals: Animal[] }) {
   const { t } = useTranslation();
+  const [selectedType, setSelectedType] = useState<AnimalType | "all">("all");
 
   const typesPresent = useMemo(
-    () => ANIMAL_TYPES.filter((type) => animals.some((a) => a.type === type)),
+    () => ANIMAL_TYPES.filter((type) => animals.some((a) => a.type === type && a.dateOfBirth)),
     [animals],
   );
 
-  const typeColor = useMemo(
+  const typeColorMap = useMemo(
     () => Object.fromEntries(ANIMAL_TYPES.map((type, i) => [type, CHART_COLORS[i % CHART_COLORS.length]])),
     [],
   );
 
   const option = useMemo(() => {
-    const animalsWithAge = animals.filter((a) => a.dateOfBirth);
+    const visibleTypes = selectedType === "all" ? typesPresent : typesPresent.filter((t) => t === selectedType);
+
     return {
       tooltip: {
         trigger: "item",
-        formatter: (params: { data: [number, number, string] }) =>
-          `${params.data[2]}: ${params.data[0].toFixed(1)} ${t("animals.years")}`,
+        // data format: [ageYears, yJitter, name, type]
+        formatter: (params: { data: [number, number, string, string] }) =>
+          `${params.data[2]}<br/>${t(`animals.types.${params.data[3]}`)}: ${params.data[0].toFixed(1)} ${t("animals.years")}`,
       },
       legend: { bottom: 0, type: "scroll", textStyle: { fontSize: 11 } },
-      grid: { left: 80, right: 16, top: 10, bottom: 40 },
-      xAxis: { type: "value", axisLabel: { fontSize: 10 }, min: 0, name: t("animals.years"), nameLocation: "end", nameTextStyle: { fontSize: 10 } },
-      yAxis: { type: "category", data: typesPresent.map((type) => t(`animals.types.${type}`)), axisLabel: { fontSize: 11 } },
-      series: typesPresent.map((type) => ({
+      grid: { left: 16, right: 16, top: 10, bottom: 40 },
+      xAxis: {
+        type: "value",
+        min: 0,
+        name: t("animals.years"),
+        nameLocation: "end",
+        nameTextStyle: { fontSize: 10 },
+        axisLabel: { fontSize: 10 },
+      },
+      // y-axis is pure jitter spread — hide everything
+      yAxis: { type: "value", min: -1, max: 1, show: false },
+      series: visibleTypes.map((type) => ({
         name: t(`animals.types.${type}`),
         type: "scatter",
-        symbolSize: 7,
-        itemStyle: { color: typeColor[type], opacity: 0.75 },
-        data: animalsWithAge
-          .filter((a) => a.type === type)
+        symbolSize: 8,
+        itemStyle: { color: typeColorMap[type], opacity: 0.8 },
+        data: animals
+          .filter((a) => a.type === type && a.dateOfBirth)
           .map((a) => {
             const age = +ageYears(a.dateOfBirth).toFixed(2);
-            const yIndex = typesPresent.indexOf(type);
-            const jitter = ((a.id.charCodeAt(0) + a.id.charCodeAt(1)) % 20) / 100 - 0.1;
-            return [age, yIndex + jitter, a.name];
+            // deterministic y jitter so dots spread vertically without meaning
+            const hash = a.id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+            const yJitter = ((hash % 100) / 100) * 2 - 1; // range [-1, 1]
+            return [age, yJitter, a.name, type];
           }),
       })),
     };
-  }, [animals, typesPresent, typeColor, t]);
+  }, [animals, typesPresent, typeColorMap, selectedType, t]);
 
   return (
     <Card>
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm font-medium">{t("animals.chartAgeDistribution")}</CardTitle>
+        <Select value={selectedType} onValueChange={(v) => setSelectedType(v as AnimalType | "all")}>
+          <SelectTrigger className="h-7 text-xs w-36">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("common.all")}</SelectItem>
+            {typesPresent.map((type) => (
+              <SelectItem key={type} value={type}>{t(`animals.types.${type}`)}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent>
         <ReactECharts option={option} style={{ height: 220 }} notMerge />
