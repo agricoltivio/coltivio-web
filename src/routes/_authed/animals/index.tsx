@@ -1,17 +1,19 @@
 import { useMemo, useState } from "react";
 import { animalsQueryOptions } from "@/api/animals.queries";
-import { ANIMAL_TYPES, type AnimalType, type Animal } from "@/api/types";
+import { ANIMAL_TYPES, type AnimalType, type Animal, type DeathReason } from "@/api/types";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
-import { ArrowDown, ArrowUp, Upload, GitBranch } from "lucide-react";
+import { ArrowDown, ArrowUp, Upload, GitBranch, SlidersHorizontal } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
@@ -38,6 +40,11 @@ function Animals() {
   const navigate = useNavigate();
   const animalsQuery = useQuery(animalsQueryOptions(onlyLiving));
   const [typeFilter, setTypeFilter] = useState<AnimalType[]>([]);
+  const [dobFrom, setDobFrom] = useState("");
+  const [dobTo, setDobTo] = useState("");
+  const [dodFrom, setDodFrom] = useState("");
+  const [dodTo, setDodTo] = useState("");
+  const [deathReasonFilter, setDeathReasonFilter] = useState<DeathReason[]>([]);
 
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
@@ -135,9 +142,26 @@ function Animals() {
   );
 
   const allAnimals = animalsQuery.data?.result ?? [];
-  const data = typeFilter.length > 0
-    ? allAnimals.filter((a) => typeFilter.includes(a.type))
-    : allAnimals;
+  // Charts always show all living animals, unaffected by filters
+  const livingAnimals = allAnimals.filter((a) => !a.dateOfDeath);
+  const data = allAnimals.filter((a) => {
+    if (typeFilter.length > 0 && !typeFilter.includes(a.type)) return false;
+    if (dobFrom && a.dateOfBirth && a.dateOfBirth < dobFrom) return false;
+    if (dobTo && a.dateOfBirth && a.dateOfBirth > dobTo + "T23:59:59") return false;
+    if (dodFrom && a.dateOfDeath && a.dateOfDeath < dodFrom) return false;
+    if (dodTo && a.dateOfDeath && a.dateOfDeath > dodTo + "T23:59:59") return false;
+    if (deathReasonFilter.length > 0 && (!a.deathReason || !deathReasonFilter.includes(a.deathReason))) return false;
+    return true;
+  });
+
+  const activeFilterCount =
+    typeFilter.length +
+    (dobFrom ? 1 : 0) +
+    (dobTo ? 1 : 0) +
+    (dodFrom ? 1 : 0) +
+    (dodTo ? 1 : 0) +
+    deathReasonFilter.length +
+    (!onlyLiving ? 1 : 0);
 
   return (
     <PageContent title="Tiere">
@@ -155,10 +179,10 @@ function Animals() {
         </Button>
       </div>
 
-      {allAnimals.length > 0 && (
+      {livingAnimals.length > 0 && (
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <AnimalTypePieChart animals={allAnimals} />
-          <AgeDistributionChart animals={allAnimals} />
+          <AnimalTypePieChart animals={livingAnimals} />
+          <AgeDistributionChart animals={livingAnimals} />
         </div>
       )}
 
@@ -182,26 +206,99 @@ function Animals() {
         }}
         defaultSorting={[{ id: "type", desc: false }]}
         filterSlot={
-          <>
-            <Button
-              variant={onlyLiving ? "outline" : "secondary"}
-              onClick={() =>
-                navigate({ to: "/animals", search: { onlyLiving: !onlyLiving } })
-              }
-            >
-              {onlyLiving ? t("animals.showAll") : t("animals.showLivingOnly")}
-            </Button>
-            <MultiSelect
-              options={ANIMAL_TYPES.map((type) => ({
-                value: type,
-                label: t(`animals.types.${type}`),
-              }))}
-              value={typeFilter}
-              onValueChange={(v) => setTypeFilter(v as AnimalType[])}
-              placeholder={t("animals.filterByType")}
-              className="w-48"
-            />
-          </>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <SlidersHorizontal className="h-4 w-4" />
+                {t("animals.filters")}
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 rounded-full bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-96 space-y-4" align="start">
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t("animals.filterByType")}</p>
+                <MultiSelect
+                  options={ANIMAL_TYPES.map((type) => ({
+                    value: type,
+                    label: t(`animals.types.${type}`),
+                  }))}
+                  value={typeFilter}
+                  onValueChange={(v) => setTypeFilter(v as AnimalType[])}
+                  placeholder={t("common.all")}
+                  className="w-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t("animals.dateOfBirth")}</p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="date"
+                    value={dobFrom}
+                    onChange={(e) => setDobFrom(e.target.value)}
+                    className="text-sm"
+                    placeholder={t("animals.filterDobFrom")}
+                  />
+                  <span className="text-muted-foreground text-sm">–</span>
+                  <Input
+                    type="date"
+                    value={dobTo}
+                    onChange={(e) => setDobTo(e.target.value)}
+                    className="text-sm"
+                    placeholder={t("animals.filterDobTo")}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t("animals.dateOfDeath")}</p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="date"
+                    value={dodFrom}
+                    onChange={(e) => setDodFrom(e.target.value)}
+                    className="text-sm"
+                  />
+                  <span className="text-muted-foreground text-sm">–</span>
+                  <Input
+                    type="date"
+                    value={dodTo}
+                    onChange={(e) => setDodTo(e.target.value)}
+                    className="text-sm"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t("animals.deathReason")}</p>
+                <MultiSelect
+                  options={(["died", "slaughtered"] as DeathReason[]).map((r) => ({
+                    value: r,
+                    label: t(`animals.deathReasons.${r}`),
+                  }))}
+                  value={deathReasonFilter}
+                  onValueChange={(v) => setDeathReasonFilter(v as DeathReason[])}
+                  placeholder={t("common.all")}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  id="show-dead"
+                  type="checkbox"
+                  checked={!onlyLiving}
+                  onChange={() =>
+                    navigate({ to: "/animals", search: { onlyLiving: !onlyLiving } })
+                  }
+                  className="h-4 w-4"
+                />
+                <label htmlFor="show-dead" className="text-sm cursor-pointer">
+                  {t("animals.showDeadAnimals")}
+                </label>
+              </div>
+            </PopoverContent>
+          </Popover>
         }
       />
     </PageContent>

@@ -7091,6 +7091,15 @@ export interface components {
                     dateOfBirth: string | null;
                     /** @enum {string|null} */
                     usage: "milk" | "other" | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfDeath: string | null;
+                    /** @enum {string|null} */
+                    deathReason: "died" | "slaughtered" | null;
+                    motherEarTagNumber: string | null;
+                    fatherEarTagNumber: string | null;
                     parseErrors: string[];
                 }[];
             };
@@ -7126,6 +7135,15 @@ export interface components {
                 dateOfBirth: string;
                 /** @enum {string} */
                 usage: "milk" | "other";
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                dateOfDeath?: string | null;
+                /** @enum {string|null} */
+                deathReason?: "died" | "slaughtered" | null;
+                motherEarTagNumber?: string | null;
+                fatherEarTagNumber?: string | null;
                 mergeAnimalId?: string | null;
             }[];
         };

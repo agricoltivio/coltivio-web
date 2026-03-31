@@ -60,6 +60,10 @@ type LocalPreviewRow = PreviewRow & {
   editedSex: "male" | "female" | null;
   editedDateOfBirth: string | null;
   editedUsage: "milk" | "other" | null;
+  editedDateOfDeath: string | null;
+  editedDeathReason: "died" | "slaughtered";
+  editedMotherEarTagNumber: string | null;
+  editedFatherEarTagNumber: string | null;
 };
 
 type Step = "upload" | "preview" | "result";
@@ -77,6 +81,10 @@ function toLocalRow(row: PreviewRow): LocalPreviewRow {
       ? row.dateOfBirth.slice(0, 10) // keep only YYYY-MM-DD for date inputs
       : null,
     editedUsage: row.usage,
+    editedDateOfDeath: row.dateOfDeath ? row.dateOfDeath.slice(0, 10) : null,
+    editedDeathReason: row.deathReason ?? "died",
+    editedMotherEarTagNumber: row.motherEarTagNumber,
+    editedFatherEarTagNumber: row.fatherEarTagNumber,
   };
 }
 
@@ -138,6 +146,12 @@ function ImportAnimals() {
             ? new Date(row.editedDateOfBirth).toISOString()
             : row.dateOfBirth!,
           usage: row.editedUsage!,
+          dateOfDeath: row.editedDateOfDeath
+            ? new Date(row.editedDateOfDeath).toISOString()
+            : row.dateOfDeath ?? undefined,
+          deathReason: row.editedDateOfDeath || row.dateOfDeath ? row.editedDeathReason : undefined,
+          motherEarTagNumber: row.editedMotherEarTagNumber ?? undefined,
+          fatherEarTagNumber: row.editedFatherEarTagNumber ?? undefined,
           mergeAnimalId: row.mergeAnimalId ?? undefined,
         }));
 
@@ -317,6 +331,9 @@ function ImportAnimals() {
                 <TableHead>{t("animals.sex")}</TableHead>
                 <TableHead>{t("animals.dateOfBirth")}</TableHead>
                 <TableHead>{t("animals.usage")}</TableHead>
+                <TableHead>{t("animals.dateOfDeath")}</TableHead>
+                <TableHead>{t("animals.motherEarTagNumber")}</TableHead>
+                <TableHead>{t("animals.fatherEarTagNumber")}</TableHead>
                 <TableHead className="min-w-52">{t("animals.importStatus")}</TableHead>
                 <TableHead className="w-20" />
               </TableRow>
@@ -340,6 +357,13 @@ function ImportAnimals() {
                     <TableCell>
                       {row.editedUsage ? t(`animals.usageOptions.${row.editedUsage}`) : "-"}
                     </TableCell>
+                    <TableCell>
+                      {row.editedDateOfDeath
+                        ? new Date(row.editedDateOfDeath).toLocaleDateString()
+                        : "-"}
+                    </TableCell>
+                    <TableCell>{row.editedMotherEarTagNumber ?? "-"}</TableCell>
+                    <TableCell>{row.editedFatherEarTagNumber ?? "-"}</TableCell>
                     <TableCell className="overflow-visible">
                       <RowStatusCell
                         row={row}
@@ -376,7 +400,7 @@ function ImportAnimals() {
               })}
               {activeRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-6">
+                  <TableCell colSpan={11} className="text-center text-muted-foreground py-6">
                     {t("animals.importNoRows")}
                   </TableCell>
                 </TableRow>
@@ -510,13 +534,16 @@ function RowStatusCell({
 
   if (row.earTagAssigned) {
     return (
-      <div className="flex items-center gap-2 flex-wrap">
-        <Badge variant="outline" className="border-amber-400 text-amber-700">
-          {t("animals.importConflict")}
-        </Badge>
-        <Button variant="outline" size="sm" className="h-6 text-xs" onClick={onMergeClick}>
-          {t("animals.importMergeWith")}
-        </Button>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="outline" className="border-amber-400 text-amber-700">
+            {t("animals.importConflict")}
+          </Badge>
+          <Button variant="outline" size="sm" className="h-6 text-xs" onClick={onMergeClick}>
+            {t("animals.importMergeWith")}
+          </Button>
+        </div>
+        <p className="text-xs text-amber-600">{t("animals.importConflictWillSkip")}</p>
       </div>
     );
   }
@@ -530,7 +557,15 @@ function RowStatusCell({
 
 type RowEditUpdates = Pick<
   LocalPreviewRow,
-  "editedEarTagNumber" | "editedName" | "editedSex" | "editedDateOfBirth" | "editedUsage"
+  | "editedEarTagNumber"
+  | "editedName"
+  | "editedSex"
+  | "editedDateOfBirth"
+  | "editedUsage"
+  | "editedDateOfDeath"
+  | "editedDeathReason"
+  | "editedMotherEarTagNumber"
+  | "editedFatherEarTagNumber"
 >;
 
 function RowEditForm({
@@ -552,6 +587,10 @@ function RowEditForm({
   const [sex, setSex] = useState<"male" | "female" | "">(row.editedSex ?? "");
   const [dateOfBirth, setDateOfBirth] = useState(row.editedDateOfBirth ?? "");
   const [usage, setUsage] = useState<"milk" | "other" | "">(row.editedUsage ?? "");
+  const [dateOfDeath, setDateOfDeath] = useState(row.editedDateOfDeath ?? "");
+  const [deathReason, setDeathReason] = useState<"died" | "slaughtered">(row.editedDeathReason);
+  const [motherEarTagNumber, setMotherEarTagNumber] = useState(row.editedMotherEarTagNumber ?? "");
+  const [fatherEarTagNumber, setFatherEarTagNumber] = useState(row.editedFatherEarTagNumber ?? "");
 
   function handleSave() {
     onSave({
@@ -560,6 +599,10 @@ function RowEditForm({
       editedSex: (sex as "male" | "female") || null,
       editedDateOfBirth: dateOfBirth || null,
       editedUsage: (usage as "milk" | "other") || null,
+      editedDateOfDeath: dateOfDeath || null,
+      editedDeathReason: deathReason,
+      editedMotherEarTagNumber: motherEarTagNumber || null,
+      editedFatherEarTagNumber: fatherEarTagNumber || null,
     });
   }
 
@@ -629,6 +672,55 @@ function RowEditForm({
               <SelectItem value="other">{t("animals.usageOptions.other")}</SelectItem>
             </SelectContent>
           </Select>
+        </Field>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="edit-dateOfDeath">{t("animals.dateOfDeath")}</FieldLabel>
+          <Input
+            id="edit-dateOfDeath"
+            type="date"
+            value={dateOfDeath}
+            onChange={(e) => setDateOfDeath(e.target.value)}
+          />
+        </Field>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="edit-deathReason">{t("animals.deathReason")}</FieldLabel>
+          <Select value={deathReason} onValueChange={(v) => setDeathReason(v as "died" | "slaughtered")}>
+            <SelectTrigger id="edit-deathReason">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="died">{t("animals.deathReasons.died")}</SelectItem>
+              <SelectItem value="slaughtered">{t("animals.deathReasons.slaughtered")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="edit-motherEarTag">{t("animals.motherEarTagNumber")}</FieldLabel>
+          <Input
+            id="edit-motherEarTag"
+            value={motherEarTagNumber}
+            onChange={(e) => setMotherEarTagNumber(e.target.value)}
+          />
+        </Field>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="edit-fatherEarTag">{t("animals.fatherEarTagNumber")}</FieldLabel>
+          <Input
+            id="edit-fatherEarTag"
+            value={fatherEarTagNumber}
+            onChange={(e) => setFatherEarTagNumber(e.target.value)}
+          />
         </Field>
       </FieldGroup>
 
