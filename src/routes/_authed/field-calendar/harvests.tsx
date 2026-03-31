@@ -265,8 +265,7 @@ function Harvests() {
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
-      {!plotId && <HarvestChart />}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-6">
         <Button
           onClick={() =>
             navigate({
@@ -279,6 +278,7 @@ function Harvests() {
           {t("fieldCalendar.harvests.create")}
         </Button>
       </div>
+      {!plotId && <HarvestChart />}
       <DataTable
         data={data}
         columns={columns}

@@ -242,8 +242,7 @@ function FertilizerApplications() {
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
-      {!plotId && <FertilizerChart />}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-6">
         <Button
           onClick={() =>
             navigate({
@@ -256,6 +255,7 @@ function FertilizerApplications() {
           {t("fieldCalendar.fertilizerApplications.create")}
         </Button>
       </div>
+      {!plotId && <FertilizerChart />}
       <DataTable
         data={data}
         columns={columns}

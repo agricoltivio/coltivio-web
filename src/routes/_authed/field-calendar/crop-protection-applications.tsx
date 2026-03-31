@@ -238,8 +238,7 @@ function CropProtectionApplications() {
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
-      {!plotId && <CropProtectionChart />}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-6">
         <Button
           onClick={() =>
             navigate({
@@ -252,6 +251,7 @@ function CropProtectionApplications() {
           {t("fieldCalendar.cropProtectionApplications.create")}
         </Button>
       </div>
+      {!plotId && <CropProtectionChart />}
       <DataTable
         data={data}
         columns={columns}
