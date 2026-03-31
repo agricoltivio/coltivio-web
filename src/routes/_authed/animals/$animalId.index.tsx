@@ -19,7 +19,7 @@ import {
   CardTitle,
   CardAction,
 } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Plus, GitBranch } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -132,6 +132,15 @@ function AnimalDetailPage() {
           )}
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link
+              to="/animals/family-tree"
+              search={{ type: animal.type, focusId: animal.id }}
+            >
+              <GitBranch className="h-4 w-4 mr-1" />
+              {t("animals.familyTree")}
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link to="/animals/$animalId/edit" params={{ animalId }}>
               {t("common.edit")}

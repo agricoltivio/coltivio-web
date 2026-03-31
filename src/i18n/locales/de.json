@@ -103,6 +103,13 @@
     "noMother": "Unbekannt",
     "noFather": "Unbekannt",
     "noChildren": "Keine Nachkommen",
+    "selectTypeToView": "Tierart auswählen, um den Stammbaum anzuzeigen",
+    "noAnimalsOfType": "Keine Tiere dieser Art gefunden",
+    "familyTree": "Stammbaum",
+    "familyTreeTitle": "Stammbaum",
+    "grandparents": "Großeltern",
+    "parents": "Eltern",
+    "deceased": "Verstorben",
     "deleteConfirm": "Sind Sie sicher, dass Sie dieses Tier löschen möchten?",
     "types": {
       "goat": "Ziege",

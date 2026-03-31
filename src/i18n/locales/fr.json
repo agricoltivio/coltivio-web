@@ -103,6 +103,13 @@
     "noMother": "Inconnue",
     "noFather": "Inconnu",
     "noChildren": "Pas de descendants",
+    "selectTypeToView": "Sélectionner un type d'animal pour voir l'arbre généalogique",
+    "noAnimalsOfType": "Aucun animal de ce type trouvé",
+    "familyTree": "Arbre généalogique",
+    "familyTreeTitle": "Arbre généalogique",
+    "grandparents": "Grands-parents",
+    "parents": "Parents",
+    "deceased": "Décédé",
     "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet animal ?",
     "types": {
       "goat": "Chèvre",

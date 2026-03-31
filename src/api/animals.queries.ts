@@ -16,6 +16,32 @@ export const animalsQueryOptions = (onlyLiving?: boolean) => {
   });
 };
 
+export const animalFamilyTreeQueryOptions = (type: string) => {
+  return queryOptions({
+    queryKey: ["animals", "familyTree", type],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/animals/familyTree", {
+        params: {
+          query: {
+            type: type as
+              | "goat"
+              | "sheep"
+              | "cow"
+              | "horse"
+              | "donkey"
+              | "pig"
+              | "deer",
+          },
+        },
+      });
+      if (response.error) {
+        throw new Error("Failed to fetch family tree");
+      }
+      return response.data.data;
+    },
+  });
+};
+
 export const animalQueryOptions = (animalId: string) => {
   return queryOptions({
     queryKey: ["animals", "byid", animalId],

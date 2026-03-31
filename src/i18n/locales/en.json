@@ -103,6 +103,13 @@
     "noMother": "Unknown",
     "noFather": "Unknown",
     "noChildren": "No children",
+    "selectTypeToView": "Select an animal type to view its family tree",
+    "noAnimalsOfType": "No animals of this type found",
+    "familyTree": "Family tree",
+    "familyTreeTitle": "Family Tree",
+    "grandparents": "Grandparents",
+    "parents": "Parents",
+    "deceased": "Deceased",
     "deleteConfirm": "Are you sure you want to delete this animal?",
     "types": {
       "goat": "Goat",

@@ -103,6 +103,13 @@
     "noMother": "Sconosciuta",
     "noFather": "Sconosciuto",
     "noChildren": "Nessun discendente",
+    "selectTypeToView": "Seleziona un tipo di animale per visualizzare l'albero genealogico",
+    "noAnimalsOfType": "Nessun animale di questo tipo trovato",
+    "familyTree": "Albero genealogico",
+    "familyTreeTitle": "Albero genealogico",
+    "grandparents": "Nonni",
+    "parents": "Genitori",
+    "deceased": "Deceduto",
     "deleteConfirm": "Sei sicuro di voler eliminare questo animale?",
     "types": {
       "goat": "Capra",

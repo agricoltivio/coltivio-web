@@ -69,6 +69,7 @@ import { Route as AuthedAnimalsTurnoutJournalRouteImport } from './routes/_authe
 import { Route as AuthedAnimalsTreatmentsJournalRouteImport } from './routes/_authed/animals/treatments-journal'
 import { Route as AuthedAnimalsImportRouteImport } from './routes/_authed/animals/import'
 import { Route as AuthedAnimalsHerdsRouteImport } from './routes/_authed/animals/herds'
+import { Route as AuthedAnimalsFamilyTreeRouteImport } from './routes/_authed/animals/family-tree'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
 import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
@@ -115,6 +116,7 @@ import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drug
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
 import { Route as AuthedAnimalsAnimalIdJournalRouteImport } from './routes/_authed/animals/$animalId_.journal'
+import { Route as AuthedAnimalsAnimalIdFamilyTreeRouteImport } from './routes/_authed/animals/$animalId_.family-tree'
 import { Route as AuthedAnimalsAnimalIdEditRouteImport } from './routes/_authed/animals/$animalId.edit'
 import { Route as AuthedWikiAdminReviewQueueIndexRouteImport } from './routes/_authed/wiki/admin/review-queue/index'
 import { Route as AuthedWikiAdminEntriesIndexRouteImport } from './routes/_authed/wiki/admin/entries/index'
@@ -460,6 +462,11 @@ const AuthedAnimalsHerdsRoute = AuthedAnimalsHerdsRouteImport.update({
   path: '/animals/herds',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedAnimalsFamilyTreeRoute = AuthedAnimalsFamilyTreeRouteImport.update({
+  id: '/animals/family-tree',
+  path: '/animals/family-tree',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedAnimalsEarTagsRoute = AuthedAnimalsEarTagsRouteImport.update({
   id: '/animals/ear-tags',
   path: '/animals/ear-tags',
@@ -729,6 +736,12 @@ const AuthedAnimalsAnimalIdJournalRoute =
     path: '/animals/$animalId/journal',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedAnimalsAnimalIdFamilyTreeRoute =
+  AuthedAnimalsAnimalIdFamilyTreeRouteImport.update({
+    id: '/animals/$animalId_/family-tree',
+    path: '/animals/$animalId/family-tree',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedAnimalsAnimalIdEditRoute =
   AuthedAnimalsAnimalIdEditRouteImport.update({
     id: '/animals/$animalId/edit',
@@ -925,6 +938,7 @@ export interface FileRoutesByFullPath {
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/animals/import': typeof AuthedAnimalsImportRoute
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
@@ -965,6 +979,7 @@ export interface FileRoutesByFullPath {
   '/treffpunkt/': typeof AuthedTreffpunktIndexRoute
   '/wiki/': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
+  '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1053,6 +1068,7 @@ export interface FileRoutesByTo {
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/animals/import': typeof AuthedAnimalsImportRoute
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
@@ -1092,6 +1108,7 @@ export interface FileRoutesByTo {
   '/treffpunkt': typeof AuthedTreffpunktIndexRoute
   '/wiki': typeof AuthedWikiIndexRoute
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
+  '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
@@ -1187,6 +1204,7 @@ export interface FileRoutesById {
   '/auth/token': typeof AuthTokenRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/_authed/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/_authed/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/_authed/animals/import': typeof AuthedAnimalsImportRoute
   '/_authed/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
@@ -1227,6 +1245,7 @@ export interface FileRoutesById {
   '/_authed/treffpunkt/': typeof AuthedTreffpunktIndexRoute
   '/_authed/wiki/': typeof AuthedWikiIndexRoute
   '/_authed/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
+  '/_authed/animals/$animalId_/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/_authed/animals/$animalId_/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1324,6 +1343,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
+    | '/animals/family-tree'
     | '/animals/herds'
     | '/animals/import'
     | '/animals/treatments-journal'
@@ -1364,6 +1384,7 @@ export interface FileRouteTypes {
     | '/treffpunkt/'
     | '/wiki/'
     | '/animals/$animalId/edit'
+    | '/animals/$animalId/family-tree'
     | '/animals/$animalId/journal'
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
@@ -1452,6 +1473,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
+    | '/animals/family-tree'
     | '/animals/herds'
     | '/animals/import'
     | '/animals/treatments-journal'
@@ -1491,6 +1513,7 @@ export interface FileRouteTypes {
     | '/treffpunkt'
     | '/wiki'
     | '/animals/$animalId/edit'
+    | '/animals/$animalId/family-tree'
     | '/animals/herds/$herdId'
     | '/contacts/$contactId/edit'
     | '/drugs/$drugId/edit'
@@ -1585,6 +1608,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
+    | '/_authed/animals/family-tree'
     | '/_authed/animals/herds'
     | '/_authed/animals/import'
     | '/_authed/animals/treatments-journal'
@@ -1625,6 +1649,7 @@ export interface FileRouteTypes {
     | '/_authed/treffpunkt/'
     | '/_authed/wiki/'
     | '/_authed/animals/$animalId/edit'
+    | '/_authed/animals/$animalId_/family-tree'
     | '/_authed/animals/$animalId_/journal'
     | '/_authed/animals/herds_/$herdId'
     | '/_authed/contacts/$contactId/edit'
@@ -2134,6 +2159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsHerdsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/animals/family-tree': {
+      id: '/_authed/animals/family-tree'
+      path: '/animals/family-tree'
+      fullPath: '/animals/family-tree'
+      preLoaderRoute: typeof AuthedAnimalsFamilyTreeRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/animals/ear-tags': {
       id: '/_authed/animals/ear-tags'
       path: '/animals/ear-tags'
@@ -2454,6 +2486,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/$animalId/journal'
       fullPath: '/animals/$animalId/journal'
       preLoaderRoute: typeof AuthedAnimalsAnimalIdJournalRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/animals/$animalId_/family-tree': {
+      id: '/_authed/animals/$animalId_/family-tree'
+      path: '/animals/$animalId/family-tree'
+      fullPath: '/animals/$animalId/family-tree'
+      preLoaderRoute: typeof AuthedAnimalsAnimalIdFamilyTreeRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/animals/$animalId/edit': {
@@ -2890,6 +2929,7 @@ interface AuthedRouteRouteChildren {
   AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
+  AuthedAnimalsFamilyTreeRoute: typeof AuthedAnimalsFamilyTreeRoute
   AuthedAnimalsHerdsRoute: typeof AuthedAnimalsHerdsRoute
   AuthedAnimalsImportRoute: typeof AuthedAnimalsImportRoute
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
@@ -2914,6 +2954,7 @@ interface AuthedRouteRouteChildren {
   AuthedMembershipIndexRoute: typeof AuthedMembershipIndexRoute
   AuthedWikiIndexRoute: typeof AuthedWikiIndexRoute
   AuthedAnimalsAnimalIdEditRoute: typeof AuthedAnimalsAnimalIdEditRoute
+  AuthedAnimalsAnimalIdFamilyTreeRoute: typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   AuthedAnimalsAnimalIdJournalRoute: typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
@@ -2972,6 +3013,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
+  AuthedAnimalsFamilyTreeRoute: AuthedAnimalsFamilyTreeRoute,
   AuthedAnimalsHerdsRoute: AuthedAnimalsHerdsRoute,
   AuthedAnimalsImportRoute: AuthedAnimalsImportRoute,
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
@@ -3000,6 +3042,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedMembershipIndexRoute: AuthedMembershipIndexRoute,
   AuthedWikiIndexRoute: AuthedWikiIndexRoute,
   AuthedAnimalsAnimalIdEditRoute: AuthedAnimalsAnimalIdEditRoute,
+  AuthedAnimalsAnimalIdFamilyTreeRoute: AuthedAnimalsAnimalIdFamilyTreeRoute,
   AuthedAnimalsAnimalIdJournalRoute:
     AuthedAnimalsAnimalIdJournalRouteWithChildren,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
