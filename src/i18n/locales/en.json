@@ -105,6 +105,8 @@
     "noChildren": "No children",
     "selectTypeToView": "Select an animal type to view its family tree",
     "noAnimalsOfType": "No animals of this type found",
+    "hideDeadAnimals": "Hide deceased",
+    "viewProfile": "View profile",
     "familyTree": "Family tree",
     "familyTreeTitle": "Family Tree",
     "grandparents": "Grandparents",

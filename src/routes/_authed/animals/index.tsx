@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
-import { ArrowDown, ArrowUp, Upload } from "lucide-react";
+import { ArrowDown, ArrowUp, Upload, GitBranch } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
@@ -141,6 +141,10 @@ function Animals() {
   return (
     <PageContent title="Tiere">
       <div className="flex justify-end gap-2 mb-6">
+        <Button variant="outline" onClick={() => navigate({ to: "/animals/family-tree" })}>
+          <GitBranch className="h-4 w-4 mr-2" />
+          {t("animals.familyTree")}
+        </Button>
         <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
           <Upload className="h-4 w-4 mr-2" />
           {t("animals.import")}

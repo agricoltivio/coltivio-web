@@ -105,6 +105,8 @@
     "noChildren": "Keine Nachkommen",
     "selectTypeToView": "Tierart auswählen, um den Stammbaum anzuzeigen",
     "noAnimalsOfType": "Keine Tiere dieser Art gefunden",
+    "hideDeadAnimals": "Verstorbene ausblenden",
+    "viewProfile": "Profil öffnen",
     "familyTree": "Stammbaum",
     "familyTreeTitle": "Stammbaum",
     "grandparents": "Großeltern",

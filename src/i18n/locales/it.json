@@ -105,6 +105,8 @@
     "noChildren": "Nessun discendente",
     "selectTypeToView": "Seleziona un tipo di animale per visualizzare l'albero genealogico",
     "noAnimalsOfType": "Nessun animale di questo tipo trovato",
+    "hideDeadAnimals": "Nascondi deceduti",
+    "viewProfile": "Vedi profilo",
     "familyTree": "Albero genealogico",
     "familyTreeTitle": "Albero genealogico",
     "grandparents": "Nonni",
