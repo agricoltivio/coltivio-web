@@ -22,13 +22,11 @@ import z from "zod";
 const animalSearchSchema = z.object({
   page: fallback(z.number(), 1).default(1),
   filter: fallback(z.string(), "").default(""),
-  onlyLiving: fallback(z.boolean(), true).default(true),
 });
 
 export const Route = createFileRoute("/_authed/animals/")({
-  loaderDeps: ({ search: { onlyLiving } }) => ({ onlyLiving }),
-  loader: ({ deps, context: { queryClient } }) => {
-    queryClient.ensureQueryData(animalsQueryOptions(deps.onlyLiving));
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(animalsQueryOptions(false));
   },
   validateSearch: zodValidator(animalSearchSchema),
   component: Animals,
@@ -36,15 +34,39 @@ export const Route = createFileRoute("/_authed/animals/")({
 
 function Animals() {
   const { t } = useTranslation();
-  const { onlyLiving } = Route.useSearch();
   const navigate = useNavigate();
-  const animalsQuery = useQuery(animalsQueryOptions(onlyLiving));
+  const [onlyLiving, setOnlyLiving] = useState(true);
+  const animalsQuery = useQuery(animalsQueryOptions(false));
   const [typeFilter, setTypeFilter] = useState<AnimalType[]>([]);
   const [dobFrom, setDobFrom] = useState("");
   const [dobTo, setDobTo] = useState("");
   const [dodFrom, setDodFrom] = useState("");
   const [dodTo, setDodTo] = useState("");
   const [deathReasonFilter, setDeathReasonFilter] = useState<DeathReason[]>([]);
+
+  // When a death-related filter is set, automatically fetch dead animals too
+  function setDodFromWithAutoShow(value: string) {
+    setDodFrom(value);
+    if (value) setOnlyLiving(false);
+  }
+  function setDodToWithAutoShow(value: string) {
+    setDodTo(value);
+    if (value) setOnlyLiving(false);
+  }
+  function setDeathReasonFilterWithAutoShow(value: DeathReason[]) {
+    setDeathReasonFilter(value);
+    if (value.length > 0) setOnlyLiving(false);
+  }
+
+  function clearAllFilters() {
+    setTypeFilter([]);
+    setDobFrom("");
+    setDobTo("");
+    setDodFrom("");
+    setDodTo("");
+    setDeathReasonFilter([]);
+    setOnlyLiving(true);
+  }
 
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
@@ -137,6 +159,27 @@ function Animals() {
           return dateOfBirth ? formatDate(dateOfBirth) : "-";
         },
       },
+      {
+        accessorKey: "dateOfDeath",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("animals.dateOfDeath")}
+            {column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const dateOfDeath = row.getValue("dateOfDeath") as string | null;
+          return dateOfDeath ? formatDate(dateOfDeath) : "-";
+        },
+      },
     ],
     [t],
   );
@@ -145,6 +188,7 @@ function Animals() {
   // Charts always show all living animals, unaffected by filters
   const livingAnimals = allAnimals.filter((a) => !a.dateOfDeath);
   const data = allAnimals.filter((a) => {
+    if (onlyLiving && a.dateOfDeath) return false;
     if (typeFilter.length > 0 && !typeFilter.includes(a.type)) return false;
     if (dobFrom && a.dateOfBirth && a.dateOfBirth < dobFrom) return false;
     if (dobTo && a.dateOfBirth && a.dateOfBirth > dobTo + "T23:59:59") return false;
@@ -258,14 +302,14 @@ function Animals() {
                   <Input
                     type="date"
                     value={dodFrom}
-                    onChange={(e) => setDodFrom(e.target.value)}
+                    onChange={(e) => setDodFromWithAutoShow(e.target.value)}
                     className="text-sm"
                   />
                   <span className="text-muted-foreground text-sm">–</span>
                   <Input
                     type="date"
                     value={dodTo}
-                    onChange={(e) => setDodTo(e.target.value)}
+                    onChange={(e) => setDodToWithAutoShow(e.target.value)}
                     className="text-sm"
                   />
                 </div>
@@ -278,24 +322,29 @@ function Animals() {
                     label: t(`animals.deathReasons.${r}`),
                   }))}
                   value={deathReasonFilter}
-                  onValueChange={(v) => setDeathReasonFilter(v as DeathReason[])}
+                  onValueChange={(v) => setDeathReasonFilterWithAutoShow(v as DeathReason[])}
                   placeholder={t("common.all")}
                   className="w-full"
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  id="show-dead"
-                  type="checkbox"
-                  checked={!onlyLiving}
-                  onChange={() =>
-                    navigate({ to: "/animals", search: { onlyLiving: !onlyLiving } })
-                  }
-                  className="h-4 w-4"
-                />
-                <label htmlFor="show-dead" className="text-sm cursor-pointer">
-                  {t("animals.showDeadAnimals")}
-                </label>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    id="show-dead"
+                    type="checkbox"
+                    checked={!onlyLiving}
+                    onChange={() => setOnlyLiving(!onlyLiving)}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="show-dead" className="text-sm cursor-pointer">
+                    {t("animals.showDeadAnimals")}
+                  </label>
+                </div>
+                {activeFilterCount > 0 && (
+                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={clearAllFilters}>
+                    {t("common.clearAll")}
+                  </Button>
+                )}
               </div>
             </PopoverContent>
           </Popover>
