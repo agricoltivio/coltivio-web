@@ -5,6 +5,7 @@ import ReactECharts from "echarts-for-react";
 import { useTranslation } from "react-i18next";
 import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOptions } from "@/api/farm.queries";
 import { tasksQueryOptions } from "@/api/tasks.queries";
+import { animalsQueryOptions } from "@/api/animals.queries";
 import { FieldworkMap } from "@/components/FieldworkMap";
 import {
   Select,
@@ -61,6 +62,8 @@ function RouteComponent() {
   const fieldEventsQuery = useQuery(farmFieldEventsQueryOptions(fromDate, toDate));
   const farmQuery = useQuery(farmQueryOptions());
   const tasksQuery = useQuery(tasksQueryOptions({ status: "todo" }));
+  // All animals (including dead) to compute born/died/slaughtered for the selected year
+  const allAnimalsQuery = useQuery(animalsQueryOptions(false));
 
   const now = new Date();
   const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -77,6 +80,20 @@ function RouteComponent() {
   }
 
   const { animals, harvests, plots, fertilizerApplications, cropProtectionApplications, cropRotations } = data;
+
+  // Compute born/died/slaughtered for the selected year from the full animal list
+  const yearAnimalStats = (() => {
+    const list = allAnimalsQuery.data?.result ?? [];
+    let born = 0, died = 0, slaughtered = 0;
+    for (const animal of list) {
+      if (animal.dateOfBirth && new Date(animal.dateOfBirth).getFullYear() === year) born++;
+      if (animal.dateOfDeath && new Date(animal.dateOfDeath).getFullYear() === year) {
+        if (animal.deathReason === "slaughtered") slaughtered++;
+        else died++;
+      }
+    }
+    return { born, died, slaughtered };
+  })();
 
   // Top crop by area (from active crop rotations)
   const topCropByArea = cropRotations.active.length > 0
@@ -270,7 +287,7 @@ function RouteComponent() {
         <StatCard
           label={t("nav.animals")}
           value={animals.total}
-          sub={`+${animals.bornThisYear} geboren / -${animals.diedThisYear} gestorben`}
+          sub={`+${yearAnimalStats.born} ${t("dashboard.animalsBorn")} · -${yearAnimalStats.died} ${t("dashboard.animalsDied")} · -${yearAnimalStats.slaughtered} ${t("dashboard.animalsSlaughtered")}`}
         />
         <StatCard
           label={t("nav.plots")}

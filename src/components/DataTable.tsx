@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -47,6 +47,7 @@ interface DataTableProps<TData> {
   showPagination?: boolean;
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
+  filterSlot?: ReactNode;
 }
 
 export function DataTable<TData>({
@@ -61,6 +62,7 @@ export function DataTable<TData>({
   showPagination = true,
   rowSelection,
   onRowSelectionChange,
+  filterSlot,
 }: DataTableProps<TData>) {
   const { t } = useTranslation();
 
@@ -98,14 +100,17 @@ export function DataTable<TData>({
 
   return (
     <div className="flex flex-col gap-4">
-      {showSearch && (
-        <div className="flex justify-between">
-          <Input
-            placeholder={searchPlaceholder ?? t("common.search")}
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="max-w-sm"
-          />
+      {(showSearch || filterSlot) && (
+        <div className="flex items-center gap-2">
+          {showSearch && (
+            <Input
+              placeholder={searchPlaceholder ?? t("common.search")}
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="max-w-sm"
+            />
+          )}
+          {filterSlot}
         </div>
       )}
 

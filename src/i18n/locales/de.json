@@ -131,6 +131,14 @@
       "male": "Männlich",
       "female": "Weiblich"
     },
+    "filterByType": "Nach Tierart filtern",
+    "chartByType": "Tiere nach Art",
+    "chartAgeDistribution": "Altersverteilung",
+    "allTypes": "Alle Tierarten",
+    "years": "Jahre",
+    "chartTypeScatter": "Streudiagramm",
+    "chartTypeBoxplot": "Boxplot",
+    "chartTypeHistogram": "Histogramm",
     "showAll": "Alle Tiere anzeigen",
     "showLivingOnly": "Nur lebende anzeigen",
     "import": "Importieren",
@@ -217,7 +225,10 @@
     "linkExpired": "Dieser Link ist abgelaufen oder wurde bereits verwendet."
   },
   "dashboard": {
-    "welcome": "Hallo {{name}}, {{farmName}}"
+    "welcome": "Hallo {{name}}, {{farmName}}",
+    "animalsBorn": "Geboren",
+    "animalsDied": "Gestorben",
+    "animalsSlaughtered": "Geschlachtet"
   },
   "settings": {
     "title": "Einstellungen",

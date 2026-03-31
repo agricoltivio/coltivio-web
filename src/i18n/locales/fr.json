@@ -131,6 +131,14 @@
       "male": "Mâle",
       "female": "Femelle"
     },
+    "filterByType": "Filtrer par type",
+    "chartByType": "Animaux par type",
+    "chartAgeDistribution": "Répartition par âge",
+    "allTypes": "Tous les types",
+    "years": "ans",
+    "chartTypeScatter": "Nuage de points",
+    "chartTypeBoxplot": "Boîte à moustaches",
+    "chartTypeHistogram": "Histogramme",
     "showAll": "Afficher tous les animaux",
     "showLivingOnly": "Afficher les vivants uniquement",
     "import": "Importer",
@@ -217,7 +225,10 @@
     "linkExpired": "Ce lien a expiré ou a déjà été utilisé."
   },
   "dashboard": {
-    "welcome": "Bonjour {{name}}, {{farmName}}"
+    "welcome": "Bonjour {{name}}, {{farmName}}",
+    "animalsBorn": "Nés",
+    "animalsDied": "Décédés",
+    "animalsSlaughtered": "Abattus"
   },
   "settings": {
     "title": "Paramètres",
