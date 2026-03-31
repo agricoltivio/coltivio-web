@@ -1460,6 +1460,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/import/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsImportPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/import/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsImportCommit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/byId/{animalId}": {
         parameters: {
             query?: never;
@@ -6996,6 +7028,62 @@ export interface components {
             type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
             skipHeaderRow?: string;
         };
+        PostV1AnimalsImportPreviewPositiveResponse: {
+            data: {
+                rows: {
+                    rowNumber: number;
+                    earTagNumber: string | null;
+                    earTagId: string | null;
+                    earTagAssigned: boolean;
+                    assignedToAnimalId: string | null;
+                    name: string | null;
+                    /** @enum {string|null} */
+                    sex: "male" | "female" | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dateOfBirth: string | null;
+                    /** @enum {string|null} */
+                    usage: "milk" | "other" | null;
+                    parseErrors: string[];
+                }[];
+            };
+        };
+        PostV1AnimalsImportPreviewRequestBody: {
+            /** Format: binary */
+            file: string;
+            skipHeaderRow?: string;
+        };
+        PostV1AnimalsImportCommitPositiveResponse: {
+            data: {
+                created: number;
+                merged: number;
+                skipped: {
+                    index: number;
+                    reason: string;
+                }[];
+            };
+        };
+        PostV1AnimalsImportCommitRequestBody: {
+            /** @enum {string} */
+            type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+            rows: {
+                earTagNumber?: string | null;
+                earTagId?: string | null;
+                name: string;
+                /** @enum {string} */
+                sex: "male" | "female";
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                dateOfBirth: string;
+                /** @enum {string} */
+                usage: "milk" | "other";
+                mergeAnimalId?: string | null;
+            }[];
+        };
         GetV1AnimalsByIdAnimalIdPositiveResponse: {
             data: {
                 id: string;
@@ -9279,6 +9367,7 @@ export interface components {
             items: {
                 productId: string;
                 quantity: number;
+                unitPrice?: number;
             }[];
         };
         GetV1OrdersInvoiceSettingsPositiveResponse: {
@@ -9564,6 +9653,7 @@ export interface components {
         PostV1OrdersByIdOrderIdItemsRequestBody: {
             productId: string;
             quantity: number;
+            unitPrice?: number;
         };
         PatchV1OrdersByIdOrderIdItemsByIdOrderItemIdPositiveResponse: {
             data: {
@@ -18311,6 +18401,74 @@ export interface operations {
                 };
             };
             /** @description POST /v1/animals/import Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsImportPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/import/preview Request body */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PostV1AnimalsImportPreviewRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/import/preview Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsImportPreviewPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/import/preview Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsImportCommit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/import/commit Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsImportCommitRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/import/commit Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsImportCommitPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/import/commit Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

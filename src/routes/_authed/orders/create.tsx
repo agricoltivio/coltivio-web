@@ -26,7 +26,13 @@ function formDataToApiBody(data: OrderFormData) {
       : undefined,
     notes: data.notes || undefined,
     status: data.confirmed ? ("confirmed" as const) : undefined,
-    items: data.items.filter((item) => item.productId),
+    items: data.items
+      .filter((item) => item.productId)
+      .map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice !== "" ? Number(item.unitPrice) : undefined,
+      })),
   };
 }
 
@@ -47,6 +53,8 @@ function CreateOrder() {
     value: product.id,
     label: `${product.name} (${t(`products.units.${product.unit}`)})`,
   }));
+
+  const productPriceMap = new Map(products.result.map((p) => [p.id, p.pricePerUnit]));
 
   const createMutation = useMutation({
     mutationFn: async (data: OrderFormData) => {
@@ -69,6 +77,7 @@ function CreateOrder() {
       <OrderForm
         contactOptions={contactOptions}
         productOptions={productOptions}
+        productPriceMap={productPriceMap}
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}
         showConfirmedCheckbox

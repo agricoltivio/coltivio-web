@@ -23,12 +23,14 @@ export interface OrderFormData {
   shippingDate: string | null;
   notes: string | null;
   confirmed: boolean;
-  items: { productId: string; quantity: number }[];
+  items: { productId: string; quantity: number; unitPrice: string }[];
 }
 
 export interface OrderFormProps {
   contactOptions: ComboboxOption[];
   productOptions: ComboboxOption[];
+  /** Maps productId → default price, used to prefill the price field on product select */
+  productPriceMap: Map<string, number>;
   onSubmit: (data: OrderFormData) => void;
   isSubmitting?: boolean;
   showConfirmedCheckbox?: boolean;
@@ -43,6 +45,7 @@ export interface OrderFormProps {
 export function OrderForm({
   contactOptions,
   productOptions,
+  productPriceMap,
   onSubmit,
   isSubmitting = false,
   showConfirmedCheckbox = false,
@@ -50,14 +53,14 @@ export function OrderForm({
 }: OrderFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control } = useForm<OrderFormData>({
+  const { register, handleSubmit, control, setValue } = useForm<OrderFormData>({
     defaultValues: {
       contactId: defaultValues?.contactId || "",
       orderDate: defaultValues?.orderDate || new Date().toISOString().split("T")[0],
       shippingDate: defaultValues?.shippingDate || null,
       notes: defaultValues?.notes || null,
       confirmed: false,
-      items: [{ productId: "", quantity: 1 }],
+      items: [{ productId: "", quantity: 1, unitPrice: "" }],
     },
   });
 
@@ -178,9 +181,16 @@ export function OrderForm({
                             (o) => o.value === controllerField.value
                           ) || null
                         }
-                        onValueChange={(item: ComboboxOption | null) =>
-                          controllerField.onChange(item?.value || "")
-                        }
+                        onValueChange={(item: ComboboxOption | null) => {
+                          controllerField.onChange(item?.value || "");
+                          // Prefill price from product default when selecting a product
+                          if (item) {
+                            const price = productPriceMap.get(item.value);
+                            if (price !== undefined) {
+                              setValue(`items.${index}.unitPrice`, String(price));
+                            }
+                          }
+                        }}
                       >
                         <ComboboxInput placeholder="-" />
                         <ComboboxContent>
@@ -203,12 +213,25 @@ export function OrderForm({
                   )}
                   <Input
                     type="number"
-                    min="1"
+                    min="0.01"
+                    step="0.01"
                     {...register(`items.${index}.quantity`, {
                       required: true,
                       valueAsNumber: true,
-                      min: 1,
+                      min: 0.01,
                     })}
+                  />
+                </Field>
+                <Field className="w-28">
+                  {index === 0 && (
+                    <FieldLabel>{t("orders.unitPrice")}</FieldLabel>
+                  )}
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="-"
+                    {...register(`items.${index}.unitPrice`)}
                   />
                 </Field>
                 <Button
@@ -230,7 +253,7 @@ export function OrderForm({
           variant="outline"
           size="sm"
           className="mt-4"
-          onClick={() => append({ productId: "", quantity: 1 })}
+          onClick={() => append({ productId: "", quantity: 1, unitPrice: "" })}
         >
           <PlusIcon className="h-4 w-4 mr-1" />
           {t("orders.addItem")}
