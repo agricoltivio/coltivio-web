@@ -131,6 +131,8 @@
       "male": "Maschio",
       "female": "Femmina"
     },
+    "showAll": "Mostra tutti gli animali",
+    "showLivingOnly": "Mostra solo i vivi",
     "import": "Importa",
     "importTitle": "Importa animali",
     "importDescription": "Carica un file Excel per importare gli animali. Il file deve contenere colonne per numero marchio, nome, data di nascita, sesso, marchio madre e marchio padre.",

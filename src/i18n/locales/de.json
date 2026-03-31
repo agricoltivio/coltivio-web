@@ -131,6 +131,8 @@
       "male": "Männlich",
       "female": "Weiblich"
     },
+    "showAll": "Alle Tiere anzeigen",
+    "showLivingOnly": "Nur lebende anzeigen",
     "import": "Importieren",
     "importTitle": "Tiere importieren",
     "importDescription": "Laden Sie eine Excel-Datei hoch, um Tiere zu importieren. Die Datei sollte Spalten für Ohrmarkennummer, Name, Geburtsdatum, Geschlecht, Mutter-Ohrmarke und Vater-Ohrmarke enthalten.",

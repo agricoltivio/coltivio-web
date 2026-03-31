@@ -132,14 +132,24 @@ function Animals() {
 
   return (
     <PageContent title="Tiere">
-      <div className="flex justify-end gap-2 mb-4">
-        <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
-          <Upload className="h-4 w-4 mr-2" />
-          {t("animals.import")}
+      <div className="flex justify-between gap-2 mb-4">
+        <Button
+          variant={onlyLiving ? "outline" : "secondary"}
+          onClick={() =>
+            navigate({ to: "/animals", search: { onlyLiving: !onlyLiving } })
+          }
+        >
+          {onlyLiving ? t("animals.showAll") : t("animals.showLivingOnly")}
         </Button>
-        <Button onClick={() => navigate({ to: "/animals/create" })}>
-          {t("common.create")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
+            <Upload className="h-4 w-4 mr-2" />
+            {t("animals.import")}
+          </Button>
+          <Button onClick={() => navigate({ to: "/animals/create" })}>
+            {t("common.create")}
+          </Button>
+        </div>
       </div>
       <DataTable
         data={data}

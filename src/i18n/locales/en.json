@@ -131,6 +131,8 @@
       "male": "Male",
       "female": "Female"
     },
+    "showAll": "Show all animals",
+    "showLivingOnly": "Show living only",
     "import": "Import",
     "importTitle": "Import Animals",
     "importDescription": "Upload an Excel file to import animals. The file should contain columns for ear tag number, name, date of birth, sex, mother ear tag, and father ear tag.",

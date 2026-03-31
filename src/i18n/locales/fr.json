@@ -131,6 +131,8 @@
       "male": "Mâle",
       "female": "Femelle"
     },
+    "showAll": "Afficher tous les animaux",
+    "showLivingOnly": "Afficher les vivants uniquement",
     "import": "Importer",
     "importTitle": "Importer des animaux",
     "importDescription": "Chargez un fichier Excel pour importer des animaux. Le fichier doit contenir des colonnes pour le numéro de boucle, le nom, la date de naissance, le sexe, la boucle de la mère et du père.",

@@ -64,8 +64,8 @@ function formDataToApiBody(data: AnimalFormData) {
     fatherId: data.fatherId || undefined,
     dateOfDeath: data.dateOfDeath
       ? new Date(data.dateOfDeath).toISOString()
-      : undefined,
-    deathReason: data.deathReason || undefined,
+      : null,
+    deathReason: data.deathReason || null,
     registered: data.registered,
     usage: data.usage,
   };
