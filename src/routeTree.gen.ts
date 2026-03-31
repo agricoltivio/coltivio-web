@@ -67,6 +67,7 @@ import { Route as AuthedDrugsCreateRouteImport } from './routes/_authed/drugs/cr
 import { Route as AuthedContactsCreateRouteImport } from './routes/_authed/contacts/create'
 import { Route as AuthedAnimalsTurnoutJournalRouteImport } from './routes/_authed/animals/turnout-journal'
 import { Route as AuthedAnimalsTreatmentsJournalRouteImport } from './routes/_authed/animals/treatments-journal'
+import { Route as AuthedAnimalsImportRouteImport } from './routes/_authed/animals/import'
 import { Route as AuthedAnimalsHerdsRouteImport } from './routes/_authed/animals/herds'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
@@ -449,6 +450,11 @@ const AuthedAnimalsTreatmentsJournalRoute =
     path: '/animals/treatments-journal',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedAnimalsImportRoute = AuthedAnimalsImportRouteImport.update({
+  id: '/animals/import',
+  path: '/animals/import',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedAnimalsHerdsRoute = AuthedAnimalsHerdsRouteImport.update({
   id: '/animals/herds',
   path: '/animals/herds',
@@ -920,6 +926,7 @@ export interface FileRoutesByFullPath {
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
+  '/animals/import': typeof AuthedAnimalsImportRoute
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
@@ -1047,6 +1054,7 @@ export interface FileRoutesByTo {
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
+  '/animals/import': typeof AuthedAnimalsImportRoute
   '/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
@@ -1180,6 +1188,7 @@ export interface FileRoutesById {
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/herds': typeof AuthedAnimalsHerdsRoute
+  '/_authed/animals/import': typeof AuthedAnimalsImportRoute
   '/_authed/animals/treatments-journal': typeof AuthedAnimalsTreatmentsJournalRoute
   '/_authed/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/_authed/contacts/create': typeof AuthedContactsCreateRoute
@@ -1316,6 +1325,7 @@ export interface FileRouteTypes {
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/herds'
+    | '/animals/import'
     | '/animals/treatments-journal'
     | '/animals/turnout-journal'
     | '/contacts/create'
@@ -1443,6 +1453,7 @@ export interface FileRouteTypes {
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/herds'
+    | '/animals/import'
     | '/animals/treatments-journal'
     | '/animals/turnout-journal'
     | '/contacts/create'
@@ -1575,6 +1586,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/herds'
+    | '/_authed/animals/import'
     | '/_authed/animals/treatments-journal'
     | '/_authed/animals/turnout-journal'
     | '/_authed/contacts/create'
@@ -2106,6 +2118,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/treatments-journal'
       fullPath: '/animals/treatments-journal'
       preLoaderRoute: typeof AuthedAnimalsTreatmentsJournalRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/animals/import': {
+      id: '/_authed/animals/import'
+      path: '/animals/import'
+      fullPath: '/animals/import'
+      preLoaderRoute: typeof AuthedAnimalsImportRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/animals/herds': {
@@ -2872,6 +2891,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
   AuthedAnimalsHerdsRoute: typeof AuthedAnimalsHerdsRoute
+  AuthedAnimalsImportRoute: typeof AuthedAnimalsImportRoute
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
   AuthedAnimalsTurnoutJournalRoute: typeof AuthedAnimalsTurnoutJournalRoute
   AuthedDrugsCreateRoute: typeof AuthedDrugsCreateRoute
@@ -2953,6 +2973,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
   AuthedAnimalsHerdsRoute: AuthedAnimalsHerdsRoute,
+  AuthedAnimalsImportRoute: AuthedAnimalsImportRoute,
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
   AuthedAnimalsTurnoutJournalRoute: AuthedAnimalsTurnoutJournalRoute,
   AuthedDrugsCreateRoute: AuthedDrugsCreateRoute,
