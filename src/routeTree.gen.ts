@@ -72,6 +72,7 @@ import { Route as AuthedAnimalsHerdsRouteImport } from './routes/_authed/animals
 import { Route as AuthedAnimalsFamilyTreeRouteImport } from './routes/_authed/animals/family-tree'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
+import { Route as AuthedWikiMySubmissionsIndexRouteImport } from './routes/_authed/wiki/my-submissions/index'
 import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
 import { Route as AuthedWikiAdminIndexRouteImport } from './routes/_authed/wiki/admin/index'
 import { Route as AuthedTreatmentsTreatmentIdIndexRouteImport } from './routes/_authed/treatments/$treatmentId.index'
@@ -477,6 +478,12 @@ const AuthedAnimalsCreateRoute = AuthedAnimalsCreateRouteImport.update({
   path: '/animals/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedWikiMySubmissionsIndexRoute =
+  AuthedWikiMySubmissionsIndexRouteImport.update({
+    id: '/wiki/my-submissions/',
+    path: '/wiki/my-submissions/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedWikiMyEntriesIndexRoute =
   AuthedWikiMyEntriesIndexRouteImport.update({
     id: '/wiki/my-entries/',
@@ -1024,6 +1031,7 @@ export interface FileRoutesByFullPath {
   '/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/wiki/admin/': typeof AuthedWikiAdminIndexRoute
   '/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
+  '/wiki/my-submissions/': typeof AuthedWikiMySubmissionsIndexRoute
   '/animals/$animalId/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/animals/$animalId/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
@@ -1152,6 +1160,7 @@ export interface FileRoutesByTo {
   '/treatments/$treatmentId': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/wiki/admin': typeof AuthedWikiAdminIndexRoute
   '/wiki/my-entries': typeof AuthedWikiMyEntriesIndexRoute
+  '/wiki/my-submissions': typeof AuthedWikiMySubmissionsIndexRoute
   '/animals/$animalId/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/animals/$animalId/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
@@ -1290,6 +1299,7 @@ export interface FileRoutesById {
   '/_authed/treatments/$treatmentId/': typeof AuthedTreatmentsTreatmentIdIndexRoute
   '/_authed/wiki/admin/': typeof AuthedWikiAdminIndexRoute
   '/_authed/wiki/my-entries/': typeof AuthedWikiMyEntriesIndexRoute
+  '/_authed/wiki/my-submissions/': typeof AuthedWikiMySubmissionsIndexRoute
   '/_authed/animals/$animalId_/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/_authed/animals/$animalId_/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
   '/_authed/field-calendar/crop-families_/$familyId_/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
@@ -1429,6 +1439,7 @@ export interface FileRouteTypes {
     | '/treatments/$treatmentId/'
     | '/wiki/admin/'
     | '/wiki/my-entries/'
+    | '/wiki/my-submissions/'
     | '/animals/$animalId/journal/$entryId'
     | '/animals/$animalId/journal/create'
     | '/field-calendar/crop-families/$familyId/edit'
@@ -1557,6 +1568,7 @@ export interface FileRouteTypes {
     | '/treatments/$treatmentId'
     | '/wiki/admin'
     | '/wiki/my-entries'
+    | '/wiki/my-submissions'
     | '/animals/$animalId/journal/$entryId'
     | '/animals/$animalId/journal/create'
     | '/field-calendar/crop-families/$familyId/edit'
@@ -1694,6 +1706,7 @@ export interface FileRouteTypes {
     | '/_authed/treatments/$treatmentId/'
     | '/_authed/wiki/admin/'
     | '/_authed/wiki/my-entries/'
+    | '/_authed/wiki/my-submissions/'
     | '/_authed/animals/$animalId_/journal/$entryId'
     | '/_authed/animals/$animalId_/journal/create'
     | '/_authed/field-calendar/crop-families_/$familyId_/edit'
@@ -2178,6 +2191,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/create'
       fullPath: '/animals/create'
       preLoaderRoute: typeof AuthedAnimalsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/wiki/my-submissions/': {
+      id: '/_authed/wiki/my-submissions/'
+      path: '/wiki/my-submissions'
+      fullPath: '/wiki/my-submissions/'
+      preLoaderRoute: typeof AuthedWikiMySubmissionsIndexRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/wiki/my-entries/': {
@@ -2982,6 +3002,7 @@ interface AuthedRouteRouteChildren {
   AuthedTreatmentsTreatmentIdIndexRoute: typeof AuthedTreatmentsTreatmentIdIndexRoute
   AuthedWikiAdminIndexRoute: typeof AuthedWikiAdminIndexRoute
   AuthedWikiMyEntriesIndexRoute: typeof AuthedWikiMyEntriesIndexRoute
+  AuthedWikiMySubmissionsIndexRoute: typeof AuthedWikiMySubmissionsIndexRoute
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute: typeof AuthedFieldCalendarCropProtectionApplicationsIdEditRoute
   AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
@@ -3085,6 +3106,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedTreatmentsTreatmentIdIndexRoute: AuthedTreatmentsTreatmentIdIndexRoute,
   AuthedWikiAdminIndexRoute: AuthedWikiAdminIndexRoute,
   AuthedWikiMyEntriesIndexRoute: AuthedWikiMyEntriesIndexRoute,
+  AuthedWikiMySubmissionsIndexRoute: AuthedWikiMySubmissionsIndexRoute,
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute:
     AuthedFieldCalendarCropFamiliesFamilyIdEditRoute,
   AuthedFieldCalendarCropProtectionApplicationsIdEditRoute:

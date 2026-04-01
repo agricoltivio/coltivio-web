@@ -42,6 +42,7 @@ import {
   MessageSquare,
   NotebookPen,
   NotepadText,
+  ClipboardList,
   Package,
   Pill,
   RefreshCw,
@@ -579,9 +580,9 @@ export function AppSidebar() {
                   <Link
                     activeOptions={{ exact: true, includeSearch: false }}
                     activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
-                    to="/wiki/my-entries"
+                    to="/wiki/my-submissions"
                   >
-                    <NotepadText /> {t("nav.wikiMyEntries")}
+                    <ClipboardList /> {t("nav.wikiMySubmissions")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -37,7 +37,7 @@ function EditWikiEntry() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wiki", "myEntries"] });
-      navigate({ to: "/wiki/my-entries" });
+      navigate({ to: "/wiki/$entryId", params: { entryId } });
     },
   });
 
@@ -47,7 +47,7 @@ function EditWikiEntry() {
     <PageContent
       title={t("wiki.editEntry")}
       showBackButton
-      backTo={() => navigate({ to: "/wiki/my-entries" })}
+      backTo={() => navigate({ to: "/wiki/$entryId", params: { entryId } })}
     >
       <WikiEntryForm
         entry={entry}

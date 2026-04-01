@@ -70,18 +70,22 @@ function EditChangeRequestDraft() {
   const cr = changeRequestsQuery.data?.result.find((c) => c.id === changeRequestId);
   const notes = notesQuery.data?.result ?? [];
 
-  const { register, handleSubmit: handleSave, control } = useForm<DraftCrFormData>({
-    values: cr
-      ? {
-          translations: LOCALES.map((locale) => {
-            const existing = cr.translations.find((tr) => tr.locale === locale);
-            return { locale, title: existing?.title ?? "", body: existing?.body ?? "" };
-          }),
-        }
-      : {
-          translations: LOCALES.map((locale) => ({ locale, title: "", body: "" })),
-        },
-  });
+  // Editable when the user still needs to take action
+  const isEditable = cr?.status === "draft" || cr?.status === "changes_requested";
+
+  const { register, handleSubmit: handleSave, control, formState: { isDirty }, getValues } =
+    useForm<DraftCrFormData>({
+      values: cr
+        ? {
+            translations: LOCALES.map((locale) => {
+              const existing = cr.translations.find((tr) => tr.locale === locale);
+              return { locale, title: existing?.title ?? "", body: existing?.body ?? "" };
+            }),
+          }
+        : {
+            translations: LOCALES.map((locale) => ({ locale, title: "", body: "" })),
+          },
+    });
 
   const { register: registerNote, handleSubmit: handleNoteSubmit, reset: resetNote } =
     useForm<NoteForm>({ defaultValues: { body: "" } });
@@ -110,7 +114,7 @@ function EditChangeRequestDraft() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wiki", "myChangeRequests"] });
-      navigate({ to: "/wiki/my-entries" });
+      navigate({ to: "/wiki/my-submissions" });
     },
   });
 
@@ -130,6 +134,15 @@ function EditChangeRequestDraft() {
     },
   });
 
+  async function handleSubmitClick() {
+    if (!confirm(t("wiki.submitConfirm"))) return;
+    // Implicitly save if the form has unsaved changes
+    if (isDirty) {
+      await saveMutation.mutateAsync(getValues());
+    }
+    submitMutation.mutate();
+  }
+
   if (!cr) return null;
 
   const crTitle =
@@ -141,7 +154,7 @@ function EditChangeRequestDraft() {
     <PageContent
       title={t("wiki.editSubmission")}
       showBackButton
-      backTo={() => navigate({ to: "/wiki/my-entries" })}
+      backTo={() => navigate({ to: "/wiki/my-submissions" })}
     >
       <div className="flex gap-2 mb-6">
         <Badge variant="outline">{t(`wiki.changeRequest.type.${cr.type}`)}</Badge>
@@ -166,6 +179,7 @@ function EditChangeRequestDraft() {
                   <Input
                     id={`cr-title-${locale}`}
                     type="text"
+                    readOnly={!isEditable}
                     {...register(`translations.${idx}.title` as const)}
                   />
                 </Field>
@@ -180,6 +194,7 @@ function EditChangeRequestDraft() {
                       <div className="border rounded-md overflow-hidden">
                         <MDXEditor
                           key={locale}
+                          readOnly={!isEditable}
                           markdown={field.value}
                           onChange={field.onChange}
                           plugins={[
@@ -188,7 +203,7 @@ function EditChangeRequestDraft() {
                             quotePlugin(),
                             thematicBreakPlugin(),
                             linkPlugin(),
-                            linkDialogPlugin(),
+                            ...(isEditable ? [linkDialogPlugin()] : []),
                             tablePlugin(),
                             codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
                             codeMirrorPlugin({
@@ -201,19 +216,23 @@ function EditChangeRequestDraft() {
                               },
                             }),
                             imagePlugin(),
-                            markdownShortcutPlugin(),
-                            toolbarPlugin({
-                              toolbarContents: () => (
-                                <>
-                                  <UndoRedo />
-                                  <BoldItalicUnderlineToggles />
-                                  <BlockTypeSelect />
-                                  <CreateLink />
-                                  <InsertTable />
-                                  <InsertCodeBlock />
-                                </>
-                              ),
-                            }),
+                            ...(isEditable ? [markdownShortcutPlugin()] : []),
+                            ...(isEditable
+                              ? [
+                                  toolbarPlugin({
+                                    toolbarContents: () => (
+                                      <>
+                                        <UndoRedo />
+                                        <BoldItalicUnderlineToggles />
+                                        <BlockTypeSelect />
+                                        <CreateLink />
+                                        <InsertTable />
+                                        <InsertCodeBlock />
+                                      </>
+                                    ),
+                                  }),
+                                ]
+                              : []),
                           ]}
                         />
                       </div>
@@ -224,20 +243,20 @@ function EditChangeRequestDraft() {
             </TabsContent>
           ))}
         </Tabs>
-        <div className="flex gap-3">
-          <Button type="submit" variant="outline" disabled={saveMutation.isPending}>
-            {t("common.save")}
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              if (confirm(t("wiki.submitConfirm"))) submitMutation.mutate();
-            }}
-            disabled={submitMutation.isPending || saveMutation.isPending}
-          >
-            {t("wiki.submit")}
-          </Button>
-        </div>
+        {isEditable && (
+          <div className="flex gap-3">
+            <Button type="submit" variant="outline" disabled={saveMutation.isPending || !isDirty}>
+              {t("common.save")}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSubmitClick}
+              disabled={submitMutation.isPending || saveMutation.isPending}
+            >
+              {t("wiki.submit")}
+            </Button>
+          </div>
+        )}
       </form>
 
       {/* Comments thread */}
@@ -265,21 +284,23 @@ function EditChangeRequestDraft() {
               </ul>
             )}
           </div>
-          <div className="p-3 border-t">
-            <form
-              onSubmit={handleNoteSubmit((data) => addNoteMutation.mutate(data))}
-              className="flex gap-2"
-            >
-              <Input
-                {...registerNote("body", { required: true })}
-                placeholder={t("wiki.commentBody")}
-                className="flex-1"
-              />
-              <Button type="submit" size="sm" disabled={addNoteMutation.isPending}>
-                {t("wiki.addComment")}
-              </Button>
-            </form>
-          </div>
+          {cr.status !== "approved" && cr.status !== "rejected" && (
+            <div className="p-3 border-t">
+              <form
+                onSubmit={handleNoteSubmit((data) => addNoteMutation.mutate(data))}
+                className="flex gap-2"
+              >
+                <Input
+                  {...registerNote("body", { required: true })}
+                  placeholder={t("wiki.commentBody")}
+                  className="flex-1"
+                />
+                <Button type="submit" size="sm" disabled={addNoteMutation.isPending}>
+                  {t("wiki.addComment")}
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </PageContent>

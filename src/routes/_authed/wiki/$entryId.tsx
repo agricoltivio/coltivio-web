@@ -52,8 +52,22 @@ function WikiDetail() {
         {entry.tags.map((et) => (
           <Badge key={et.id} variant="secondary">{et.tag.name}</Badge>
         ))}
-        {/* Public entries: owner can propose changes */}
-        {entry.visibility === "public" && (
+        {/* Private entries: direct edit; public entries: propose a change */}
+        {entry.visibility === "private" ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={() =>
+              navigate({
+                to: "/wiki/my-entries/$entryId/edit",
+                params: { entryId: entry.id },
+              })
+            }
+          >
+            {t("common.edit")}
+          </Button>
+        ) : (
           <Button
             variant="outline"
             size="sm"
