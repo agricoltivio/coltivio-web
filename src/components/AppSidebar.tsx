@@ -217,9 +217,9 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
-                    to="/animals/treatments-journal"
+                    to="/drugs"
                   >
-                    <Syringe /> {t("nav.treatmentsJournal")}
+                    <Pill /> {t("nav.drugs")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -231,9 +231,9 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
-                    to="/animals/turnout-journal"
+                    to="/animals/treatments-journal"
                   >
-                    <NotebookPen /> {t("nav.turnoutJournal")}
+                    <Syringe /> {t("nav.treatmentsJournal")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -259,9 +259,9 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
-                    to="/drugs"
+                    to="/animals/turnout-journal"
                   >
-                    <Pill /> {t("nav.drugs")}
+                    <NotebookPen /> {t("nav.turnoutJournal")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
