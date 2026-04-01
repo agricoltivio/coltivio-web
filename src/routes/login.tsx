@@ -98,10 +98,11 @@ export function LoginForm({
                 rules={{ required: true }}
                 render={({ field, fieldState }) => (
                   <Field>
-                    <div className="flex items-center justify-between">
-                      <FieldLabel htmlFor="password">
-                        {t("auth.password")}
-                      </FieldLabel>
+                    <FieldLabel htmlFor="password">
+                      {t("auth.password")}
+                    </FieldLabel>
+                    <Input {...field} id="password" type="password" required />
+                    <div className="flex justify-end">
                       <Link
                         to="/forgot-password"
                         className="text-xs text-muted-foreground underline-offset-2 hover:underline"
@@ -109,7 +110,6 @@ export function LoginForm({
                         {t("auth.forgotPassword")}
                       </Link>
                     </div>
-                    <Input {...field} id="password" type="password" required />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
