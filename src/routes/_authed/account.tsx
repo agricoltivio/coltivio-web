@@ -3,6 +3,7 @@ import { meQueryOptions } from "@/api/user.queries";
 import { PageContent } from "@/components/PageContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Field,
   FieldError,
@@ -76,9 +77,9 @@ function Account() {
 
   return (
     <PageContent title={t("settings.title")}>
-      <div>
-        <h2 className="text-lg font-semibold mb-4">{t("settings.account")}</h2>
-        <div className="space-y-4 max-w-md">
+      <div className="max-w-md space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold mb-4">{t("settings.account")}</h2>
 
           {/* Email display + verification status */}
           <div className="space-y-1">
@@ -96,86 +97,74 @@ function Account() {
               )}
             </div>
           </div>
-
-          {/* Not verified: send verification email */}
-          {!emailVerified && (
-            <div className="space-y-2">
-              {verifyState === "sent" ? (
-                <p className="text-sm text-muted-foreground">
-                  {t("settings.verificationEmailSent")}
-                </p>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={verifyState === "pending"}
-                  onClick={handleSendVerification}
-                >
-                  {t("settings.resendVerification")}
-                </Button>
-              )}
-            </div>
-          )}
-
-          {/* Change email */}
-          {changeEmailState === "sent" ? (
-            <p className="text-sm text-muted-foreground">
-              {t("settings.changeEmailSent")}
-            </p>
-          ) : showChangeEmail ? (
-            <form onSubmit={emailForm.handleSubmit(onChangeEmail)}>
-              <FieldGroup>
-                <Controller
-                  name="email"
-                  control={emailForm.control}
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <Field>
-                      <FieldLabel htmlFor="email">{t("settings.newEmail")}</FieldLabel>
-                      <Input {...field} id="email" type="email" required />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-                <div className="flex gap-2">
-                  <Button
-                    type="submit"
-                    size="sm"
-                    disabled={
-                      !emailForm.formState.isDirty ||
-                      changeEmailState === "pending"
-                    }
-                  >
-                    {t("settings.changeEmail")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowChangeEmail(false)}
-                  >
-                    {t("common.cancel")}
-                  </Button>
-                </div>
-              </FieldGroup>
-            </form>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowChangeEmail(true)}
-            >
-              {t("settings.changeEmail")}
-            </Button>
-          )}
-
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            {t("common.signOut")}
-          </Button>
         </div>
+
+        {/* Not verified: send verification email */}
+        {!emailVerified && (
+          <div>
+            {verifyState === "sent" ? (
+              <p className="text-sm text-muted-foreground">{t("settings.verificationEmailSent")}</p>
+            ) : (
+              <Button
+                variant="outline"
+                disabled={verifyState === "pending"}
+                onClick={handleSendVerification}
+              >
+                {t("settings.resendVerification")}
+              </Button>
+            )}
+          </div>
+        )}
+
+        {/* Change email */}
+        {changeEmailState === "sent" ? (
+          <p className="text-sm text-muted-foreground">{t("settings.changeEmailSent")}</p>
+        ) : showChangeEmail ? (
+          <form onSubmit={emailForm.handleSubmit(onChangeEmail)}>
+            <FieldGroup>
+              <Controller
+                name="email"
+                control={emailForm.control}
+                rules={{ required: true }}
+                render={({ field, fieldState }) => (
+                  <Field>
+                    <FieldLabel htmlFor="email">{t("settings.newEmail")}</FieldLabel>
+                    <Input {...field} id="email" type="email" required />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={!emailForm.formState.isDirty || changeEmailState === "pending"}
+                >
+                  {t("settings.changeEmail")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowChangeEmail(false)}
+                >
+                  {t("common.cancel")}
+                </Button>
+              </div>
+            </FieldGroup>
+          </form>
+        ) : (
+          <Button variant="outline" onClick={() => setShowChangeEmail(true)}>
+            {t("settings.changeEmail")}
+          </Button>
+        )}
+
+        <Separator />
+
+        <Button variant="outline" onClick={handleLogout}>
+          <LogOut className="h-4 w-4 mr-2" />
+          {t("common.signOut")}
+        </Button>
       </div>
     </PageContent>
   );

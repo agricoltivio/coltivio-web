@@ -1,20 +1,24 @@
 import { useMemo, useState } from "react";
 import { animalsQueryOptions } from "@/api/animals.queries";
+import { apiClient } from "@/api/client";
 import { ANIMAL_TYPES, type AnimalType, type Animal, type DeathReason } from "@/api/types";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, Upload, GitBranch, SlidersHorizontal } from "lucide-react";
-import { type ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
 import z from "zod";
@@ -68,12 +72,77 @@ function Animals() {
     setOnlyLiving(true);
   }
 
+  // --- Batch edit ---
+  const queryClient = useQueryClient();
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [batchSheetOpen, setBatchSheetOpen] = useState(false);
+  const [batchFields, setBatchFields] = useState<{
+    type: { enabled: boolean; value: AnimalType };
+    usage: { enabled: boolean; value: "milk" | "other" };
+    registered: { enabled: boolean; value: boolean };
+    dateOfDeath: { enabled: boolean; value: string };
+    deathReason: { enabled: boolean; value: "died" | "slaughtered" };
+  }>({
+    type: { enabled: false, value: "goat" },
+    usage: { enabled: false, value: "milk" },
+    registered: { enabled: false, value: false },
+    dateOfDeath: { enabled: false, value: "" },
+    deathReason: { enabled: false, value: "died" },
+  });
+
+  const batchMutation = useMutation({
+    mutationFn: async (animalIds: string[]) => {
+      const batchData: {
+        type?: AnimalType;
+        usage?: "milk" | "other";
+        registered?: boolean;
+        dateOfDeath?: string;
+        deathReason?: "died" | "slaughtered";
+      } = {};
+      if (batchFields.type.enabled) batchData.type = batchFields.type.value;
+      if (batchFields.usage.enabled) batchData.usage = batchFields.usage.value;
+      if (batchFields.registered.enabled) batchData.registered = batchFields.registered.value;
+      if (batchFields.dateOfDeath.enabled && batchFields.dateOfDeath.value) {
+        batchData.dateOfDeath = new Date(batchFields.dateOfDeath.value).toISOString();
+      }
+      if (batchFields.deathReason.enabled) batchData.deathReason = batchFields.deathReason.value;
+
+      const response = await apiClient.PATCH("/v1/animals/batch", {
+        body: { animalIds, data: batchData },
+      });
+      if (response.error) throw new Error(t("common.error"));
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["animals", false] });
+      setBatchSheetOpen(false);
+      setRowSelection({});
+    },
+  });
+
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
   }
 
   const columns = useMemo<ColumnDef<Animal>[]>(
     () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(v) => row.toggleSelected(!!v)}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ),
+        enableSorting: false,
+      },
       {
         accessorKey: "name",
         header: ({ column }) => (
@@ -91,7 +160,14 @@ function Animals() {
           </Button>
         ),
         cell: ({ row }) => (
-          <span className="font-medium">{row.getValue("name")}</span>
+          <Link
+            to="/animals/$animalId"
+            params={{ animalId: row.original.id }}
+            className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {row.getValue("name")}
+          </Link>
         ),
       },
       {
@@ -207,6 +283,12 @@ function Animals() {
     deathReasonFilter.length +
     (!onlyLiving ? 1 : 0);
 
+  // Map selected row indices back to animal IDs
+  const selectedIds = Object.keys(rowSelection)
+    .filter((k) => rowSelection[k])
+    .map((k) => data[Number(k)]?.id)
+    .filter((id): id is string => id !== undefined);
+
   return (
     <PageContent title="Tiere">
       <div className="flex justify-end gap-2 mb-6">
@@ -233,12 +315,8 @@ function Animals() {
       <DataTable
         data={data}
         columns={columns}
-        onRowClick={(animal) =>
-          navigate({
-            to: "/animals/$animalId",
-            params: { animalId: animal.id },
-          })
-        }
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
         globalFilterFn={(row, _columnId, filterValue) => {
           const animal = row.original;
           const searchValue = filterValue.toLowerCase();
@@ -250,6 +328,12 @@ function Animals() {
         }}
         defaultSorting={[{ id: "type", desc: false }]}
         filterSlot={
+          <>
+          {selectedIds.length > 0 && (
+            <Button className="ml-auto" onClick={() => setBatchSheetOpen(true)}>
+              {t("animals.batchEditCount", { count: selectedIds.length })}
+            </Button>
+          )}
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="gap-2">
@@ -348,8 +432,161 @@ function Animals() {
               </div>
             </PopoverContent>
           </Popover>
+          </>
         }
       />
+
+      <Sheet open={batchSheetOpen} onOpenChange={(open) => { if (!open) setBatchSheetOpen(false); }}>
+        <SheetContent className="px-6">
+          <SheetHeader>
+            <SheetTitle>{t("animals.batchEdit")}</SheetTitle>
+          </SheetHeader>
+          <div className="space-y-5 mt-4">
+            {/* Type */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={batchFields.type.enabled}
+                onCheckedChange={(v) => setBatchFields((f) => ({ ...f, type: { ...f.type, enabled: !!v } }))}
+                className="mt-2"
+              />
+              <FieldGroup className="flex-1">
+                <Field>
+                  <FieldLabel htmlFor="batch-type">{t("animals.type")}</FieldLabel>
+                  <Select
+                    value={batchFields.type.value}
+                    onValueChange={(v) => setBatchFields((f) => ({ ...f, type: { enabled: true, value: v as AnimalType } }))}
+                  >
+                    <SelectTrigger id="batch-type" disabled={!batchFields.type.enabled}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ANIMAL_TYPES.map((type) => (
+                        <SelectItem key={type} value={type}>{t(`animals.types.${type}`)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {/* Usage */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={batchFields.usage.enabled}
+                onCheckedChange={(v) => setBatchFields((f) => ({ ...f, usage: { ...f.usage, enabled: !!v } }))}
+                className="mt-2"
+              />
+              <FieldGroup className="flex-1">
+                <Field>
+                  <FieldLabel htmlFor="batch-usage">{t("animals.usage")}</FieldLabel>
+                  <Select
+                    value={batchFields.usage.value}
+                    onValueChange={(v) => setBatchFields((f) => ({ ...f, usage: { enabled: true, value: v as "milk" | "other" } }))}
+                  >
+                    <SelectTrigger id="batch-usage" disabled={!batchFields.usage.enabled}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="milk">{t("animals.usageOptions.milk")}</SelectItem>
+                      <SelectItem value="other">{t("animals.usageOptions.other")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {/* Registered */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={batchFields.registered.enabled}
+                onCheckedChange={(v) => setBatchFields((f) => ({ ...f, registered: { ...f.registered, enabled: !!v } }))}
+                className="mt-2"
+              />
+              <FieldGroup className="flex-1">
+                <Field>
+                  <FieldLabel htmlFor="batch-registered">{t("animals.registered")}</FieldLabel>
+                  <Select
+                    value={String(batchFields.registered.value)}
+                    onValueChange={(v) => setBatchFields((f) => ({ ...f, registered: { enabled: true, value: v === "true" } }))}
+                  >
+                    <SelectTrigger id="batch-registered" disabled={!batchFields.registered.enabled}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">{t("common.yes")}</SelectItem>
+                      <SelectItem value="false">{t("common.no")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {/* Date of death */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={batchFields.dateOfDeath.enabled}
+                onCheckedChange={(v) => setBatchFields((f) => ({ ...f, dateOfDeath: { ...f.dateOfDeath, enabled: !!v } }))}
+                className="mt-2"
+              />
+              <FieldGroup className="flex-1">
+                <Field>
+                  <FieldLabel htmlFor="batch-dod">{t("animals.dateOfDeath")}</FieldLabel>
+                  <Input
+                    id="batch-dod"
+                    type="date"
+                    value={batchFields.dateOfDeath.value}
+                    disabled={!batchFields.dateOfDeath.enabled}
+                    onChange={(e) => setBatchFields((f) => ({ ...f, dateOfDeath: { enabled: true, value: e.target.value } }))}
+                  />
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {/* Death reason */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={batchFields.deathReason.enabled}
+                onCheckedChange={(v) => setBatchFields((f) => ({ ...f, deathReason: { ...f.deathReason, enabled: !!v } }))}
+                className="mt-2"
+              />
+              <FieldGroup className="flex-1">
+                <Field>
+                  <FieldLabel htmlFor="batch-death-reason">{t("animals.deathReason")}</FieldLabel>
+                  <Select
+                    value={batchFields.deathReason.value}
+                    onValueChange={(v) => setBatchFields((f) => ({ ...f, deathReason: { enabled: true, value: v as "died" | "slaughtered" } }))}
+                  >
+                    <SelectTrigger id="batch-death-reason" disabled={!batchFields.deathReason.enabled}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="died">{t("animals.deathReasons.died")}</SelectItem>
+                      <SelectItem value="slaughtered">{t("animals.deathReasons.slaughtered")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {batchMutation.error && (
+              <p className="text-destructive text-sm">{batchMutation.error.message}</p>
+            )}
+
+            <Button
+              className="w-full"
+              disabled={
+                !Object.values(batchFields).some((f) => f.enabled) ||
+                batchMutation.isPending
+              }
+              onClick={() => batchMutation.mutate(selectedIds)}
+            >
+              {batchMutation.isPending
+                ? t("common.loading")
+                : t("animals.batchApply", { count: selectedIds.length })}
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </PageContent>
   );
 }
