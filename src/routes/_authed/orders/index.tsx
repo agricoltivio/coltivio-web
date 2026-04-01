@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ordersQueryOptions, invoiceSettingsQueryOptions } from "@/api/orders.queries";
@@ -125,9 +125,14 @@ function Orders() {
           </Button>
         ),
         cell: ({ row }) => (
-          <span className="font-medium">
+          <Link
+            to="/orders/$orderId"
+            params={{ orderId: row.original.id }}
+            className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-800"
+            onClick={(e) => e.stopPropagation()}
+          >
             {row.original.contact.firstName} {row.original.contact.lastName}
-          </span>
+          </Link>
         ),
       },
       {
@@ -261,12 +266,6 @@ function Orders() {
       <DataTable
         data={data}
         columns={columns}
-        onRowClick={(order) =>
-          navigate({
-            to: "/orders/$orderId",
-            params: { orderId: order.id },
-          })
-        }
         globalFilterFn={(row, _columnId, filterValue) => {
           const order = row.original;
           const searchValue = filterValue.toLowerCase();
