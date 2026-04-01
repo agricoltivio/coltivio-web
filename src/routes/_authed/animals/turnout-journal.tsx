@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -257,19 +257,36 @@ function TurnoutJournal() {
                 return (
                   <div key={cat} className="h-8 border-b relative">
                     {catEntries.map((entry, i) => {
-                      const barStyle = getBarStyle(entry.startDate, entry.endDate);
-                      if (barStyle.width === 0) return null;
+                      const bar = getBarStyle(entry.startDate, entry.endDate);
+                      if (bar.width === 0) return null;
+
+                      // How far into the bar today falls (clamped to bar bounds)
+                      const todayPx = (Math.floor(
+                        (new Date().getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24),
+                      ) + 1) * dayWidth;
+                      const splitOffset = Math.min(
+                        Math.max(todayPx - bar.left, 0),
+                        bar.width,
+                      );
+
+                      const color = getCategoryColor(cat);
+                      const title = `${cat}: ${entry.animalCount} ${t("turnoutJournal.animals")}`;
                       return (
                         <div
                           key={i}
-                          className={`absolute top-1 bottom-1 rounded-sm ${getCategoryColor(cat)} opacity-80 flex items-center justify-center`}
-                          style={{ left: barStyle.left, width: barStyle.width }}
-                          title={`${cat}: ${entry.animalCount} ${t("turnoutJournal.animals")}`}
+                          className={`absolute top-1 bottom-1 rounded-sm ${color} opacity-80 flex items-center justify-center overflow-hidden`}
+                          style={{ left: bar.left, width: bar.width }}
+                          title={title}
                         >
-                          {barStyle.width > 20 && (
-                            <span className="text-white text-xs font-medium">
-                              {entry.animalCount}
-                            </span>
+                          {bar.width > 20 && (
+                            <span className="text-white text-xs font-medium">{entry.animalCount}</span>
+                          )}
+                          {/* Overlay on the future portion: whitens + dashed border */}
+                          {splitOffset < bar.width && (
+                            <div
+                              className="absolute top-0 bottom-0 bg-white/55 border-l-0 border-2 border-dashed border-white/80"
+                              style={{ left: splitOffset, right: 0 }}
+                            />
                           )}
                         </div>
                       );

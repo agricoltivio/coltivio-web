@@ -37,7 +37,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Pencil, Trash2, Plus } from "lucide-react";
+
+type OutdoorScheduleType = "pasture" | "exercise_yard";
 
 export const Route = createFileRoute("/_authed/animals/herds")({
   loader: ({ context: { queryClient } }) => {
@@ -140,6 +149,46 @@ function HerdsPage() {
   );
 }
 
+interface ScheduleEntry {
+  type: OutdoorScheduleType;
+  startDate: string;
+  endDate: string;
+  notes: string;
+  hasRecurrence: boolean;
+  recurrenceFrequency: "weekly" | "monthly" | "yearly";
+  recurrenceInterval: string;
+  recurrenceUntil: string;
+}
+
+function emptySchedule(): ScheduleEntry {
+  return {
+    type: "pasture",
+    startDate: "",
+    endDate: "",
+    notes: "",
+    hasRecurrence: false,
+    recurrenceFrequency: "yearly",
+    recurrenceInterval: "1",
+    recurrenceUntil: "",
+  };
+}
+
+function scheduleToApiBody(s: ScheduleEntry) {
+  return {
+    type: s.type,
+    startDate: new Date(s.startDate).toISOString(),
+    endDate: s.endDate ? new Date(s.endDate).toISOString() : null,
+    notes: s.notes || null,
+    recurrence: s.hasRecurrence
+      ? {
+          frequency: s.recurrenceFrequency,
+          interval: Number(s.recurrenceInterval),
+          until: s.recurrenceUntil ? new Date(s.recurrenceUntil).toISOString() : null,
+        }
+      : null,
+  };
+}
+
 function HerdFormDialog({
   open,
   onOpenChange,
@@ -158,13 +207,28 @@ function HerdFormDialog({
   const [selectedAnimalIds, setSelectedAnimalIds] = useState<string[]>(
     () => herd?.animals.map((a) => a.id) ?? [],
   );
+  const [schedules, setSchedules] = useState<ScheduleEntry[]>(() =>
+    herd?.outdoorSchedules?.map((s) => ({
+      type: s.type as OutdoorScheduleType,
+      startDate: s.startDate ? s.startDate.split("T")[0] : "",
+      endDate: s.endDate ? s.endDate.split("T")[0] : "",
+      notes: s.notes ?? "",
+      hasRecurrence: !!s.recurrence,
+      recurrenceFrequency: (s.recurrence?.frequency ?? "yearly") as "weekly" | "monthly" | "yearly",
+      recurrenceInterval: s.recurrence ? String(s.recurrence.interval) : "1",
+      recurrenceUntil: s.recurrence?.until ? s.recurrence.until.split("T")[0] : "",
+    })) ?? [],
+  );
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  function updateSchedule(index: number, patch: Partial<ScheduleEntry>) {
+    setSchedules((prev) => prev.map((s, i) => (i === index ? { ...s, ...patch } : s)));
+  }
 
   const createMutation = useMutation({
-    mutationFn: async (data: { name: string; animalIds: string[] }) => {
-      const response = await apiClient.POST("/v1/animals/herds", {
-        body: data,
-      });
-      if (response.error) throw new Error("Failed to create herd");
+    mutationFn: async (data: { name: string; animalIds: string[]; outdoorSchedules: ReturnType<typeof scheduleToApiBody>[] }) => {
+      const response = await apiClient.POST("/v1/animals/herds", { body: data });
+      if (response.error) throw response.error;
       return response.data.data;
     },
     onSuccess: () => {
@@ -174,16 +238,13 @@ function HerdFormDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: { name: string; animalIds: string[] }) => {
+    mutationFn: async (data: { name: string; animalIds: string[]; outdoorSchedules: ReturnType<typeof scheduleToApiBody>[] }) => {
       if (!herd) return;
-      const response = await apiClient.PATCH(
-        "/v1/animals/herds/byId/{herdId}",
-        {
-          params: { path: { herdId: herd.id } },
-          body: data,
-        },
-      );
-      if (response.error) throw new Error("Failed to update herd");
+      const response = await apiClient.PATCH("/v1/animals/herds/byId/{herdId}", {
+        params: { path: { herdId: herd.id } },
+        body: data,
+      });
+      if (response.error) throw response.error;
       return response.data.data;
     },
     onSuccess: () => {
@@ -194,19 +255,24 @@ function HerdFormDialog({
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = { name, animalIds: selectedAnimalIds };
-    if (herd) {
-      updateMutation.mutate(data);
-    } else {
-      createMutation.mutate(data);
-    }
+    setServerError(null);
+    const data = {
+      name,
+      animalIds: selectedAnimalIds,
+      outdoorSchedules: schedules.filter((s) => s.startDate).map(scheduleToApiBody),
+    };
+    const mutation = herd ? updateMutation : createMutation;
+    mutation.mutate(data, {
+      onError: (err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        setServerError(message);
+      },
+    });
   }
 
   function toggleAnimal(animalId: string) {
     setSelectedAnimalIds((prev) =>
-      prev.includes(animalId)
-        ? prev.filter((id) => id !== animalId)
-        : [...prev, animalId],
+      prev.includes(animalId) ? prev.filter((id) => id !== animalId) : [...prev, animalId],
     );
   }
 
@@ -214,14 +280,14 @@ function HerdFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
-        <form onSubmit={handleSubmit}>
+      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col min-h-0 flex-1">
           <DialogHeader>
             <DialogTitle>
               {herd ? t("herds.editHerd") : t("herds.addHerd")}
             </DialogTitle>
           </DialogHeader>
-          <div className="py-4 space-y-4">
+          <div className="py-4 px-1 space-y-6 overflow-y-auto flex-1">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="herdName">{t("herds.name")} *</FieldLabel>
@@ -236,7 +302,7 @@ function HerdFormDialog({
             <FieldGroup>
               <Field>
                 <FieldLabel>{t("herds.animals")}</FieldLabel>
-                <div className="border rounded-md p-3 space-y-2 max-h-48 overflow-y-auto">
+                <div className="border rounded-md p-3 space-y-2 max-h-36 overflow-y-auto">
                   {allAnimals.map((animal) => (
                     <div key={animal.id} className="flex items-center gap-2">
                       <Checkbox
@@ -244,10 +310,7 @@ function HerdFormDialog({
                         checked={selectedAnimalIds.includes(animal.id)}
                         onCheckedChange={() => toggleAnimal(animal.id)}
                       />
-                      <Label
-                        htmlFor={`herd-animal-${animal.id}`}
-                        className="font-normal cursor-pointer"
-                      >
+                      <Label htmlFor={`herd-animal-${animal.id}`} className="font-normal cursor-pointer">
                         {animal.name}
                       </Label>
                     </div>
@@ -255,13 +318,113 @@ function HerdFormDialog({
                 </div>
               </Field>
             </FieldGroup>
+
+            {/* Schedules */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">{t("herds.outdoorSchedules")}</span>
+                <Button type="button" size="sm" variant="outline" onClick={() => setSchedules((p) => [...p, emptySchedule()])}>
+                  <Plus className="h-3 w-3 mr-1" />
+                  {t("herds.addSchedule")}
+                </Button>
+              </div>
+              {schedules.map((schedule, idx) => (
+                <div key={idx} className="border rounded-md p-3 space-y-3 relative">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => setSchedules((p) => p.filter((_, i) => i !== idx))}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                  <div className="pr-8 space-y-3">
+                    <FieldGroup>
+                      <Field>
+                        <FieldLabel>{t("herds.scheduleType")} *</FieldLabel>
+                        <Select value={schedule.type} onValueChange={(v) => updateSchedule(idx, { type: v as OutdoorScheduleType })}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pasture">{t("herds.scheduleTypes.pasture")}</SelectItem>
+                            <SelectItem value="exercise_yard">{t("herds.scheduleTypes.exercise_yard")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                    </FieldGroup>
+                    <div className="grid grid-cols-2 gap-3">
+                      <FieldGroup>
+                        <Field>
+                          <FieldLabel>{t("herds.startDate")} *</FieldLabel>
+                          <Input type="date" value={schedule.startDate} onChange={(e) => updateSchedule(idx, { startDate: e.target.value })} required />
+                        </Field>
+                      </FieldGroup>
+                      <FieldGroup>
+                        <Field>
+                          <FieldLabel>{t("herds.endDate")}</FieldLabel>
+                          <Input type="date" value={schedule.endDate} onChange={(e) => updateSchedule(idx, { endDate: e.target.value })} />
+                        </Field>
+                      </FieldGroup>
+                    </div>
+                  </div>
+                  <FieldGroup>
+                    <Field>
+                      <FieldLabel>{t("herds.notes")}</FieldLabel>
+                      <textarea
+                        rows={2}
+                        value={schedule.notes}
+                        onChange={(e) => updateSchedule(idx, { notes: e.target.value })}
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                      />
+                    </Field>
+                  </FieldGroup>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id={`recurrence-${idx}`}
+                      checked={schedule.hasRecurrence}
+                      onCheckedChange={(checked) => updateSchedule(idx, { hasRecurrence: checked === true })}
+                    />
+                    <Label htmlFor={`recurrence-${idx}`}>{t("herds.recurring")}</Label>
+                  </div>
+                  {schedule.hasRecurrence && (
+                    <div className="grid grid-cols-[1fr_80px_1fr] gap-3 pl-6">
+                      <FieldGroup>
+                        <Field>
+                          <FieldLabel>{t("herds.frequency")}</FieldLabel>
+                          <Select value={schedule.recurrenceFrequency} onValueChange={(v) => updateSchedule(idx, { recurrenceFrequency: v as "weekly" | "monthly" | "yearly" })}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="weekly">{t("herds.frequencies.weekly")}</SelectItem>
+                              <SelectItem value="monthly">{t("herds.frequencies.monthly")}</SelectItem>
+                              <SelectItem value="yearly">{t("herds.frequencies.yearly")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </Field>
+                      </FieldGroup>
+                      <FieldGroup>
+                        <Field>
+                          <FieldLabel>{t("herds.interval")}</FieldLabel>
+                          <Input type="number" min="1" value={schedule.recurrenceInterval} onChange={(e) => updateSchedule(idx, { recurrenceInterval: e.target.value })} />
+                        </Field>
+                      </FieldGroup>
+                      <FieldGroup>
+                        <Field>
+                          <FieldLabel>{t("herds.until")}</FieldLabel>
+                          <Input type="date" value={schedule.recurrenceUntil} onChange={(e) => updateSchedule(idx, { recurrenceUntil: e.target.value })} />
+                        </Field>
+                      </FieldGroup>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {serverError && (
+              <p className="text-sm text-destructive">{serverError}</p>
+            )}
           </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+          <DialogFooter className="pt-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {t("common.cancel")}
             </Button>
             <Button type="submit" disabled={!name || isPending}>
