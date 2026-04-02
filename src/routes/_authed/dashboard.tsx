@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOptions } from "@/api/farm.queries";
 import { tasksQueryOptions } from "@/api/tasks.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
+import { forumThreadsQueryOptions } from "@/api/forum.queries";
+import type { ForumThreadType } from "@/api/types";
 import { FieldworkMap } from "@/components/FieldworkMap";
+import { Badge } from "@/components/ui/badge";
+import { MessageSquare } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -18,6 +22,13 @@ import {
 export const Route = createFileRoute("/_authed/dashboard")({
   component: RouteComponent,
 });
+
+const THREAD_TYPE_COLORS: Record<ForumThreadType, string> = {
+  question: "bg-blue-100 text-blue-700 border-blue-200",
+  feature_request: "bg-purple-100 text-purple-700 border-purple-200",
+  bug_report: "bg-red-100 text-red-700 border-red-200",
+  general: "bg-gray-100 text-gray-700 border-gray-200",
+};
 
 const CHART_COLORS = [
   "#4ade80",
@@ -64,12 +75,22 @@ function RouteComponent() {
   const tasksQuery = useQuery(tasksQueryOptions({ status: "todo" }));
   // All animals (including dead) to compute born/died/slaughtered for the selected year
   const allAnimalsQuery = useQuery(animalsQueryOptions(false));
+  const forumThreadsQuery = useQuery(forumThreadsQueryOptions());
 
   const now = new Date();
   const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const upcomingTasks = (tasksQuery.data?.result ?? [])
     .filter((task) => typeof task.dueDate === "string" && new Date(task.dueDate) <= weekFromNow)
     .sort((a, b) => new Date(a.dueDate as string).getTime() - new Date(b.dueDate as string).getTime());
+
+  // Sort all threads by updatedAt desc and take 3 most recently active
+  const recentForumThreads = [...(forumThreadsQuery.data?.result ?? [])]
+    .sort((a, b) => {
+      const aTime = typeof a.updatedAt === "string" ? new Date(a.updatedAt).getTime() : 0;
+      const bTime = typeof b.updatedAt === "string" ? new Date(b.updatedAt).getTime() : 0;
+      return bTime - aTime;
+    })
+    .slice(0, 3);
 
   if (isLoading) {
     return <p className="text-muted-foreground">{t("common.loading")}</p>;
@@ -341,6 +362,52 @@ function RouteComponent() {
                 </Link>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Treffpunkt threads */}
+      {recentForumThreads.length > 0 && (
+        <div className="bg-white rounded-xl border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold">
+              {t("dashboard.recentTreffpunkt", { defaultValue: "Treffpunkt" })}
+            </p>
+            <Link to="/treffpunkt" className="text-xs text-muted-foreground hover:underline">
+              {t("common.viewAll", { defaultValue: "Alle anzeigen" })}
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {recentForumThreads.map((thread) => (
+              <Link
+                key={thread.id}
+                to="/treffpunkt/$threadId"
+                params={{ threadId: thread.id }}
+                className="flex items-center gap-3 border rounded-lg px-4 py-3 hover:bg-accent transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <Badge variant="outline" className={`text-xs ${THREAD_TYPE_COLORS[thread.type]}`}>
+                      {t(`treffpunkt.types.${thread.type}`)}
+                    </Badge>
+                    <Badge variant={thread.status === "open" ? "secondary" : "outline"} className="text-xs">
+                      {t(`treffpunkt.status.${thread.status}`)}
+                    </Badge>
+                  </div>
+                  <p className="font-medium truncate text-sm">{thread.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {thread.creator.fullName ?? t("common.unknown")}
+                    {typeof thread.updatedAt === "string" && (
+                      <>{" · "}{new Date(thread.updatedAt).toLocaleDateString()}</>
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
+                  <MessageSquare className="h-4 w-4" />
+                  <span className="text-sm">{thread.replyCount ?? 0}</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       )}

@@ -28,7 +28,6 @@ import { apiClient } from "@/api/client";
 import { forumThreadQueryOptions, forumRepliesQueryOptions } from "@/api/forum.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
-import { checkIsTrialOnly } from "@/lib/membership";
 import type { ForumReply, ForumThreadType } from "@/api/types";
 
 const THREAD_TYPE_COLORS: Record<ForumThreadType, string> = {
@@ -59,7 +58,6 @@ function ThreadDetail() {
   const repliesQuery = useQuery(forumRepliesQueryOptions(threadId));
   const meQuery = useQuery(meQueryOptions());
   const farmQuery = useQuery(farmQueryOptions());
-  const isTrialOnly = checkIsTrialOnly(farmQuery.data?.membership);
 
   const thread = threadQuery.data;
   const replies = repliesQuery.data?.result ?? [];
@@ -303,7 +301,7 @@ function ThreadDetail() {
       )}
 
       {/* Thread owner actions */}
-      {isOwner && !editingThread && !isTrialOnly && (
+      {isOwner && !editingThread && (
         <div className="flex gap-2 mb-4 flex-wrap">
           <Button
             variant="outline"
@@ -416,7 +414,7 @@ function ThreadDetail() {
               ) : (
                 <>
                   <MDXEditor readOnly markdown={reply.body} plugins={readPlugins()} />
-                  {isReplyOwner && !isTrialOnly && (
+                  {isReplyOwner && (
                     <div className="flex gap-2 mt-2">
                       <Button
                         variant="ghost"
@@ -449,12 +447,7 @@ function ThreadDetail() {
         })}
       </div>
 
-      {/* New reply form — hidden for trial-only farms */}
-      {isTrialOnly ? (
-        <p className="text-sm text-muted-foreground text-center py-4 border rounded-lg">
-          {t("treffpunkt.trialReadOnly")}
-        </p>
-      ) : (
+      {(
       <div
         className="border rounded-lg p-4"
         onFocus={() => setReplyFocused(true)}

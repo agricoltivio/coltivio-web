@@ -4,8 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useMemo, useState, useEffect } from "react";
 import { MessageSquare, Pin } from "lucide-react";
 import { forumThreadsQueryOptions } from "@/api/forum.queries";
-import { farmQueryOptions } from "@/api/farm.queries";
-import { checkIsTrialOnly } from "@/lib/membership";
 import { useAuth } from "@/context/SupabaseAuthContext";
 import type { ForumThread, ForumThreadType } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
@@ -65,8 +63,6 @@ function TreffpunktPage() {
   }
 
   const threadsQuery = useQuery(forumThreadsQueryOptions());
-  const farmQuery = useQuery(farmQueryOptions());
-  const isTrialOnly = checkIsTrialOnly(farmQuery.data?.membership);
   const allThreads = threadsQuery.data?.result ?? [];
 
   const filtered = useMemo(() => {
@@ -81,12 +77,12 @@ function TreffpunktPage() {
       result = result.filter((t) => t.title.toLowerCase().includes(lower));
     }
 
-    // Pinned threads first, then by creation date descending
+    // Pinned threads first, then by most recent activity descending
     return [...result].sort((a, b) => {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
-      const aDate = typeof a.createdAt === "string" ? new Date(a.createdAt).getTime() : 0;
-      const bDate = typeof b.createdAt === "string" ? new Date(b.createdAt).getTime() : 0;
+      const aDate = typeof a.updatedAt === "string" ? new Date(a.updatedAt).getTime() : 0;
+      const bDate = typeof b.updatedAt === "string" ? new Date(b.updatedAt).getTime() : 0;
       return bDate - aDate;
     });
   }, [allThreads, typeFilter, search]);
@@ -118,18 +114,12 @@ function TreffpunktPage() {
             </Button>
           ))}
         </div>
-        {!isTrialOnly && (
-          <Button asChild>
-            <Link to="/treffpunkt/create">{t("treffpunkt.newThread")}</Link>
-          </Button>
-        )}
+        <Button asChild>
+          <Link to="/treffpunkt/create">{t("treffpunkt.newThread")}</Link>
+        </Button>
       </div>
 
-      {isTrialOnly && (
-        <p className="text-sm text-muted-foreground border rounded-lg px-4 py-3 mb-4">
-          {t("treffpunkt.trialReadOnly")}
-        </p>
-      )}
+
 
       <div className="mb-4">
         <Input
@@ -185,7 +175,7 @@ function TreffpunktPage() {
                 <p className="text-sm text-muted-foreground mt-0.5">
                   {thread.creator.fullName ?? t("common.unknown")}
                   {" · "}
-                  {formatDate(thread.createdAt)}
+                  {formatDate(thread.updatedAt)}
                 </p>
               </div>
               <div className="flex items-center gap-1 shrink-0 text-muted-foreground">

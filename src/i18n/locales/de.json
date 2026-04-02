@@ -251,7 +251,8 @@
     "welcome": "Hallo {{name}}, {{farmName}}",
     "animalsBorn": "Geboren",
     "animalsDied": "Gestorben",
-    "animalsSlaughtered": "Geschlachtet"
+    "animalsSlaughtered": "Geschlachtet",
+    "recentTreffpunkt": "Treffpunkt – Neueste Beiträge"
   },
   "settings": {
     "title": "Einstellungen",
@@ -1239,12 +1240,13 @@
     "editThread": "Beitrag bearbeiten",
     "editReply": "Antwort bearbeiten",
     "trialReadOnly": "Im Testmodus können keine Beiträge oder Antworten verfasst werden. Werde Mitglied, um mitzumachen.",
+    "membersOnlyPosting": "Nur Mitglieder können Beiträge erstellen und kommentieren.",
     "threadTitle": "Titel",
     "body": "Inhalt",
     "type": "Typ",
     "welcome": {
       "title": "Willkommen im Treffpunkt",
-      "description": "Hier ist der Ort, wo sich die Mitglieder von AgriColtivio austauschen können. Stelle Fragen zur App oder zur Landwirtschaft, teile was dir auf dem Herzen liegt, wünsche dir neue Funktionen oder weise auf Fehler hin.",
+      "description": "Hier ist der Ort, wo sich alle Coltivio-Nutzer:innen austauschen können. Stelle Fragen zur App oder zur Landwirtschaft, teile was dir auf dem Herzen liegt, wünsche dir neue Funktionen oder weise auf Fehler hin.",
       "rules": [
         "Prüfe zuerst, ob bereits ein Beitrag zu deinem Thema existiert.",
         "Sei respektvoll und konstruktiv gegenüber anderen Mitgliedern.",

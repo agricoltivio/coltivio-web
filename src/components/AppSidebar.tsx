@@ -294,6 +294,34 @@ export function AppSidebar() {
                       className:
                         "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
                     }}
+                    to="/field-calendar/crops"
+                  >
+                    <Leaf /> {t("nav.crops")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/crop-families"
+                  >
+                    <Leaf /> {t("nav.cropFamilies")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
                     to="/field-calendar/crop-rotations"
                   >
                     <RefreshCw /> {t("nav.cropRotations")}
@@ -311,6 +339,20 @@ export function AppSidebar() {
                     to="/field-calendar/tillages"
                   >
                     <Layers /> {t("nav.tillages")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    activeOptions={{ exact: true, includeSearch: false }}
+                    activeProps={{
+                      className:
+                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
+                    }}
+                    to="/field-calendar/fertilizers"
+                  >
+                    <Droplets /> {t("nav.fertilizers")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -353,48 +395,6 @@ export function AppSidebar() {
                     to="/field-calendar/harvests"
                   >
                     <Wheat /> {t("nav.harvests")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/field-calendar/crops"
-                  >
-                    <Leaf /> {t("nav.crops")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/field-calendar/crop-families"
-                  >
-                    <Leaf /> {t("nav.cropFamilies")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/field-calendar/fertilizers"
-                  >
-                    <Droplets /> {t("nav.fertilizers")}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
