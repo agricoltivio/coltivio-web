@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -68,6 +69,7 @@ type ComboboxOption = { value: string; label: string };
 
 function OrderDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteOrders } = useFeatureAccess("commerce");
   const { orderId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
@@ -274,7 +276,7 @@ function OrderDetailPage() {
           </Badge>
         </div>
         <div className="flex items-center gap-2">
-          {order.status === "pending" && (
+          {canWriteOrders && order.status === "pending" && (
             <>
               <Button
                 variant="default"
@@ -292,7 +294,7 @@ function OrderDetailPage() {
               </Button>
             </>
           )}
-          {order.status === "confirmed" && (
+          {canWriteOrders && order.status === "confirmed" && (
             <>
               <Button
                 variant="default"
@@ -316,11 +318,11 @@ function OrderDetailPage() {
           >
             {t("orders.downloadInvoice")}
           </Button>
-          <Button variant="outline" asChild>
+          {canWriteOrders && <Button variant="outline" asChild>
             <Link to="/orders/$orderId/edit" params={{ orderId }}>
               {t("common.edit")}
             </Link>
-          </Button>
+          </Button>}
         </div>
       </div>
 
@@ -368,7 +370,7 @@ function OrderDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>{t("orders.items")}</CardTitle>
-            {!addingItem && (
+            {canWriteOrders && !addingItem && (
               <Button
                 variant="outline"
                 size="sm"
@@ -468,7 +470,7 @@ function OrderDetailPage() {
                         {formatCurrency(item.quantity * item.unitPrice)}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center justify-end gap-1">
+                        {canWriteOrders && <div className="flex items-center justify-end gap-1">
                           <Button
                             variant="ghost"
                             size="icon"
@@ -486,7 +488,7 @@ function OrderDetailPage() {
                           >
                             <TrashIcon className="h-4 w-4" />
                           </Button>
-                        </div>
+                        </div>}
                       </TableCell>
                     </TableRow>
                   )
@@ -606,18 +608,14 @@ function OrderDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>{t("contacts.payments")}</CardTitle>
-            <Button variant="outline" size="sm" asChild>
+            {canWriteOrders && <Button variant="outline" size="sm" asChild>
               <Link
-                to="/payments/create"
-                search={{
-                  contactId: order.contactId,
-                  orderId: order.id,
-                  redirect: `/orders/${orderId}`,
-                }}
+                to="/orders/$orderId/payments/create"
+                params={{ orderId }}
               >
                 {t("payments.addPayment")}
               </Link>
-            </Button>
+            </Button>}
           </CardHeader>
           <CardContent>
             {order.payments && order.payments.length > 0 ? (
@@ -632,7 +630,16 @@ function OrderDetailPage() {
                 </TableHeader>
                 <TableBody>
                   {order.payments.map((payment) => (
-                    <TableRow key={payment.id}>
+                    <TableRow
+                      key={payment.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() =>
+                        navigate({
+                          to: "/orders/$orderId/payments/$paymentId",
+                          params: { orderId, paymentId: payment.id },
+                        })
+                      }
+                    >
                       <TableCell>{formatDate(payment.date)}</TableCell>
                       <TableCell>{formatCurrency(payment.amount)}</TableCell>
                       <TableCell className="text-muted-foreground">

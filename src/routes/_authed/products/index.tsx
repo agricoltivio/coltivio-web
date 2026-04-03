@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authed/products/")({
 function Products() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteProducts } = useFeatureAccess("products");
+  const { canWrite: canWriteProducts } = useFeatureAccess("commerce");
   const productsQuery = useQuery(productsQueryOptions());
 
   function formatCurrency(amount: number) {

@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authed/field-calendar/tillages")({
 function Tillages() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteTillages } = useFeatureAccess("tillages");
+  const { canWrite: canWriteTillages } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({

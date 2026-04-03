@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute("/_authed/drugs/")({
   loader: ({ context: { queryClient } }) => {
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authed/drugs/")({
 
 function Drugs() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTreatments } = useFeatureAccess("animals");
   const navigate = useNavigate();
   const drugsQuery = useQuery(drugsQueryOptions());
 
@@ -77,11 +79,13 @@ function Drugs() {
 
   return (
     <PageContent title={t("drugs.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => navigate({ to: "/drugs/create" })}>
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWriteTreatments && (
+        <div className="flex justify-end mb-4">
+          <Button onClick={() => navigate({ to: "/drugs/create" })}>
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

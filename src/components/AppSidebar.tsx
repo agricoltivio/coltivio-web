@@ -67,34 +67,16 @@ export function AppSidebar() {
 
   // Feature access — owners always get full access (handled inside the hook)
   const animalsAccess = useFeatureAccess("animals");
-  const treatmentsAccess = useFeatureAccess("treatments");
-  const cropsAccess = useFeatureAccess("crops");
-  const plotsAccess = useFeatureAccess("plots");
-  const cropRotationsAccess = useFeatureAccess("crop_rotations");
-  const cropProtectionAccess = useFeatureAccess("crop_protection");
-  const fertilizationAccess = useFeatureAccess("fertilization");
-  const harvestsAccess = useFeatureAccess("harvests");
-  const tillagesAccess = useFeatureAccess("tillages");
-  const ordersAccess = useFeatureAccess("orders");
-  const contactsAccess = useFeatureAccess("contacts");
+  const fieldCalendarAccess = useFeatureAccess("field_calendar");
+  const commerceAccess = useFeatureAccess("commerce");
   const tasksAccess = useFeatureAccess("tasks");
-  const productsAccess = useFeatureAccess("products");
-  const sponsorshipsAccess = useFeatureAccess("sponsorships");
 
   // Group visibility — hide the group label when all items in the group are hidden
-  const livestockGroupVisible =
-    animalsAccess.canRead || treatmentsAccess.canRead;
-  const fieldCalendarGroupVisible =
-    plotsAccess.canRead ||
-    cropsAccess.canRead ||
-    cropRotationsAccess.canRead ||
-    tillagesAccess.canRead ||
-    fertilizationAccess.canRead ||
-    cropProtectionAccess.canRead ||
-    harvestsAccess.canRead;
-  const addressBookGroupVisible = contactsAccess.canRead;
-  const salesGroupVisible = ordersAccess.canRead || productsAccess.canRead;
-  const sponsorshipsGroupVisible = sponsorshipsAccess.canRead;
+  const livestockGroupVisible = animalsAccess.canRead;
+  const fieldCalendarGroupVisible = fieldCalendarAccess.canRead;
+  const addressBookGroupVisible = commerceAccess.canRead;
+  const salesGroupVisible = commerceAccess.canRead;
+  const sponsorshipsGroupVisible = commerceAccess.canRead;
   const hasMembership = checkActiveMembership(farmQuery.data?.membership);
   const statusQuery = useQuery(membershipStatusQueryOptions());
   const hasUserMembership = checkUserActiveMembership(statusQuery.data);
@@ -241,7 +223,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {treatmentsAccess.canRead && (
+              {animalsAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/animals/treatments-journal">
@@ -275,7 +257,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>{t("nav.groups.fieldCalendar")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {plotsAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/plots">
@@ -284,7 +266,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {cropsAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crops">
@@ -293,7 +275,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {cropsAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-families">
@@ -302,7 +284,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {cropRotationsAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-rotations">
@@ -311,7 +293,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {tillagesAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/tillages">
@@ -320,7 +302,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {fertilizationAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/fertilizers">
@@ -329,7 +311,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {fertilizationAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/fertilizer-applications">
@@ -338,7 +320,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {cropProtectionAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-protection-applications">
@@ -347,7 +329,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {harvestsAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/harvests">
@@ -356,7 +338,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {cropProtectionAccess.canRead && (
+              {fieldCalendarAccess.canRead && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-protection-products">
@@ -380,7 +362,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {contactsAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/contacts">
@@ -398,7 +380,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {ordersAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/orders">
@@ -407,7 +389,7 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-                {productsAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/products">
@@ -416,7 +398,7 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-                {ordersAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/orders/invoice-settings">
@@ -434,7 +416,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {sponsorshipsAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/sponsorships/programs">
@@ -443,7 +425,7 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-                {sponsorshipsAccess.canRead && (
+                {commerceAccess.canRead && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/sponsorships">
@@ -452,28 +434,6 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-        {hasAnyMembership && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{t("nav.groups.accounting")}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      activeProps={{
-                        className:
-                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                      }}
-                      to="/payments"
-                    >
-                      <CreditCard /> {t("nav.payments")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

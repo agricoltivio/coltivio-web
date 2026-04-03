@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authed/field-calendar/crops")({
 function CropsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteCrops } = useFeatureAccess("crops");
+  const { canWrite: canWriteCrops } = useFeatureAccess("field_calendar");
   const cropsQuery = useQuery(cropsQueryOptions());
 
   const columns = useMemo<ColumnDef<Crop>[]>(

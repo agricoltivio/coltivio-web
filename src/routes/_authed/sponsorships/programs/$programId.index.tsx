@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { sponsorshipProgramQueryOptions } from "@/api/sponsorshipPrograms.queries";
@@ -31,6 +32,7 @@ export const Route = createFileRoute(
 
 function SponsorshipProgramDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
   const { programId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -88,7 +90,7 @@ function SponsorshipProgramDetailPage() {
     <PageContent title={sponsorshipProgram.name} showBackButton backTo={() => navigate({ to: "/sponsorships/programs" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
-        <div className="flex items-center gap-2">
+        {canWriteSponsorships && <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link
               to="/sponsorships/programs/$programId/edit"
@@ -120,7 +122,7 @@ function SponsorshipProgramDetailPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
+        </div>}
       </div>
 
       <div className="space-y-6">

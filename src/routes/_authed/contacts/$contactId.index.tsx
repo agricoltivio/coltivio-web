@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/_authed/contacts/$contactId/")({
 
 function ContactDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteContacts } = useFeatureAccess("commerce");
   const { contactId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
@@ -98,7 +100,7 @@ function ContactDetailPage() {
             </Badge>
           ))}
         </div>
-        <div className="flex items-center gap-2">
+        {canWriteContacts && <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link to="/contacts/$contactId/edit" params={{ contactId }}>
               {t("common.edit")}
@@ -127,7 +129,7 @@ function ContactDetailPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
+        </div>}
       </div>
 
       <div className="space-y-6">

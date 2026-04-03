@@ -55,7 +55,7 @@ function downloadBase64File(base64: string, fileName: string) {
 function Orders() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteOrders } = useFeatureAccess("orders");
+  const { canWrite: canWriteOrders } = useFeatureAccess("commerce");
   const ordersQuery = useQuery(ordersQueryOptions());
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [invoiceModeDialogOpen, setInvoiceModeDialogOpen] = useState(false);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -82,6 +83,7 @@ export const Route = createFileRoute("/_authed/animals/herds_/$herdId")({
 
 function HerdDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const { herdId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
@@ -145,18 +147,20 @@ function HerdDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>{t("herds.outdoorSchedules")}</CardTitle>
-            <div className="flex justify-end">
-              <Button
-                size="sm"
-                onClick={() => {
-                  setEditSchedule(null);
-                  setScheduleDialogOpen(true);
-                }}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                {t("herds.addSchedule")}
-              </Button>
-            </div>
+            {canWriteAnimals && (
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setEditSchedule(null);
+                    setScheduleDialogOpen(true);
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  {t("herds.addSchedule")}
+                </Button>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             {herd.outdoorSchedules.length === 0 ? (
@@ -191,28 +195,30 @@ function HerdDetailPage() {
                       <TableCell className="text-muted-foreground">
                         {schedule.notes || "-"}
                       </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditSchedule(schedule as OutdoorSchedule);
-                              setScheduleDialogOpen(true);
-                            }}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => setDeleteSchedule(schedule as OutdoorSchedule)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+                      {canWriteAnimals && (
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setEditSchedule(schedule as OutdoorSchedule);
+                                setScheduleDialogOpen(true);
+                              }}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => setDeleteSchedule(schedule as OutdoorSchedule)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>

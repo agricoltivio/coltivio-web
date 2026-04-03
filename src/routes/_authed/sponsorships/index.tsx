@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authed/sponsorships/")({
 function Sponsorships() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteSponsorships } = useFeatureAccess("sponsorships");
+  const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
   const sponsorshipsQuery = useQuery(sponsorshipsQueryOptions());
 
   function formatDate(dateString: string) {

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/_authed/animals/$animalId_/journal/")({
 
 function AnimalJournalPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const { animalId } = Route.useParams();
   const navigate = useNavigate();
 
@@ -38,19 +40,21 @@ function AnimalJournalPage() {
       showBackButton
       backTo={() => navigate({ to: "/animals/$animalId", params: { animalId } })}
     >
-      <div className="mb-4 flex justify-end">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/animals/$animalId/journal/create",
-              params: { animalId },
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          {t("journal.add")}
-        </Button>
-      </div>
+      {canWriteAnimals && (
+        <div className="mb-4 flex justify-end">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/animals/$animalId/journal/create",
+                params: { animalId },
+              })
+            }
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            {t("journal.add")}
+          </Button>
+        </div>
+      )}
 
       {sortedEntries.length === 0 ? (
         <div className="py-8 text-center text-muted-foreground">

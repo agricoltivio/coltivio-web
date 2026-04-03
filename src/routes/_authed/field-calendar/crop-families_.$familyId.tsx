@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,6 +33,7 @@ export const Route = createFileRoute(
 
 function CropFamilyDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteCrops } = useFeatureAccess("field_calendar");
   const { familyId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -84,7 +86,7 @@ function CropFamilyDetailPage() {
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/crop-families" })}
     >
-      <div className="mb-6 flex items-center justify-end gap-2">
+      {canWriteCrops && <div className="mb-6 flex items-center justify-end gap-2">
         <Button variant="outline" asChild>
           <Link
             to="/field-calendar/crop-families/$familyId/edit"
@@ -118,7 +120,7 @@ function CropFamilyDetailPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </div>
+      </div>}
 
       <Card>
         <CardHeader>

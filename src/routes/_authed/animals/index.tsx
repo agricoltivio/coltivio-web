@@ -128,23 +128,25 @@ function Animals() {
 
   const columns = useMemo<ColumnDef<Animal>[]>(
     () => [
-      {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(v) => row.toggleSelected(!!v)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        ),
-        enableSorting: false,
-      },
+      ...(canWriteAnimals ? [
+        {
+          id: "select",
+          header: ({ table }: { table: import("@tanstack/react-table").Table<Animal> }) => (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected()}
+              onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+            />
+          ),
+          cell: ({ row }: { row: import("@tanstack/react-table").Row<Animal> }) => (
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(v) => row.toggleSelected(!!v)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ),
+          enableSorting: false,
+        } as ColumnDef<Animal>,
+      ] : []),
       {
         accessorKey: "name",
         header: ({ column }) => (
@@ -259,7 +261,7 @@ function Animals() {
         },
       },
     ],
-    [t],
+    [t, canWriteAnimals],
   );
 
   const allAnimals = animalsQuery.data?.result ?? [];
@@ -298,10 +300,12 @@ function Animals() {
           <GitBranch className="h-4 w-4 mr-2" />
           {t("animals.familyTree")}
         </Button>
-        <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
-          <Upload className="h-4 w-4 mr-2" />
-          {t("animals.import")}
-        </Button>
+        {canWriteAnimals && (
+          <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
+            <Upload className="h-4 w-4 mr-2" />
+            {t("animals.import")}
+          </Button>
+        )}
         {canWriteAnimals && (
           <Button onClick={() => navigate({ to: "/animals/create" })}>
             {t("common.create")}
@@ -333,7 +337,7 @@ function Animals() {
         defaultSorting={[{ id: "type", desc: false }]}
         filterSlot={
           <>
-          {selectedIds.length > 0 && (
+          {canWriteAnimals && selectedIds.length > 0 && (
             <Button className="ml-auto" onClick={() => setBatchSheetOpen(true)}>
               {t("animals.batchEditCount", { count: selectedIds.length })}
             </Button>

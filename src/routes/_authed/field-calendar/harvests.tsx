@@ -209,7 +209,7 @@ function HarvestChart() {
 function Harvests() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteHarvests } = useFeatureAccess("harvests");
+  const { canWrite: canWriteHarvests } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({

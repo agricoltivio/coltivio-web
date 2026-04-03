@@ -1093,6 +1093,10 @@
   },
   "membership": {
     "title": "Adhésion",
+    "trialBanner": {
+      "title": "Période d'essai gratuite active",
+      "description": "Pendant la phase de test, tous les membres ont un accès illimité à toutes les fonctionnalités. La gestion des adhésions sera disponible ultérieurement."
+    },
     "expired": {
       "message": "Ton adhésion à l'association AgriColtivio a expiré — rejoins-nous à nouveau.",
       "renew": "Renouveler l'adhésion",

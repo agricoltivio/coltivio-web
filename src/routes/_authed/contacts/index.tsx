@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authed/contacts/")({
 
 function Contacts() {
   const { t } = useTranslation();
-  const { canWrite: canWriteContacts } = useFeatureAccess("contacts");
+  const { canWrite: canWriteContacts } = useFeatureAccess("commerce");
   const navigate = useNavigate();
   const contactsQuery = useQuery(contactsQueryOptions());
 

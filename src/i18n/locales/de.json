@@ -1093,6 +1093,10 @@
   },
   "membership": {
     "title": "Mitgliedschaft",
+    "trialBanner": {
+      "title": "Kostenlose Testphase aktiv",
+      "description": "Während der Testphase haben alle Mitglieder unbegrenzten Zugang zu allen Funktionen. Die Mitgliedschaftsverwaltung wird zu einem späteren Zeitpunkt freigeschaltet."
+    },
     "expired": {
       "message": "Deine Vereinsmitgliedschaft ist abgelaufen — werde jetzt wieder Mitglied.",
       "renew": "Mitgliedschaft erneuern",

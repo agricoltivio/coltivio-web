@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { tillageQueryOptions } from "@/api/tillages.queries";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export const Route = createFileRoute(
 
 function TillageDetail() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTillages } = useFeatureAccess("field_calendar");
   const { tillageId } = Route.useParams();
   const navigate = useNavigate();
   const tillageQuery = useQuery(tillageQueryOptions(tillageId));
@@ -40,16 +42,18 @@ function TillageDetail() {
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/tillages" })}
     >
-      <div className="flex justify-end mb-6">
-        <Button asChild variant="outline">
-          <Link
-            to="/field-calendar/tillages/$tillageId/edit"
-            params={{ tillageId }}
-          >
-            {t("common.edit")}
-          </Link>
-        </Button>
-      </div>
+      {canWriteTillages && (
+        <div className="flex justify-end mb-6">
+          <Button asChild variant="outline">
+            <Link
+              to="/field-calendar/tillages/$tillageId/edit"
+              params={{ tillageId }}
+            >
+              {t("common.edit")}
+            </Link>
+          </Button>
+        </div>
+      )}
 
       <div className="rounded-md border p-4 space-y-2">
         <div className="flex justify-between text-sm">

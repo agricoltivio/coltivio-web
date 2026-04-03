@@ -56,15 +56,11 @@ export type SponsorshipDetail =
 export type SponsorshipProgram =
   components["schemas"]["GetV1SponsorshipProgramsPositiveResponse"]["data"]["result"][number];
 
-// Payment types
-export type Payment =
-  components["schemas"]["GetV1PaymentsPositiveResponse"]["data"]["result"][number];
+// Payment types — all payments are now scoped to their parent (order or sponsorship)
+export type ScopedPayment =
+  components["schemas"]["GetV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse"]["data"];
 
-// Payment without contact (for contact-specific queries)
-export type ContactPayment =
-  components["schemas"]["GetV1ContactsByIdContactIdPaymentsPositiveResponse"]["data"]["result"][number];
-
-export type PaymentMethod = Payment["method"];
+export type PaymentMethod = ScopedPayment["method"];
 
 export const PAYMENT_METHODS: PaymentMethod[] = [
   "cash",

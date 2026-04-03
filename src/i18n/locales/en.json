@@ -1093,6 +1093,10 @@
   },
   "membership": {
     "title": "Membership",
+    "trialBanner": {
+      "title": "Free trial active",
+      "description": "During the test phase, all members have unlimited access to all features. Membership management will be available at a later date."
+    },
     "expired": {
       "message": "Your Verein membership has expired — rejoin now to regain access.",
       "renew": "Renew membership",

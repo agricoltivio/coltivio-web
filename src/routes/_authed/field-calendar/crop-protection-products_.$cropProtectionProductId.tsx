@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -34,6 +35,7 @@ export const Route = createFileRoute(
 
 function CropProtectionProductDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteCropProtection } = useFeatureAccess("field_calendar");
   const { cropProtectionProductId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -90,7 +92,7 @@ function CropProtectionProductDetailPage() {
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/crop-protection-products" })}
     >
-      <div className="mb-6 flex items-center justify-end gap-2">
+      {canWriteCropProtection && <div className="mb-6 flex items-center justify-end gap-2">
         <Button variant="outline" asChild>
           <Link
             to="/field-calendar/crop-protection-products/$cropProtectionProductId/edit"
@@ -124,7 +126,7 @@ function CropProtectionProductDetailPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </div>
+      </div>}
 
       <Card>
         <CardHeader>

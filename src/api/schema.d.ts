@@ -1924,22 +1924,6 @@ export interface paths {
         patch: operations["PatchV1ContactsByIdContactId"];
         trace?: never;
     };
-    "/v1/contacts/byId/{contactId}/payments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetV1ContactsByIdContactIdPayments"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head: operations["HeadV1ContactsByIdContactIdPayments"];
-        patch?: never;
-        trace?: never;
-    };
     "/v1/contacts/byId/{contactId}/sponsorships": {
         parameters: {
             query?: never;
@@ -2212,36 +2196,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/payments": {
+    "/v1/orders/byId/{orderId}/payments": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["GetV1Payments"];
+        get?: never;
         put?: never;
-        post: operations["PostV1Payments"];
+        post: operations["PostV1OrdersByIdOrderIdPayments"];
         delete?: never;
         options?: never;
-        head: operations["HeadV1Payments"];
+        head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/payments/byId/{paymentId}": {
+    "/v1/orders/byId/{orderId}/payments/byId/{paymentId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["GetV1PaymentsByIdPaymentId"];
+        get: operations["GetV1OrdersByIdOrderIdPaymentsByIdPaymentId"];
         put?: never;
         post?: never;
-        delete: operations["DeleteV1PaymentsByIdPaymentId"];
+        delete: operations["DeleteV1OrdersByIdOrderIdPaymentsByIdPaymentId"];
         options?: never;
-        head: operations["HeadV1PaymentsByIdPaymentId"];
-        patch: operations["PatchV1PaymentsByIdPaymentId"];
+        head: operations["HeadV1OrdersByIdOrderIdPaymentsByIdPaymentId"];
+        patch: operations["PatchV1OrdersByIdOrderIdPaymentsByIdPaymentId"];
         trace?: never;
     };
     "/v1/sponsorshipPrograms": {
@@ -2306,6 +2290,38 @@ export interface paths {
         options?: never;
         head: operations["HeadV1SponsorshipsByIdSponsorshipId"];
         patch: operations["PatchV1SponsorshipsByIdSponsorshipId"];
+        trace?: never;
+    };
+    "/v1/sponsorships/byId/{sponsorshipId}/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1SponsorshipsByIdSponsorshipIdPayments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sponsorships/byId/{sponsorshipId}/payments/byId/{paymentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId"];
+        options?: never;
+        head: operations["HeadV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId"];
+        patch: operations["PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId"];
         trace?: never;
     };
     "/v1/wiki": {
@@ -3339,7 +3355,7 @@ export interface components {
             role: "owner" | "member";
             permissions?: {
                 /** @enum {string} */
-                feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                feature: "animals" | "field_calendar" | "commerce" | "tasks";
                 /** @enum {string} */
                 access: "none" | "read" | "write";
             }[];
@@ -3388,14 +3404,14 @@ export interface components {
                     farmId: string;
                     userId: string;
                     /** @enum {string} */
-                    feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                    feature: "animals" | "field_calendar" | "commerce" | "tasks";
                     /** @enum {string} */
                     access: "none" | "read" | "write";
                 }[];
             };
         };
         /** @enum {string} */
-        PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureParameterFeature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+        PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureParameterFeature: "animals" | "field_calendar" | "commerce" | "tasks";
         PutV1FarmMembersByIdUserIdPermissionsByFeatureFeaturePositiveResponse: {
             data: Record<string, never>;
         };
@@ -3462,7 +3478,7 @@ export interface components {
                 isWikiModerator: boolean;
                 farmPermissions: {
                     /** @enum {string} */
-                    feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                    feature: "animals" | "field_calendar" | "commerce" | "tasks";
                     /** @enum {string} */
                     access: "none" | "read" | "write";
                 }[];
@@ -9083,66 +9099,6 @@ export interface components {
         DeleteV1ContactsByIdContactIdPositiveResponse: {
             data: Record<string, never>;
         };
-        GetV1ContactsByIdContactIdPaymentsPositiveResponse: {
-            data: {
-                result: {
-                    id: string;
-                    farmId: string;
-                    contactId: string;
-                    sponsorshipId: string | null;
-                    orderId: string | null;
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    date: string;
-                    amount: number;
-                    currency: string;
-                    /** @enum {string} */
-                    method: "cash" | "bank_transfer" | "twint" | "card" | "other";
-                    notes: string | null;
-                    sponsorship: {
-                        id: string;
-                        farmId: string;
-                        contactId: string;
-                        animalId: string;
-                        sponsorshipProgramId: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        startDate: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        endDate: string | null;
-                        notes: string | null;
-                        /** @enum {string|null} */
-                        preferredCommunication: "email" | "phone" | "whatsapp" | null;
-                    } | null;
-                    order: {
-                        id: string;
-                        farmId: string;
-                        contactId: string;
-                        /** @enum {string} */
-                        status: "pending" | "confirmed" | "fulfilled" | "cancelled";
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        orderDate: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        shippingDate: string | null;
-                        notes: string | null;
-                    } | null;
-                }[];
-                count: number;
-            };
-        };
         GetV1ContactsByIdContactIdSponsorshipsPositiveResponse: {
             data: {
                 result: {
@@ -9887,81 +9843,7 @@ export interface components {
         PostV1OrdersByIdOrderIdInvoiceRequestBody: {
             settingsId: string;
         };
-        GetV1PaymentsPositiveResponse: {
-            data: {
-                result: {
-                    id: string;
-                    farmId: string;
-                    contactId: string;
-                    sponsorshipId: string | null;
-                    orderId: string | null;
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    date: string;
-                    amount: number;
-                    currency: string;
-                    /** @enum {string} */
-                    method: "cash" | "bank_transfer" | "twint" | "card" | "other";
-                    notes: string | null;
-                    sponsorship: {
-                        id: string;
-                        farmId: string;
-                        contactId: string;
-                        animalId: string;
-                        sponsorshipProgramId: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        startDate: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        endDate: string | null;
-                        notes: string | null;
-                        /** @enum {string|null} */
-                        preferredCommunication: "email" | "phone" | "whatsapp" | null;
-                    } | null;
-                    contact: {
-                        id: string;
-                        farmId: string;
-                        firstName: string;
-                        lastName: string;
-                        street: string | null;
-                        city: string | null;
-                        zip: string | null;
-                        phone: string | null;
-                        email: string | null;
-                        /** @enum {string|null} */
-                        preferredCommunication: "email" | "phone" | "whatsapp" | null;
-                        labels: string[];
-                    };
-                    order: {
-                        id: string;
-                        farmId: string;
-                        contactId: string;
-                        /** @enum {string} */
-                        status: "pending" | "confirmed" | "fulfilled" | "cancelled";
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        orderDate: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        shippingDate: string | null;
-                        notes: string | null;
-                    } | null;
-                }[];
-                count: number;
-            };
-        };
-        PostV1PaymentsPositiveResponse: {
+        PostV1OrdersByIdOrderIdPaymentsPositiveResponse: {
             data: {
                 id: string;
                 farmId: string;
@@ -9980,10 +9862,7 @@ export interface components {
                 notes: string | null;
             };
         };
-        PostV1PaymentsRequestBody: {
-            contactId: string;
-            sponsorshipId?: string;
-            orderId?: string;
+        PostV1OrdersByIdOrderIdPaymentsRequestBody: {
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -9996,78 +9875,7 @@ export interface components {
             method: "cash" | "bank_transfer" | "twint" | "card" | "other";
             notes?: string;
         };
-        GetV1PaymentsByIdPaymentIdPositiveResponse: {
-            data: {
-                id: string;
-                farmId: string;
-                contactId: string;
-                sponsorshipId: string | null;
-                orderId: string | null;
-                /**
-                 * Format: date-time
-                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                 */
-                date: string;
-                amount: number;
-                currency: string;
-                /** @enum {string} */
-                method: "cash" | "bank_transfer" | "twint" | "card" | "other";
-                notes: string | null;
-                sponsorship: {
-                    id: string;
-                    farmId: string;
-                    contactId: string;
-                    animalId: string;
-                    sponsorshipProgramId: string;
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    startDate: string;
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    endDate: string | null;
-                    notes: string | null;
-                    /** @enum {string|null} */
-                    preferredCommunication: "email" | "phone" | "whatsapp" | null;
-                } | null;
-                contact: {
-                    id: string;
-                    farmId: string;
-                    firstName: string;
-                    lastName: string;
-                    street: string | null;
-                    city: string | null;
-                    zip: string | null;
-                    phone: string | null;
-                    email: string | null;
-                    /** @enum {string|null} */
-                    preferredCommunication: "email" | "phone" | "whatsapp" | null;
-                    labels: string[];
-                };
-                order: {
-                    id: string;
-                    farmId: string;
-                    contactId: string;
-                    /** @enum {string} */
-                    status: "pending" | "confirmed" | "fulfilled" | "cancelled";
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    orderDate: string;
-                    /**
-                     * Format: date-time
-                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                     */
-                    shippingDate: string | null;
-                    notes: string | null;
-                } | null;
-            };
-        };
-        PatchV1PaymentsByIdPaymentIdPositiveResponse: {
+        GetV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse: {
             data: {
                 id: string;
                 farmId: string;
@@ -10086,10 +9894,26 @@ export interface components {
                 notes: string | null;
             };
         };
-        PatchV1PaymentsByIdPaymentIdRequestBody: {
-            contactId?: string;
-            sponsorshipId?: string;
-            orderId?: string;
+        PatchV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                contactId: string;
+                sponsorshipId: string | null;
+                orderId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                amount: number;
+                currency: string;
+                /** @enum {string} */
+                method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+                notes: string | null;
+            };
+        };
+        PatchV1OrdersByIdOrderIdPaymentsByIdPaymentIdRequestBody: {
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -10102,7 +9926,7 @@ export interface components {
             method?: "cash" | "bank_transfer" | "twint" | "card" | "other";
             notes?: string;
         };
-        DeleteV1PaymentsByIdPaymentIdPositiveResponse: {
+        DeleteV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse: {
             data: Record<string, never>;
         };
         GetV1SponsorshipProgramsPositiveResponse: {
@@ -10418,6 +10242,92 @@ export interface components {
             preferredCommunication?: "email" | "phone" | "whatsapp";
         };
         DeleteV1SponsorshipsByIdSponsorshipIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1SponsorshipsByIdSponsorshipIdPaymentsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                contactId: string;
+                sponsorshipId: string | null;
+                orderId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                amount: number;
+                currency: string;
+                /** @enum {string} */
+                method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+                notes: string | null;
+            };
+        };
+        PostV1SponsorshipsByIdSponsorshipIdPaymentsRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            amount: number;
+            /** @default CHF */
+            currency: string;
+            /** @enum {string} */
+            method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+            notes?: string;
+        };
+        GetV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                contactId: string;
+                sponsorshipId: string | null;
+                orderId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                amount: number;
+                currency: string;
+                /** @enum {string} */
+                method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+                notes: string | null;
+            };
+        };
+        PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                contactId: string;
+                sponsorshipId: string | null;
+                orderId: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                amount: number;
+                currency: string;
+                /** @enum {string} */
+                method: "cash" | "bank_transfer" | "twint" | "card" | "other";
+                notes: string | null;
+            };
+        };
+        PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            amount?: number;
+            /** @default CHF */
+            currency: string;
+            /** @enum {string} */
+            method?: "cash" | "bank_transfer" | "twint" | "card" | "other";
+            notes?: string;
+        };
+        DeleteV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse: {
             data: Record<string, never>;
         };
         /** @enum {string} */
@@ -20825,66 +20735,6 @@ export interface operations {
             };
         };
     };
-    GetV1ContactsByIdContactIdPayments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description GET /v1/contacts/byId/:contactId/payments Parameter */
-                contactId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description GET /v1/contacts/byId/:contactId/payments Positive response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetV1ContactsByIdContactIdPaymentsPositiveResponse"];
-                };
-            };
-            /** @description GET /v1/contacts/byId/:contactId/payments Negative response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
-                };
-            };
-        };
-    };
-    HeadV1ContactsByIdContactIdPayments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description HEAD /v1/contacts/byId/:contactId/payments Parameter */
-                contactId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description HEAD /v1/contacts/byId/:contactId/payments Positive response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description HEAD /v1/contacts/byId/:contactId/payments Negative response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     GetV1ContactsByIdContactIdSponsorships: {
         parameters: {
             query?: {
@@ -22045,59 +21895,33 @@ export interface operations {
             };
         };
     };
-    GetV1Payments: {
+    PostV1OrdersByIdOrderIdPayments: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description POST /v1/orders/byId/:orderId/payments Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
             cookie?: never;
         };
-        requestBody?: never;
-        responses: {
-            /** @description GET /v1/payments Positive response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetV1PaymentsPositiveResponse"];
-                };
-            };
-            /** @description GET /v1/payments Negative response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
-                };
-            };
-        };
-    };
-    PostV1Payments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description POST /v1/payments Request body */
+        /** @description POST /v1/orders/byId/:orderId/payments Request body */
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PostV1PaymentsRequestBody"];
+                "application/json": components["schemas"]["PostV1OrdersByIdOrderIdPaymentsRequestBody"];
             };
         };
         responses: {
-            /** @description POST /v1/payments Positive response */
+            /** @description POST /v1/orders/byId/:orderId/payments Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PostV1PaymentsPositiveResponse"];
+                    "application/json": components["schemas"]["PostV1OrdersByIdOrderIdPaymentsPositiveResponse"];
                 };
             };
-            /** @description POST /v1/payments Negative response */
+            /** @description POST /v1/orders/byId/:orderId/payments Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22108,53 +21932,30 @@ export interface operations {
             };
         };
     };
-    HeadV1Payments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description HEAD /v1/payments Positive response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description HEAD /v1/payments Negative response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    GetV1PaymentsByIdPaymentId: {
+    GetV1OrdersByIdOrderIdPaymentsByIdPaymentId: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description GET /v1/payments/byId/:paymentId Parameter */
+                /** @description GET /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
                 paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description GET /v1/payments/byId/:paymentId Positive response */
+            /** @description GET /v1/orders/byId/:orderId/payments/byId/:paymentId Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetV1PaymentsByIdPaymentIdPositiveResponse"];
+                    "application/json": components["schemas"]["GetV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse"];
                 };
             };
-            /** @description GET /v1/payments/byId/:paymentId Negative response */
+            /** @description GET /v1/orders/byId/:orderId/payments/byId/:paymentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22165,28 +21966,30 @@ export interface operations {
             };
         };
     };
-    DeleteV1PaymentsByIdPaymentId: {
+    DeleteV1OrdersByIdOrderIdPaymentsByIdPaymentId: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description DELETE /v1/payments/byId/:paymentId Parameter */
+                /** @description DELETE /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description DELETE /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
                 paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description DELETE /v1/payments/byId/:paymentId Positive response */
+            /** @description DELETE /v1/orders/byId/:orderId/payments/byId/:paymentId Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeleteV1PaymentsByIdPaymentIdPositiveResponse"];
+                    "application/json": components["schemas"]["DeleteV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse"];
                 };
             };
-            /** @description DELETE /v1/payments/byId/:paymentId Negative response */
+            /** @description DELETE /v1/orders/byId/:orderId/payments/byId/:paymentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22197,26 +22000,28 @@ export interface operations {
             };
         };
     };
-    HeadV1PaymentsByIdPaymentId: {
+    HeadV1OrdersByIdOrderIdPaymentsByIdPaymentId: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description HEAD /v1/payments/byId/:paymentId Parameter */
+                /** @description HEAD /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
                 paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description HEAD /v1/payments/byId/:paymentId Positive response */
+            /** @description HEAD /v1/orders/byId/:orderId/payments/byId/:paymentId Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description HEAD /v1/payments/byId/:paymentId Negative response */
+            /** @description HEAD /v1/orders/byId/:orderId/payments/byId/:paymentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22225,33 +22030,35 @@ export interface operations {
             };
         };
     };
-    PatchV1PaymentsByIdPaymentId: {
+    PatchV1OrdersByIdOrderIdPaymentsByIdPaymentId: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description PATCH /v1/payments/byId/:paymentId Parameter */
+                /** @description PATCH /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
+                orderId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description PATCH /v1/orders/byId/:orderId/payments/byId/:paymentId Parameter */
                 paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             cookie?: never;
         };
-        /** @description PATCH /v1/payments/byId/:paymentId Request body */
+        /** @description PATCH /v1/orders/byId/:orderId/payments/byId/:paymentId Request body */
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["PatchV1PaymentsByIdPaymentIdRequestBody"];
+                "application/json": components["schemas"]["PatchV1OrdersByIdOrderIdPaymentsByIdPaymentIdRequestBody"];
             };
         };
         responses: {
-            /** @description PATCH /v1/payments/byId/:paymentId Positive response */
+            /** @description PATCH /v1/orders/byId/:orderId/payments/byId/:paymentId Positive response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PatchV1PaymentsByIdPaymentIdPositiveResponse"];
+                    "application/json": components["schemas"]["PatchV1OrdersByIdOrderIdPaymentsByIdPaymentIdPositiveResponse"];
                 };
             };
-            /** @description PATCH /v1/payments/byId/:paymentId Negative response */
+            /** @description PATCH /v1/orders/byId/:orderId/payments/byId/:paymentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -22692,6 +22499,180 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/sponsorships/byId/:sponsorshipId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1SponsorshipsByIdSponsorshipIdPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/sponsorships/byId/:sponsorshipId/payments Parameter */
+                sponsorshipId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/sponsorships/byId/:sponsorshipId/payments Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1SponsorshipsByIdSponsorshipIdPaymentsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/sponsorships/byId/:sponsorshipId/payments Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1SponsorshipsByIdSponsorshipIdPaymentsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/sponsorships/byId/:sponsorshipId/payments Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                sponsorshipId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                sponsorshipId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description DELETE /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                sponsorshipId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                sponsorshipId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description PATCH /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Parameter */
+                paymentId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1SponsorshipsByIdSponsorshipIdPaymentsByIdPaymentIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/sponsorships/byId/:sponsorshipId/payments/byId/:paymentId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

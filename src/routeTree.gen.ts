@@ -28,7 +28,6 @@ import { Route as AuthedTreffpunktRouteRouteImport } from './routes/_authed/tref
 import { Route as AuthedTasksRouteRouteImport } from './routes/_authed/tasks/route'
 import { Route as AuthedSponsorshipsRouteRouteImport } from './routes/_authed/sponsorships/route'
 import { Route as AuthedProductsRouteRouteImport } from './routes/_authed/products/route'
-import { Route as AuthedPaymentsRouteRouteImport } from './routes/_authed/payments/route'
 import { Route as AuthedOrdersRouteRouteImport } from './routes/_authed/orders/route'
 import { Route as AuthedContactsRouteRouteImport } from './routes/_authed/contacts/route'
 import { Route as AuthedWikiIndexRouteImport } from './routes/_authed/wiki/index'
@@ -36,7 +35,6 @@ import { Route as AuthedTreffpunktIndexRouteImport } from './routes/_authed/tref
 import { Route as AuthedTasksIndexRouteImport } from './routes/_authed/tasks/index'
 import { Route as AuthedSponsorshipsIndexRouteImport } from './routes/_authed/sponsorships/index'
 import { Route as AuthedProductsIndexRouteImport } from './routes/_authed/products/index'
-import { Route as AuthedPaymentsIndexRouteImport } from './routes/_authed/payments/index'
 import { Route as AuthedOrdersIndexRouteImport } from './routes/_authed/orders/index'
 import { Route as AuthedMembershipIndexRouteImport } from './routes/_authed/membership/index'
 import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/index'
@@ -49,7 +47,6 @@ import { Route as AuthedTreatmentsCreateRouteImport } from './routes/_authed/tre
 import { Route as AuthedTasksCreateRouteImport } from './routes/_authed/tasks/create'
 import { Route as AuthedSponsorshipsCreateRouteImport } from './routes/_authed/sponsorships/create'
 import { Route as AuthedProductsCreateRouteImport } from './routes/_authed/products/create'
-import { Route as AuthedPaymentsCreateRouteImport } from './routes/_authed/payments/create'
 import { Route as AuthedOrdersInvoiceSettingsRouteImport } from './routes/_authed/orders/invoice-settings'
 import { Route as AuthedOrdersCreateRouteImport } from './routes/_authed/orders/create'
 import { Route as AuthedFieldCalendarTillagesRouteImport } from './routes/_authed/field-calendar/tillages'
@@ -81,7 +78,6 @@ import { Route as AuthedTasksTaskIdIndexRouteImport } from './routes/_authed/tas
 import { Route as AuthedSponsorshipsProgramsIndexRouteImport } from './routes/_authed/sponsorships/programs/index'
 import { Route as AuthedSponsorshipsSponsorshipIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.index'
 import { Route as AuthedProductsProductIdIndexRouteImport } from './routes/_authed/products/$productId.index'
-import { Route as AuthedPaymentsPaymentIdIndexRouteImport } from './routes/_authed/payments/$paymentId.index'
 import { Route as AuthedOrdersInvoiceSettingsIndexRouteImport } from './routes/_authed/orders/invoice-settings.index'
 import { Route as AuthedOrdersOrderIdIndexRouteImport } from './routes/_authed/orders/$orderId.index'
 import { Route as AuthedDrugsDrugIdIndexRouteImport } from './routes/_authed/drugs/$drugId.index'
@@ -93,7 +89,6 @@ import { Route as AuthedTasksTaskIdEditRouteImport } from './routes/_authed/task
 import { Route as AuthedSponsorshipsProgramsCreateRouteImport } from './routes/_authed/sponsorships/programs/create'
 import { Route as AuthedSponsorshipsSponsorshipIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId.edit'
 import { Route as AuthedProductsProductIdEditRouteImport } from './routes/_authed/products/$productId.edit'
-import { Route as AuthedPaymentsPaymentIdEditRouteImport } from './routes/_authed/payments/$paymentId.edit'
 import { Route as AuthedOrdersInvoiceSettingsCreateRouteImport } from './routes/_authed/orders/invoice-settings.create'
 import { Route as AuthedOrdersInvoiceSettingsSettingsIdRouteImport } from './routes/_authed/orders/invoice-settings.$settingsId'
 import { Route as AuthedOrdersOrderIdEditRouteImport } from './routes/_authed/orders/$orderId.edit'
@@ -130,6 +125,8 @@ import { Route as AuthedWikiMyEntriesEntryIdEditRouteImport } from './routes/_au
 import { Route as AuthedWikiMyEntriesEntryIdChangeRequestRouteImport } from './routes/_authed/wiki/my-entries/$entryId/change-request'
 import { Route as AuthedWikiAdminReviewQueueChangeRequestIdRouteImport } from './routes/_authed/wiki/admin/review-queue/$changeRequestId'
 import { Route as AuthedSponsorshipsProgramsProgramIdEditRouteImport } from './routes/_authed/sponsorships/programs/$programId.edit'
+import { Route as AuthedSponsorshipsSponsorshipIdPaymentsCreateRouteImport } from './routes/_authed/sponsorships/$sponsorshipId_.payments.create'
+import { Route as AuthedOrdersOrderIdPaymentsCreateRouteImport } from './routes/_authed/orders/$orderId_.payments.create'
 import { Route as AuthedFieldCalendarTillagesTillageIdEditRouteImport } from './routes/_authed/field-calendar/tillages_.$tillageId.edit'
 import { Route as AuthedFieldCalendarPlotsPlotIdJournalRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.journal'
 import { Route as AuthedFieldCalendarPlotsPlotIdCropRotationsRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.crop-rotations'
@@ -141,7 +138,11 @@ import { Route as AuthedFieldCalendarCropProtectionApplicationsIdEditRouteImport
 import { Route as AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport } from './routes/_authed/field-calendar/crop-families_.$familyId_.edit'
 import { Route as AuthedAnimalsAnimalIdJournalCreateRouteImport } from './routes/_authed/animals/$animalId_.journal.create'
 import { Route as AuthedAnimalsAnimalIdJournalEntryIdRouteImport } from './routes/_authed/animals/$animalId_.journal.$entryId'
+import { Route as AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId_.payments.$paymentId.index'
+import { Route as AuthedOrdersOrderIdPaymentsPaymentIdIndexRouteImport } from './routes/_authed/orders/$orderId_.payments.$paymentId.index'
 import { Route as AuthedFieldCalendarPlotsPlotIdJournalIndexRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.journal.index'
+import { Route as AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRouteImport } from './routes/_authed/sponsorships/$sponsorshipId_.payments.$paymentId.edit'
+import { Route as AuthedOrdersOrderIdPaymentsPaymentIdEditRouteImport } from './routes/_authed/orders/$orderId_.payments.$paymentId.edit'
 import { Route as AuthedFieldCalendarPlotsPlotIdJournalCreateRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.journal.create'
 import { Route as AuthedFieldCalendarPlotsPlotIdJournalEntryIdRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.journal.$entryId'
 import { Route as AuthedAnimalsAnimalIdJournalEntryIdEditRouteImport } from './routes/_authed/animals/$animalId_.journal.$entryId_.edit'
@@ -242,11 +243,6 @@ const AuthedProductsRouteRoute = AuthedProductsRouteRouteImport.update({
   path: '/products',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
-const AuthedPaymentsRouteRoute = AuthedPaymentsRouteRouteImport.update({
-  id: '/payments',
-  path: '/payments',
-  getParentRoute: () => AuthedRouteRoute,
-} as any)
 const AuthedOrdersRouteRoute = AuthedOrdersRouteRouteImport.update({
   id: '/orders',
   path: '/orders',
@@ -281,11 +277,6 @@ const AuthedProductsIndexRoute = AuthedProductsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthedProductsRouteRoute,
-} as any)
-const AuthedPaymentsIndexRoute = AuthedPaymentsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthedPaymentsRouteRoute,
 } as any)
 const AuthedOrdersIndexRoute = AuthedOrdersIndexRouteImport.update({
   id: '/',
@@ -348,11 +339,6 @@ const AuthedProductsCreateRoute = AuthedProductsCreateRouteImport.update({
   id: '/create',
   path: '/create',
   getParentRoute: () => AuthedProductsRouteRoute,
-} as any)
-const AuthedPaymentsCreateRoute = AuthedPaymentsCreateRouteImport.update({
-  id: '/create',
-  path: '/create',
-  getParentRoute: () => AuthedPaymentsRouteRoute,
 } as any)
 const AuthedOrdersInvoiceSettingsRoute =
   AuthedOrdersInvoiceSettingsRouteImport.update({
@@ -530,12 +516,6 @@ const AuthedProductsProductIdIndexRoute =
     path: '/$productId/',
     getParentRoute: () => AuthedProductsRouteRoute,
   } as any)
-const AuthedPaymentsPaymentIdIndexRoute =
-  AuthedPaymentsPaymentIdIndexRouteImport.update({
-    id: '/$paymentId/',
-    path: '/$paymentId/',
-    getParentRoute: () => AuthedPaymentsRouteRoute,
-  } as any)
 const AuthedOrdersInvoiceSettingsIndexRoute =
   AuthedOrdersInvoiceSettingsIndexRouteImport.update({
     id: '/',
@@ -598,12 +578,6 @@ const AuthedProductsProductIdEditRoute =
     id: '/$productId/edit',
     path: '/$productId/edit',
     getParentRoute: () => AuthedProductsRouteRoute,
-  } as any)
-const AuthedPaymentsPaymentIdEditRoute =
-  AuthedPaymentsPaymentIdEditRouteImport.update({
-    id: '/$paymentId/edit',
-    path: '/$paymentId/edit',
-    getParentRoute: () => AuthedPaymentsRouteRoute,
   } as any)
 const AuthedOrdersInvoiceSettingsCreateRoute =
   AuthedOrdersInvoiceSettingsCreateRouteImport.update({
@@ -821,6 +795,18 @@ const AuthedSponsorshipsProgramsProgramIdEditRoute =
     path: '/programs/$programId/edit',
     getParentRoute: () => AuthedSponsorshipsRouteRoute,
   } as any)
+const AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute =
+  AuthedSponsorshipsSponsorshipIdPaymentsCreateRouteImport.update({
+    id: '/$sponsorshipId_/payments/create',
+    path: '/$sponsorshipId/payments/create',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
+  } as any)
+const AuthedOrdersOrderIdPaymentsCreateRoute =
+  AuthedOrdersOrderIdPaymentsCreateRouteImport.update({
+    id: '/$orderId_/payments/create',
+    path: '/$orderId/payments/create',
+    getParentRoute: () => AuthedOrdersRouteRoute,
+  } as any)
 const AuthedFieldCalendarTillagesTillageIdEditRoute =
   AuthedFieldCalendarTillagesTillageIdEditRouteImport.update({
     id: '/edit',
@@ -889,11 +875,35 @@ const AuthedAnimalsAnimalIdJournalEntryIdRoute =
     path: '/$entryId',
     getParentRoute: () => AuthedAnimalsAnimalIdJournalRoute,
   } as any)
+const AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute =
+  AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRouteImport.update({
+    id: '/$sponsorshipId_/payments/$paymentId/',
+    path: '/$sponsorshipId/payments/$paymentId/',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
+  } as any)
+const AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute =
+  AuthedOrdersOrderIdPaymentsPaymentIdIndexRouteImport.update({
+    id: '/$orderId_/payments/$paymentId/',
+    path: '/$orderId/payments/$paymentId/',
+    getParentRoute: () => AuthedOrdersRouteRoute,
+  } as any)
 const AuthedFieldCalendarPlotsPlotIdJournalIndexRoute =
   AuthedFieldCalendarPlotsPlotIdJournalIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthedFieldCalendarPlotsPlotIdJournalRoute,
+  } as any)
+const AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute =
+  AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRouteImport.update({
+    id: '/$sponsorshipId_/payments/$paymentId/edit',
+    path: '/$sponsorshipId/payments/$paymentId/edit',
+    getParentRoute: () => AuthedSponsorshipsRouteRoute,
+  } as any)
+const AuthedOrdersOrderIdPaymentsPaymentIdEditRoute =
+  AuthedOrdersOrderIdPaymentsPaymentIdEditRouteImport.update({
+    id: '/$orderId_/payments/$paymentId/edit',
+    path: '/$orderId/payments/$paymentId/edit',
+    getParentRoute: () => AuthedOrdersRouteRoute,
   } as any)
 const AuthedFieldCalendarPlotsPlotIdJournalCreateRoute =
   AuthedFieldCalendarPlotsPlotIdJournalCreateRouteImport.update({
@@ -939,7 +949,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/contacts': typeof AuthedContactsRouteRouteWithChildren
   '/orders': typeof AuthedOrdersRouteRouteWithChildren
-  '/payments': typeof AuthedPaymentsRouteRouteWithChildren
   '/products': typeof AuthedProductsRouteRouteWithChildren
   '/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
   '/tasks': typeof AuthedTasksRouteRouteWithChildren
@@ -973,7 +982,6 @@ export interface FileRoutesByFullPath {
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
   '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRouteWithChildren
-  '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/tasks/create': typeof AuthedTasksCreateRoute
@@ -986,7 +994,6 @@ export interface FileRoutesByFullPath {
   '/drugs/': typeof AuthedDrugsIndexRoute
   '/membership/': typeof AuthedMembershipIndexRoute
   '/orders/': typeof AuthedOrdersIndexRoute
-  '/payments/': typeof AuthedPaymentsIndexRoute
   '/products/': typeof AuthedProductsIndexRoute
   '/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/tasks/': typeof AuthedTasksIndexRoute
@@ -1018,7 +1025,6 @@ export interface FileRoutesByFullPath {
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
   '/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
-  '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
@@ -1030,7 +1036,6 @@ export interface FileRoutesByFullPath {
   '/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
   '/orders/invoice-settings/': typeof AuthedOrdersInvoiceSettingsIndexRoute
-  '/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
@@ -1050,6 +1055,8 @@ export interface FileRoutesByFullPath {
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/plots/$plotId/journal': typeof AuthedFieldCalendarPlotsPlotIdJournalRouteWithChildren
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
+  '/orders/$orderId/payments/create': typeof AuthedOrdersOrderIdPaymentsCreateRoute
+  '/sponsorships/$sponsorshipId/payments/create': typeof AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
   '/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
@@ -1063,7 +1070,11 @@ export interface FileRoutesByFullPath {
   '/animals/$animalId/journal/$entryId/edit': typeof AuthedAnimalsAnimalIdJournalEntryIdEditRoute
   '/field-calendar/plots/$plotId/journal/$entryId': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdRoute
   '/field-calendar/plots/$plotId/journal/create': typeof AuthedFieldCalendarPlotsPlotIdJournalCreateRoute
+  '/orders/$orderId/payments/$paymentId/edit': typeof AuthedOrdersOrderIdPaymentsPaymentIdEditRoute
+  '/sponsorships/$sponsorshipId/payments/$paymentId/edit': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute
   '/field-calendar/plots/$plotId/journal/': typeof AuthedFieldCalendarPlotsPlotIdJournalIndexRoute
+  '/orders/$orderId/payments/$paymentId/': typeof AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute
+  '/sponsorships/$sponsorshipId/payments/$paymentId/': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute
   '/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdPlotsPlotIdCropRotationsRoute
   '/field-calendar/plots/$plotId/journal/$entryId/edit': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdEditRoute
 }
@@ -1104,7 +1115,6 @@ export interface FileRoutesByTo {
   '/field-calendar/plots': typeof AuthedFieldCalendarPlotsRoute
   '/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/orders/create': typeof AuthedOrdersCreateRoute
-  '/payments/create': typeof AuthedPaymentsCreateRoute
   '/products/create': typeof AuthedProductsCreateRoute
   '/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/tasks/create': typeof AuthedTasksCreateRoute
@@ -1117,7 +1127,6 @@ export interface FileRoutesByTo {
   '/drugs': typeof AuthedDrugsIndexRoute
   '/membership': typeof AuthedMembershipIndexRoute
   '/orders': typeof AuthedOrdersIndexRoute
-  '/payments': typeof AuthedPaymentsIndexRoute
   '/products': typeof AuthedProductsIndexRoute
   '/sponsorships': typeof AuthedSponsorshipsIndexRoute
   '/tasks': typeof AuthedTasksIndexRoute
@@ -1148,7 +1157,6 @@ export interface FileRoutesByTo {
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
   '/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
-  '/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
@@ -1160,7 +1168,6 @@ export interface FileRoutesByTo {
   '/drugs/$drugId': typeof AuthedDrugsDrugIdIndexRoute
   '/orders/$orderId': typeof AuthedOrdersOrderIdIndexRoute
   '/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsIndexRoute
-  '/payments/$paymentId': typeof AuthedPaymentsPaymentIdIndexRoute
   '/products/$productId': typeof AuthedProductsProductIdIndexRoute
   '/sponsorships/$sponsorshipId': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/sponsorships/programs': typeof AuthedSponsorshipsProgramsIndexRoute
@@ -1179,6 +1186,8 @@ export interface FileRoutesByTo {
   '/field-calendar/fertilizers/$fertilizerId/edit': typeof AuthedFieldCalendarFertilizersFertilizerIdEditRoute
   '/field-calendar/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/field-calendar/tillages/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
+  '/orders/$orderId/payments/create': typeof AuthedOrdersOrderIdPaymentsCreateRoute
+  '/sponsorships/$sponsorshipId/payments/create': typeof AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute
   '/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
   '/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
@@ -1192,7 +1201,11 @@ export interface FileRoutesByTo {
   '/animals/$animalId/journal/$entryId/edit': typeof AuthedAnimalsAnimalIdJournalEntryIdEditRoute
   '/field-calendar/plots/$plotId/journal/$entryId': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdRoute
   '/field-calendar/plots/$plotId/journal/create': typeof AuthedFieldCalendarPlotsPlotIdJournalCreateRoute
+  '/orders/$orderId/payments/$paymentId/edit': typeof AuthedOrdersOrderIdPaymentsPaymentIdEditRoute
+  '/sponsorships/$sponsorshipId/payments/$paymentId/edit': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute
   '/field-calendar/plots/$plotId/journal': typeof AuthedFieldCalendarPlotsPlotIdJournalIndexRoute
+  '/orders/$orderId/payments/$paymentId': typeof AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute
+  '/sponsorships/$sponsorshipId/payments/$paymentId': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute
   '/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdPlotsPlotIdCropRotationsRoute
   '/field-calendar/plots/$plotId/journal/$entryId/edit': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdEditRoute
 }
@@ -1209,7 +1222,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authed/contacts': typeof AuthedContactsRouteRouteWithChildren
   '/_authed/orders': typeof AuthedOrdersRouteRouteWithChildren
-  '/_authed/payments': typeof AuthedPaymentsRouteRouteWithChildren
   '/_authed/products': typeof AuthedProductsRouteRouteWithChildren
   '/_authed/sponsorships': typeof AuthedSponsorshipsRouteRouteWithChildren
   '/_authed/tasks': typeof AuthedTasksRouteRouteWithChildren
@@ -1243,7 +1255,6 @@ export interface FileRoutesById {
   '/_authed/field-calendar/tillages': typeof AuthedFieldCalendarTillagesRoute
   '/_authed/orders/create': typeof AuthedOrdersCreateRoute
   '/_authed/orders/invoice-settings': typeof AuthedOrdersInvoiceSettingsRouteWithChildren
-  '/_authed/payments/create': typeof AuthedPaymentsCreateRoute
   '/_authed/products/create': typeof AuthedProductsCreateRoute
   '/_authed/sponsorships/create': typeof AuthedSponsorshipsCreateRoute
   '/_authed/tasks/create': typeof AuthedTasksCreateRoute
@@ -1256,7 +1267,6 @@ export interface FileRoutesById {
   '/_authed/drugs/': typeof AuthedDrugsIndexRoute
   '/_authed/membership/': typeof AuthedMembershipIndexRoute
   '/_authed/orders/': typeof AuthedOrdersIndexRoute
-  '/_authed/payments/': typeof AuthedPaymentsIndexRoute
   '/_authed/products/': typeof AuthedProductsIndexRoute
   '/_authed/sponsorships/': typeof AuthedSponsorshipsIndexRoute
   '/_authed/tasks/': typeof AuthedTasksIndexRoute
@@ -1288,7 +1298,6 @@ export interface FileRoutesById {
   '/_authed/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
   '/_authed/orders/invoice-settings/$settingsId': typeof AuthedOrdersInvoiceSettingsSettingsIdRoute
   '/_authed/orders/invoice-settings/create': typeof AuthedOrdersInvoiceSettingsCreateRoute
-  '/_authed/payments/$paymentId/edit': typeof AuthedPaymentsPaymentIdEditRoute
   '/_authed/products/$productId/edit': typeof AuthedProductsProductIdEditRoute
   '/_authed/sponsorships/$sponsorshipId/edit': typeof AuthedSponsorshipsSponsorshipIdEditRoute
   '/_authed/sponsorships/programs/create': typeof AuthedSponsorshipsProgramsCreateRoute
@@ -1300,7 +1309,6 @@ export interface FileRoutesById {
   '/_authed/drugs/$drugId/': typeof AuthedDrugsDrugIdIndexRoute
   '/_authed/orders/$orderId/': typeof AuthedOrdersOrderIdIndexRoute
   '/_authed/orders/invoice-settings/': typeof AuthedOrdersInvoiceSettingsIndexRoute
-  '/_authed/payments/$paymentId/': typeof AuthedPaymentsPaymentIdIndexRoute
   '/_authed/products/$productId/': typeof AuthedProductsProductIdIndexRoute
   '/_authed/sponsorships/$sponsorshipId/': typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   '/_authed/sponsorships/programs/': typeof AuthedSponsorshipsProgramsIndexRoute
@@ -1320,6 +1328,8 @@ export interface FileRoutesById {
   '/_authed/field-calendar/plots_/$plotId_/crop-rotations': typeof AuthedFieldCalendarPlotsPlotIdCropRotationsRoute
   '/_authed/field-calendar/plots_/$plotId_/journal': typeof AuthedFieldCalendarPlotsPlotIdJournalRouteWithChildren
   '/_authed/field-calendar/tillages_/$tillageId/edit': typeof AuthedFieldCalendarTillagesTillageIdEditRoute
+  '/_authed/orders/$orderId_/payments/create': typeof AuthedOrdersOrderIdPaymentsCreateRoute
+  '/_authed/sponsorships/$sponsorshipId_/payments/create': typeof AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute
   '/_authed/sponsorships/programs/$programId/edit': typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   '/_authed/wiki/admin/review-queue/$changeRequestId': typeof AuthedWikiAdminReviewQueueChangeRequestIdRoute
   '/_authed/wiki/my-entries/$entryId/change-request': typeof AuthedWikiMyEntriesEntryIdChangeRequestRoute
@@ -1333,7 +1343,11 @@ export interface FileRoutesById {
   '/_authed/animals/$animalId_/journal/$entryId_/edit': typeof AuthedAnimalsAnimalIdJournalEntryIdEditRoute
   '/_authed/field-calendar/plots_/$plotId_/journal/$entryId': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdRoute
   '/_authed/field-calendar/plots_/$plotId_/journal/create': typeof AuthedFieldCalendarPlotsPlotIdJournalCreateRoute
+  '/_authed/orders/$orderId_/payments/$paymentId/edit': typeof AuthedOrdersOrderIdPaymentsPaymentIdEditRoute
+  '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/edit': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute
   '/_authed/field-calendar/plots_/$plotId_/journal/': typeof AuthedFieldCalendarPlotsPlotIdJournalIndexRoute
+  '/_authed/orders/$orderId_/payments/$paymentId/': typeof AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute
+  '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/': typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute
   '/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId_/plots_/$plotId_/crop-rotations': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdPlotsPlotIdCropRotationsRoute
   '/_authed/field-calendar/plots_/$plotId_/journal/$entryId_/edit': typeof AuthedFieldCalendarPlotsPlotIdJournalEntryIdEditRoute
 }
@@ -1350,7 +1364,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/contacts'
     | '/orders'
-    | '/payments'
     | '/products'
     | '/sponsorships'
     | '/tasks'
@@ -1384,7 +1397,6 @@ export interface FileRouteTypes {
     | '/field-calendar/tillages'
     | '/orders/create'
     | '/orders/invoice-settings'
-    | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
     | '/tasks/create'
@@ -1397,7 +1409,6 @@ export interface FileRouteTypes {
     | '/drugs/'
     | '/membership/'
     | '/orders/'
-    | '/payments/'
     | '/products/'
     | '/sponsorships/'
     | '/tasks/'
@@ -1429,7 +1440,6 @@ export interface FileRouteTypes {
     | '/orders/$orderId/edit'
     | '/orders/invoice-settings/$settingsId'
     | '/orders/invoice-settings/create'
-    | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
@@ -1441,7 +1451,6 @@ export interface FileRouteTypes {
     | '/drugs/$drugId/'
     | '/orders/$orderId/'
     | '/orders/invoice-settings/'
-    | '/payments/$paymentId/'
     | '/products/$productId/'
     | '/sponsorships/$sponsorshipId/'
     | '/sponsorships/programs/'
@@ -1461,6 +1470,8 @@ export interface FileRouteTypes {
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/plots/$plotId/journal'
     | '/field-calendar/tillages/$tillageId/edit'
+    | '/orders/$orderId/payments/create'
+    | '/sponsorships/$sponsorshipId/payments/create'
     | '/sponsorships/programs/$programId/edit'
     | '/wiki/admin/review-queue/$changeRequestId'
     | '/wiki/my-entries/$entryId/change-request'
@@ -1474,7 +1485,11 @@ export interface FileRouteTypes {
     | '/animals/$animalId/journal/$entryId/edit'
     | '/field-calendar/plots/$plotId/journal/$entryId'
     | '/field-calendar/plots/$plotId/journal/create'
+    | '/orders/$orderId/payments/$paymentId/edit'
+    | '/sponsorships/$sponsorshipId/payments/$paymentId/edit'
     | '/field-calendar/plots/$plotId/journal/'
+    | '/orders/$orderId/payments/$paymentId/'
+    | '/sponsorships/$sponsorshipId/payments/$paymentId/'
     | '/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations'
     | '/field-calendar/plots/$plotId/journal/$entryId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -1515,7 +1530,6 @@ export interface FileRouteTypes {
     | '/field-calendar/plots'
     | '/field-calendar/tillages'
     | '/orders/create'
-    | '/payments/create'
     | '/products/create'
     | '/sponsorships/create'
     | '/tasks/create'
@@ -1528,7 +1542,6 @@ export interface FileRouteTypes {
     | '/drugs'
     | '/membership'
     | '/orders'
-    | '/payments'
     | '/products'
     | '/sponsorships'
     | '/tasks'
@@ -1559,7 +1572,6 @@ export interface FileRouteTypes {
     | '/orders/$orderId/edit'
     | '/orders/invoice-settings/$settingsId'
     | '/orders/invoice-settings/create'
-    | '/payments/$paymentId/edit'
     | '/products/$productId/edit'
     | '/sponsorships/$sponsorshipId/edit'
     | '/sponsorships/programs/create'
@@ -1571,7 +1583,6 @@ export interface FileRouteTypes {
     | '/drugs/$drugId'
     | '/orders/$orderId'
     | '/orders/invoice-settings'
-    | '/payments/$paymentId'
     | '/products/$productId'
     | '/sponsorships/$sponsorshipId'
     | '/sponsorships/programs'
@@ -1590,6 +1601,8 @@ export interface FileRouteTypes {
     | '/field-calendar/fertilizers/$fertilizerId/edit'
     | '/field-calendar/plots/$plotId/crop-rotations'
     | '/field-calendar/tillages/$tillageId/edit'
+    | '/orders/$orderId/payments/create'
+    | '/sponsorships/$sponsorshipId/payments/create'
     | '/sponsorships/programs/$programId/edit'
     | '/wiki/admin/review-queue/$changeRequestId'
     | '/wiki/my-entries/$entryId/change-request'
@@ -1603,7 +1616,11 @@ export interface FileRouteTypes {
     | '/animals/$animalId/journal/$entryId/edit'
     | '/field-calendar/plots/$plotId/journal/$entryId'
     | '/field-calendar/plots/$plotId/journal/create'
+    | '/orders/$orderId/payments/$paymentId/edit'
+    | '/sponsorships/$sponsorshipId/payments/$paymentId/edit'
     | '/field-calendar/plots/$plotId/journal'
+    | '/orders/$orderId/payments/$paymentId'
+    | '/sponsorships/$sponsorshipId/payments/$paymentId'
     | '/field-calendar/crop-rotation-drafts/$draftPlanId/plots/$plotId/crop-rotations'
     | '/field-calendar/plots/$plotId/journal/$entryId/edit'
   id:
@@ -1619,7 +1636,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authed/contacts'
     | '/_authed/orders'
-    | '/_authed/payments'
     | '/_authed/products'
     | '/_authed/sponsorships'
     | '/_authed/tasks'
@@ -1653,7 +1669,6 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/tillages'
     | '/_authed/orders/create'
     | '/_authed/orders/invoice-settings'
-    | '/_authed/payments/create'
     | '/_authed/products/create'
     | '/_authed/sponsorships/create'
     | '/_authed/tasks/create'
@@ -1666,7 +1681,6 @@ export interface FileRouteTypes {
     | '/_authed/drugs/'
     | '/_authed/membership/'
     | '/_authed/orders/'
-    | '/_authed/payments/'
     | '/_authed/products/'
     | '/_authed/sponsorships/'
     | '/_authed/tasks/'
@@ -1698,7 +1712,6 @@ export interface FileRouteTypes {
     | '/_authed/orders/$orderId/edit'
     | '/_authed/orders/invoice-settings/$settingsId'
     | '/_authed/orders/invoice-settings/create'
-    | '/_authed/payments/$paymentId/edit'
     | '/_authed/products/$productId/edit'
     | '/_authed/sponsorships/$sponsorshipId/edit'
     | '/_authed/sponsorships/programs/create'
@@ -1710,7 +1723,6 @@ export interface FileRouteTypes {
     | '/_authed/drugs/$drugId/'
     | '/_authed/orders/$orderId/'
     | '/_authed/orders/invoice-settings/'
-    | '/_authed/payments/$paymentId/'
     | '/_authed/products/$productId/'
     | '/_authed/sponsorships/$sponsorshipId/'
     | '/_authed/sponsorships/programs/'
@@ -1730,6 +1742,8 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/plots_/$plotId_/crop-rotations'
     | '/_authed/field-calendar/plots_/$plotId_/journal'
     | '/_authed/field-calendar/tillages_/$tillageId/edit'
+    | '/_authed/orders/$orderId_/payments/create'
+    | '/_authed/sponsorships/$sponsorshipId_/payments/create'
     | '/_authed/sponsorships/programs/$programId/edit'
     | '/_authed/wiki/admin/review-queue/$changeRequestId'
     | '/_authed/wiki/my-entries/$entryId/change-request'
@@ -1743,7 +1757,11 @@ export interface FileRouteTypes {
     | '/_authed/animals/$animalId_/journal/$entryId_/edit'
     | '/_authed/field-calendar/plots_/$plotId_/journal/$entryId'
     | '/_authed/field-calendar/plots_/$plotId_/journal/create'
+    | '/_authed/orders/$orderId_/payments/$paymentId/edit'
+    | '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/edit'
     | '/_authed/field-calendar/plots_/$plotId_/journal/'
+    | '/_authed/orders/$orderId_/payments/$paymentId/'
+    | '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/'
     | '/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId_/plots_/$plotId_/crop-rotations'
     | '/_authed/field-calendar/plots_/$plotId_/journal/$entryId_/edit'
   fileRoutesById: FileRoutesById
@@ -1897,13 +1915,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProductsRouteRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
-    '/_authed/payments': {
-      id: '/_authed/payments'
-      path: '/payments'
-      fullPath: '/payments'
-      preLoaderRoute: typeof AuthedPaymentsRouteRouteImport
-      parentRoute: typeof AuthedRouteRoute
-    }
     '/_authed/orders': {
       id: '/_authed/orders'
       path: '/orders'
@@ -1952,13 +1963,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/'
       preLoaderRoute: typeof AuthedProductsIndexRouteImport
       parentRoute: typeof AuthedProductsRouteRoute
-    }
-    '/_authed/payments/': {
-      id: '/_authed/payments/'
-      path: '/'
-      fullPath: '/payments/'
-      preLoaderRoute: typeof AuthedPaymentsIndexRouteImport
-      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/': {
       id: '/_authed/orders/'
@@ -2043,13 +2047,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/create'
       preLoaderRoute: typeof AuthedProductsCreateRouteImport
       parentRoute: typeof AuthedProductsRouteRoute
-    }
-    '/_authed/payments/create': {
-      id: '/_authed/payments/create'
-      path: '/create'
-      fullPath: '/payments/create'
-      preLoaderRoute: typeof AuthedPaymentsCreateRouteImport
-      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/invoice-settings': {
       id: '/_authed/orders/invoice-settings'
@@ -2268,13 +2265,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProductsProductIdIndexRouteImport
       parentRoute: typeof AuthedProductsRouteRoute
     }
-    '/_authed/payments/$paymentId/': {
-      id: '/_authed/payments/$paymentId/'
-      path: '/$paymentId'
-      fullPath: '/payments/$paymentId/'
-      preLoaderRoute: typeof AuthedPaymentsPaymentIdIndexRouteImport
-      parentRoute: typeof AuthedPaymentsRouteRoute
-    }
     '/_authed/orders/invoice-settings/': {
       id: '/_authed/orders/invoice-settings/'
       path: '/'
@@ -2351,13 +2341,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$productId/edit'
       preLoaderRoute: typeof AuthedProductsProductIdEditRouteImport
       parentRoute: typeof AuthedProductsRouteRoute
-    }
-    '/_authed/payments/$paymentId/edit': {
-      id: '/_authed/payments/$paymentId/edit'
-      path: '/$paymentId/edit'
-      fullPath: '/payments/$paymentId/edit'
-      preLoaderRoute: typeof AuthedPaymentsPaymentIdEditRouteImport
-      parentRoute: typeof AuthedPaymentsRouteRoute
     }
     '/_authed/orders/invoice-settings/create': {
       id: '/_authed/orders/invoice-settings/create'
@@ -2611,6 +2594,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRouteImport
       parentRoute: typeof AuthedSponsorshipsRouteRoute
     }
+    '/_authed/sponsorships/$sponsorshipId_/payments/create': {
+      id: '/_authed/sponsorships/$sponsorshipId_/payments/create'
+      path: '/$sponsorshipId/payments/create'
+      fullPath: '/sponsorships/$sponsorshipId/payments/create'
+      preLoaderRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsCreateRouteImport
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
+    }
+    '/_authed/orders/$orderId_/payments/create': {
+      id: '/_authed/orders/$orderId_/payments/create'
+      path: '/$orderId/payments/create'
+      fullPath: '/orders/$orderId/payments/create'
+      preLoaderRoute: typeof AuthedOrdersOrderIdPaymentsCreateRouteImport
+      parentRoute: typeof AuthedOrdersRouteRoute
+    }
     '/_authed/field-calendar/tillages_/$tillageId/edit': {
       id: '/_authed/field-calendar/tillages_/$tillageId/edit'
       path: '/edit'
@@ -2688,12 +2685,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsAnimalIdJournalEntryIdRouteImport
       parentRoute: typeof AuthedAnimalsAnimalIdJournalRoute
     }
+    '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/': {
+      id: '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/'
+      path: '/$sponsorshipId/payments/$paymentId'
+      fullPath: '/sponsorships/$sponsorshipId/payments/$paymentId/'
+      preLoaderRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRouteImport
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
+    }
+    '/_authed/orders/$orderId_/payments/$paymentId/': {
+      id: '/_authed/orders/$orderId_/payments/$paymentId/'
+      path: '/$orderId/payments/$paymentId'
+      fullPath: '/orders/$orderId/payments/$paymentId/'
+      preLoaderRoute: typeof AuthedOrdersOrderIdPaymentsPaymentIdIndexRouteImport
+      parentRoute: typeof AuthedOrdersRouteRoute
+    }
     '/_authed/field-calendar/plots_/$plotId_/journal/': {
       id: '/_authed/field-calendar/plots_/$plotId_/journal/'
       path: '/'
       fullPath: '/field-calendar/plots/$plotId/journal/'
       preLoaderRoute: typeof AuthedFieldCalendarPlotsPlotIdJournalIndexRouteImport
       parentRoute: typeof AuthedFieldCalendarPlotsPlotIdJournalRoute
+    }
+    '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/edit': {
+      id: '/_authed/sponsorships/$sponsorshipId_/payments/$paymentId/edit'
+      path: '/$sponsorshipId/payments/$paymentId/edit'
+      fullPath: '/sponsorships/$sponsorshipId/payments/$paymentId/edit'
+      preLoaderRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRouteImport
+      parentRoute: typeof AuthedSponsorshipsRouteRoute
+    }
+    '/_authed/orders/$orderId_/payments/$paymentId/edit': {
+      id: '/_authed/orders/$orderId_/payments/$paymentId/edit'
+      path: '/$orderId/payments/$paymentId/edit'
+      fullPath: '/orders/$orderId/payments/$paymentId/edit'
+      preLoaderRoute: typeof AuthedOrdersOrderIdPaymentsPaymentIdEditRouteImport
+      parentRoute: typeof AuthedOrdersRouteRoute
     }
     '/_authed/field-calendar/plots_/$plotId_/journal/create': {
       id: '/_authed/field-calendar/plots_/$plotId_/journal/create'
@@ -2777,6 +2802,9 @@ interface AuthedOrdersRouteRouteChildren {
   AuthedOrdersIndexRoute: typeof AuthedOrdersIndexRoute
   AuthedOrdersOrderIdEditRoute: typeof AuthedOrdersOrderIdEditRoute
   AuthedOrdersOrderIdIndexRoute: typeof AuthedOrdersOrderIdIndexRoute
+  AuthedOrdersOrderIdPaymentsCreateRoute: typeof AuthedOrdersOrderIdPaymentsCreateRoute
+  AuthedOrdersOrderIdPaymentsPaymentIdEditRoute: typeof AuthedOrdersOrderIdPaymentsPaymentIdEditRoute
+  AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute: typeof AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute
 }
 
 const AuthedOrdersRouteRouteChildren: AuthedOrdersRouteRouteChildren = {
@@ -2786,27 +2814,16 @@ const AuthedOrdersRouteRouteChildren: AuthedOrdersRouteRouteChildren = {
   AuthedOrdersIndexRoute: AuthedOrdersIndexRoute,
   AuthedOrdersOrderIdEditRoute: AuthedOrdersOrderIdEditRoute,
   AuthedOrdersOrderIdIndexRoute: AuthedOrdersOrderIdIndexRoute,
+  AuthedOrdersOrderIdPaymentsCreateRoute:
+    AuthedOrdersOrderIdPaymentsCreateRoute,
+  AuthedOrdersOrderIdPaymentsPaymentIdEditRoute:
+    AuthedOrdersOrderIdPaymentsPaymentIdEditRoute,
+  AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute:
+    AuthedOrdersOrderIdPaymentsPaymentIdIndexRoute,
 }
 
 const AuthedOrdersRouteRouteWithChildren =
   AuthedOrdersRouteRoute._addFileChildren(AuthedOrdersRouteRouteChildren)
-
-interface AuthedPaymentsRouteRouteChildren {
-  AuthedPaymentsCreateRoute: typeof AuthedPaymentsCreateRoute
-  AuthedPaymentsIndexRoute: typeof AuthedPaymentsIndexRoute
-  AuthedPaymentsPaymentIdEditRoute: typeof AuthedPaymentsPaymentIdEditRoute
-  AuthedPaymentsPaymentIdIndexRoute: typeof AuthedPaymentsPaymentIdIndexRoute
-}
-
-const AuthedPaymentsRouteRouteChildren: AuthedPaymentsRouteRouteChildren = {
-  AuthedPaymentsCreateRoute: AuthedPaymentsCreateRoute,
-  AuthedPaymentsIndexRoute: AuthedPaymentsIndexRoute,
-  AuthedPaymentsPaymentIdEditRoute: AuthedPaymentsPaymentIdEditRoute,
-  AuthedPaymentsPaymentIdIndexRoute: AuthedPaymentsPaymentIdIndexRoute,
-}
-
-const AuthedPaymentsRouteRouteWithChildren =
-  AuthedPaymentsRouteRoute._addFileChildren(AuthedPaymentsRouteRouteChildren)
 
 interface AuthedProductsRouteRouteChildren {
   AuthedProductsCreateRoute: typeof AuthedProductsCreateRoute
@@ -2832,8 +2849,11 @@ interface AuthedSponsorshipsRouteRouteChildren {
   AuthedSponsorshipsProgramsCreateRoute: typeof AuthedSponsorshipsProgramsCreateRoute
   AuthedSponsorshipsSponsorshipIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdIndexRoute
   AuthedSponsorshipsProgramsIndexRoute: typeof AuthedSponsorshipsProgramsIndexRoute
+  AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute
   AuthedSponsorshipsProgramsProgramIdEditRoute: typeof AuthedSponsorshipsProgramsProgramIdEditRoute
   AuthedSponsorshipsProgramsProgramIdIndexRoute: typeof AuthedSponsorshipsProgramsProgramIdIndexRoute
+  AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute
+  AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute: typeof AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute
 }
 
 const AuthedSponsorshipsRouteRouteChildren: AuthedSponsorshipsRouteRouteChildren =
@@ -2847,10 +2867,16 @@ const AuthedSponsorshipsRouteRouteChildren: AuthedSponsorshipsRouteRouteChildren
     AuthedSponsorshipsSponsorshipIdIndexRoute:
       AuthedSponsorshipsSponsorshipIdIndexRoute,
     AuthedSponsorshipsProgramsIndexRoute: AuthedSponsorshipsProgramsIndexRoute,
+    AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute:
+      AuthedSponsorshipsSponsorshipIdPaymentsCreateRoute,
     AuthedSponsorshipsProgramsProgramIdEditRoute:
       AuthedSponsorshipsProgramsProgramIdEditRoute,
     AuthedSponsorshipsProgramsProgramIdIndexRoute:
       AuthedSponsorshipsProgramsProgramIdIndexRoute,
+    AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute:
+      AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdEditRoute,
+    AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute:
+      AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRoute,
   }
 
 const AuthedSponsorshipsRouteRouteWithChildren =
@@ -2958,7 +2984,6 @@ const AuthedFieldCalendarPlotsPlotIdJournalRouteWithChildren =
 interface AuthedRouteRouteChildren {
   AuthedContactsRouteRoute: typeof AuthedContactsRouteRouteWithChildren
   AuthedOrdersRouteRoute: typeof AuthedOrdersRouteRouteWithChildren
-  AuthedPaymentsRouteRoute: typeof AuthedPaymentsRouteRouteWithChildren
   AuthedProductsRouteRoute: typeof AuthedProductsRouteRouteWithChildren
   AuthedSponsorshipsRouteRoute: typeof AuthedSponsorshipsRouteRouteWithChildren
   AuthedTasksRouteRoute: typeof AuthedTasksRouteRouteWithChildren
@@ -3044,7 +3069,6 @@ interface AuthedRouteRouteChildren {
 const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedContactsRouteRoute: AuthedContactsRouteRouteWithChildren,
   AuthedOrdersRouteRoute: AuthedOrdersRouteRouteWithChildren,
-  AuthedPaymentsRouteRoute: AuthedPaymentsRouteRouteWithChildren,
   AuthedProductsRouteRoute: AuthedProductsRouteRouteWithChildren,
   AuthedSponsorshipsRouteRoute: AuthedSponsorshipsRouteRouteWithChildren,
   AuthedTasksRouteRoute: AuthedTasksRouteRouteWithChildren,

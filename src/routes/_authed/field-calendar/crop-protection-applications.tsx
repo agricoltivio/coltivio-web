@@ -183,7 +183,7 @@ function CropProtectionChart() {
 function CropProtectionApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteCropProtection } = useFeatureAccess("crop_protection");
+  const { canWrite: canWriteCropProtection } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
@@ -252,11 +252,11 @@ function CropProtectionApplications() {
       <DataTable
         data={data}
         columns={columns}
-        onRowClick={(app) =>
+        onRowClick={canWriteCropProtection ? (app) =>
           navigate({
             to: "/field-calendar/crop-protection-applications/$id/edit",
             params: { id: app.id },
-          })
+          }) : undefined
         }
         defaultSorting={[{ id: "dateTime", desc: true }]}
       />

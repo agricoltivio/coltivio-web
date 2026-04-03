@@ -33,7 +33,7 @@ function CropRotations() {
   const { t } = useTranslation();
   const { hasAccess } = useMembership();
   const navigate = useNavigate();
-  const { canWrite: canWriteCropRotations } = useFeatureAccess("crop_rotations");
+  const { canWrite: canWriteCropRotations } = useFeatureAccess("field_calendar");
   const { plotId } = Route.useSearch();
   const [zoom, setZoom] = useState<ZoomLevel>("years");
   const [selectedPlotIds, setSelectedPlotIds] = useState<string[]>([]);

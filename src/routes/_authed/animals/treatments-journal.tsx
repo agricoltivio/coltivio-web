@@ -21,6 +21,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, Download } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute("/_authed/animals/treatments-journal")({
   loader: ({ context: { queryClient } }) => {
@@ -35,6 +36,7 @@ const ALL_ANIMAL_TYPES: AnimalType[] = ["goat", "sheep", "cow", "horse", "donkey
 function TreatmentsJournal() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteTreatments } = useFeatureAccess("animals");
   const treatmentsQuery = useQuery(treatmentsQueryOptions());
 
   const currentYear = new Date().getFullYear();
@@ -224,9 +226,11 @@ function TreatmentsJournal() {
           <Download className="h-4 w-4 mr-2" />
           {t("common.export")}
         </Button>
-        <Button onClick={() => navigate({ to: "/treatments/create" })}>
-          {t("treatments.addTreatment")}
-        </Button>
+        {canWriteTreatments && (
+          <Button onClick={() => navigate({ to: "/treatments/create" })}>
+            {t("treatments.addTreatment")}
+          </Button>
+        )}
       </div>
 
       <Dialog open={exportOpen} onOpenChange={setExportOpen}>

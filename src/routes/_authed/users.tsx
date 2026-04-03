@@ -61,37 +61,17 @@ export const Route = createFileRoute("/_authed/users")({
 
 const ALL_FEATURES: FarmPermissionFeature[] = [
   "animals",
-  "treatments",
-  "crops",
-  "plots",
-  "crop_rotations",
-  "crop_protection",
-  "fertilization",
-  "harvests",
-  "tillages",
-  "orders",
-  "contacts",
+  "field_calendar",
+  "commerce",
   "tasks",
-  "products",
-  "sponsorships",
 ];
 
 // Per-feature nav translation key mapping
 const FEATURE_I18N_KEY: Record<FarmPermissionFeature, string> = {
-  animals: "nav.animals",
-  treatments: "nav.treatmentsJournal",
-  crops: "nav.crops",
-  plots: "nav.plots",
-  crop_rotations: "nav.cropRotations",
-  crop_protection: "nav.cropProtectionApplications",
-  fertilization: "nav.fertilizerApplications",
-  harvests: "nav.harvests",
-  tillages: "nav.tillages",
-  orders: "nav.orders",
-  contacts: "nav.contacts",
+  animals: "nav.groups.livestock",
+  field_calendar: "nav.groups.fieldCalendar",
+  commerce: "nav.groups.sales",
   tasks: "nav.tasks",
-  products: "nav.products",
-  sponsorships: "nav.sponsorships",
 };
 
 // Build a local permissions map from the API result (absent = read)
@@ -457,14 +437,16 @@ function UsersPage() {
                 >
                   <div className="border rounded-lg px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">
-                          {member.fullName ?? member.email}
-                        </p>
-                        {member.fullName && (
-                          <p className="text-xs text-muted-foreground">{member.email}</p>
-                        )}
-                      </div>
+                      <CollapsibleTrigger asChild disabled={!canExpand}>
+                        <div className={`flex-1 min-w-0 ${canExpand ? "cursor-pointer" : ""}`}>
+                          <p className="font-medium truncate">
+                            {member.fullName ?? member.email}
+                          </p>
+                          {member.fullName && (
+                            <p className="text-xs text-muted-foreground">{member.email}</p>
+                          )}
+                        </div>
+                      </CollapsibleTrigger>
 
                       {!isSelf && (
                         <Select

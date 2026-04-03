@@ -185,7 +185,7 @@ function FertilizerChart() {
 function FertilizerApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { canWrite: canWriteFertilization } = useFeatureAccess("fertilization");
+  const { canWrite: canWriteFertilization } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
