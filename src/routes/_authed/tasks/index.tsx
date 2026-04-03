@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { Pin } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { tasksQueryOptions } from "@/api/tasks.queries";
 import { farmUsersQueryOptions } from "@/api/user.queries";
 import { apiClient } from "@/api/client";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/_authed/tasks/")({
 
 function TasksPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTasks } = useFeatureAccess("tasks");
   const navigate = useNavigate();
 
   const [status, setStatus] = useState<TaskStatus>("todo");
@@ -138,9 +140,11 @@ function TasksPage() {
             {t("tasks.status.done")}
           </Button>
         </div>
-        <Button asChild>
-          <Link to="/tasks/create">{t("tasks.createTask")}</Link>
-        </Button>
+        {canWriteTasks && (
+          <Button asChild>
+            <Link to="/tasks/create">{t("tasks.createTask")}</Link>
+          </Button>
+        )}
       </div>
 
       {/* Filter row */}

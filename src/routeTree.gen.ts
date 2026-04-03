@@ -20,6 +20,7 @@ import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthTokenRouteImport } from './routes/auth.token'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as AuthedUsersRouteImport } from './routes/_authed/users'
 import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
@@ -200,6 +201,11 @@ const AuthConfirmRoute = AuthConfirmRouteImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedUsersRoute = AuthedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
   id: '/settings',
@@ -941,6 +947,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
+  '/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
@@ -1072,6 +1079,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
+  '/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
@@ -1209,6 +1217,7 @@ export interface FileRoutesById {
   '/_authed/account': typeof AuthedAccountRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/settings': typeof AuthedSettingsRoute
+  '/_authed/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
@@ -1349,6 +1358,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/settings'
+    | '/users'
     | '/auth/confirm'
     | '/auth/token'
     | '/animals/create'
@@ -1480,6 +1490,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/settings'
+    | '/users'
     | '/auth/confirm'
     | '/auth/token'
     | '/animals/create'
@@ -1616,6 +1627,7 @@ export interface FileRouteTypes {
     | '/_authed/account'
     | '/_authed/dashboard'
     | '/_authed/settings'
+    | '/_authed/users'
     | '/auth/confirm'
     | '/auth/token'
     | '/_authed/animals/create'
@@ -1828,6 +1840,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/confirm'
       preLoaderRoute: typeof AuthConfirmRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/users': {
+      id: '/_authed/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthedUsersRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/settings': {
       id: '/_authed/settings'
@@ -2947,6 +2966,7 @@ interface AuthedRouteRouteChildren {
   AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
+  AuthedUsersRoute: typeof AuthedUsersRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
   AuthedAnimalsFamilyTreeRoute: typeof AuthedAnimalsFamilyTreeRoute
@@ -3032,6 +3052,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAccountRoute: AuthedAccountRoute,
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
+  AuthedUsersRoute: AuthedUsersRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
   AuthedAnimalsFamilyTreeRoute: AuthedAnimalsFamilyTreeRoute,

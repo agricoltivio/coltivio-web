@@ -18,6 +18,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, Upload, GitBranch, SlidersHorizontal } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/_authed/animals/")({
 function Animals() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const [onlyLiving, setOnlyLiving] = useState(true);
   const animalsQuery = useQuery(animalsQueryOptions(false));
   const [typeFilter, setTypeFilter] = useState<AnimalType[]>([]);
@@ -300,9 +302,11 @@ function Animals() {
           <Upload className="h-4 w-4 mr-2" />
           {t("animals.import")}
         </Button>
-        <Button onClick={() => navigate({ to: "/animals/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteAnimals && (
+          <Button onClick={() => navigate({ to: "/animals/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
 
       {livingAnimals.length > 0 && (

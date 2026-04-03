@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { useMembership } from "@/lib/useMembership";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +53,7 @@ function AnimalDetailPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showDeceasedChildren, setShowDeceasedChildren] = useState(false);
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
 
   const animalQuery = useQuery(animalQueryOptions(animalId));
 
@@ -141,12 +143,14 @@ function AnimalDetailPage() {
               {t("animals.familyTree")}
             </Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/animals/$animalId/edit" params={{ animalId }}>
-              {t("common.edit")}
-            </Link>
-          </Button>
-          <AlertDialog>
+          {canWriteAnimals && (
+            <Button variant="outline" asChild>
+              <Link to="/animals/$animalId/edit" params={{ animalId }}>
+                {t("common.edit")}
+              </Link>
+            </Button>
+          )}
+          {canWriteAnimals && <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive">{t("common.delete")}</Button>
             </AlertDialogTrigger>
@@ -168,7 +172,7 @@ function AnimalDetailPage() {
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
-          </AlertDialog>
+          </AlertDialog>}
         </div>
       </div>
 

@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 type GlobalFertApp = components["schemas"]["GetV1FertilizerApplicationsPositiveResponse"]["data"]["result"][number];
 type PlotFertApp = components["schemas"]["GetV1PlotsByIdPlotIdFertilizerApplicationsPositiveResponse"]["data"]["result"][number];
@@ -184,6 +185,7 @@ function FertilizerChart() {
 function FertilizerApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteFertilization } = useFeatureAccess("fertilization");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
@@ -243,17 +245,12 @@ function FertilizerApplications() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-6">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/fertilizer-applications/create",
-              search: plotId ? { plotId } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("fieldCalendar.fertilizerApplications.create")}
-        </Button>
+        {canWriteFertilization && (
+          <Button onClick={() => navigate({ to: "/field-calendar/fertilizer-applications/create", search: plotId ? { plotId } : {} })}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.fertilizerApplications.create")}
+          </Button>
+        )}
       </div>
       {!plotId && <FertilizerChart />}
       <DataTable

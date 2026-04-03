@@ -244,6 +244,38 @@ export interface paths {
         patch: operations["PatchV1FarmMembersByIdUserIdRole"];
         trace?: never;
     };
+    "/v1/farm/members/byId/{userId}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmMembersByIdUserIdPermissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1FarmMembersByIdUserIdPermissions"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/farm/members/byId/{userId}/permissions/byFeature/{feature}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["PutV1FarmMembersByIdUserIdPermissionsByFeatureFeature"];
+        post?: never;
+        delete: operations["DeleteV1FarmMembersByIdUserIdPermissionsByFeatureFeature"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/users": {
         parameters: {
             query?: never;
@@ -3276,6 +3308,8 @@ export interface components {
                     id: string;
                     farmId: string;
                     email: string;
+                    /** @enum {string} */
+                    role: "owner" | "member";
                     createdBy: string | null;
                     expiresAt: string | unknown;
                     usedAt: string | unknown;
@@ -3288,6 +3322,8 @@ export interface components {
                 id: string;
                 farmId: string;
                 email: string;
+                /** @enum {string} */
+                role: "owner" | "member";
                 createdBy: string | null;
                 expiresAt: string | unknown;
                 usedAt: string | unknown;
@@ -3296,6 +3332,17 @@ export interface components {
         PostV1FarmInvitesRequestBody: {
             /** Format: email */
             email: string;
+            /**
+             * @default member
+             * @enum {string}
+             */
+            role: "owner" | "member";
+            permissions?: {
+                /** @enum {string} */
+                feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                /** @enum {string} */
+                access: "none" | "read" | "write";
+            }[];
         };
         PostV1FarmInvitesAcceptPositiveResponse: {
             data: {
@@ -3333,6 +3380,31 @@ export interface components {
         PatchV1FarmMembersByIdUserIdRoleRequestBody: {
             /** @enum {string} */
             role: "owner" | "member";
+        };
+        GetV1FarmMembersByIdUserIdPermissionsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    userId: string;
+                    /** @enum {string} */
+                    feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                    /** @enum {string} */
+                    access: "none" | "read" | "write";
+                }[];
+            };
+        };
+        /** @enum {string} */
+        PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureParameterFeature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+        PutV1FarmMembersByIdUserIdPermissionsByFeatureFeaturePositiveResponse: {
+            data: Record<string, never>;
+        };
+        PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureRequestBody: {
+            /** @enum {string} */
+            access: "none" | "read" | "write";
+        };
+        DeleteV1FarmMembersByIdUserIdPermissionsByFeatureFeaturePositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1UsersPositiveResponse: {
             data: {
@@ -3388,6 +3460,12 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                farmPermissions: {
+                    /** @enum {string} */
+                    feature: "animals" | "treatments" | "crops" | "plots" | "crop_rotations" | "crop_protection" | "fertilization" | "harvests" | "tillages" | "orders" | "contacts" | "tasks" | "products" | "sponsorships";
+                    /** @enum {string} */
+                    access: "none" | "read" | "write";
+                }[];
             };
         };
         GetV1PlotsPositiveResponse: {
@@ -4021,7 +4099,7 @@ export interface components {
         };
         PostV1PlotsByIdPlotIdSplitRequestBody: {
             strategy: "PostV1PlotsByIdPlotIdSplitRequestBody";
-        } & (Record<string, never> & Record<string, never> & Record<string, never> & Omit<{
+        } & (Record<string, never> & Record<string, never> & Record<string, never> & Record<string, never> & Omit<{
             /** @constant */
             strategy: "keep_reference";
             originalPlotName?: string;
@@ -4286,7 +4364,7 @@ export interface components {
         };
         PostV1PlotsMergeRequestBody: {
             strategy: "PostV1PlotsMergeRequestBody";
-        } & (Record<string, never> & Record<string, never> & Record<string, never> & Omit<{
+        } & (Record<string, never> & Record<string, never> & Record<string, never> & Record<string, never> & Omit<{
             /** @constant */
             strategy: "keep_reference";
             plotIds: string[];
@@ -12809,6 +12887,139 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/farm/members/byId/:userId/role Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1FarmMembersByIdUserIdPermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/farm/members/byId/:userId/permissions Parameter */
+                userId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/members/byId/:userId/permissions Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmMembersByIdUserIdPermissionsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/members/byId/:userId/permissions Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmMembersByIdUserIdPermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/farm/members/byId/:userId/permissions Parameter */
+                userId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/members/byId/:userId/permissions Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/members/byId/:userId/permissions Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PutV1FarmMembersByIdUserIdPermissionsByFeatureFeature: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PUT /v1/farm/members/byId/:userId/permissions/byFeature/:feature Parameter */
+                userId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description PUT /v1/farm/members/byId/:userId/permissions/byFeature/:feature Parameter */
+                feature: components["schemas"]["PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureParameterFeature"];
+            };
+            cookie?: never;
+        };
+        /** @description PUT /v1/farm/members/byId/:userId/permissions/byFeature/:feature Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/farm/members/byId/:userId/permissions/byFeature/:feature Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1FarmMembersByIdUserIdPermissionsByFeatureFeaturePositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/farm/members/byId/:userId/permissions/byFeature/:feature Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1FarmMembersByIdUserIdPermissionsByFeatureFeature: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/farm/members/byId/:userId/permissions/byFeature/:feature Parameter */
+                userId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description DELETE /v1/farm/members/byId/:userId/permissions/byFeature/:feature Parameter */
+                feature: components["schemas"]["PutV1FarmMembersByIdUserIdPermissionsByFeatureFeatureParameterFeature"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/farm/members/byId/:userId/permissions/byFeature/:feature Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1FarmMembersByIdUserIdPermissionsByFeatureFeaturePositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/farm/members/byId/:userId/permissions/byFeature/:feature Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

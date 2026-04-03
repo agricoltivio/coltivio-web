@@ -273,6 +273,15 @@ export type TaskRecurrence = NonNullable<Task["recurrence"]>;
 export type FarmUser =
   components["schemas"]["GetV1UsersPositiveResponse"]["data"]["result"][number];
 
+export type FarmInvite =
+  components["schemas"]["GetV1FarmInvitesPositiveResponse"]["data"]["result"][number];
+
+export type FarmPermission =
+  components["schemas"]["GetV1FarmMembersByIdUserIdPermissionsPositiveResponse"]["data"]["result"][number];
+
+export type FarmPermissionFeature = FarmPermission["feature"];
+export type FarmPermissionAccess = FarmPermission["access"];
+
 // Forum types
 export type ForumThread =
   components["schemas"]["GetV1ForumThreadsPositiveResponse"]["data"]["result"][number];

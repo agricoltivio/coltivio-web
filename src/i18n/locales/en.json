@@ -78,7 +78,8 @@
     "membership": "Membership",
     "treffpunkt": "Community",
     "myFarm": "My Farm",
-    "invoiceSettings": "Invoice Settings"
+    "invoiceSettings": "Invoice Settings",
+    "users": "Users"
   },
   "animals": {
     "title": "Animals",
@@ -1265,5 +1266,29 @@
     "content": "Content",
     "viewAll": "View all",
     "images": "Images"
+  },
+  "users": {
+    "title": "Users",
+    "invite": "Invite",
+    "inviteEmail": "Email address",
+    "inviteRole": "Role",
+    "invitePermissions": "Permissions",
+    "inviteSend": "Send invite",
+    "members": "Members",
+    "pendingInvites": "Pending invites",
+    "removeConfirm": "Remove this user?",
+    "cancelInvite": "Cancel invite",
+    "expiresAt": "Expires",
+    "feature": "Feature",
+    "noMembers": "No members found",
+    "noPendingInvites": "No pending invites",
+    "role": {
+      "owner": "Owner",
+      "member": "Member"
+    },
+    "permissions": {
+      "read": "Read",
+      "write": "Write"
+    }
   }
 }

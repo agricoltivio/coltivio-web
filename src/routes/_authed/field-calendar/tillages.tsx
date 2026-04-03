@@ -10,6 +10,7 @@ import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/_authed/field-calendar/tillages")({
 function Tillages() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteTillages } = useFeatureAccess("tillages");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
@@ -89,17 +91,12 @@ function Tillages() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/tillages/create",
-              search: plotId ? { plotId } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("fieldCalendar.tillages.create")}
-        </Button>
+        {canWriteTillages && (
+          <Button onClick={() => navigate({ to: "/field-calendar/tillages/create", search: plotId ? { plotId } : {} })}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.tillages.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

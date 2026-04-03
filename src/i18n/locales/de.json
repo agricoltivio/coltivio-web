@@ -78,7 +78,8 @@
     "membership": "Mitgliedschaft",
     "treffpunkt": "Treffpunkt",
     "myFarm": "Mein Hof",
-    "invoiceSettings": "Rechnungseinstellungen"
+    "invoiceSettings": "Rechnungseinstellungen",
+    "users": "Benutzer"
   },
   "animals": {
     "title": "Tiere",
@@ -1265,5 +1266,29 @@
     "content": "Inhalt",
     "viewAll": "Alle anzeigen",
     "images": "Bilder"
+  },
+  "users": {
+    "title": "Benutzer",
+    "invite": "Einladen",
+    "inviteEmail": "E-Mail-Adresse",
+    "inviteRole": "Rolle",
+    "invitePermissions": "Berechtigungen",
+    "inviteSend": "Einladung senden",
+    "members": "Mitglieder",
+    "pendingInvites": "Ausstehende Einladungen",
+    "removeConfirm": "Diesen Benutzer wirklich entfernen?",
+    "cancelInvite": "Einladung zurückziehen",
+    "expiresAt": "Ablaufdatum",
+    "feature": "Bereich",
+    "noMembers": "Keine Mitglieder gefunden",
+    "noPendingInvites": "Keine ausstehenden Einladungen",
+    "role": {
+      "owner": "Eigentümer",
+      "member": "Mitglied"
+    },
+    "permissions": {
+      "read": "Lesen",
+      "write": "Schreiben"
+    }
   }
 }

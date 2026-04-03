@@ -78,7 +78,8 @@
     "membership": "Abbonamento",
     "treffpunkt": "Comunità",
     "myFarm": "La mia azienda",
-    "invoiceSettings": "Impostazioni fattura"
+    "invoiceSettings": "Impostazioni fattura",
+    "users": "Utenti"
   },
   "animals": {
     "title": "Animali",
@@ -1265,5 +1266,29 @@
     "content": "Contenuto",
     "viewAll": "Vedi tutto",
     "images": "Immagini"
+  },
+  "users": {
+    "title": "Utenti",
+    "invite": "Invita",
+    "inviteEmail": "Indirizzo e-mail",
+    "inviteRole": "Ruolo",
+    "invitePermissions": "Permessi",
+    "inviteSend": "Invia invito",
+    "members": "Membri",
+    "pendingInvites": "Inviti in attesa",
+    "removeConfirm": "Rimuovere questo utente?",
+    "cancelInvite": "Annulla invito",
+    "expiresAt": "Scade il",
+    "feature": "Funzionalità",
+    "noMembers": "Nessun membro trovato",
+    "noPendingInvites": "Nessun invito in attesa",
+    "role": {
+      "owner": "Proprietario",
+      "member": "Membro"
+    },
+    "permissions": {
+      "read": "Lettura",
+      "write": "Scrittura"
+    }
   }
 }

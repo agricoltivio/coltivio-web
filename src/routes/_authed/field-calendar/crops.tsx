@@ -8,6 +8,7 @@ import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/field-calendar/crops")({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authed/field-calendar/crops")({
 function CropsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteCrops } = useFeatureAccess("crops");
   const cropsQuery = useQuery(cropsQueryOptions());
 
   const columns = useMemo<ColumnDef<Crop>[]>(
@@ -93,13 +95,11 @@ function CropsPage() {
   return (
     <PageContent title={t("crops.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({ to: "/field-calendar/crops/create" })
-          }
-        >
-          {t("common.create")}
-        </Button>
+        {canWriteCrops && (
+          <Button onClick={() => navigate({ to: "/field-calendar/crops/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

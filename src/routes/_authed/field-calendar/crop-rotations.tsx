@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMembership } from "@/lib/useMembership";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -32,6 +33,7 @@ function CropRotations() {
   const { t } = useTranslation();
   const { hasAccess } = useMembership();
   const navigate = useNavigate();
+  const { canWrite: canWriteCropRotations } = useFeatureAccess("crop_rotations");
   const { plotId } = Route.useSearch();
   const [zoom, setZoom] = useState<ZoomLevel>("years");
   const [selectedPlotIds, setSelectedPlotIds] = useState<string[]>([]);
@@ -70,15 +72,10 @@ function CropRotations() {
             </Link>
           </Button>
         )}
-        {selectedPlotIds.length > 0 && (
+        {canWriteCropRotations && selectedPlotIds.length > 0 && (
           <Button
             size="sm"
-            onClick={() =>
-              navigate({
-                to: "/field-calendar/crop-rotations/plan",
-                search: { plotIds: selectedPlotIds },
-              })
-            }
+            onClick={() => navigate({ to: "/field-calendar/crop-rotations/plan", search: { plotIds: selectedPlotIds } })}
           >
             <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.cropRotations.plan")} ({selectedPlotIds.length})
