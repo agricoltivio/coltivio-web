@@ -1291,6 +1291,7 @@
       "member": "Member"
     },
     "permissions": {
+      "none": "None",
       "read": "Read",
       "write": "Write"
     }

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -131,6 +132,7 @@ function PlanCropRotations() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { plotId } = Route.useParams();
+  const { canWrite } = useFeatureAccess("field_calendar");
   const plotQuery = useQuery(plotQueryOptions(plotId));
   const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
   const cropsQuery = useQuery(cropsQueryOptions());
@@ -432,11 +434,11 @@ function PlanCropRotations() {
                 style={{ left: todayX }}
               />
 
-              {/* Bars — click opens the edit dialog for that entry */}
+              {/* Bars — click opens the edit dialog for that entry (write-only) */}
               {timelineBars.map((bar, i) => (
                 <button
                   key={`${bar.entryId}-${i}`}
-                  className={`absolute top-1.5 bottom-1.5 rounded-sm transition-opacity overflow-hidden flex items-center px-1 cursor-pointer hover:opacity-90 ${bar.hasConflict ? "bg-destructive" : ""} ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
+                  className={`absolute top-1.5 bottom-1.5 rounded-sm transition-opacity overflow-hidden flex items-center px-1 ${canWrite ? "cursor-pointer hover:opacity-90" : "cursor-default"} ${bar.hasConflict ? "bg-destructive" : ""} ${bar.isNew ? "ring-1 ring-inset ring-white/60" : ""}`}
                   style={{
                     left: bar.left,
                     width: Math.max(bar.width, 4),
@@ -449,6 +451,7 @@ function PlanCropRotations() {
                   }}
                   title={`${bar.cropName}: ${bar.fromDate.toLocaleDateString()} – ${bar.toDate.toLocaleDateString()}`}
                   onClick={() => {
+                    if (!canWrite) return;
                     const entry = rotations.find((r) => r.entryId === bar.entryId);
                     if (entry) openEditDialog(entry);
                   }}
@@ -471,10 +474,12 @@ function PlanCropRotations() {
           <h2 className="font-semibold text-sm">
             {t("fieldCalendar.cropRotations.title")}
           </h2>
-          <Button variant="outline" size="sm" onClick={openAddDialog}>
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            {t("fieldCalendar.cropRotations.addRotation")}
-          </Button>
+          {canWrite && (
+            <Button variant="outline" size="sm" onClick={openAddDialog}>
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              {t("fieldCalendar.cropRotations.addRotation")}
+            </Button>
+          )}
         </div>
 
         {rotations.length === 0 ? (
@@ -490,8 +495,8 @@ function PlanCropRotations() {
               return (
                 <button
                   key={entry.entryId}
-                  className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${conflictMsg ? "border-l-2 border-l-destructive" : waitingViolation ? "border-l-2 border-l-amber-500" : ""}`}
-                  onClick={() => openEditDialog(entry)}
+                  className={`w-full text-left px-4 py-3 transition-colors ${canWrite ? "hover:bg-muted/50 cursor-pointer" : "cursor-default"} ${conflictMsg ? "border-l-2 border-l-destructive" : waitingViolation ? "border-l-2 border-l-amber-500" : ""}`}
+                  onClick={() => { if (canWrite) openEditDialog(entry); }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
@@ -539,8 +544,8 @@ function PlanCropRotations() {
         )}
       </div>
 
-      {/* Sticky save bar — always visible at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t px-6 py-3 flex items-center gap-4 z-20">
+      {/* Sticky save bar — only visible for users with write access */}
+      {canWrite && <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t px-6 py-3 flex items-center gap-4 z-20">
         {hasConflicts && (
           <p className="text-sm text-destructive flex-1">
             {t("fieldCalendar.cropRotations.resolveConflicts")}
@@ -562,7 +567,7 @@ function PlanCropRotations() {
             {t("fieldCalendar.cropRotations.savePlan")}
           </Button>
         </div>
-      </div>
+      </div>}
 
       <RotationDialog
         open={dialogOpen}

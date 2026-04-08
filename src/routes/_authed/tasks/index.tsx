@@ -265,17 +265,19 @@ function TasksPage() {
                 </div>
               </div>
             </button>
-            <button
-              type="button"
-              title={task.pinned ? t("tasks.unpin") : t("tasks.pin")}
-              onClick={(e) => {
-                e.stopPropagation();
-                pinMutation.mutate({ taskId: task.id, pinned: !task.pinned });
-              }}
-              className={`shrink-0 p-1 rounded hover:bg-muted transition-colors ${task.pinned ? "text-foreground" : "text-muted-foreground"}`}
-            >
-              <Pin className="size-4" />
-            </button>
+            {canWriteTasks && (
+              <button
+                type="button"
+                title={task.pinned ? t("tasks.unpin") : t("tasks.pin")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  pinMutation.mutate({ taskId: task.id, pinned: !task.pinned });
+                }}
+                className={`shrink-0 p-1 rounded hover:bg-muted transition-colors ${task.pinned ? "text-foreground" : "text-muted-foreground"}`}
+              >
+                <Pin className="size-4" />
+              </button>
+            )}
           </div>
         ))}
       </div>

@@ -86,11 +86,11 @@ function buildPermissionMap(
   return map;
 }
 
-// Initial permissions state for invite form (all none — no access by default)
+// Initial permissions state for invite form (all read — sensible default)
 function initialInvitePermissions(): Record<FarmPermissionFeature, FarmPermissionAccess> {
   const map = {} as Record<FarmPermissionFeature, FarmPermissionAccess>;
   for (const feature of ALL_FEATURES) {
-    map[feature] = "none";
+    map[feature] = "read";
   }
   return map;
 }
@@ -166,9 +166,12 @@ function MemberPermissionsPanel({ userId }: { userId: string }) {
 
   return (
     <div className="border-t pt-3 pb-1 space-y-1">
-      <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center mb-2 pr-1">
+      <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 items-center mb-2 pr-1">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {t("users.feature")}
+        </span>
+        <span className="text-xs font-medium text-muted-foreground w-10 text-center">
+          {t("users.permissions.none")}
         </span>
         <span className="text-xs font-medium text-muted-foreground w-10 text-center">
           {t("users.permissions.read")}
@@ -179,31 +182,29 @@ function MemberPermissionsPanel({ userId }: { userId: string }) {
       </div>
       {ALL_FEATURES.map((feature) => {
         const access = getAccess(feature);
-        const { read, write } = accessToChecks(access);
         return (
           <div
             key={feature}
-            className="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center py-1 pr-1 rounded hover:bg-muted/50"
+            className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 items-center py-1 pr-1 rounded hover:bg-muted/50"
           >
             <span className="text-sm">{t(FEATURE_I18N_KEY[feature])}</span>
             <div className="w-10 flex justify-center">
               <Checkbox
-                checked={read}
-                onCheckedChange={(checked) => {
-                  const newRead = checked === true;
-                  // Unchecking read also unchecks write
-                  handleChange(feature, newRead, newRead ? write : false);
-                }}
+                checked={access === "none"}
+                onCheckedChange={() => handleChange(feature, false, false)}
               />
             </div>
             <div className="w-10 flex justify-center">
               <Checkbox
-                checked={write}
-                onCheckedChange={(checked) => {
-                  const newWrite = checked === true;
-                  // Checking write also sets read
-                  handleChange(feature, newWrite ? true : read, newWrite);
-                }}
+                checked={access === "read"}
+                onCheckedChange={() => handleChange(feature, true, false)}
+              />
+            </div>
+            <div className="w-10 flex justify-center">
+              {/* write implies read */}
+              <Checkbox
+                checked={access === "write"}
+                onCheckedChange={() => handleChange(feature, true, true)}
               />
             </div>
           </div>
@@ -295,9 +296,13 @@ function InviteDialog({
         {role === "member" && (
           <div className="mt-2">
             <p className="text-sm font-medium mb-2">{t("users.invitePermissions")}</p>
-            <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center mb-2 pr-1">
+            {/* Header: Feature | None | Read | Write (write implies read) */}
+            <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 items-center mb-2 pr-1">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {t("users.feature")}
+              </span>
+              <span className="text-xs font-medium text-muted-foreground w-10 text-center">
+                {t("users.permissions.none")}
               </span>
               <span className="text-xs font-medium text-muted-foreground w-10 text-center">
                 {t("users.permissions.read")}
@@ -308,29 +313,29 @@ function InviteDialog({
             </div>
             {ALL_FEATURES.map((feature) => {
               const access = permissions[feature];
-              const { read, write } = accessToChecks(access);
               return (
                 <div
                   key={feature}
-                  className="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center py-1 pr-1 rounded hover:bg-muted/50"
+                  className="grid grid-cols-[1fr_auto_auto_auto] gap-x-4 items-center py-1 pr-1 rounded hover:bg-muted/50"
                 >
                   <Label className="text-sm font-normal">{t(FEATURE_I18N_KEY[feature])}</Label>
                   <div className="w-10 flex justify-center">
                     <Checkbox
-                      checked={read}
-                      onCheckedChange={(checked) => {
-                        const newRead = checked === true;
-                        handlePermissionChange(feature, newRead, newRead ? write : false);
-                      }}
+                      checked={access === "none"}
+                      onCheckedChange={() => setPermissions((prev) => ({ ...prev, [feature]: "none" }))}
                     />
                   </div>
                   <div className="w-10 flex justify-center">
                     <Checkbox
-                      checked={write}
-                      onCheckedChange={(checked) => {
-                        const newWrite = checked === true;
-                        handlePermissionChange(feature, newWrite ? true : read, newWrite);
-                      }}
+                      checked={access === "read"}
+                      onCheckedChange={() => setPermissions((prev) => ({ ...prev, [feature]: "read" }))}
+                    />
+                  </div>
+                  <div className="w-10 flex justify-center">
+                    {/* write implies read */}
+                    <Checkbox
+                      checked={access === "write"}
+                      onCheckedChange={() => setPermissions((prev) => ({ ...prev, [feature]: "write" }))}
                     />
                   </div>
                 </div>
@@ -514,9 +519,11 @@ function UsersPage() {
                       )}
                     </div>
 
-                    <CollapsibleContent>
-                      <MemberPermissionsPanel userId={member.id} />
-                    </CollapsibleContent>
+                    {canExpand && (
+                      <CollapsibleContent>
+                        <MemberPermissionsPanel userId={member.id} />
+                      </CollapsibleContent>
+                    )}
                   </div>
                 </Collapsible>
               );

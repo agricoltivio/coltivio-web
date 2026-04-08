@@ -1291,6 +1291,7 @@
       "member": "Mitglied"
     },
     "permissions": {
+      "none": "Kein",
       "read": "Lesen",
       "write": "Schreiben"
     }

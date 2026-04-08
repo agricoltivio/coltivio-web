@@ -163,6 +163,8 @@ function TaskDetailPage() {
     },
   });
 
+  const [openLinksType, setOpenLinksType] = useState<TaskLinkType | null>(null);
+
   function formatDate(date: string | unknown) {
     if (!date || typeof date !== "string") return "-";
     return new Date(date).toLocaleDateString();
@@ -189,7 +191,6 @@ function TaskDetailPage() {
   }
 
   const task = taskQuery.data;
-  const [openLinksType, setOpenLinksType] = useState<TaskLinkType | null>(null);
 
   // Group links by linkType
   const linksByType = task.links.reduce<
