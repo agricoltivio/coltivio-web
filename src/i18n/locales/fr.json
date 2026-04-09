@@ -936,7 +936,7 @@
   },
   "wiki": {
     "title": "Wiki",
-    "myEntries": "Mes entrées",
+    "farmEntries": "Entrées de l'exploitation",
     "mySubmissions": "Mes soumissions",
     "admin": "Admin",
     "reviewQueue": "File de révision",

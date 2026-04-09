@@ -63,7 +63,7 @@ function MyWikiEntries() {
   }
 
   return (
-    <PageContent title={t("wiki.myEntries")} showBackButton={false}>
+    <PageContent title={t("wiki.farmEntries")} showBackButton={false}>
       <div className="flex justify-end mb-4">
         <Button onClick={() => navigate({ to: "/wiki/my-entries/new" })}>
           {t("wiki.newEntry")}

@@ -10341,7 +10341,7 @@ export interface components {
                     /** @enum {string} */
                     visibility: "private" | "public";
                     createdBy: string;
-                    farmId: string | null;
+                    farmId: string;
                     categoryId: string;
                     category: {
                         id: string;
@@ -10420,7 +10420,7 @@ export interface components {
                 /** @enum {string} */
                 visibility: "private" | "public";
                 createdBy: string;
-                farmId: string | null;
+                farmId: string;
                 categoryId: string;
                 category: {
                     id: string;
@@ -10493,7 +10493,6 @@ export interface components {
             id?: string;
             /** Format: uuid */
             categoryId: string;
-            farmId?: string;
             translations: {
                 /** @enum {string} */
                 locale: "de" | "en" | "it" | "fr";
@@ -10511,7 +10510,7 @@ export interface components {
                     /** @enum {string} */
                     visibility: "private" | "public";
                     createdBy: string;
-                    farmId: string | null;
+                    farmId: string;
                     categoryId: string;
                     category: {
                         id: string;
@@ -10699,7 +10698,7 @@ export interface components {
                 /** @enum {string} */
                 visibility: "private" | "public";
                 createdBy: string;
-                farmId: string | null;
+                farmId: string;
                 categoryId: string;
                 category: {
                     id: string;
@@ -10776,7 +10775,7 @@ export interface components {
                 /** @enum {string} */
                 visibility: "private" | "public";
                 createdBy: string;
-                farmId: string | null;
+                farmId: string;
                 categoryId: string;
                 category: {
                     id: string;
@@ -11008,7 +11007,7 @@ export interface components {
                         /** @enum {string} */
                         visibility: "private" | "public";
                         createdBy: string;
-                        farmId: string | null;
+                        farmId: string;
                         categoryId: string;
                         category: {
                             id: string;
@@ -11108,7 +11107,7 @@ export interface components {
                     /** @enum {string} */
                     visibility: "private" | "public";
                     createdBy: string;
-                    farmId: string | null;
+                    farmId: string;
                     categoryId: string;
                     category: {
                         id: string;
