@@ -78,7 +78,8 @@
     "membership": "Mitgliedschaft",
     "treffpunkt": "Treffpunkt",
     "myFarm": "Mein Hof",
-    "invoiceSettings": "Rechnungseinstellungen"
+    "invoiceSettings": "Rechnungseinstellungen",
+    "users": "Benutzer"
   },
   "animals": {
     "title": "Tiere",
@@ -935,7 +936,7 @@
   },
   "wiki": {
     "title": "Wiki",
-    "myEntries": "Meine Einträge",
+    "farmEntries": "Einträge des Betriebs",
     "mySubmissions": "Meine Einreichungen",
     "admin": "Admin",
     "reviewQueue": "Prüfwarteschlange",
@@ -1092,6 +1093,10 @@
   },
   "membership": {
     "title": "Mitgliedschaft",
+    "trialBanner": {
+      "title": "Kostenlose Testphase aktiv",
+      "description": "Während der Testphase haben alle Mitglieder unbegrenzten Zugang zu allen Funktionen. Die Mitgliedschaftsverwaltung wird zu einem späteren Zeitpunkt freigeschaltet."
+    },
     "expired": {
       "message": "Deine Vereinsmitgliedschaft ist abgelaufen — werde jetzt wieder Mitglied.",
       "renew": "Mitgliedschaft erneuern",
@@ -1265,5 +1270,30 @@
     "content": "Inhalt",
     "viewAll": "Alle anzeigen",
     "images": "Bilder"
+  },
+  "users": {
+    "title": "Benutzer",
+    "invite": "Einladen",
+    "inviteEmail": "E-Mail-Adresse",
+    "inviteRole": "Rolle",
+    "invitePermissions": "Berechtigungen",
+    "inviteSend": "Einladung senden",
+    "members": "Mitglieder",
+    "pendingInvites": "Ausstehende Einladungen",
+    "removeConfirm": "Diesen Benutzer wirklich entfernen?",
+    "cancelInvite": "Einladung zurückziehen",
+    "expiresAt": "Ablaufdatum",
+    "feature": "Bereich",
+    "noMembers": "Keine Mitglieder gefunden",
+    "noPendingInvites": "Keine ausstehenden Einladungen",
+    "role": {
+      "owner": "Eigentümer",
+      "member": "Mitglied"
+    },
+    "permissions": {
+      "none": "Kein",
+      "read": "Lesen",
+      "write": "Schreiben"
+    }
   }
 }

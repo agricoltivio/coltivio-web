@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { apiClient } from "@/api/client";
 import { invoiceSettingsQueryOptions } from "@/api/orders.queries";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ function InvoiceSettingsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { canWrite } = useFeatureAccess("commerce");
   const { data: settings = [] } = useQuery(invoiceSettingsQueryOptions());
 
   const deleteMutation = useMutation({
@@ -42,11 +44,13 @@ function InvoiceSettingsPage() {
 
   return (
     <PageContent title={t("orders.invoiceSettings")}>
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => navigate({ to: "/orders/invoice-settings/create" })}>
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWrite && (
+        <div className="flex justify-end mb-4">
+          <Button onClick={() => navigate({ to: "/orders/invoice-settings/create" })}>
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
 
       {settings.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
@@ -59,7 +63,7 @@ function InvoiceSettingsPage() {
               <TableHead>{t("common.name")}</TableHead>
               <TableHead>{t("orders.senderName")}</TableHead>
               <TableHead>{t("contacts.city")}</TableHead>
-              <TableHead className="w-20" />
+              {canWrite && <TableHead className="w-20" />}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -77,34 +81,36 @@ function InvoiceSettingsPage() {
                 <TableCell className="font-medium">{s.name}</TableCell>
                 <TableCell>{s.senderName}</TableCell>
                 <TableCell className="text-muted-foreground">{s.city}</TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-end gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate({
-                          to: "/orders/invoice-settings/$settingsId",
-                          params: { settingsId: s.id },
-                        });
-                      }}
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      disabled={deleteMutation.isPending}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteMutation.mutate(s.id);
-                      }}
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+                {canWrite && (
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate({
+                            to: "/orders/invoice-settings/$settingsId",
+                            params: { settingsId: s.id },
+                          });
+                        }}
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={deleteMutation.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteMutation.mutate(s.id);
+                        }}
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

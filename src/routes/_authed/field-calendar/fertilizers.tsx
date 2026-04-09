@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute("/_authed/field-calendar/fertilizers")({
   loader: ({ context: { queryClient } }) => {
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authed/field-calendar/fertilizers")({
 
 function FertilizersPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteFertilization } = useFeatureAccess("field_calendar");
   const navigate = useNavigate();
   const query = useQuery(fertilizersQueryOptions());
 
@@ -80,15 +82,17 @@ function FertilizersPage() {
 
   return (
     <PageContent title={t("fertilizers.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({ to: "/field-calendar/fertilizers/create" })
-          }
-        >
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWriteFertilization && (
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() =>
+              navigate({ to: "/field-calendar/fertilizers/create" })
+            }
+          >
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

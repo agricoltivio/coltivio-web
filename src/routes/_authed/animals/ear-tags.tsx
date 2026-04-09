@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute("/_authed/animals/ear-tags")({
   loader: ({ context: { queryClient } }) => {
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/_authed/animals/ear-tags")({
 
 function EarTags() {
   const { t } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const queryClient = useQueryClient();
   const earTagsQuery = useQuery(earTagsQueryOptions());
 
@@ -174,40 +176,44 @@ function EarTags() {
 
           return (
             <div className="flex justify-end">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={(e) => handleDeleteClick(earTag, e)}
-                disabled={isAssigned}
-                title={
-                  isAssigned ? t("earTags.deleteWarning") : t("common.delete")
-                }
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {canWriteAnimals && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={(e) => handleDeleteClick(earTag, e)}
+                  disabled={isAssigned}
+                  title={
+                    isAssigned ? t("earTags.deleteWarning") : t("common.delete")
+                  }
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           );
         },
       },
     ],
-    [t],
+    [t, canWriteAnimals],
   );
 
   const data = earTagsQuery.data?.result ?? [];
 
   return (
     <PageContent title={t("earTags.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <CreateRangeDialog
-          open={createDialogOpen}
-          onOpenChange={setCreateDialogOpen}
-          onSubmit={(fromNumber, toNumber) =>
-            createRangeMutation.mutate({ fromNumber, toNumber })
-          }
-          isPending={createRangeMutation.isPending}
-        />
-      </div>
+      {canWriteAnimals && (
+        <div className="flex justify-end mb-4">
+          <CreateRangeDialog
+            open={createDialogOpen}
+            onOpenChange={setCreateDialogOpen}
+            onSubmit={(fromNumber, toNumber) =>
+              createRangeMutation.mutate({ fromNumber, toNumber })
+            }
+            isPending={createRangeMutation.isPending}
+          />
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

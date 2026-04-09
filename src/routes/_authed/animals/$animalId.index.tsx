@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { useMembership } from "@/lib/useMembership";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +53,7 @@ function AnimalDetailPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showDeceasedChildren, setShowDeceasedChildren] = useState(false);
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
 
   const animalQuery = useQuery(animalQueryOptions(animalId));
 
@@ -141,12 +143,14 @@ function AnimalDetailPage() {
               {t("animals.familyTree")}
             </Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/animals/$animalId/edit" params={{ animalId }}>
-              {t("common.edit")}
-            </Link>
-          </Button>
-          <AlertDialog>
+          {canWriteAnimals && (
+            <Button variant="outline" asChild>
+              <Link to="/animals/$animalId/edit" params={{ animalId }}>
+                {t("common.edit")}
+              </Link>
+            </Button>
+          )}
+          {canWriteAnimals && <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive">{t("common.delete")}</Button>
             </AlertDialogTrigger>
@@ -168,7 +172,7 @@ function AnimalDetailPage() {
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
-          </AlertDialog>
+          </AlertDialog>}
         </div>
       </div>
 
@@ -338,7 +342,7 @@ function AnimalDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>{t("treatments.title")}</CardTitle>
-            <CardAction>
+            {canWriteAnimals && <CardAction>
               <Button
                 variant="outline"
                 size="sm"
@@ -355,7 +359,7 @@ function AnimalDetailPage() {
                 <Plus className="h-4 w-4 mr-1" />
                 {t("treatments.addTreatment")}
               </Button>
-            </CardAction>
+            </CardAction>}
           </CardHeader>
           <CardContent>
             {animal.treatments && animal.treatments.length > 0 ? (
@@ -418,6 +422,7 @@ function AnimalJournalCardIfMember({ animalId }: { animalId: string }) {
 
 function AnimalJournalCard({ animalId }: { animalId: string }) {
   const { t } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const navigate = useNavigate();
   const journalQuery = useQuery(animalJournalQueryOptions(animalId));
   const entries = journalQuery.data ?? [];
@@ -429,7 +434,7 @@ function AnimalJournalCard({ animalId }: { animalId: string }) {
     <Card>
       <CardHeader>
         <CardTitle>{t("journal.title")}</CardTitle>
-        <CardAction>
+        {canWriteAnimals && <CardAction>
           <Button
             variant="outline"
             size="sm"
@@ -443,7 +448,7 @@ function AnimalJournalCard({ animalId }: { animalId: string }) {
             <Plus className="h-4 w-4 mr-1" />
             {t("journal.add")}
           </Button>
-        </CardAction>
+        </CardAction>}
       </CardHeader>
       <CardContent>
         {recentEntries.length === 0 ? (

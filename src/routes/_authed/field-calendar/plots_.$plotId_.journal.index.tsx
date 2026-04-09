@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { plotJournalQueryOptions } from "@/api/plotJournal.queries";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export const Route = createFileRoute(
 
 function PlotJournalPage() {
   const { t } = useTranslation();
+  const { canWrite: canWritePlots } = useFeatureAccess("field_calendar");
   const { plotId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
@@ -47,20 +49,22 @@ function PlotJournalPage() {
           : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } })
       }
     >
-      <div className="mb-4 flex justify-end">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/plots/$plotId/journal/create",
-              params: { plotId },
-              search: returnTo ? { returnTo } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          {t("journal.add")}
-        </Button>
-      </div>
+      {canWritePlots && (
+        <div className="mb-4 flex justify-end">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/field-calendar/plots/$plotId/journal/create",
+                params: { plotId },
+                search: returnTo ? { returnTo } : {},
+              })
+            }
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            {t("journal.add")}
+          </Button>
+        </div>
+      )}
 
       {sortedEntries.length === 0 ? (
         <div className="py-8 text-center text-muted-foreground">

@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-protection-products",
@@ -21,6 +22,7 @@ export const Route = createFileRoute(
 
 function CropProtectionProductsPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteCropProtection } = useFeatureAccess("field_calendar");
   const navigate = useNavigate();
   const query = useQuery(cropProtectionProductsQueryOptions());
 
@@ -75,17 +77,19 @@ function CropProtectionProductsPage() {
       title={t("cropProtectionProducts.title")}
       showBackButton={false}
     >
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/crop-protection-products/create",
-            })
-          }
-        >
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWriteCropProtection && (
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/field-calendar/crop-protection-products/create",
+              })
+            }
+          >
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

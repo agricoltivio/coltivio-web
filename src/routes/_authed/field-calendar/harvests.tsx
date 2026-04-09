@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
@@ -208,6 +209,7 @@ function HarvestChart() {
 function Harvests() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteHarvests } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
@@ -266,17 +268,12 @@ function Harvests() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-6">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/harvests/create",
-              search: plotId ? { plotId } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("fieldCalendar.harvests.create")}
-        </Button>
+        {canWriteHarvests && (
+          <Button onClick={() => navigate({ to: "/field-calendar/harvests/create", search: plotId ? { plotId } : {} })}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.harvests.create")}
+          </Button>
+        )}
       </div>
       {!plotId && <HarvestChart />}
       <DataTable

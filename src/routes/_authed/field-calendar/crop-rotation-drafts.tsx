@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMembership } from "@/lib/useMembership";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { MembersOnly } from "@/components/MembersOnly";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,6 +38,7 @@ function CropRotationDrafts() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { hasAccess } = useMembership();
+  const { canWrite } = useFeatureAccess("field_calendar");
 
   if (!hasAccess) return <MembersOnly />;
 
@@ -142,11 +144,13 @@ function CropRotationDrafts() {
       showBackButton
       backTo={() => void navigate({ to: "/field-calendar/crop-rotations" })}
     >
-      <div className="flex justify-end mb-4">
-        <Button onClick={handleOpenCreate}>
-          {t("fieldCalendar.cropRotationDrafts.createDraft")}
-        </Button>
-      </div>
+      {canWrite && (
+        <div className="flex justify-end mb-4">
+          <Button onClick={handleOpenCreate}>
+            {t("fieldCalendar.cropRotationDrafts.createDraft")}
+          </Button>
+        </div>
+      )}
 
       {drafts.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-10">
@@ -171,16 +175,18 @@ function CropRotationDrafts() {
                   {new Date(draft.createdAt).toLocaleDateString()}
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDeleteConfirmId(draft.id);
-                }}
-              >
-                <Trash2 className="h-4 w-4 text-muted-foreground" />
-              </Button>
+              {canWrite && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteConfirmId(draft.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              )}
             </div>
           ))}
         </div>

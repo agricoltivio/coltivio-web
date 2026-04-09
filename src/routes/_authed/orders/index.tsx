@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -54,6 +55,7 @@ function downloadBase64File(base64: string, fileName: string) {
 function Orders() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteOrders } = useFeatureAccess("commerce");
   const ordersQuery = useQuery(ordersQueryOptions());
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [invoiceModeDialogOpen, setInvoiceModeDialogOpen] = useState(false);
@@ -259,9 +261,11 @@ function Orders() {
             </Button>
           )}
         </div>
-        <Button onClick={() => navigate({ to: "/orders/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteOrders && (
+          <Button onClick={() => navigate({ to: "/orders/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

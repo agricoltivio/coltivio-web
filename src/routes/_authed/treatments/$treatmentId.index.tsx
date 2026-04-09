@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/_authed/treatments/$treatmentId/")({
 
 function TreatmentDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTreatments } = useFeatureAccess("animals");
   const { treatmentId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
@@ -87,38 +89,40 @@ function TreatmentDetailPage() {
   return (
     <PageContent title={treatment.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals/treatments-journal" })}>
       {/* Header actions */}
-      <div className="mb-6 flex items-center justify-end">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <Link to="/treatments/$treatmentId/edit" params={{ treatmentId }}>
-              {t("common.edit")}
-            </Link>
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">{t("common.delete")}</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {t("treatments.deleteConfirm")}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => deleteMutation.mutate()}
-                  disabled={deleteMutation.isPending}
-                  className="bg-destructive text-white hover:bg-destructive/90"
-                >
-                  {t("common.delete")}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+      {canWriteTreatments && (
+        <div className="mb-6 flex items-center justify-end">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/treatments/$treatmentId/edit" params={{ treatmentId }}>
+                {t("common.edit")}
+              </Link>
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">{t("common.delete")}</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("treatments.deleteConfirm")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => deleteMutation.mutate()}
+                    disabled={deleteMutation.isPending}
+                    className="bg-destructive text-white hover:bg-destructive/90"
+                  >
+                    {t("common.delete")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-6">
         {/* Treatment Details Card */}

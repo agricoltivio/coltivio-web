@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { sponsorshipQueryOptions } from "@/api/sponsorships.queries";
@@ -38,6 +39,8 @@ export const Route = createFileRoute("/_authed/sponsorships/$sponsorshipId/")({
 
 function SponsorshipDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
+  const { canRead: canReadAnimals } = useFeatureAccess("animals");
   const { sponsorshipId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -112,7 +115,7 @@ function SponsorshipDetailPage() {
             <Badge variant="secondary">{t("sponsorships.ended")}</Badge>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        {canWriteSponsorships && <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link
               to="/sponsorships/$sponsorshipId/edit"
@@ -144,7 +147,7 @@ function SponsorshipDetailPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
+        </div>}
       </div>
 
       <div className="space-y-6">
@@ -170,13 +173,17 @@ function SponsorshipDetailPage() {
               <DetailItem
                 label={t("sponsorships.animal")}
                 value={
-                  <Link
-                    className="hover:underline text-blue-600 hover:text-blue-800"
-                    to="/animals/$animalId"
-                    params={{ animalId: sponsorship.animal.id }}
-                  >
-                    {sponsorship.animal.name}
-                  </Link>
+                  canReadAnimals ? (
+                    <Link
+                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      to="/animals/$animalId"
+                      params={{ animalId: sponsorship.animal.id }}
+                    >
+                      {sponsorship.animal.name}
+                    </Link>
+                  ) : (
+                    sponsorship.animal.name
+                  )
                 }
               />
               <DetailItem
@@ -228,18 +235,14 @@ function SponsorshipDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>{t("payments.title")}</CardTitle>
-            <Button variant="outline" size="sm" asChild>
+            {canWriteSponsorships && <Button variant="outline" size="sm" asChild>
               <Link
-                to="/payments/create"
-                search={{
-                  contactId: sponsorship.contactId,
-                  sponsorshipId: sponsorship.id,
-                  redirect: `/sponsorships/${sponsorshipId}`,
-                }}
+                to="/sponsorships/$sponsorshipId/payments/create"
+                params={{ sponsorshipId }}
               >
                 {t("payments.addPayment")}
               </Link>
-            </Button>
+            </Button>}
           </CardHeader>
           <CardContent>
             {sponsorship.payments && sponsorship.payments.length > 0 ? (
@@ -256,11 +259,11 @@ function SponsorshipDetailPage() {
                   {sponsorship.payments.map((payment) => (
                     <TableRow
                       key={payment.id}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:bg-muted/50"
                       onClick={() =>
                         navigate({
-                          to: "/payments/$paymentId",
-                          params: { paymentId: payment.id },
+                          to: "/sponsorships/$sponsorshipId/payments/$paymentId",
+                          params: { sponsorshipId, paymentId: payment.id },
                         })
                       }
                     >

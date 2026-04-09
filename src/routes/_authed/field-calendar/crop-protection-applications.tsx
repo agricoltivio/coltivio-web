@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -182,6 +183,7 @@ function CropProtectionChart() {
 function CropProtectionApplications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteCropProtection } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
 
   const globalQuery = useQuery({
@@ -239,27 +241,22 @@ function CropProtectionApplications() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
     >
       <div className="flex justify-end mb-6">
-        <Button
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/crop-protection-applications/create",
-              search: plotId ? { plotId } : {},
-            })
-          }
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          {t("fieldCalendar.cropProtectionApplications.create")}
-        </Button>
+        {canWriteCropProtection && (
+          <Button onClick={() => navigate({ to: "/field-calendar/crop-protection-applications/create", search: plotId ? { plotId } : {} })}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("fieldCalendar.cropProtectionApplications.create")}
+          </Button>
+        )}
       </div>
       {!plotId && <CropProtectionChart />}
       <DataTable
         data={data}
         columns={columns}
-        onRowClick={(app) =>
+        onRowClick={canWriteCropProtection ? (app) =>
           navigate({
             to: "/field-calendar/crop-protection-applications/$id/edit",
             params: { id: app.id },
-          })
+          }) : undefined
         }
         defaultSorting={[{ id: "dateTime", desc: true }]}
       />

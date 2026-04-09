@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/sponsorships/")({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authed/sponsorships/")({
 function Sponsorships() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
   const sponsorshipsQuery = useQuery(sponsorshipsQueryOptions());
 
   function formatDate(dateString: string) {
@@ -163,9 +165,11 @@ function Sponsorships() {
   return (
     <PageContent title={t("sponsorships.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
-        <Button onClick={() => navigate({ to: "/sponsorships/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteSponsorships && (
+          <Button onClick={() => navigate({ to: "/sponsorships/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

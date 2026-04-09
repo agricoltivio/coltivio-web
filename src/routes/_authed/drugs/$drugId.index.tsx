@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { drugQueryOptions, drugInUseQueryOptions } from "@/api/drugs.queries";
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/_authed/drugs/$drugId/")({
 
 function DrugDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTreatments } = useFeatureAccess("animals");
   const { drugId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -84,7 +86,7 @@ function DrugDetailPage() {
     <PageContent title={drug.name} showBackButton backTo={() => navigate({ to: "/drugs" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end">
-        <div className="flex items-center gap-2">
+        {canWriteTreatments && <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link to="/drugs/$drugId/edit" params={{ drugId }}>
               {t("common.edit")}
@@ -115,7 +117,7 @@ function DrugDetailPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
+        </div>}
       </div>
 
       <div className="space-y-6">

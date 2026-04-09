@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/products/")({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authed/products/")({
 function Products() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteProducts } = useFeatureAccess("commerce");
   const productsQuery = useQuery(productsQueryOptions());
 
   function formatCurrency(amount: number) {
@@ -125,9 +127,11 @@ function Products() {
   return (
     <PageContent title={t("products.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
-        <Button onClick={() => navigate({ to: "/products/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteProducts && (
+          <Button onClick={() => navigate({ to: "/products/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

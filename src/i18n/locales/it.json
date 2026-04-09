@@ -78,7 +78,8 @@
     "membership": "Abbonamento",
     "treffpunkt": "Comunità",
     "myFarm": "La mia azienda",
-    "invoiceSettings": "Impostazioni fattura"
+    "invoiceSettings": "Impostazioni fattura",
+    "users": "Utenti"
   },
   "animals": {
     "title": "Animali",
@@ -935,7 +936,7 @@
   },
   "wiki": {
     "title": "Wiki",
-    "myEntries": "Le mie voci",
+    "farmEntries": "Voci dell'azienda",
     "mySubmissions": "Le mie proposte",
     "admin": "Admin",
     "reviewQueue": "Coda di revisione",
@@ -1092,6 +1093,10 @@
   },
   "membership": {
     "title": "Iscrizione",
+    "trialBanner": {
+      "title": "Periodo di prova gratuito attivo",
+      "description": "Durante la fase di test, tutti i membri hanno accesso illimitato a tutte le funzionalità. La gestione delle iscrizioni sarà disponibile in un secondo momento."
+    },
     "expired": {
       "message": "La tua iscrizione all'associazione AgriColtivio è scaduta — riscriviti ora.",
       "renew": "Rinnova iscrizione",
@@ -1265,5 +1270,30 @@
     "content": "Contenuto",
     "viewAll": "Vedi tutto",
     "images": "Immagini"
+  },
+  "users": {
+    "title": "Utenti",
+    "invite": "Invita",
+    "inviteEmail": "Indirizzo e-mail",
+    "inviteRole": "Ruolo",
+    "invitePermissions": "Permessi",
+    "inviteSend": "Invia invito",
+    "members": "Membri",
+    "pendingInvites": "Inviti in attesa",
+    "removeConfirm": "Rimuovere questo utente?",
+    "cancelInvite": "Annulla invito",
+    "expiresAt": "Scade il",
+    "feature": "Funzionalità",
+    "noMembers": "Nessun membro trovato",
+    "noPendingInvites": "Nessun invito in attesa",
+    "role": {
+      "owner": "Proprietario",
+      "member": "Membro"
+    },
+    "permissions": {
+      "none": "Nessuno",
+      "read": "Lettura",
+      "write": "Scrittura"
+    }
   }
 }

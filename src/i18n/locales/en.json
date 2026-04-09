@@ -78,7 +78,8 @@
     "membership": "Membership",
     "treffpunkt": "Community",
     "myFarm": "My Farm",
-    "invoiceSettings": "Invoice Settings"
+    "invoiceSettings": "Invoice Settings",
+    "users": "Users"
   },
   "animals": {
     "title": "Animals",
@@ -935,7 +936,7 @@
   },
   "wiki": {
     "title": "Wiki",
-    "myEntries": "My Entries",
+    "farmEntries": "Farm Entries",
     "mySubmissions": "My Submissions",
     "admin": "Admin",
     "reviewQueue": "Review Queue",
@@ -1092,6 +1093,10 @@
   },
   "membership": {
     "title": "Membership",
+    "trialBanner": {
+      "title": "Free trial active",
+      "description": "During the test phase, all members have unlimited access to all features. Membership management will be available at a later date."
+    },
     "expired": {
       "message": "Your Verein membership has expired — rejoin now to regain access.",
       "renew": "Renew membership",
@@ -1265,5 +1270,30 @@
     "content": "Content",
     "viewAll": "View all",
     "images": "Images"
+  },
+  "users": {
+    "title": "Users",
+    "invite": "Invite",
+    "inviteEmail": "Email address",
+    "inviteRole": "Role",
+    "invitePermissions": "Permissions",
+    "inviteSend": "Send invite",
+    "members": "Members",
+    "pendingInvites": "Pending invites",
+    "removeConfirm": "Remove this user?",
+    "cancelInvite": "Cancel invite",
+    "expiresAt": "Expires",
+    "feature": "Feature",
+    "noMembers": "No members found",
+    "noPendingInvites": "No pending invites",
+    "role": {
+      "owner": "Owner",
+      "member": "Member"
+    },
+    "permissions": {
+      "none": "None",
+      "read": "Read",
+      "write": "Write"
+    }
   }
 }

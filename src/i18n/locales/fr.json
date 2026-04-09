@@ -78,7 +78,8 @@
     "membership": "Abonnement",
     "treffpunkt": "Communauté",
     "myFarm": "Ma ferme",
-    "invoiceSettings": "Paramètres de facturation"
+    "invoiceSettings": "Paramètres de facturation",
+    "users": "Utilisateurs"
   },
   "animals": {
     "title": "Animaux",
@@ -935,7 +936,7 @@
   },
   "wiki": {
     "title": "Wiki",
-    "myEntries": "Mes entrées",
+    "farmEntries": "Entrées de l'exploitation",
     "mySubmissions": "Mes soumissions",
     "admin": "Admin",
     "reviewQueue": "File de révision",
@@ -1092,6 +1093,10 @@
   },
   "membership": {
     "title": "Adhésion",
+    "trialBanner": {
+      "title": "Période d'essai gratuite active",
+      "description": "Pendant la phase de test, tous les membres ont un accès illimité à toutes les fonctionnalités. La gestion des adhésions sera disponible ultérieurement."
+    },
     "expired": {
       "message": "Ton adhésion à l'association AgriColtivio a expiré — rejoins-nous à nouveau.",
       "renew": "Renouveler l'adhésion",
@@ -1265,5 +1270,30 @@
     "content": "Contenu",
     "viewAll": "Voir tout",
     "images": "Images"
+  },
+  "users": {
+    "title": "Utilisateurs",
+    "invite": "Inviter",
+    "inviteEmail": "Adresse e-mail",
+    "inviteRole": "Rôle",
+    "invitePermissions": "Autorisations",
+    "inviteSend": "Envoyer l'invitation",
+    "members": "Membres",
+    "pendingInvites": "Invitations en attente",
+    "removeConfirm": "Supprimer cet utilisateur ?",
+    "cancelInvite": "Annuler l'invitation",
+    "expiresAt": "Expire le",
+    "feature": "Fonctionnalité",
+    "noMembers": "Aucun membre trouvé",
+    "noPendingInvites": "Aucune invitation en attente",
+    "role": {
+      "owner": "Propriétaire",
+      "member": "Membre"
+    },
+    "permissions": {
+      "none": "Aucun",
+      "read": "Lire",
+      "write": "Écrire"
+    }
   }
 }

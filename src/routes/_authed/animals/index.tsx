@@ -18,6 +18,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, Upload, GitBranch, SlidersHorizontal } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/_authed/animals/")({
 function Animals() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const [onlyLiving, setOnlyLiving] = useState(true);
   const animalsQuery = useQuery(animalsQueryOptions(false));
   const [typeFilter, setTypeFilter] = useState<AnimalType[]>([]);
@@ -126,23 +128,25 @@ function Animals() {
 
   const columns = useMemo<ColumnDef<Animal>[]>(
     () => [
-      {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(v) => row.toggleSelected(!!v)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        ),
-        enableSorting: false,
-      },
+      ...(canWriteAnimals ? [
+        {
+          id: "select",
+          header: ({ table }: { table: import("@tanstack/react-table").Table<Animal> }) => (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected()}
+              onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+            />
+          ),
+          cell: ({ row }: { row: import("@tanstack/react-table").Row<Animal> }) => (
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(v) => row.toggleSelected(!!v)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ),
+          enableSorting: false,
+        } as ColumnDef<Animal>,
+      ] : []),
       {
         accessorKey: "name",
         header: ({ column }) => (
@@ -257,7 +261,7 @@ function Animals() {
         },
       },
     ],
-    [t],
+    [t, canWriteAnimals],
   );
 
   const allAnimals = animalsQuery.data?.result ?? [];
@@ -296,13 +300,17 @@ function Animals() {
           <GitBranch className="h-4 w-4 mr-2" />
           {t("animals.familyTree")}
         </Button>
-        <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
-          <Upload className="h-4 w-4 mr-2" />
-          {t("animals.import")}
-        </Button>
-        <Button onClick={() => navigate({ to: "/animals/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteAnimals && (
+          <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
+            <Upload className="h-4 w-4 mr-2" />
+            {t("animals.import")}
+          </Button>
+        )}
+        {canWriteAnimals && (
+          <Button onClick={() => navigate({ to: "/animals/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
 
       {livingAnimals.length > 0 && (
@@ -329,7 +337,7 @@ function Animals() {
         defaultSorting={[{ id: "type", desc: false }]}
         filterSlot={
           <>
-          {selectedIds.length > 0 && (
+          {canWriteAnimals && selectedIds.length > 0 && (
             <Button className="ml-auto" onClick={() => setBatchSheetOpen(true)}>
               {t("animals.batchEditCount", { count: selectedIds.length })}
             </Button>

@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 export const Route = createFileRoute("/_authed/field-calendar/crop-families")({
   loader: ({ context: { queryClient } }) => {
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authed/field-calendar/crop-families")({
 
 function CropFamiliesPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteCrops } = useFeatureAccess("field_calendar");
   const navigate = useNavigate();
   const query = useQuery(cropFamiliesQueryOptions());
 
@@ -72,15 +74,17 @@ function CropFamiliesPage() {
 
   return (
     <PageContent title={t("cropFamilies.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() =>
-            navigate({ to: "/field-calendar/crop-families/create" })
-          }
-        >
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWriteCrops && (
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() =>
+              navigate({ to: "/field-calendar/crop-families/create" })
+            }
+          >
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

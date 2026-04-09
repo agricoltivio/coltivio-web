@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { productQueryOptions } from "@/api/products.queries";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/_authed/products/$productId/")({
 
 function ProductDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteProducts } = useFeatureAccess("commerce");
   const { productId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -87,7 +89,7 @@ function ProductDetailPage() {
             {product.active ? t("products.active") : t("products.inactive")}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
+        {canWriteProducts && <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
             <Link to="/products/$productId/edit" params={{ productId }}>
               {t("common.edit")}
@@ -116,7 +118,7 @@ function ProductDetailPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
+        </div>}
       </div>
 
       <div className="space-y-6">

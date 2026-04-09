@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate, type LinkProps } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -36,27 +37,46 @@ export const Route = createFileRoute("/_authed/tasks/$taskId/")({
   component: TaskDetailPage,
 });
 
+interface LinkAccess {
+  canReadAnimals: boolean;
+  canReadFieldCalendar: boolean;
+  canReadCommerce: boolean;
+}
+
 // Maps a linkType + linkedId to a TanStack Router LinkProps for navigation.
-// Passes returnTo so the entity's back button returns to this task.
+// Returns null when the user lacks read access for that entity's feature.
 function linkHref(
   linkType: TaskLinkType,
   linkedId: string,
   taskId: string,
+  access: LinkAccess,
 ): LinkProps | null {
   const returnTo = `/tasks/${taskId}`;
   switch (linkType) {
     case "animal":
-      return { to: "/animals/$animalId", params: { animalId: linkedId }, search: { returnTo } };
+      return access.canReadAnimals
+        ? { to: "/animals/$animalId", params: { animalId: linkedId }, search: { returnTo } }
+        : null;
     case "herd":
-      return { to: "/animals/herds/$herdId", params: { herdId: linkedId }, search: { returnTo } };
+      return access.canReadAnimals
+        ? { to: "/animals/herds/$herdId", params: { herdId: linkedId }, search: { returnTo } }
+        : null;
     case "plot":
-      return { to: "/field-calendar/plots/$plotId", params: { plotId: linkedId }, search: { returnTo } };
+      return access.canReadFieldCalendar
+        ? { to: "/field-calendar/plots/$plotId", params: { plotId: linkedId }, search: { returnTo } }
+        : null;
     case "contact":
-      return { to: "/contacts/$contactId", params: { contactId: linkedId }, search: { returnTo } };
+      return access.canReadCommerce
+        ? { to: "/contacts/$contactId", params: { contactId: linkedId }, search: { returnTo } }
+        : null;
     case "order":
-      return { to: "/orders/$orderId", params: { orderId: linkedId }, search: { returnTo } };
+      return access.canReadCommerce
+        ? { to: "/orders/$orderId", params: { orderId: linkedId }, search: { returnTo } }
+        : null;
     case "treatment":
-      return { to: "/treatments/$treatmentId", params: { treatmentId: linkedId }, search: { returnTo } };
+      return access.canReadAnimals
+        ? { to: "/treatments/$treatmentId", params: { treatmentId: linkedId }, search: { returnTo } }
+        : null;
     case "wiki_entry":
       return { to: "/wiki/$entryId", params: { entryId: linkedId }, search: { returnTo } };
     default:
@@ -66,6 +86,11 @@ function linkHref(
 
 function TaskDetailPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteTasks } = useFeatureAccess("tasks");
+  const { canRead: canReadAnimals } = useFeatureAccess("animals");
+  const { canRead: canReadFieldCalendar } = useFeatureAccess("field_calendar");
+  const { canRead: canReadCommerce } = useFeatureAccess("commerce");
+  const linkAccess = { canReadAnimals, canReadFieldCalendar, canReadCommerce };
   const { taskId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -138,6 +163,8 @@ function TaskDetailPage() {
     },
   });
 
+  const [openLinksType, setOpenLinksType] = useState<TaskLinkType | null>(null);
+
   function formatDate(date: string | unknown) {
     if (!date || typeof date !== "string") return "-";
     return new Date(date).toLocaleDateString();
@@ -164,7 +191,6 @@ function TaskDetailPage() {
   }
 
   const task = taskQuery.data;
-  const [openLinksType, setOpenLinksType] = useState<TaskLinkType | null>(null);
 
   // Group links by linkType
   const linksByType = task.links.reduce<
@@ -183,6 +209,7 @@ function TaskDetailPage() {
     >
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end gap-2">
+        {canWriteTasks && <>
         <Button
           variant={task.status === "done" ? "default" : "outline"}
           size="icon"
@@ -203,36 +230,39 @@ function TaskDetailPage() {
         >
           <Pin className={`size-4 ${task.pinned ? "fill-current" : ""}`} />
         </Button>
-        <Button variant="outline" size="icon" asChild title={t("common.edit")}>
-          <Link to="/tasks/$taskId/edit" params={{ taskId }}>
-            <SquarePen className="size-4" />
-          </Link>
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="icon" title={t("common.delete")}>
-              <Trash2 className="size-4" />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("tasks.deleteConfirm")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        </>}
+        {canWriteTasks && <>
+          <Button variant="outline" size="icon" asChild title={t("common.edit")}>
+            <Link to="/tasks/$taskId/edit" params={{ taskId }}>
+              <SquarePen className="size-4" />
+            </Link>
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="icon" title={t("common.delete")}>
+                <Trash2 className="size-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("tasks.deleteConfirm")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate()}
+                  disabled={deleteMutation.isPending}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {t("common.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>}
       </div>
 
       <div className="space-y-6">
@@ -329,12 +359,12 @@ function TaskDetailPage() {
                     <Checkbox
                       checked={item.done}
                       onCheckedChange={(checked) =>
-                        checklistMutation.mutate({
+                        canWriteTasks && checklistMutation.mutate({
                           itemId: item.id,
                           done: checked === true,
                         })
                       }
-                      disabled={checklistMutation.isPending}
+                      disabled={!canWriteTasks || checklistMutation.isPending}
                     />
                     <span
                       className={
@@ -395,7 +425,7 @@ function TaskDetailPage() {
               </DialogHeader>
               <div className="space-y-1">
                 {linksByType[openLinksType]!.map((link) => {
-                  const href = linkHref(link.linkType, link.linkedId, taskId);
+                  const href = linkHref(link.linkType, link.linkedId, taskId, linkAccess);
                   const label = link.displayName || link.linkedId;
                   return href ? (
                     <Link

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { sponsorshipProgramsQueryOptions } from "@/api/sponsorshipPrograms.queries";
 import type { SponsorshipProgram } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authed/sponsorships/programs/")({
 
 function SponsorshipPrograms() {
   const { t } = useTranslation();
+  const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
   const navigate = useNavigate();
   const programsQuery = useQuery(sponsorshipProgramsQueryOptions());
 
@@ -77,13 +79,15 @@ function SponsorshipPrograms() {
 
   return (
     <PageContent title={t("sponsorshipPrograms.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() => navigate({ to: "/sponsorships/programs/create" })}
-        >
-          {t("common.create")}
-        </Button>
-      </div>
+      {canWriteSponsorships && (
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() => navigate({ to: "/sponsorships/programs/create" })}
+          >
+            {t("common.create")}
+          </Button>
+        </div>
+      )}
       <DataTable
         data={data}
         columns={columns}

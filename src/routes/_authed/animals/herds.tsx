@@ -45,6 +45,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 type OutdoorScheduleType = "pasture" | "exercise_yard";
 
@@ -58,6 +59,7 @@ export const Route = createFileRoute("/_authed/animals/herds")({
 
 function HerdsPage() {
   const { t } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const herdsQuery = useQuery(herdsQueryOptions());
   const herds = herdsQuery.data?.result ?? [];
 
@@ -67,12 +69,14 @@ function HerdsPage() {
 
   return (
     <PageContent title={t("herds.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          {t("herds.addHerd")}
-        </Button>
-      </div>
+      {canWriteAnimals && (
+        <div className="flex justify-end mb-4">
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t("herds.addHerd")}
+          </Button>
+        </div>
+      )}
 
       {herds.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground border border-dashed rounded-md">
@@ -103,21 +107,21 @@ function HerdsPage() {
                   <TableCell>{herd.animals.length}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 justify-end">
-                      <Button
+                      {canWriteAnimals && <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => setEditHerd(herd)}
                       >
                         <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </Button>}
+                      {canWriteAnimals && <Button
                         variant="ghost"
                         size="icon"
                         className="text-destructive hover:text-destructive hover:bg-destructive/10"
                         onClick={() => setDeleteHerd(herd)}
                       >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </Button>}
                     </div>
                   </TableCell>
                 </TableRow>

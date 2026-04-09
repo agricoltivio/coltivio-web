@@ -9,6 +9,7 @@ import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/_authed/contacts/")({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/_authed/contacts/")({
 
 function Contacts() {
   const { t } = useTranslation();
+  const { canWrite: canWriteContacts } = useFeatureAccess("commerce");
   const navigate = useNavigate();
   const contactsQuery = useQuery(contactsQueryOptions());
 
@@ -127,9 +129,11 @@ function Contacts() {
   return (
     <PageContent title={t("contacts.title")} showBackButton={false}>
       <div className="flex justify-end mb-4">
-        <Button onClick={() => navigate({ to: "/contacts/create" })}>
-          {t("common.create")}
-        </Button>
+        {canWriteContacts && (
+          <Button onClick={() => navigate({ to: "/contacts/create" })}>
+            {t("common.create")}
+          </Button>
+        )}
       </div>
       <DataTable
         data={data}

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -28,6 +29,7 @@ export const Route = createFileRoute(
 
 function PlotJournalEntryPage() {
   const { t } = useTranslation();
+  const { canWrite: canWritePlots } = useFeatureAccess("field_calendar");
   const { plotId, entryId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -72,40 +74,42 @@ function PlotJournalEntryPage() {
       }
     >
       <div className="mb-6 flex justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={() =>
-            navigate({
-              to: "/field-calendar/plots/$plotId/journal/$entryId/edit",
-              params: { plotId, entryId },
-            })
-          }
-        >
-          {t("common.edit")}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">{t("common.delete")}</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("journal.deleteConfirm")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {canWritePlots && <>
+          <Button
+            variant="outline"
+            onClick={() =>
+              navigate({
+                to: "/field-calendar/plots/$plotId/journal/$entryId/edit",
+                params: { plotId, entryId },
+              })
+            }
+          >
+            {t("common.edit")}
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">{t("common.delete")}</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("journal.deleteConfirm")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate()}
+                  disabled={deleteMutation.isPending}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {t("common.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>}
       </div>
 
       <div className="space-y-4 max-w-lg">
