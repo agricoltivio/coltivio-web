@@ -155,5 +155,6 @@ code {
 .mdxeditor ol { list-style-type: decimal; padding-left: 1.5em; margin-top: 0.5em; margin-bottom: 0.5em; }
 .mdxeditor li { margin-top: 0.25em; margin-bottom: 0.25em; }
 .mdxeditor blockquote { border-left: 4px solid currentColor; padding-left: 1em; opacity: 0.7; margin: 0.5em 0; }
+.mdxeditor p { margin-top: 0; margin-bottom: 0.75em; }
 .mdxeditor strong { font-weight: 700; }
 .mdxeditor em { font-style: italic; }
