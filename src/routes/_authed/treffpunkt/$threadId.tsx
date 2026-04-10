@@ -414,7 +414,7 @@ function ThreadDetail() {
               ) : (
                 <>
                   <MDXEditor readOnly markdown={reply.body} plugins={readPlugins()} />
-                  {isReplyOwner && (
+                  {isReplyOwner && thread.status === "open" && (
                     <div className="flex gap-2 mt-2">
                       <Button
                         variant="ghost"
@@ -447,7 +447,7 @@ function ThreadDetail() {
         })}
       </div>
 
-      {(
+      {thread.status === "open" && (
       <div
         className="border rounded-lg p-4"
         onFocus={() => setReplyFocused(true)}
