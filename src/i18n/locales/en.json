@@ -12,6 +12,7 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
+    "next": "Next",
     "back": "Back",
     "signOut": "Sign Out",
     "noResults": "No results found",
@@ -726,8 +727,6 @@
     },
     "plots": {
       "title": "Plots",
-      "create": "Create plot",
-      "edit": "Edit plot",
       "plot": "Plot",
       "selectPlot": "Select plot",
       "size": "Area",
@@ -736,7 +735,74 @@
       "localId": "Parcel",
       "currentCrop": "Current crop",
       "additionalNotes": "Notes",
-      "viewDetails": "View details"
+      "viewDetails": "View details",
+      "newPlot": "New plot",
+      "enterMerge": "Merge",
+      "enterSplit": "Split",
+      "edit": {
+        "editInfo": "Edit info",
+        "editShape": "Edit shape",
+        "dragInstruction": "Drag vertices to reshape",
+        "saveShape": "Save shape",
+        "dialog": {
+          "title": "Edit plot info"
+        }
+      },
+      "create": {
+        "toolbar": "Click on the map to place vertices",
+        "toolbarReady": "{{count}} point(s) — close the polygon when ready",
+        "closePolygon": "Close",
+        "confirm": "Save",
+        "dialog": {
+          "title": "New plot",
+          "name": "Plot name"
+        }
+      },
+      "merge": {
+        "toolbar": "{{count}} plots selected",
+        "confirm": "Merge {{count}} plots",
+        "dialog": {
+          "title": "Merge Plots",
+          "strategy": "Strategy",
+          "strategyKeepReference": "Keep Reference",
+          "strategyDeleteAndMigrate": "Delete Reference",
+          "strategyKeepReferenceInfo": "The original plots will be kept as a reference. All existing entries remain assigned to the reference plots.",
+          "strategyDeleteAndMigrateInfo": "The original plots will be deleted. All existing entries will be transferred to the new plot.",
+          "deleteWarning": "Crop rotations will not be transferred and will be lost.",
+          "name": "Merged plot name",
+          "area": "Total area"
+        }
+      },
+      "split": {
+        "toolbar": "Click on the map to draw a split line",
+        "toolbarHasLine": "{{count}} point(s) placed",
+        "toolbarArea": "Click on the map to draw a cut area",
+        "toolbarAreaReady": "{{count}} point(s) — close the area to apply",
+        "toolbarExtract": "Click on a sub-polygon to extract it",
+        "toolLine": "Line",
+        "toolArea": "Area",
+        "toolExtract": "Extract",
+        "closePolygon": "Close",
+        "applyCut": "Cut",
+        "confirmSplit": "Save",
+        "piecesCount": "{{count}} pieces",
+        "splitFailed": "The cut didn't intersect the plot — try again",
+        "extractFailed": "No sub-polygon found at that point",
+        "dialog": {
+          "title": "Confirm Split",
+          "strategy": "Strategy",
+          "strategyKeepReference": "Keep Reference",
+          "strategyDeleteAndMigrate": "Delete Reference",
+          "strategyKeepReferenceInfo": "The original plot will be kept as a reference. All existing entries (crop rotations, harvests, etc.) remain assigned to the reference plot.",
+          "strategyDeleteAndMigrateInfo": "The original plot will be deleted. All existing entries will be transferred to the selected sub-plot.",
+          "originalPlotName": "Reference plot name",
+          "subPlot": "Sub-plot {{letter}}",
+          "migrateHere": "Migrate here",
+          "area": "Area"
+        },
+        "subPlot": "Sub-plot {{letter}}",
+        "migrateHere": "Transfer entries here"
+      }
     },
     "cropRotations": {
       "title": "Crop Rotations",
@@ -1091,6 +1157,46 @@
   "noFarm": {
     "message": "Your account doesn't have a farm yet. Create one first in the app."
   },
+  "onboarding": {
+    "welcome": {
+      "heading": "Welcome to Coltivio!",
+      "subheading": "How would you like to get started?",
+      "create_farm": "Create a new farm",
+      "join_farm": "Join a farm"
+    },
+    "join": {
+      "heading": "Join a farm",
+      "subheading": "Enter the invitation code you received by email.",
+      "code_label": "Invitation code",
+      "email_info": "The code was sent to a specific email address. It must match the email address of your account, otherwise the code won't work.",
+      "submit": "Join",
+      "invalid_code": "Invalid or expired code."
+    },
+    "create": {
+      "name": {
+        "heading": "What is your farm called?",
+        "label": "Farm name"
+      },
+      "location": {
+        "heading": "Where is {{farmName}} located?",
+        "label": "Address",
+        "placeholder": "Search for address..."
+      },
+      "federal_id": {
+        "heading": "Your farm registration number",
+        "label": "Farm registration number",
+        "skip": "Skip"
+      },
+      "confirm": {
+        "heading": "Summary",
+        "submit": "Create farm",
+        "farm_name": "Farm name",
+        "location": "Location",
+        "federal_id": "Farm registration number",
+        "none": "None"
+      }
+    }
+  },
   "membership": {
     "title": "Membership",
     "trialBanner": {
@@ -1260,7 +1366,8 @@
       ],
       "readConfirm": "I have read and accept the rules.",
       "cta": "Let's go"
-    }
+    },
+    "filterOnlyOpen": "Open only"
   },
   "journal": {
     "title": "Journal",

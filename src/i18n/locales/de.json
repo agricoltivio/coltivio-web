@@ -12,6 +12,7 @@
     "yes": "Ja",
     "no": "Nein",
     "confirm": "Bestätigen",
+    "next": "Weiter",
     "back": "Zurück",
     "signOut": "Abmelden",
     "noResults": "Keine Ergebnisse gefunden",
@@ -726,8 +727,6 @@
     },
     "plots": {
       "title": "Schläge",
-      "create": "Schlag erstellen",
-      "edit": "Schlag bearbeiten",
       "plot": "Schlag",
       "selectPlot": "Schlag auswählen",
       "size": "Fläche",
@@ -736,7 +735,74 @@
       "localId": "Parzelle",
       "currentCrop": "Aktuelle Kultur",
       "additionalNotes": "Notizen",
-      "viewDetails": "Details anzeigen"
+      "viewDetails": "Details anzeigen",
+      "newPlot": "Neuer Schlag",
+      "enterMerge": "Zusammenführen",
+      "enterSplit": "Teilen",
+      "edit": {
+        "editInfo": "Info bearbeiten",
+        "editShape": "Form bearbeiten",
+        "dragInstruction": "Punkte ziehen zum Anpassen",
+        "saveShape": "Form speichern",
+        "dialog": {
+          "title": "Schlag-Info bearbeiten"
+        }
+      },
+      "create": {
+        "toolbar": "Auf der Karte klicken, um Punkte zu setzen",
+        "toolbarReady": "{{count}} Punkt(e) — Polygon schließen wenn bereit",
+        "closePolygon": "Schließen",
+        "confirm": "Speichern",
+        "dialog": {
+          "title": "Neuer Schlag",
+          "name": "Schlagname"
+        }
+      },
+      "split": {
+        "toolbar": "Auf der Karte klicken, um eine Trennlinie zu zeichnen",
+        "toolbarHasLine": "{{count}} Punkt(e) gesetzt",
+        "toolbarArea": "Auf der Karte klicken, um eine Schnittfläche zu zeichnen",
+        "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schließen zum Anwenden",
+        "toolbarExtract": "Auf ein Teilpolygon klicken, um es zu extrahieren",
+        "toolLine": "Linie",
+        "toolArea": "Fläche",
+        "toolExtract": "Extrahieren",
+        "closePolygon": "Schließen",
+        "applyCut": "Schneiden",
+        "confirmSplit": "Speichern",
+        "piecesCount": "{{count}} Teile",
+        "splitFailed": "Der Schnitt hat den Schlag nicht gekreuzt — erneut versuchen",
+        "extractFailed": "Kein Teilpolygon an diesem Punkt gefunden",
+        "dialog": {
+          "title": "Aufteilung bestätigen",
+          "strategy": "Strategie",
+          "strategyKeepReference": "Referenz behalten",
+          "strategyDeleteAndMigrate": "Referenz löschen",
+          "strategyKeepReferenceInfo": "Der ursprüngliche Schlag wird als Referenz behalten. Alle bestehenden Einträge (Fruchtfolgen, Ernten, etc.) bleiben dem Referenzschlag zugeordnet.",
+          "strategyDeleteAndMigrateInfo": "Der ursprüngliche Schlag wird gelöscht. Alle bestehenden Einträge werden auf den gewählten Teilschlag übertragen.",
+          "originalPlotName": "Name des Referenzschlags",
+          "subPlot": "Teilfläche {{letter}}",
+          "migrateHere": "Hierhin migrieren",
+          "area": "Fläche"
+        },
+        "subPlot": "Teilschlag {{letter}}",
+        "migrateHere": "Einträge hierher übertragen"
+      },
+      "merge": {
+        "toolbar": "{{count}} Schläge ausgewählt",
+        "confirm": "{{count}} Schläge zusammenführen",
+        "dialog": {
+          "title": "Schläge zusammenführen",
+          "strategy": "Strategie",
+          "strategyKeepReference": "Referenz behalten",
+          "strategyDeleteAndMigrate": "Referenz löschen",
+          "strategyKeepReferenceInfo": "Die ursprünglichen Schläge werden als Referenz behalten. Alle bestehenden Einträge bleiben den Referenzschlägen zugeordnet.",
+          "strategyDeleteAndMigrateInfo": "Die ursprünglichen Schläge werden gelöscht. Alle bestehenden Einträge werden auf den neuen Schlag übertragen.",
+          "deleteWarning": "Fruchtfolgen werden nicht übertragen und gehen verloren.",
+          "name": "Name des zusammengeführten Schlags",
+          "area": "Gesamtfläche"
+        }
+      }
     },
     "cropRotations": {
       "title": "Fruchtfolge",
@@ -1091,6 +1157,46 @@
   "noFarm": {
     "message": "Dein Konto hat noch keinen Hof. Erstelle zuerst einen Hof in der App."
   },
+  "onboarding": {
+    "welcome": {
+      "heading": "Willkommen bei Coltivio!",
+      "subheading": "Wie möchtest du starten?",
+      "create_farm": "Neuen Hof erstellen",
+      "join_farm": "Hof beitreten"
+    },
+    "join": {
+      "heading": "Hof beitreten",
+      "subheading": "Gib den Einladungscode ein, den du per E-Mail erhalten hast.",
+      "code_label": "Einladungscode",
+      "email_info": "Der Code wurde an eine bestimmte E-Mail-Adresse gesendet. Diese muss mit der E-Mail-Adresse deines Kontos übereinstimmen, sonst funktioniert der Code nicht.",
+      "submit": "Beitreten",
+      "invalid_code": "Ungültiger oder abgelaufener Code."
+    },
+    "create": {
+      "name": {
+        "heading": "Wie heißt dein Hof?",
+        "label": "Hofname"
+      },
+      "location": {
+        "heading": "Wo befindet sich {{farmName}}?",
+        "label": "Adresse",
+        "placeholder": "Adresse suchen..."
+      },
+      "federal_id": {
+        "heading": "Deine Betriebsnummer",
+        "label": "Betriebsnummer",
+        "skip": "Überspringen"
+      },
+      "confirm": {
+        "heading": "Zusammenfassung",
+        "submit": "Hof erstellen",
+        "farm_name": "Hofname",
+        "location": "Standort",
+        "federal_id": "Betriebsnummer",
+        "none": "Keine"
+      }
+    }
+  },
   "membership": {
     "title": "Mitgliedschaft",
     "trialBanner": {
@@ -1260,7 +1366,8 @@
       ],
       "readConfirm": "Ich habe die Regeln gelesen und akzeptiere sie.",
       "cta": "Los geht's"
-    }
+    },
+    "filterOnlyOpen": "Nur offene"
   },
   "journal": {
     "title": "Journal",

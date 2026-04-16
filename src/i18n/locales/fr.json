@@ -12,6 +12,7 @@
     "yes": "Oui",
     "no": "Non",
     "confirm": "Confirmer",
+    "next": "Suivant",
     "back": "Retour",
     "signOut": "Déconnexion",
     "noResults": "Aucun résultat",
@@ -726,8 +727,6 @@
     },
     "plots": {
       "title": "Champs",
-      "create": "Créer un champ",
-      "edit": "Modifier le champ",
       "plot": "Champ",
       "selectPlot": "Sélectionner un champ",
       "size": "Surface",
@@ -736,7 +735,74 @@
       "localId": "Parcelle",
       "currentCrop": "Culture actuelle",
       "additionalNotes": "Notes",
-      "viewDetails": "Voir les détails"
+      "viewDetails": "Voir les détails",
+      "newPlot": "Nouveau champ",
+      "enterMerge": "Fusionner",
+      "enterSplit": "Diviser",
+      "edit": {
+        "editInfo": "Modifier les infos",
+        "editShape": "Modifier la forme",
+        "dragInstruction": "Faire glisser les sommets pour remodeler",
+        "saveShape": "Enregistrer la forme",
+        "dialog": {
+          "title": "Modifier les infos du champ"
+        }
+      },
+      "create": {
+        "toolbar": "Cliquer sur la carte pour placer des points",
+        "toolbarReady": "{{count}} point(s) — fermer le polygone quand prêt",
+        "closePolygon": "Fermer",
+        "confirm": "Enregistrer",
+        "dialog": {
+          "title": "Nouveau champ",
+          "name": "Nom du champ"
+        }
+      },
+      "split": {
+        "toolbar": "Cliquer sur la carte pour tracer une ligne de division",
+        "toolbarHasLine": "{{count}} point(s) placé(s)",
+        "toolbarArea": "Cliquer sur la carte pour tracer une zone de coupe",
+        "toolbarAreaReady": "{{count}} point(s) — fermer la zone pour appliquer",
+        "toolbarExtract": "Cliquer sur un sous-polygone pour l'extraire",
+        "toolLine": "Ligne",
+        "toolArea": "Zone",
+        "toolExtract": "Extraire",
+        "closePolygon": "Fermer",
+        "applyCut": "Couper",
+        "confirmSplit": "Enregistrer",
+        "piecesCount": "{{count}} parties",
+        "splitFailed": "La coupe n'a pas croisé le champ — réessayer",
+        "extractFailed": "Aucun sous-polygone trouvé à cet endroit",
+        "dialog": {
+          "title": "Confirmer la division",
+          "strategy": "Stratégie",
+          "strategyKeepReference": "Conserver la référence",
+          "strategyDeleteAndMigrate": "Supprimer la référence",
+          "strategyKeepReferenceInfo": "Le champ d'origine sera conservé comme référence. Toutes les entrées existantes (rotations, récoltes, etc.) resteront associées au champ de référence.",
+          "strategyDeleteAndMigrateInfo": "Le champ d'origine sera supprimé. Toutes les entrées existantes seront transférées au sous-champ choisi.",
+          "originalPlotName": "Nom du champ de référence",
+          "subPlot": "Sous-champ {{letter}}",
+          "migrateHere": "Migrer ici",
+          "area": "Surface"
+        },
+        "subPlot": "Sous-champ {{letter}}",
+        "migrateHere": "Transférer les entrées ici"
+      },
+      "merge": {
+        "toolbar": "{{count}} champ(s) sélectionné(s)",
+        "confirm": "Fusionner {{count}} champs",
+        "dialog": {
+          "title": "Fusionner les champs",
+          "strategy": "Stratégie",
+          "strategyKeepReference": "Conserver la référence",
+          "strategyDeleteAndMigrate": "Supprimer la référence",
+          "strategyKeepReferenceInfo": "Les champs d'origine seront conservés comme référence. Toutes les entrées existantes resteront associées aux champs de référence.",
+          "strategyDeleteAndMigrateInfo": "Les champs d'origine seront supprimés. Toutes les entrées existantes seront transférées au nouveau champ.",
+          "deleteWarning": "Les rotations de cultures ne seront pas transférées et seront perdues.",
+          "name": "Nom du champ fusionné",
+          "area": "Surface totale"
+        }
+      }
     },
     "cropRotations": {
       "title": "Rotation des cultures",
@@ -1091,6 +1157,46 @@
   "noFarm": {
     "message": "Ton compte n'a pas encore de ferme. Crée-en une d'abord dans l'app."
   },
+  "onboarding": {
+    "welcome": {
+      "heading": "Bienvenue chez Coltivio !",
+      "subheading": "Comment souhaitez-vous commencer ?",
+      "create_farm": "Créer une nouvelle ferme",
+      "join_farm": "Rejoindre une ferme"
+    },
+    "join": {
+      "heading": "Rejoindre une ferme",
+      "subheading": "Entrez le code d'invitation reçu par e-mail.",
+      "code_label": "Code d'invitation",
+      "email_info": "Le code a été envoyé à une adresse e-mail spécifique. Elle doit correspondre à l'adresse e-mail de votre compte, sinon le code ne fonctionnera pas.",
+      "submit": "Rejoindre",
+      "invalid_code": "Code invalide ou expiré."
+    },
+    "create": {
+      "name": {
+        "heading": "Comment s'appelle votre ferme ?",
+        "label": "Nom de la ferme"
+      },
+      "location": {
+        "heading": "Où se trouve {{farmName}} ?",
+        "label": "Adresse",
+        "placeholder": "Rechercher une adresse..."
+      },
+      "federal_id": {
+        "heading": "Votre numéro d'exploitation agricole",
+        "label": "Numéro d'exploitation",
+        "skip": "Passer"
+      },
+      "confirm": {
+        "heading": "Récapitulatif",
+        "submit": "Créer la ferme",
+        "farm_name": "Nom de la ferme",
+        "location": "Emplacement",
+        "federal_id": "Numéro d'exploitation",
+        "none": "Aucun"
+      }
+    }
+  },
   "membership": {
     "title": "Adhésion",
     "trialBanner": {
@@ -1260,7 +1366,8 @@
       ],
       "readConfirm": "J'ai lu et j'accepte les règles.",
       "cta": "C'est parti"
-    }
+    },
+    "filterOnlyOpen": "Ouverts uniquement"
   },
   "journal": {
     "title": "Journal",

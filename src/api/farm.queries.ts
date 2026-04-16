@@ -1,5 +1,6 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./client";
+import type { components } from "./schema";
 
 export const farmQueryOptions = (enabled = true) => {
   return queryOptions({
@@ -26,6 +27,35 @@ export const farmFieldEventsQueryOptions = (fromDate: string, toDate: string) =>
     },
   });
 };
+
+export function useCreateFarmMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: components["schemas"]["PostV1FarmRequestBody"]) => {
+      const response = await apiClient.POST("/v1/farm", { body });
+      if (response.error) throw new Error("Failed to create farm");
+      return response.data.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["me"] });
+      void queryClient.invalidateQueries({ queryKey: ["farm"] });
+    },
+  });
+}
+
+export function useAcceptFarmInviteMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (code: string) => {
+      const response = await apiClient.POST("/v1/farm/invites/accept", { body: { code } });
+      if (response.error) throw new Error("invalid_code");
+      return response.data.data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["me"] });
+    },
+  });
+}
 
 export const farmDashboardQueryOptions = (year: number) => {
   return queryOptions({

@@ -45,6 +45,7 @@ function TreffpunktPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [typeFilter, setTypeFilter] = useState<ForumThreadType | "all">("all");
+  const [onlyOpen, setOnlyOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { user } = useAuth();
   const userId = user!.id;
@@ -72,6 +73,10 @@ function TreffpunktPage() {
       result = result.filter((t) => t.type === typeFilter);
     }
 
+    if (onlyOpen) {
+      result = result.filter((t) => t.status === "open");
+    }
+
     if (search.trim()) {
       const lower = search.toLowerCase();
       result = result.filter((t) => t.title.toLowerCase().includes(lower));
@@ -85,7 +90,7 @@ function TreffpunktPage() {
       const bDate = typeof b.updatedAt === "string" ? new Date(b.updatedAt).getTime() : 0;
       return bDate - aDate;
     });
-  }, [allThreads, typeFilter, search]);
+  }, [allThreads, typeFilter, onlyOpen, search]);
 
   function formatDate(date: string | unknown) {
     if (!date || typeof date !== "string") return null;
@@ -121,13 +126,23 @@ function TreffpunktPage() {
 
 
 
-      <div className="mb-4">
+      <div className="flex items-center gap-4 mb-4">
         <Input
           className="w-64"
           placeholder={t("common.search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="only-open"
+            checked={onlyOpen}
+            onCheckedChange={(checked) => setOnlyOpen(checked === true)}
+          />
+          <Label htmlFor="only-open" className="text-sm cursor-pointer">
+            {t("treffpunkt.filterOnlyOpen")}
+          </Label>
+        </div>
       </div>
 
       {threadsQuery.isLoading && (

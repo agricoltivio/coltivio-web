@@ -12,6 +12,7 @@
     "yes": "Sì",
     "no": "No",
     "confirm": "Conferma",
+    "next": "Avanti",
     "back": "Indietro",
     "signOut": "Esci",
     "noResults": "Nessun risultato",
@@ -726,8 +727,6 @@
     },
     "plots": {
       "title": "Campi",
-      "create": "Crea campo",
-      "edit": "Modifica campo",
       "plot": "Campo",
       "selectPlot": "Seleziona campo",
       "size": "Superficie",
@@ -736,7 +735,74 @@
       "localId": "Particella",
       "currentCrop": "Coltura attuale",
       "additionalNotes": "Note",
-      "viewDetails": "Visualizza dettagli"
+      "viewDetails": "Visualizza dettagli",
+      "newPlot": "Nuovo campo",
+      "enterMerge": "Unire",
+      "enterSplit": "Dividere",
+      "edit": {
+        "editInfo": "Modifica info",
+        "editShape": "Modifica forma",
+        "dragInstruction": "Trascina i vertici per modificare",
+        "saveShape": "Salva forma",
+        "dialog": {
+          "title": "Modifica info campo"
+        }
+      },
+      "create": {
+        "toolbar": "Clicca sulla mappa per posizionare i punti",
+        "toolbarReady": "{{count}} punto/i — chiudi il poligono quando pronto",
+        "closePolygon": "Chiudi",
+        "confirm": "Salva",
+        "dialog": {
+          "title": "Nuovo campo",
+          "name": "Nome del campo"
+        }
+      },
+      "split": {
+        "toolbar": "Clicca sulla mappa per disegnare una linea di divisione",
+        "toolbarHasLine": "{{count}} punto/i posizionato/i",
+        "toolbarArea": "Clicca sulla mappa per disegnare un'area di taglio",
+        "toolbarAreaReady": "{{count}} punto/i — chiudi l'area per applicare",
+        "toolbarExtract": "Clicca su un sotto-poligono per estrarlo",
+        "toolLine": "Linea",
+        "toolArea": "Area",
+        "toolExtract": "Estrai",
+        "closePolygon": "Chiudi",
+        "applyCut": "Taglia",
+        "confirmSplit": "Salva",
+        "piecesCount": "{{count}} parti",
+        "splitFailed": "Il taglio non ha intersecato il campo — riprovare",
+        "extractFailed": "Nessun sotto-poligono trovato in quel punto",
+        "dialog": {
+          "title": "Conferma divisione",
+          "strategy": "Strategia",
+          "strategyKeepReference": "Mantieni riferimento",
+          "strategyDeleteAndMigrate": "Elimina riferimento",
+          "strategyKeepReferenceInfo": "Il campo originale viene mantenuto come riferimento. Tutte le registrazioni esistenti (rotazioni colturali, raccolti, ecc.) restano associate al campo di riferimento.",
+          "strategyDeleteAndMigrateInfo": "Il campo originale viene eliminato. Tutte le registrazioni esistenti vengono trasferite al sottocampo selezionato.",
+          "originalPlotName": "Nome del campo di riferimento",
+          "subPlot": "Sottocampo {{letter}}",
+          "migrateHere": "Migra qui",
+          "area": "Superficie"
+        },
+        "subPlot": "Sottocampo {{letter}}",
+        "migrateHere": "Trasferisci registrazioni qui"
+      },
+      "merge": {
+        "toolbar": "{{count}} campo/i selezionato/i",
+        "confirm": "Unire {{count}} campi",
+        "dialog": {
+          "title": "Unire campi",
+          "strategy": "Strategia",
+          "strategyKeepReference": "Mantieni riferimento",
+          "strategyDeleteAndMigrate": "Elimina riferimento",
+          "strategyKeepReferenceInfo": "I campi originali vengono mantenuti come riferimento. Tutte le registrazioni esistenti restano associate ai campi di riferimento.",
+          "strategyDeleteAndMigrateInfo": "I campi originali vengono eliminati. Tutte le registrazioni esistenti vengono trasferite al nuovo campo.",
+          "deleteWarning": "Le rotazioni colturali non vengono trasferite e andranno perse.",
+          "name": "Nome del campo unito",
+          "area": "Superficie totale"
+        }
+      }
     },
     "cropRotations": {
       "title": "Rotazione colturale",
@@ -1091,6 +1157,46 @@
   "noFarm": {
     "message": "Il tuo account non ha ancora un'azienda. Creane una prima nell'app."
   },
+  "onboarding": {
+    "welcome": {
+      "heading": "Benvenuto in Coltivio!",
+      "subheading": "Come vuoi iniziare?",
+      "create_farm": "Crea una nuova azienda",
+      "join_farm": "Unisciti a un'azienda"
+    },
+    "join": {
+      "heading": "Unisciti a un'azienda",
+      "subheading": "Inserisci il codice d'invito ricevuto via e-mail.",
+      "code_label": "Codice d'invito",
+      "email_info": "Il codice è stato inviato a un indirizzo e-mail specifico. Deve corrispondere all'indirizzo e-mail del tuo account, altrimenti il codice non funzionerà.",
+      "submit": "Unisciti",
+      "invalid_code": "Codice non valido o scaduto."
+    },
+    "create": {
+      "name": {
+        "heading": "Come si chiama la tua azienda?",
+        "label": "Nome dell'azienda"
+      },
+      "location": {
+        "heading": "Dove si trova {{farmName}}?",
+        "label": "Indirizzo",
+        "placeholder": "Cerca indirizzo..."
+      },
+      "federal_id": {
+        "heading": "Il tuo codice azienda agricola",
+        "label": "Codice azienda agricola",
+        "skip": "Salta"
+      },
+      "confirm": {
+        "heading": "Riepilogo",
+        "submit": "Crea azienda",
+        "farm_name": "Nome dell'azienda",
+        "location": "Posizione",
+        "federal_id": "Codice azienda agricola",
+        "none": "Nessuno"
+      }
+    }
+  },
   "membership": {
     "title": "Iscrizione",
     "trialBanner": {
@@ -1260,7 +1366,8 @@
       ],
       "readConfirm": "Ho letto e accetto le regole.",
       "cta": "Iniziamo"
-    }
+    },
+    "filterOnlyOpen": "Solo aperti"
   },
   "journal": {
     "title": "Diario",
