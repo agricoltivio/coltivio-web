@@ -509,17 +509,20 @@ function PlotsMap() {
 
   // In-progress drawing for create mode — open polyline while drawing, hidden once closed
   const createDrawingGeojson = useMemo<GeoJSON.FeatureCollection>(() => {
-    if (mode.type !== "create" || mode.drawnVertices.length < 2 || mode.closed) return EMPTY_GEOJSON;
+    if (mode.type !== "create" || mode.drawnVertices.length < 1 || mode.closed) return EMPTY_GEOJSON;
     const features: GeoJSON.Feature[] = [
-      { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: mode.drawnVertices } },
+      // LineString needs 2+ coords; skip when only 1 vertex placed
+      ...(mode.drawnVertices.length >= 2
+        ? [{ type: "Feature" as const, properties: {}, geometry: { type: "LineString" as const, coordinates: mode.drawnVertices } }]
+        : []),
       ...mode.drawnVertices.map(([lng, lat]) => ({ type: "Feature" as const, properties: {}, geometry: { type: "Point" as const, coordinates: [lng, lat] } })),
     ];
     return { type: "FeatureCollection", features };
   }, [mode]);
 
-  // Polygon preview for create mode — shown as soon as 3+ vertices are placed
+  // Polygon preview for create mode — only shown after the polygon is closed (mirrors split-polygon behaviour)
   const createPolygonGeojson = useMemo<GeoJSON.FeatureCollection>(() => {
-    if (mode.type !== "create" || mode.drawnVertices.length < 3) return EMPTY_GEOJSON;
+    if (mode.type !== "create" || !mode.closed || mode.drawnVertices.length < 3) return EMPTY_GEOJSON;
     const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
     return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [ring] } }] };
   }, [mode]);
@@ -763,7 +766,13 @@ function PlotsMap() {
 
   return (
     <PageContent title={t("fieldCalendar.plots.title")} showBackButton={false}>
-      <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 200px)" }}>
+      <div className="flex justify-end mb-2">
+        <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
+          <Plus className="h-4 w-4 mr-1.5" />
+          {t("fieldCalendar.plots.newPlot")}
+        </Button>
+      </div>
+      <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
         <Map
           ref={mapRef}
           initialViewState={{ longitude: savedViewport?.lng ?? 8.2, latitude: savedViewport?.lat ?? 46.8, zoom: savedViewport?.zoom ?? 8 }}
@@ -935,30 +944,6 @@ function PlotsMap() {
           {toolError && (
             <div className="text-xs text-destructive bg-background/95 rounded px-2 py-1 border border-destructive/50">
               {toolError}
-            </div>
-          )}
-
-          {/* View mode: always show New Plot, show Merge/Split when a plot is selected */}
-          {mode.type === "view" && (
-            <div className="flex gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-2 py-1.5">
-              {selectedPlot && (
-                <>
-                  <Button variant="secondary" size="sm" onClick={() => dispatch({ type: "ENTER_MERGE", primaryPlotId: selectedPlot.id })}>
-                    <GitMerge className="h-4 w-4 mr-1.5" />
-                    {t("fieldCalendar.plots.enterMerge")}
-                  </Button>
-                  <Button variant="secondary" size="sm" onClick={() => dispatch({ type: "ENTER_SPLIT", plotId: selectedPlot.id })}>
-                    <Scissors className="h-4 w-4 mr-1.5" />
-                    {t("fieldCalendar.plots.enterSplit")}
-                  </Button>
-                </>
-              )}
-              {!selectedPlot && (
-                <Button variant="secondary" size="sm" onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-                  <Plus className="h-4 w-4 mr-1.5" />
-                  {t("fieldCalendar.plots.newPlot")}
-                </Button>
-              )}
             </div>
           )}
 
