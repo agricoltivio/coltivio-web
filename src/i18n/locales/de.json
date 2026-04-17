@@ -739,6 +739,12 @@
       "newPlot": "Neuer Schlag",
       "enterMerge": "Zusammenführen",
       "enterSplit": "Teilen",
+      "colorMode": {
+        "plot": "Schlag",
+        "crop": "Kultur",
+        "usage": "Nutzung",
+        "cutting": "Schnittzeit"
+      },
       "edit": {
         "editInfo": "Info bearbeiten",
         "editShape": "Form bearbeiten",

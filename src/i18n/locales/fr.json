@@ -739,6 +739,12 @@
       "newPlot": "Nouveau champ",
       "enterMerge": "Fusionner",
       "enterSplit": "Diviser",
+      "colorMode": {
+        "plot": "Parcelle",
+        "crop": "Culture",
+        "usage": "Utilisation",
+        "cutting": "Date de coupe"
+      },
       "edit": {
         "editInfo": "Modifier les infos",
         "editShape": "Modifier la forme",

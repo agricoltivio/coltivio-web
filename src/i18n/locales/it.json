@@ -739,6 +739,12 @@
       "newPlot": "Nuovo campo",
       "enterMerge": "Unire",
       "enterSplit": "Dividere",
+      "colorMode": {
+        "plot": "Campo",
+        "crop": "Coltura",
+        "usage": "Utilizzo",
+        "cutting": "Data taglio"
+      },
       "edit": {
         "editInfo": "Modifica info",
         "editShape": "Modifica forma",

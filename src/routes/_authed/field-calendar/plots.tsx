@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Check, FileEdit, GitMerge, Home, Lasso, Layers, List, Minus, MousePointerClick, Pencil, Plus, Save, Scissors, Undo2, X } from "lucide-react";
+import { Check, FileEdit, GitMerge, Home, Lasso, Layers, List, Minus, MousePointerClick, Palette, Pencil, Plus, Save, Scissors, Undo2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -189,6 +189,28 @@ function plotIdToColor(id: string): string {
   return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+export type PlotColorMode = "plot" | "crop" | "usage" | "cutting";
+
+// Golden-angle hue walk for sequential indices (used for cutting-date month coloring).
+function indexToDistinctColor(index: number): string {
+  const hue = (index * 137.508) % 360;
+  return plotIdToColor(`__index_${Math.round(hue)}__`);
+}
+
+function resolvePlotColor(plot: Plot, mode: PlotColorMode): string {
+  switch (mode) {
+    case "crop":
+      return plotIdToColor(plot.currentCropRotation?.cropId ?? "__no_crop__");
+    case "usage":
+      return plotIdToColor(String(plot.usage ?? "__no_usage__"));
+    case "cutting":
+      if (!plot.cuttingDate) return plotIdToColor("__no_cutting__");
+      return indexToDistinctColor(new Date(plot.cuttingDate).getMonth());
+    default:
+      return plotIdToColor(plot.id);
+  }
+}
+
 // Splits a MultiPolygon by a line using half-plane intersection.
 // Works for full cuts, corner cuts, and diagonal cuts.
 function splitMultiPolygonByLine(
@@ -330,9 +352,38 @@ export const Route = createFileRoute("/_authed/field-calendar/plots")({
 
 type BaseLayer = "satellite" | "pixelkarte";
 
+const COLOR_MODE_OPTIONS: PlotColorMode[] = ["plot", "crop", "usage", "cutting"];
+
+function ColorModeToggle({ plotColorMode, onSelect }: { plotColorMode: PlotColorMode; onSelect: (m: PlotColorMode) => void }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <Button variant="outline" size="icon" onClick={() => setOpen((p) => !p)}>
+        <Palette className="h-4 w-4" />
+      </Button>
+      {open && (
+        <div className="absolute top-0 right-9 bg-background border rounded-md shadow-md py-1 min-w-32">
+          {COLOR_MODE_OPTIONS.map((m) => (
+            <button
+              key={m}
+              className={`w-full text-left px-3 py-1.5 text-sm hover:bg-accent ${m === plotColorMode ? "font-semibold text-primary" : ""}`}
+              onClick={() => { onSelect(m); setOpen(false); }}
+            >
+              {t(`fieldCalendar.plots.colorMode.${m}`)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PlotsMap() {
   const { t } = useTranslation();
   const [activeLayer, setActiveLayer] = useState<BaseLayer>("satellite");
+  const [plotColorMode, setPlotColorMode] = useState<PlotColorMode>("plot");
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const hasCentered = useRef(false);
@@ -378,10 +429,10 @@ function PlotsMap() {
     features: visiblePlots.map((plot) => ({
       type: "Feature",
       id: plot.id,
-      properties: { id: plot.id, name: plot.name, color: plotIdToColor(plot.id), selected: plot.id === selectedPlotId ? 1 : 0 },
+      properties: { id: plot.id, name: plot.name, color: resolvePlotColor(plot, plotColorMode), selected: plot.id === selectedPlotId ? 1 : 0 },
       geometry: plot.geometry,
     })),
-  }), [visiblePlots, selectedPlotId]);
+  }), [visiblePlots, selectedPlotId, plotColorMode]);
 
   const labelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => {
     if (mode.type === "split") return EMPTY_GEOJSON;
@@ -862,11 +913,14 @@ function PlotsMap() {
           </div>
         )}
 
-        {/* Layer toggle */}
-        <div className="absolute top-2 right-2 z-10">
+        {/* Layer toggle + color mode toggle */}
+        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
           <Button variant="outline" size="icon" onClick={() => setActiveLayer((p) => p === "satellite" ? "pixelkarte" : "satellite")}>
             <Layers className="h-4 w-4" />
           </Button>
+          {mode.type === "view" && (
+            <ColorModeToggle plotColorMode={plotColorMode} onSelect={setPlotColorMode} />
+          )}
         </div>
 
         {/* Plot list button */}

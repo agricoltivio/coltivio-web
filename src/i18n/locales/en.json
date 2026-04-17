@@ -739,6 +739,12 @@
       "newPlot": "New plot",
       "enterMerge": "Merge",
       "enterSplit": "Split",
+      "colorMode": {
+        "plot": "Plot",
+        "crop": "Crop",
+        "usage": "Usage",
+        "cutting": "Cutting date"
+      },
       "edit": {
         "editInfo": "Edit info",
         "editShape": "Edit shape",
