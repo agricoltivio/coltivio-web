@@ -235,6 +235,7 @@ function Harvests() {
         ? ([
             {
               id: "plotName",
+              accessorFn: (row) => "plot" in row ? row.plot.name : "",
               header: t("fieldCalendar.plots.plot"),
               cell: ({ row }) =>
                 "plot" in row.original ? row.original.plot.name : "—",
@@ -243,11 +244,13 @@ function Harvests() {
         : []),
       {
         id: "cropName",
+        accessorFn: (row) => row.crop.name,
         header: t("fieldCalendar.harvests.crop"),
         cell: ({ row }) => row.original.crop.name,
       },
       {
         id: "amount",
+        accessorFn: (row) => row.numberOfUnits * row.kilosPerUnit,
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
           `${(row.original.numberOfUnits * row.original.kilosPerUnit).toFixed(1)} kg`,

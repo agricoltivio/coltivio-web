@@ -212,6 +212,7 @@ function FertilizerApplications() {
         ? ([
             {
               id: "plotName",
+              accessorFn: (row) => "plot" in row ? row.plot.name : "",
               header: t("fieldCalendar.plots.plot"),
               cell: ({ row }) =>
                 "plot" in row.original ? row.original.plot.name : "—",
@@ -220,11 +221,13 @@ function FertilizerApplications() {
         : []),
       {
         id: "fertilizerName",
+        accessorFn: (row) => row.fertilizer.name,
         header: t("fieldCalendar.fertilizerApplications.fertilizer"),
         cell: ({ row }) => row.original.fertilizer.name,
       },
       {
         id: "amount",
+        accessorFn: (row) => row.numberOfUnits * row.amountPerUnit,
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
           `${(row.original.numberOfUnits * row.original.amountPerUnit).toFixed(1)} ${row.original.fertilizer.unit}`,
@@ -256,6 +259,12 @@ function FertilizerApplications() {
       <DataTable
         data={data}
         columns={columns}
+        onRowClick={(app) =>
+          navigate({
+            to: "/field-calendar/fertilizer-applications/$fertilizerApplicationId",
+            params: { fertilizerApplicationId: app.id },
+          })
+        }
         defaultSorting={[{ id: "date", desc: true }]}
       />
     </PageContent>

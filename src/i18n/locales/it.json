@@ -1037,7 +1037,8 @@
         "hoeing": "Sarchiatura",
         "flame_weeding": "Diserbo termico",
         "custom": "Altro"
-      }
+      },
+      "deleteConfirm": "Vuoi davvero eliminare questa lavorazione del terreno?"
     },
     "presets": {
       "select": "Seleziona modello",
@@ -1070,7 +1071,8 @@
         "haylage": "Fienagione",
         "other": "Altro",
         "none": "Nessuno"
-      }
+      },
+      "deleteConfirm": "Vuoi davvero eliminare questo raccolto?"
     },
     "fertilizerApplications": {
       "title": "Concimazione",
@@ -1093,7 +1095,8 @@
         "spray": "Irrorazione",
         "spread": "Spandimento",
         "other": "Altro"
-      }
+      },
+      "deleteConfirm": "Vuoi davvero eliminare questa concimazione?"
     },
     "cropProtectionApplications": {
       "title": "Difesa fitosanitaria",
@@ -1109,7 +1112,8 @@
         "broadcasting": "Spandimento",
         "injecting": "Iniezione",
         "other": "Altro"
-      }
+      },
+      "deleteConfirm": "Vuoi davvero eliminare questo trattamento fitosanitario?"
     },
     "timeline": {
       "years": "Anni",

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { cropProtectionApplicationsQueryOptions } from "@/api/cropProtectionApplications.queries";
 import { cropProtectionProductsQueryOptions } from "@/api/cropProtectionProducts.queries";
 import type {
@@ -17,6 +18,17 @@ import {
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -85,6 +97,7 @@ function EditCropProtectionApplication() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { id } = Route.useParams();
+  const { canWrite } = useFeatureAccess("field_calendar");
 
   const [createProductOpen, setCreateProductOpen] = useState(false);
 
@@ -184,6 +197,20 @@ function EditCropProtectionApplication() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.DELETE(
+        "/v1/cropProtectionApplications/byId/{cropProtectionApplicationId}",
+        { params: { path: { cropProtectionApplicationId: id } } },
+      );
+      if (response.error) throw new Error("Failed to delete crop protection application");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cropProtectionApplications"] });
+      navigate({ to: "/field-calendar/crop-protection-applications" });
+    },
+  });
+
   const products = productsQuery.data?.result ?? [];
   const watchedProductId = watch("productId");
   const watchedMethod = watch("method");
@@ -197,6 +224,34 @@ function EditCropProtectionApplication() {
         navigate({ to: "/field-calendar/crop-protection-applications" })
       }
     >
+      {canWrite && (
+        <div className="flex justify-end mb-6">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={deleteMutation.isPending}>
+                {t("common.delete")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("fieldCalendar.cropProtectionApplications.deleteConfirm")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate()}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {t("common.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
         className="space-y-4 max-w-lg"

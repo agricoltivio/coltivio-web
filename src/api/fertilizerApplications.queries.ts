@@ -52,6 +52,19 @@ export const fertilizerApplicationYearsQueryOptions = () =>
     },
   });
 
+export const fertilizerApplicationQueryOptions = (fertilizerApplicationId: string) =>
+  queryOptions({
+    queryKey: ["fertilizerApplications", "byId", fertilizerApplicationId],
+    queryFn: async () => {
+      const response = await apiClient.GET(
+        "/v1/fertilizerApplications/byId/{fertilizerApplicationId}",
+        { params: { path: { fertilizerApplicationId } } },
+      );
+      if (response.error) throw new Error("Failed to fetch fertilizer application");
+      return response.data.data;
+    },
+  });
+
 export const fertilizerApplicationPresetsQueryOptions = () => {
   return queryOptions({
     queryKey: ["fertilizerApplications", "presets"],

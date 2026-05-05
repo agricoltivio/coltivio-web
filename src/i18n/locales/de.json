@@ -1037,7 +1037,8 @@
         "hoeing": "Hacken",
         "flame_weeding": "Abflammen",
         "custom": "Sonstiges"
-      }
+      },
+      "deleteConfirm": "Möchten Sie diese Bodenbearbeitung wirklich löschen?"
     },
     "presets": {
       "select": "Vorlage auswählen",
@@ -1070,7 +1071,8 @@
         "haylage": "Haylage",
         "other": "Sonstiges",
         "none": "Keine"
-      }
+      },
+      "deleteConfirm": "Möchten Sie diese Ernte wirklich löschen?"
     },
     "fertilizerApplications": {
       "title": "Düngung",
@@ -1093,7 +1095,8 @@
         "spray": "Spritzen",
         "spread": "Streuen",
         "other": "Sonstiges"
-      }
+      },
+      "deleteConfirm": "Möchten Sie diese Düngung wirklich löschen?"
     },
     "cropProtectionApplications": {
       "title": "Pflanzenschutz",
@@ -1109,7 +1112,8 @@
         "broadcasting": "Streuen",
         "injecting": "Injizieren",
         "other": "Sonstiges"
-      }
+      },
+      "deleteConfirm": "Möchten Sie diese Pflanzenschutzapplikation wirklich löschen?"
     },
     "timeline": {
       "years": "Jahre",

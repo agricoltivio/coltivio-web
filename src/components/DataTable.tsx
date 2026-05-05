@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
@@ -119,16 +119,32 @@ export function DataTable<TData>({
           <TableHeader className="bg-muted/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-muted/50">
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const sorted = header.column.getIsSorted();
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={canSort ? "cursor-pointer select-none text-left" : "text-left"}
+                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div className="flex items-center gap-1">
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {canSort && (
+                            <span className="text-muted-foreground">
+                              {sorted === "asc"
+                                ? <ArrowUp className="h-3 w-3" />
+                                : sorted === "desc"
+                                ? <ArrowDown className="h-3 w-3" />
+                                : <ArrowUpDown className="h-3 w-3" />}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>

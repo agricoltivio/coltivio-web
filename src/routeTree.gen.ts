@@ -100,6 +100,7 @@ import { Route as AuthedFieldCalendarHarvestsHarvestIdRouteImport } from './rout
 import { Route as AuthedFieldCalendarFertilizersCreateRouteImport } from './routes/_authed/field-calendar/fertilizers_.create'
 import { Route as AuthedFieldCalendarFertilizersFertilizerIdRouteImport } from './routes/_authed/field-calendar/fertilizers_.$fertilizerId'
 import { Route as AuthedFieldCalendarFertilizerApplicationsCreateRouteImport } from './routes/_authed/field-calendar/fertilizer-applications_.create'
+import { Route as AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRouteImport } from './routes/_authed/field-calendar/fertilizer-applications_.$fertilizerApplicationId'
 import { Route as AuthedFieldCalendarCropsCreateRouteImport } from './routes/_authed/field-calendar/crops_.create'
 import { Route as AuthedFieldCalendarCropsCropIdRouteImport } from './routes/_authed/field-calendar/crops_.$cropId'
 import { Route as AuthedFieldCalendarCropRotationsPlanRouteImport } from './routes/_authed/field-calendar/crop-rotations_.plan'
@@ -644,6 +645,14 @@ const AuthedFieldCalendarFertilizerApplicationsCreateRoute =
     path: '/field-calendar/fertilizer-applications/create',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute =
+  AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRouteImport.update(
+    {
+      id: '/field-calendar/fertilizer-applications_/$fertilizerApplicationId',
+      path: '/field-calendar/fertilizer-applications/$fertilizerApplicationId',
+      getParentRoute: () => AuthedRouteRoute,
+    } as any,
+  )
 const AuthedFieldCalendarCropsCreateRoute =
   AuthedFieldCalendarCropsCreateRouteImport.update({
     id: '/field-calendar/crops_/create',
@@ -1014,6 +1023,7 @@ export interface FileRoutesByFullPath {
   '/field-calendar/crop-rotations/plan': typeof AuthedFieldCalendarCropRotationsPlanRoute
   '/field-calendar/crops/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
   '/field-calendar/crops/create': typeof AuthedFieldCalendarCropsCreateRoute
+  '/field-calendar/fertilizer-applications/$fertilizerApplicationId': typeof AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute
   '/field-calendar/fertilizer-applications/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
   '/field-calendar/fertilizers/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
   '/field-calendar/fertilizers/create': typeof AuthedFieldCalendarFertilizersCreateRoute
@@ -1146,6 +1156,7 @@ export interface FileRoutesByTo {
   '/field-calendar/crop-rotations/plan': typeof AuthedFieldCalendarCropRotationsPlanRoute
   '/field-calendar/crops/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
   '/field-calendar/crops/create': typeof AuthedFieldCalendarCropsCreateRoute
+  '/field-calendar/fertilizer-applications/$fertilizerApplicationId': typeof AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute
   '/field-calendar/fertilizer-applications/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
   '/field-calendar/fertilizers/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
   '/field-calendar/fertilizers/create': typeof AuthedFieldCalendarFertilizersCreateRoute
@@ -1287,6 +1298,7 @@ export interface FileRoutesById {
   '/_authed/field-calendar/crop-rotations_/plan': typeof AuthedFieldCalendarCropRotationsPlanRoute
   '/_authed/field-calendar/crops_/$cropId': typeof AuthedFieldCalendarCropsCropIdRoute
   '/_authed/field-calendar/crops_/create': typeof AuthedFieldCalendarCropsCreateRoute
+  '/_authed/field-calendar/fertilizer-applications_/$fertilizerApplicationId': typeof AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute
   '/_authed/field-calendar/fertilizer-applications_/create': typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
   '/_authed/field-calendar/fertilizers_/$fertilizerId': typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
   '/_authed/field-calendar/fertilizers_/create': typeof AuthedFieldCalendarFertilizersCreateRoute
@@ -1429,6 +1441,7 @@ export interface FileRouteTypes {
     | '/field-calendar/crop-rotations/plan'
     | '/field-calendar/crops/$cropId'
     | '/field-calendar/crops/create'
+    | '/field-calendar/fertilizer-applications/$fertilizerApplicationId'
     | '/field-calendar/fertilizer-applications/create'
     | '/field-calendar/fertilizers/$fertilizerId'
     | '/field-calendar/fertilizers/create'
@@ -1561,6 +1574,7 @@ export interface FileRouteTypes {
     | '/field-calendar/crop-rotations/plan'
     | '/field-calendar/crops/$cropId'
     | '/field-calendar/crops/create'
+    | '/field-calendar/fertilizer-applications/$fertilizerApplicationId'
     | '/field-calendar/fertilizer-applications/create'
     | '/field-calendar/fertilizers/$fertilizerId'
     | '/field-calendar/fertilizers/create'
@@ -1701,6 +1715,7 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/crop-rotations_/plan'
     | '/_authed/field-calendar/crops_/$cropId'
     | '/_authed/field-calendar/crops_/create'
+    | '/_authed/field-calendar/fertilizer-applications_/$fertilizerApplicationId'
     | '/_authed/field-calendar/fertilizer-applications_/create'
     | '/_authed/field-calendar/fertilizers_/$fertilizerId'
     | '/_authed/field-calendar/fertilizers_/create'
@@ -2419,6 +2434,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarFertilizerApplicationsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/fertilizer-applications_/$fertilizerApplicationId': {
+      id: '/_authed/field-calendar/fertilizer-applications_/$fertilizerApplicationId'
+      path: '/field-calendar/fertilizer-applications/$fertilizerApplicationId'
+      fullPath: '/field-calendar/fertilizer-applications/$fertilizerApplicationId'
+      preLoaderRoute: typeof AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/crops_/create': {
       id: '/_authed/field-calendar/crops_/create'
       path: '/field-calendar/crops/create'
@@ -3032,6 +3054,7 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarCropRotationsPlanRoute: typeof AuthedFieldCalendarCropRotationsPlanRoute
   AuthedFieldCalendarCropsCropIdRoute: typeof AuthedFieldCalendarCropsCropIdRoute
   AuthedFieldCalendarCropsCreateRoute: typeof AuthedFieldCalendarCropsCreateRoute
+  AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute: typeof AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute
   AuthedFieldCalendarFertilizerApplicationsCreateRoute: typeof AuthedFieldCalendarFertilizerApplicationsCreateRoute
   AuthedFieldCalendarFertilizersFertilizerIdRoute: typeof AuthedFieldCalendarFertilizersFertilizerIdRoute
   AuthedFieldCalendarFertilizersCreateRoute: typeof AuthedFieldCalendarFertilizersCreateRoute
@@ -3129,6 +3152,8 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedFieldCalendarCropRotationsPlanRoute,
   AuthedFieldCalendarCropsCropIdRoute: AuthedFieldCalendarCropsCropIdRoute,
   AuthedFieldCalendarCropsCreateRoute: AuthedFieldCalendarCropsCreateRoute,
+  AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute:
+    AuthedFieldCalendarFertilizerApplicationsFertilizerApplicationIdRoute,
   AuthedFieldCalendarFertilizerApplicationsCreateRoute:
     AuthedFieldCalendarFertilizerApplicationsCreateRoute,
   AuthedFieldCalendarFertilizersFertilizerIdRoute:

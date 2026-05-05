@@ -1037,7 +1037,8 @@
         "hoeing": "Hoeing",
         "flame_weeding": "Flame weeding",
         "custom": "Custom"
-      }
+      },
+      "deleteConfirm": "Are you sure you want to delete this tillage?"
     },
     "presets": {
       "select": "Select preset",
@@ -1070,7 +1071,8 @@
         "haylage": "Haylage",
         "other": "Other",
         "none": "None"
-      }
+      },
+      "deleteConfirm": "Are you sure you want to delete this harvest?"
     },
     "fertilizerApplications": {
       "title": "Fertilizer Applications",
@@ -1093,7 +1095,8 @@
         "spray": "Spraying",
         "spread": "Spreading",
         "other": "Other"
-      }
+      },
+      "deleteConfirm": "Are you sure you want to delete this fertilizer application?"
     },
     "cropProtectionApplications": {
       "title": "Crop Protection",
@@ -1109,7 +1112,8 @@
         "broadcasting": "Broadcasting",
         "injecting": "Injecting",
         "other": "Other"
-      }
+      },
+      "deleteConfirm": "Are you sure you want to delete this crop protection application?"
     },
     "timeline": {
       "years": "Years",
