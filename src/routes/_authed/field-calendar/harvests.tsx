@@ -121,7 +121,7 @@ function HarvestChart() {
 
     const perYearData = activeYears.map((year) => {
       const monthlyData = Array.from({ length: 12 }, (_, i) => {
-        const entry = filtered.find((m) => m.year === year && m.month === i + 1);
+        const entry = filtered.find((m) => m.year === year && m.month === i);
         const normalize = (m: string | null | undefined) => (!m || m === "none" ? null : m);
         return entry?.producedQuantities
           .filter((q) =>

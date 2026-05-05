@@ -101,7 +101,7 @@ function FertilizerChart() {
 
     const perYearData = activeYears.map((year) => {
       const monthlyData = Array.from({ length: 12 }, (_, i) => {
-        const entry = filtered.find((m) => m.year === year && m.month === i + 1);
+        const entry = filtered.find((m) => m.year === year && m.month === i);
         const f = entry?.appliedFertilizers.find((f) => f.fertilizerName === activeName);
         if (!f) return 0;
         const { value, type } = toBaseAmount(f.totalAmount, f.unit);

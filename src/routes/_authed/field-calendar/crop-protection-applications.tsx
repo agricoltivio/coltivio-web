@@ -99,7 +99,7 @@ function CropProtectionChart() {
 
     const perYearData = activeYears.map((year) => {
       const monthlyData = Array.from({ length: 12 }, (_, i) => {
-        const entry = filtered.find((m) => m.year === year && m.month === i + 1);
+        const entry = filtered.find((m) => m.year === year && m.month === i);
         const p = entry?.appliedCropProtections.find((p) => p.productName === activeName);
         if (!p) return 0;
         const { value, type } = toBaseAmount(p.totalAmount, p.unit);
