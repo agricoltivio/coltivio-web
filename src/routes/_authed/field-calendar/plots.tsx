@@ -30,6 +30,20 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
+
+const USAGE_CODES = [
+  501, 502, 504, 505, 506, 507, 508, 510, 511, 512, 513, 514, 515, 516, 519,
+  520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 531, 534, 536, 537, 538,
+  539, 540, 541, 543, 544, 545, 546, 548, 551, 552, 553, 554, 556, 557, 559,
+  566, 567, 568, 569, 570, 572, 573, 574, 575, 576, 577, 578, 579, 580, 581,
+  591, 592, 594, 595, 597, 598, 601, 602, 611, 612, 613, 616, 617, 618, 621,
+  622, 623, 625, 631, 632, 635, 660, 693, 694, 697, 698, 701, 702, 703, 704,
+  705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 717, 718, 719, 720, 721,
+  722, 723, 724, 725, 730, 731, 735, 797, 798, 801, 802, 803, 804, 807, 808,
+  810, 811, 812, 813, 814, 830, 847, 848, 849, 851, 852, 857, 858, 897, 898,
+  901, 902, 903, 904, 905, 906, 907, 908, 909, 911, 921, 922, 923, 924, 926,
+  927, 928, 930, 933, 935, 936, 950, 951, 998,
+] as const;
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
 const SPLIT_PIECE_COLORS = ["#4ade80", "#60a5fa", "#f97316", "#a78bfa"];
 
@@ -1168,7 +1182,7 @@ function PlotDetailPanel({
           {plot.usage != null && (
             <div>
               <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.usage")}</div>
-              <div>{plot.usage}</div>
+              <div>{t(`fieldCalendar.plots.usageCodes.${plot.usage}`, { defaultValue: String(plot.usage) })} ({plot.usage})</div>
             </div>
           )}
           {plot.cuttingDate && (
@@ -1395,6 +1409,79 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
   );
 }
 
+// Inline searchable usage code picker — avoids portal/focus-trap conflicts inside Dialog.
+// Uses onMouseDown to select before onBlur fires, keeping the dropdown open while scrolling.
+function UsageCombobox({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const { t } = useTranslation();
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const options = useMemo(
+    () => USAGE_CODES.map((code) => ({ code, label: t(`fieldCalendar.plots.usageCodes.${code}`) })),
+    [t],
+  );
+
+  const selected = options.find((o) => String(o.code) === value) ?? null;
+
+  // Sync display when value is reset externally (dialog reopen)
+  useEffect(() => {
+    if (!value) setQuery("");
+  }, [value]);
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return options;
+    const q = query.toLowerCase();
+    return options.filter((o) => o.label.toLowerCase().includes(q) || String(o.code).includes(q));
+  }, [options, query]);
+
+  return (
+    <div className="space-y-1.5">
+      <Label>{t("fieldCalendar.plots.usage")}</Label>
+      <div className="relative">
+        {selected && !open ? (
+          <div className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm bg-background cursor-pointer" onClick={() => setOpen(true)}>
+            <span className="flex-1 truncate">{selected.label} ({selected.code})</span>
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground shrink-0"
+              onMouseDown={(e) => { e.stopPropagation(); onChange(""); }}
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <Input
+            placeholder={t("fieldCalendar.plots.usage")}
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+            onFocus={() => setOpen(true)}
+            onBlur={() => setTimeout(() => setOpen(false), 150)}
+            autoComplete="off"
+          />
+        )}
+        {open && (
+          <div className="absolute z-50 mt-1 w-full border rounded-md bg-popover shadow-md max-h-48 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-muted-foreground">{t("common.noResults")}</div>
+            ) : (
+              filtered.map((o) => (
+                <button
+                  key={o.code}
+                  type="button"
+                  className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent"
+                  onMouseDown={(e) => { e.preventDefault(); onChange(String(o.code)); setQuery(""); setOpen(false); }}
+                >
+                  {o.label} ({o.code})
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }: {
   open: boolean; drawnVertices: [number, number][]; area: number; onClose: () => void; onSuccess: () => void;
 }) {
@@ -1402,15 +1489,27 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
   const createMutation = useCreatePlotMutation();
   const [name, setName] = useState("");
   const [localId, setLocalId] = useState("");
+  const [usage, setUsage] = useState<string>("");
+  const [cuttingDate, setCuttingDate] = useState("");
   const [notes, setNotes] = useState("");
 
-  useEffect(() => { if (open) { setName(""); setLocalId(""); setNotes(""); } }, [open]);
+  useEffect(() => {
+    if (open) { setName(""); setLocalId(""); setUsage(""); setCuttingDate(""); setNotes(""); }
+  }, [open]);
 
   function handleSubmit() {
     const ring = [...drawnVertices, drawnVertices[0]];
     const geometry: GeoJSON.MultiPolygon = { type: "MultiPolygon", coordinates: [[ring]] };
     createMutation.mutate(
-      { name: name.trim(), geometry, size: Math.round(area), localId: localId.trim() || undefined, additionalNotes: notes.trim() || undefined },
+      {
+        name: name.trim(),
+        geometry,
+        size: Math.round(area),
+        localId: localId.trim() || undefined,
+        usage: usage ? Number(usage) : undefined,
+        cuttingDate: cuttingDate ? new Date(cuttingDate).toISOString() : null,
+        additionalNotes: notes.trim() || undefined,
+      },
       { onSuccess },
     );
   }
@@ -1422,6 +1521,11 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
         <div className="space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.create.dialog.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
+          <UsageCombobox value={usage} onChange={setUsage} />
+          <div className="space-y-1.5">
+            <Label>{t("fieldCalendar.plots.cuttingDate")}</Label>
+            <Input type="date" value={cuttingDate} onChange={(e) => setCuttingDate(e.target.value)} />
+          </div>
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div><div className="font-medium">{(area / 100).toFixed(2)} a</div></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.additionalNotes")}</Label><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
         </div>
@@ -1441,15 +1545,34 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
   const updateMutation = useUpdatePlotMutation();
   const [name, setName] = useState(plot.name);
   const [localId, setLocalId] = useState(plot.localId ?? "");
+  const [usage, setUsage] = useState(plot.usage != null ? String(plot.usage) : "");
+  const [cuttingDate, setCuttingDate] = useState(
+    plot.cuttingDate ? plot.cuttingDate.slice(0, 10) : ""
+  );
   const [notes, setNotes] = useState(plot.additionalNotes ?? "");
 
   useEffect(() => {
-    if (open) { setName(plot.name); setLocalId(plot.localId ?? ""); setNotes(plot.additionalNotes ?? ""); }
+    if (open) {
+      setName(plot.name);
+      setLocalId(plot.localId ?? "");
+      setUsage(plot.usage != null ? String(plot.usage) : "");
+      setCuttingDate(plot.cuttingDate ? plot.cuttingDate.slice(0, 10) : "");
+      setNotes(plot.additionalNotes ?? "");
+    }
   }, [open, plot]);
 
   function handleSubmit() {
     updateMutation.mutate(
-      { plotId: plot.id, body: { name: name.trim(), localId: localId.trim() || undefined, additionalNotes: notes.trim() || undefined } },
+      {
+        plotId: plot.id,
+        body: {
+          name: name.trim(),
+          localId: localId.trim() || undefined,
+          usage: usage ? Number(usage) : undefined,
+          cuttingDate: cuttingDate ? new Date(cuttingDate).toISOString() : null,
+          additionalNotes: notes.trim() || undefined,
+        },
+      },
       { onSuccess },
     );
   }
@@ -1461,6 +1584,11 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
         <div className="space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("common.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
+          <UsageCombobox value={usage} onChange={setUsage} />
+          <div className="space-y-1.5">
+            <Label>{t("fieldCalendar.plots.cuttingDate")}</Label>
+            <Input type="date" value={cuttingDate} onChange={(e) => setCuttingDate(e.target.value)} />
+          </div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.additionalNotes")}</Label><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
         </div>
         <DialogFooter>
