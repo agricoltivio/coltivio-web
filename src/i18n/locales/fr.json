@@ -43,7 +43,8 @@
       "accounting": "Comptabilité",
       "fieldCalendar": "Calendrier cultural",
       "admin": "Administration",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "bioCompliance": "Bio Suisse Bourgeon"
     },
     "dashboard": "Tableau de bord",
     "animals": "Animaux",
@@ -71,6 +72,7 @@
     "fertilizers": "Engrais",
     "cropProtectionProducts": "Produits phytosanitaires",
     "fieldCalendarExport": "Exporter",
+    "bioCompliance": "Bio Suisse Bourgeon",
     "wiki": "Wiki",
     "wikiMyEntries": "Mes entrées",
     "wikiMySubmissions": "Mes soumissions",
@@ -541,6 +543,36 @@
       "yearly": "Annuel"
     },
     "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?"
+  },
+  "bioCompliance": {
+    "withdrawalKinds": { "milk": "Lait", "meat": "Viande", "organs": "Organes" },
+    "title": "Bio Suisse Bourgeon",
+    "banner": {
+      "title": "Auto-contrôle indicatif",
+      "description": "Ce contrôle est une indication basée sur vos données saisies et ne remplace pas un contrôle bio officiel."
+    },
+    "status": {
+      "ok": "Respecté",
+      "warn": "Attention",
+      "fail": "Problème",
+      "info": "Info",
+      "no_data": "Aucune donnée"
+    },
+    "noData": "Pas assez de données pour ce contrôle.",
+    "noFindings": "Aucune anomalie trouvée.",
+    "findingsCount": "Afficher {{count}} anomalie(s)",
+    "caveats": {
+      "withdrawal": "Délais d'attente doublés côté client (bio). À titre informatif uniquement, aucune violation de vente détectée.",
+      "raus": "Basé sur le plan de sortie, pas sur un accès confirmé."
+    },
+    "checks": {
+      "rotationPause": { "label": "Pause de culture (rotation)", "description": "La même culture/famille revient trop tôt sur la même parcelle." },
+      "mineralFertilizer": { "label": "Engrais minéral", "description": "La fertilisation minérale (synthétique) n'est pas autorisée en exploitation Bourgeon." },
+      "antibioticCount": { "label": "Traitements antibiotiques par animal", "description": "Plus de traitements par animal et par an que permis." },
+      "criticalAntibiotic": { "label": "Antibiotiques critiques", "description": "Antibiotiques critiques sans antibiogramme documenté." },
+      "withdrawalStatus": { "label": "Délais d'attente (statut)", "description": "Animaux actuellement dans le délai d'attente bio doublé." },
+      "rausCoverage": { "label": "Sortie / RAUS (bovins)", "description": "Sortie planifiée en dessous des minimums." }
+    }
   },
   "turnoutJournal": {
     "title": "Journal de pâturage",

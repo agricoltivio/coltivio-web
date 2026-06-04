@@ -357,6 +357,20 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>}
+        {hasFarm && (animalsAccess.canRead || fieldCalendarAccess.canRead) && <SidebarGroup>
+          <SidebarGroupLabel>{t("nav.groups.bioCompliance")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/bio-compliance">
+                    <Leaf /> {t("nav.bioCompliance")}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>}
         {hasAnyMembership && addressBookGroupVisible && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
