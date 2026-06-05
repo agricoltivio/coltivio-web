@@ -44,7 +44,7 @@
       "fieldCalendar": "Field Calendar",
       "admin": "Admin",
       "wiki": "Wiki",
-      "bioCompliance": "Bio Suisse Knospe"
+      "bioCompliance": "Knospe Check"
     },
     "dashboard": "Dashboard",
     "animals": "Animals",
@@ -72,7 +72,7 @@
     "fertilizers": "Fertilizers",
     "cropProtectionProducts": "Crop Protection Products",
     "fieldCalendarExport": "Export",
-    "bioCompliance": "Bio Suisse Knospe",
+    "bioCompliance": "Knospe Check",
     "wiki": "Wiki",
     "wikiMyEntries": "My Entries",
     "wikiMySubmissions": "My Submissions",
@@ -691,7 +691,7 @@
   },
   "bioCompliance": {
     "withdrawalKinds": { "milk": "Milk", "meat": "Meat", "organs": "Organs" },
-    "title": "Bio Suisse Knospe",
+    "title": "Knospe Check",
     "banner": {
       "title": "Indicative self-check",
       "description": "This check is an indication based on your recorded data and does not replace an official organic inspection."

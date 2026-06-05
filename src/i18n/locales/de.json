@@ -44,7 +44,7 @@
       "fieldCalendar": "Feldkalender",
       "admin": "Admin",
       "wiki": "Wiki",
-      "bioCompliance": "Bio Suisse Knospe"
+      "bioCompliance": "Knospe Check"
     },
     "dashboard": "Dashboard",
     "animals": "Tiere",
@@ -70,7 +70,7 @@
     "crops": "Kulturen",
     "cropFamilies": "Kulturfamilien",
     "fertilizers": "Düngemittel",
-    "bioCompliance": "Bio Suisse Knospe",
+    "bioCompliance": "Knospe Check",
     "cropProtectionProducts": "Pflanzenschutzmittel",
     "fieldCalendarExport": "Export",
     "wiki": "Wiki",
@@ -546,7 +546,7 @@
   },
   "bioCompliance": {
     "withdrawalKinds": { "milk": "Milch", "meat": "Fleisch", "organs": "Organe" },
-    "title": "Bio Suisse Knospe",
+    "title": "Knospe Check",
     "banner": {
       "title": "Indikative Selbstprüfung",
       "description": "Diese Prüfung ist ein Hinweis aus euren erfassten Daten und ersetzt keine offizielle Bio-Kontrolle."

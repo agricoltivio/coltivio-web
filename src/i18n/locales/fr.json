@@ -44,7 +44,7 @@
       "fieldCalendar": "Calendrier cultural",
       "admin": "Administration",
       "wiki": "Wiki",
-      "bioCompliance": "Bio Suisse Bourgeon"
+      "bioCompliance": "Bourgeon Check"
     },
     "dashboard": "Tableau de bord",
     "animals": "Animaux",
@@ -72,7 +72,7 @@
     "fertilizers": "Engrais",
     "cropProtectionProducts": "Produits phytosanitaires",
     "fieldCalendarExport": "Exporter",
-    "bioCompliance": "Bio Suisse Bourgeon",
+    "bioCompliance": "Bourgeon Check",
     "wiki": "Wiki",
     "wikiMyEntries": "Mes entrées",
     "wikiMySubmissions": "Mes soumissions",
@@ -546,7 +546,7 @@
   },
   "bioCompliance": {
     "withdrawalKinds": { "milk": "Lait", "meat": "Viande", "organs": "Organes" },
-    "title": "Bio Suisse Bourgeon",
+    "title": "Bourgeon Check",
     "banner": {
       "title": "Auto-contrôle indicatif",
       "description": "Ce contrôle est une indication basée sur vos données saisies et ne remplace pas un contrôle bio officiel."

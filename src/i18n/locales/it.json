@@ -44,7 +44,7 @@
       "fieldCalendar": "Calendario dei campi",
       "admin": "Amministrazione",
       "wiki": "Wiki",
-      "bioCompliance": "Bio Suisse Gemma"
+      "bioCompliance": "Gemma Check"
     },
     "dashboard": "Dashboard",
     "animals": "Animali",
@@ -72,7 +72,7 @@
     "fertilizers": "Fertilizzanti",
     "cropProtectionProducts": "Prodotti fitosanitari",
     "fieldCalendarExport": "Esporta",
-    "bioCompliance": "Bio Suisse Gemma",
+    "bioCompliance": "Gemma Check",
     "wiki": "Wiki",
     "wikiMyEntries": "Le mie voci",
     "wikiMySubmissions": "Le mie proposte",
@@ -546,7 +546,7 @@
   },
   "bioCompliance": {
     "withdrawalKinds": { "milk": "Latte", "meat": "Carne", "organs": "Organi" },
-    "title": "Bio Suisse Gemma",
+    "title": "Gemma Check",
     "banner": {
       "title": "Autocontrollo indicativo",
       "description": "Questo controllo è un'indicazione basata sui dati registrati e non sostituisce un controllo bio ufficiale."
