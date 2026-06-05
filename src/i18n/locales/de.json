@@ -43,7 +43,8 @@
       "accounting": "Buchhaltung",
       "fieldCalendar": "Feldkalender",
       "admin": "Admin",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "bioCompliance": "Knospe Check"
     },
     "dashboard": "Dashboard",
     "animals": "Tiere",
@@ -69,6 +70,7 @@
     "crops": "Kulturen",
     "cropFamilies": "Kulturfamilien",
     "fertilizers": "Düngemittel",
+    "bioCompliance": "Knospe Check",
     "cropProtectionProducts": "Pflanzenschutzmittel",
     "fieldCalendarExport": "Export",
     "wiki": "Wiki",
@@ -541,6 +543,36 @@
       "yearly": "Jährlich"
     },
     "deleteScheduleConfirm": "Sind Sie sicher, dass Sie diesen Zeitplan löschen möchten?"
+  },
+  "bioCompliance": {
+    "withdrawalKinds": { "milk": "Milch", "meat": "Fleisch", "organs": "Organe" },
+    "title": "Knospe Check",
+    "banner": {
+      "title": "Indikative Selbstprüfung",
+      "description": "Diese Prüfung ist ein Hinweis aus euren erfassten Daten und ersetzt keine offizielle Bio-Kontrolle."
+    },
+    "status": {
+      "ok": "Erfüllt",
+      "warn": "Achtung",
+      "fail": "Problem",
+      "info": "Info",
+      "no_data": "Keine Daten"
+    },
+    "noData": "Zu wenig Daten für diese Prüfung.",
+    "noFindings": "Keine Beanstandungen gefunden.",
+    "findingsCount": "{{count}} Beanstandung(en) anzeigen",
+    "caveats": {
+      "withdrawal": "Absetzfristen client-seitig verdoppelt (Bio). Nur informativ, keine Verkaufs-Verletzung erkannt.",
+      "raus": "Basierend auf dem geplanten Auslauf, nicht auf bestätigtem Zugang."
+    },
+    "checks": {
+      "rotationPause": { "label": "Anbaupause (Fruchtfolge)", "description": "Gleiche Kultur/Kulturfamilie zu früh wieder auf demselben Schlag." },
+      "mineralFertilizer": { "label": "Mineraldünger", "description": "Mineralische (synthetische) Düngung ist im Knospe-Betrieb nicht erlaubt." },
+      "antibioticCount": { "label": "Antibiotika-Behandlungen pro Tier", "description": "Mehr Behandlungen pro Tier und Jahr als zulässig." },
+      "criticalAntibiotic": { "label": "Kritische Antibiotika", "description": "Kritische Antibiotika ohne dokumentiertes Antibiogramm." },
+      "withdrawalStatus": { "label": "Absetzfristen (Status)", "description": "Tiere aktuell innerhalb der verdoppelten Bio-Absetzfrist." },
+      "rausCoverage": { "label": "Auslauf / RAUS (Rindvieh)", "description": "Geplanter Auslauf unter den Mindestvorgaben." }
+    }
   },
   "turnoutJournal": {
     "title": "Auslaufjournal",

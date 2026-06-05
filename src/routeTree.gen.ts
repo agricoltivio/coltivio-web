@@ -39,6 +39,7 @@ import { Route as AuthedOrdersIndexRouteImport } from './routes/_authed/orders/i
 import { Route as AuthedMembershipIndexRouteImport } from './routes/_authed/membership/index'
 import { Route as AuthedDrugsIndexRouteImport } from './routes/_authed/drugs/index'
 import { Route as AuthedContactsIndexRouteImport } from './routes/_authed/contacts/index'
+import { Route as AuthedBioComplianceIndexRouteImport } from './routes/_authed/bio-compliance/index'
 import { Route as AuthedAnimalsIndexRouteImport } from './routes/_authed/animals/index'
 import { Route as AuthedWikiEntryIdRouteImport } from './routes/_authed/wiki/$entryId'
 import { Route as AuthedTreffpunktCreateRouteImport } from './routes/_authed/treffpunkt/create'
@@ -299,6 +300,12 @@ const AuthedContactsIndexRoute = AuthedContactsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthedContactsRouteRoute,
 } as any)
+const AuthedBioComplianceIndexRoute =
+  AuthedBioComplianceIndexRouteImport.update({
+    id: '/bio-compliance/',
+    path: '/bio-compliance/',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedAnimalsIndexRoute = AuthedAnimalsIndexRouteImport.update({
   id: '/animals/',
   path: '/animals/',
@@ -999,6 +1006,7 @@ export interface FileRoutesByFullPath {
   '/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals/': typeof AuthedAnimalsIndexRoute
+  '/bio-compliance/': typeof AuthedBioComplianceIndexRoute
   '/contacts/': typeof AuthedContactsIndexRoute
   '/drugs/': typeof AuthedDrugsIndexRoute
   '/membership/': typeof AuthedMembershipIndexRoute
@@ -1133,6 +1141,7 @@ export interface FileRoutesByTo {
   '/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/animals': typeof AuthedAnimalsIndexRoute
+  '/bio-compliance': typeof AuthedBioComplianceIndexRoute
   '/contacts': typeof AuthedContactsIndexRoute
   '/drugs': typeof AuthedDrugsIndexRoute
   '/membership': typeof AuthedMembershipIndexRoute
@@ -1274,6 +1283,7 @@ export interface FileRoutesById {
   '/_authed/treffpunkt/create': typeof AuthedTreffpunktCreateRoute
   '/_authed/wiki/$entryId': typeof AuthedWikiEntryIdRoute
   '/_authed/animals/': typeof AuthedAnimalsIndexRoute
+  '/_authed/bio-compliance/': typeof AuthedBioComplianceIndexRoute
   '/_authed/contacts/': typeof AuthedContactsIndexRoute
   '/_authed/drugs/': typeof AuthedDrugsIndexRoute
   '/_authed/membership/': typeof AuthedMembershipIndexRoute
@@ -1417,6 +1427,7 @@ export interface FileRouteTypes {
     | '/treffpunkt/create'
     | '/wiki/$entryId'
     | '/animals/'
+    | '/bio-compliance/'
     | '/contacts/'
     | '/drugs/'
     | '/membership/'
@@ -1551,6 +1562,7 @@ export interface FileRouteTypes {
     | '/treffpunkt/create'
     | '/wiki/$entryId'
     | '/animals'
+    | '/bio-compliance'
     | '/contacts'
     | '/drugs'
     | '/membership'
@@ -1691,6 +1703,7 @@ export interface FileRouteTypes {
     | '/_authed/treffpunkt/create'
     | '/_authed/wiki/$entryId'
     | '/_authed/animals/'
+    | '/_authed/bio-compliance/'
     | '/_authed/contacts/'
     | '/_authed/drugs/'
     | '/_authed/membership/'
@@ -2006,6 +2019,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/contacts/'
       preLoaderRoute: typeof AuthedContactsIndexRouteImport
       parentRoute: typeof AuthedContactsRouteRoute
+    }
+    '/_authed/bio-compliance/': {
+      id: '/_authed/bio-compliance/'
+      path: '/bio-compliance'
+      fullPath: '/bio-compliance/'
+      preLoaderRoute: typeof AuthedBioComplianceIndexRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/animals/': {
       id: '/_authed/animals/'
@@ -3037,6 +3057,7 @@ interface AuthedRouteRouteChildren {
   AuthedTreatmentsCreateRoute: typeof AuthedTreatmentsCreateRoute
   AuthedWikiEntryIdRoute: typeof AuthedWikiEntryIdRoute
   AuthedAnimalsIndexRoute: typeof AuthedAnimalsIndexRoute
+  AuthedBioComplianceIndexRoute: typeof AuthedBioComplianceIndexRoute
   AuthedDrugsIndexRoute: typeof AuthedDrugsIndexRoute
   AuthedMembershipIndexRoute: typeof AuthedMembershipIndexRoute
   AuthedWikiIndexRoute: typeof AuthedWikiIndexRoute
@@ -3127,6 +3148,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedTreatmentsCreateRoute: AuthedTreatmentsCreateRoute,
   AuthedWikiEntryIdRoute: AuthedWikiEntryIdRoute,
   AuthedAnimalsIndexRoute: AuthedAnimalsIndexRoute,
+  AuthedBioComplianceIndexRoute: AuthedBioComplianceIndexRoute,
   AuthedDrugsIndexRoute: AuthedDrugsIndexRoute,
   AuthedMembershipIndexRoute: AuthedMembershipIndexRoute,
   AuthedWikiIndexRoute: AuthedWikiIndexRoute,
