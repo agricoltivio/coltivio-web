@@ -43,7 +43,8 @@
       "accounting": "Accounting",
       "fieldCalendar": "Field Calendar",
       "admin": "Admin",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "bioCompliance": "Knospe Check"
     },
     "dashboard": "Dashboard",
     "animals": "Animals",
@@ -71,6 +72,7 @@
     "fertilizers": "Fertilizers",
     "cropProtectionProducts": "Crop Protection Products",
     "fieldCalendarExport": "Export",
+    "bioCompliance": "Knospe Check",
     "wiki": "Wiki",
     "wikiMyEntries": "My Entries",
     "wikiMySubmissions": "My Submissions",
@@ -686,6 +688,36 @@
       "yearly": "Yearly"
     },
     "deleteScheduleConfirm": "Are you sure you want to delete this schedule?"
+  },
+  "bioCompliance": {
+    "withdrawalKinds": { "milk": "Milk", "meat": "Meat", "organs": "Organs" },
+    "title": "Knospe Check",
+    "banner": {
+      "title": "Indicative self-check",
+      "description": "This check is an indication based on your recorded data and does not replace an official organic inspection."
+    },
+    "status": {
+      "ok": "Met",
+      "warn": "Attention",
+      "fail": "Issue",
+      "info": "Info",
+      "no_data": "No data"
+    },
+    "noData": "Not enough data for this check.",
+    "noFindings": "No issues found.",
+    "findingsCount": "Show {{count}} finding(s)",
+    "caveats": {
+      "withdrawal": "Withdrawal periods doubled client-side (organic). Informational only, no sale violation detected.",
+      "raus": "Based on the planned outdoor schedule, not on confirmed access."
+    },
+    "checks": {
+      "rotationPause": { "label": "Cultivation pause (rotation)", "description": "The same crop/crop family returns to the same plot too soon." },
+      "mineralFertilizer": { "label": "Mineral fertiliser", "description": "Mineral (synthetic) fertilisation is not allowed on a Knospe farm." },
+      "antibioticCount": { "label": "Antibiotic treatments per animal", "description": "More treatments per animal and year than allowed." },
+      "criticalAntibiotic": { "label": "Critical antibiotics", "description": "Critical antibiotics without a documented antibiogram." },
+      "withdrawalStatus": { "label": "Withdrawal periods (status)", "description": "Animals currently within the doubled organic withdrawal period." },
+      "rausCoverage": { "label": "Outdoor / RAUS (cattle)", "description": "Planned outdoor access below the minimums." }
+    }
   },
   "turnoutJournal": {
     "title": "Turnout Journal",

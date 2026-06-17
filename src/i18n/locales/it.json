@@ -43,7 +43,8 @@
       "accounting": "Contabilità",
       "fieldCalendar": "Calendario dei campi",
       "admin": "Amministrazione",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "bioCompliance": "Gemma Check"
     },
     "dashboard": "Dashboard",
     "animals": "Animali",
@@ -71,6 +72,7 @@
     "fertilizers": "Fertilizzanti",
     "cropProtectionProducts": "Prodotti fitosanitari",
     "fieldCalendarExport": "Esporta",
+    "bioCompliance": "Gemma Check",
     "wiki": "Wiki",
     "wikiMyEntries": "Le mie voci",
     "wikiMySubmissions": "Le mie proposte",
@@ -541,6 +543,36 @@
       "yearly": "Annuale"
     },
     "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?"
+  },
+  "bioCompliance": {
+    "withdrawalKinds": { "milk": "Latte", "meat": "Carne", "organs": "Organi" },
+    "title": "Gemma Check",
+    "banner": {
+      "title": "Autocontrollo indicativo",
+      "description": "Questo controllo è un'indicazione basata sui dati registrati e non sostituisce un controllo bio ufficiale."
+    },
+    "status": {
+      "ok": "Soddisfatto",
+      "warn": "Attenzione",
+      "fail": "Problema",
+      "info": "Info",
+      "no_data": "Nessun dato"
+    },
+    "noData": "Dati insufficienti per questo controllo.",
+    "noFindings": "Nessuna anomalia trovata.",
+    "findingsCount": "Mostra {{count}} segnalazione/i",
+    "caveats": {
+      "withdrawal": "Tempi di attesa raddoppiati lato client (bio). Solo a scopo informativo, nessuna violazione di vendita rilevata.",
+      "raus": "Basato sul piano di uscita, non su un accesso confermato."
+    },
+    "checks": {
+      "rotationPause": { "label": "Pausa colturale (rotazione)", "description": "La stessa coltura/famiglia torna troppo presto sulla stessa particella." },
+      "mineralFertilizer": { "label": "Concime minerale", "description": "La concimazione minerale (sintetica) non è ammessa in un'azienda Gemma." },
+      "antibioticCount": { "label": "Trattamenti antibiotici per animale", "description": "Più trattamenti per animale e anno di quanto consentito." },
+      "criticalAntibiotic": { "label": "Antibiotici critici", "description": "Antibiotici critici senza antibiogramma documentato." },
+      "withdrawalStatus": { "label": "Tempi di attesa (stato)", "description": "Animali attualmente nel tempo di attesa bio raddoppiato." },
+      "rausCoverage": { "label": "Uscita / RAUS (bovini)", "description": "Uscita pianificata sotto i minimi." }
+    }
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",
