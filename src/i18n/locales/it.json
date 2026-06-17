@@ -1389,7 +1389,7 @@
     "updatePaymentMethod": "Aggiorna metodo di pagamento",
     "subscribeDialog": {
       "title": "Diventa membro",
-      "description": "Con la tua iscrizione sostieni l'associazione AgriColtivio. La quota annuale di CHF 50.– verrà addebitata alla fine dell'iscrizione di prova il {{date}}."
+      "description": "Con la tua iscrizione sostieni l'associazione AgriColtivio. La quota annuale di CHF 75.– verrà addebitata alla fine dell'iscrizione di prova il {{date}}."
     },
     "cancelRenewal": "Dichiarare le dimissioni",
     "reactivate": "Ritirare le dimissioni",
@@ -1419,7 +1419,7 @@
       "autoRenewsOn": "Il tuo abbonamento verrà rinnovato automaticamente il {{date}}.",
       "cancelledByUser": "Hai cancellato la tua iscrizione ad AgriColtivio. Hai accesso a tutte le funzionalità fino al {{date}}.",
       "trialEnds": "Iscrizione di prova termina il",
-      "subscriptionStartsAfterTrial": "La tua iscrizione è attiva. La quota annuale di CHF 50.– verrà addebitata alla fine del periodo di prova il {{date}}."
+      "subscriptionStartsAfterTrial": "La tua iscrizione è attiva. La quota annuale di CHF 75.– verrà addebitata alla fine del periodo di prova il {{date}}."
     },
     "paywall": {
       "noMembership": "La tua azienda non è ancora membro dell'associazione AgriColtivio",
@@ -1429,7 +1429,7 @@
       "trialInfo": "Nessuna carta di credito richiesta",
       "or": "oppure",
       "subscribe": "Diventa membro",
-      "priceInfo": "CHF 50.– / anno",
+      "priceInfo": "CHF 75.– / anno",
       "features": {
         "app": {
           "title": "App",

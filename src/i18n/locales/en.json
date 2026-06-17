@@ -1389,7 +1389,7 @@
     "updatePaymentMethod": "Update payment method",
     "subscribeDialog": {
       "title": "Become a member",
-      "description": "With your membership you support the AgriColtivio association. The annual fee of CHF 50.– will be charged after your trial ends on {{date}}."
+      "description": "With your membership you support the AgriColtivio association. The annual fee of CHF 75.– will be charged after your trial ends on {{date}}."
     },
     "cancelRenewal": "Declare resignation",
     "reactivate": "Withdraw resignation",
@@ -1419,7 +1419,7 @@
       "autoRenewsOn": "Your membership will automatically renew on {{date}}.",
       "cancelledByUser": "You have cancelled your membership with AgriColtivio. You have access to all features until {{date}}.",
       "trialEnds": "Trial ends",
-      "subscriptionStartsAfterTrial": "Your membership is active. The annual fee of CHF 50.– will be charged after your trial ends on {{date}}."
+      "subscriptionStartsAfterTrial": "Your membership is active. The annual fee of CHF 75.– will be charged after your trial ends on {{date}}."
     },
     "paywall": {
       "noMembership": "Your farm is not yet a member of the AgriColtivio association",
@@ -1429,7 +1429,7 @@
       "trialInfo": "No credit card required",
       "or": "or",
       "subscribe": "Become a member",
-      "priceInfo": "CHF 50.– / year",
+      "priceInfo": "CHF 75.– / year",
       "features": {
         "app": {
           "title": "App",

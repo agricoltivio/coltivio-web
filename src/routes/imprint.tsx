@@ -26,8 +26,8 @@ function ImprintPage() {
             </a>
           </p>
           <p>
-            <a href="tel:+41797567181" className="underline hover:no-underline">
-              +41 79 756 71 81
+            <a href="tel:+41793964409" className="underline hover:no-underline">
+              +41 79 396 44 09
             </a>
           </p>
         </div>
