@@ -737,6 +737,9 @@
       "additionalNotes": "Note",
       "viewDetails": "Visualizza dettagli",
       "newPlot": "Nuovo campo",
+      "print": "Stampa mappa",
+      "printArea": "Area di stampa",
+      "printHint": "Posiziona la mappa, poi stampa",
       "enterMerge": "Unire",
       "enterSplit": "Dividere",
       "colorMode": {

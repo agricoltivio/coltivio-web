@@ -737,6 +737,9 @@
       "additionalNotes": "Notes",
       "viewDetails": "Voir les détails",
       "newPlot": "Nouveau champ",
+      "print": "Imprimer la carte",
+      "printArea": "Zone d'impression",
+      "printHint": "Positionnez la carte, puis imprimez",
       "enterMerge": "Fusionner",
       "enterSplit": "Diviser",
       "colorMode": {

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Check, FileEdit, GitMerge, Home, Lasso, Layers, List, Minus, MousePointerClick, Palette, Pencil, Plus, Save, Scissors, Undo2, X } from "lucide-react";
+import { Check, FileEdit, GitMerge, Home, Lasso, Layers, List, Minus, MousePointerClick, Palette, Pencil, Plus, Printer, Save, Scissors, Undo2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -409,6 +409,8 @@ function PlotsMap() {
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [editMetaOpen, setEditMetaOpen] = useState(false);
   const [toolError, setToolError] = useState<string | null>(null);
+  const [printPreview, setPrintPreview] = useState(false);
+  const printAreaRef = useRef<HTMLDivElement>(null);
   const savedViewport = useMemo(() => readSavedViewport(), []);
 
   const updateMutation = useUpdatePlotMutation();
@@ -571,6 +573,55 @@ function PlotsMap() {
   geojsonRef.current = geojson;
   labelsGeojsonRef.current = labelsGeojson;
   activeLayerRef.current = activeLayer;
+
+  const handlePrint = () => setPrintPreview(true);
+
+  const handlePrintExecute = () => {
+    const mapInstance = mapRef.current?.getMap();
+    const overlay = printAreaRef.current;
+    if (!mapInstance || !overlay) return;
+
+    mapInstance.setPaintProperty("plots-label", "text-opacity", 1);
+
+    const capture = () => {
+      const canvas = mapInstance.getCanvas();
+      const dpr = window.devicePixelRatio || 1;
+      const canvasRect = canvas.getBoundingClientRect();
+      const overlayRect = overlay.getBoundingClientRect();
+
+      const x = Math.round((overlayRect.left - canvasRect.left) * dpr);
+      const y = Math.round((overlayRect.top - canvasRect.top) * dpr);
+      const w = Math.round(overlayRect.width * dpr);
+      const h = Math.round(overlayRect.height * dpr);
+
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = w;
+      tempCanvas.height = h;
+      const ctx = tempCanvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+      const dataUrl = tempCanvas.toDataURL("image/png");
+
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) return;
+      printWindow.document.write(`<!DOCTYPE html>
+<html><head><style>
+  @page { size: A4 landscape; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; }
+  img { width: 100%; height: 100%; display: block; }
+</style></head><body><img src="${dataUrl}" /></body></html>`);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => printWindow.print(), 250);
+
+      mapInstance.setPaintProperty("plots-label", "text-opacity", ["step", ["zoom"], 0, 14, 1]);
+      setPrintPreview(false);
+    };
+
+    mapInstance.once("render", capture);
+    mapInstance.triggerRepaint();
+  };
 
   const handleMapLoad = (e: maplibregl.MapLibreEvent) => {
     const map = e.target;
@@ -789,6 +840,8 @@ function PlotsMap() {
       <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
         <Map
           ref={mapRef}
+          // @ts-expect-error -- preserveDrawingBuffer is a valid MapLibre GL option not in react-map-gl's TS types
+          preserveDrawingBuffer={true}
           initialViewState={{ longitude: savedViewport?.lng ?? 8.2, latitude: savedViewport?.lat ?? 46.8, zoom: savedViewport?.zoom ?? 8 }}
           mapStyle={EMPTY_MAP_STYLE}
           onLoad={handleMapLoad}
@@ -796,6 +849,7 @@ function PlotsMap() {
             sessionStorage.setItem(VIEWPORT_STORAGE_KEY, JSON.stringify({ lng: e.viewState.longitude, lat: e.viewState.latitude, zoom: e.viewState.zoom }));
           }}
           onClick={(e) => {
+            if (printPreview) return;
             setToolError(null);
 
             if (mode.type === "split") {
@@ -912,6 +966,21 @@ function PlotsMap() {
           <NavigationControl position="top-left" />
         </Map>
 
+        {/* A4 landscape print area overlay */}
+        {printPreview && (
+          <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+            <div
+              ref={printAreaRef}
+              className="relative"
+              style={{ aspectRatio: "297/210", maxHeight: "85%", maxWidth: "90%", boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)", border: "2px solid rgba(255,255,255,0.8)" }}
+            >
+              <span className="absolute top-1.5 left-1/2 -translate-x-1/2 text-white text-xs font-medium bg-black/50 px-2 py-0.5 rounded whitespace-nowrap">
+                A4 {t("fieldCalendar.plots.printArea")}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Drawing instruction — top center */}
         {((mode.type === "split" && !mode.polygonClosed) || (mode.type === "create" && !mode.closed)) && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
@@ -942,7 +1011,12 @@ function PlotsMap() {
             <Layers className="h-4 w-4" />
           </Button>
           {mode.type === "view" && (
-            <ColorModeToggle plotColorMode={plotColorMode} onSelect={setPlotColorMode} />
+            <>
+              <ColorModeToggle plotColorMode={plotColorMode} onSelect={setPlotColorMode} />
+              <Button variant="outline" size="icon" onClick={handlePrint} title={t("fieldCalendar.plots.print")}>
+                <Printer className="h-4 w-4" />
+              </Button>
+            </>
           )}
         </div>
 
@@ -1053,6 +1127,19 @@ function PlotsMap() {
               <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.edit.dragInstruction")}</span>
               <Button size="sm" disabled={!mode.geometryChanged || updateMutation.isPending} onClick={handleSaveShape}>
                 <Save className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.edit.saveShape")}
+              </Button>
+            </div>
+          )}
+
+          {/* Print preview */}
+          {printPreview && (
+            <div className="flex items-center gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5 z-40">
+              <Button variant="ghost" size="sm" onClick={() => setPrintPreview(false)}>
+                <X className="h-4 w-4 mr-1" />{t("common.cancel")}
+              </Button>
+              <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.printHint")}</span>
+              <Button size="sm" onClick={handlePrintExecute}>
+                <Printer className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.print")}
               </Button>
             </div>
           )}

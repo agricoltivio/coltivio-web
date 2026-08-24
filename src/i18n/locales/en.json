@@ -737,6 +737,9 @@
       "additionalNotes": "Notes",
       "viewDetails": "View details",
       "newPlot": "New plot",
+      "print": "Print map",
+      "printArea": "Print area",
+      "printHint": "Pan and zoom to position, then print",
       "enterMerge": "Merge",
       "enterSplit": "Split",
       "colorMode": {

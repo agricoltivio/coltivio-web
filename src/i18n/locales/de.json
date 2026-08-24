@@ -737,6 +737,9 @@
       "additionalNotes": "Notizen",
       "viewDetails": "Details anzeigen",
       "newPlot": "Neuer Schlag",
+      "print": "Karte drucken",
+      "printArea": "Druckbereich",
+      "printHint": "Karte positionieren, dann drucken",
       "enterMerge": "Zusammenführen",
       "enterSplit": "Teilen",
       "colorMode": {
