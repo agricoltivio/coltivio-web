@@ -164,6 +164,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/farm/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1FarmStats"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/farm/invites": {
         parameters: {
             query?: never;
@@ -2804,6 +2820,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/membership/paymentMethod/intent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipPaymentMethodIntent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/membership/subscription": {
         parameters: {
             query?: never;
@@ -2815,6 +2847,54 @@ export interface paths {
         put?: never;
         post: operations["PostV1MembershipSubscription"];
         delete: operations["DeleteV1MembershipSubscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/subscription/intent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipSubscriptionIntent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/subscription/autoRenew": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1MembershipSubscriptionAutoRenew"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/membership/manual/intent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MembershipManualIntent"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2862,6 +2942,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["PostV1DonationsCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/donations/intent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1DonationsIntent"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3316,6 +3412,30 @@ export interface components {
                     type: "harvest" | "fertilizerApplication" | "cropProtectionApplication" | "tillage";
                     action: string;
                 }[];
+            };
+        };
+        GetV1FarmStatsPositiveResponse: {
+            data: {
+                plots: {
+                    total: number;
+                    totalAreaM2: number;
+                };
+                animals: {
+                    totalLiving: number;
+                    byType: {
+                        /** @enum {string} */
+                        type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        count: number;
+                    }[];
+                };
+                cropRotations: {
+                    active: {
+                        cropName: string;
+                        category: string;
+                        plotCount: number;
+                        totalAreaM2: number;
+                    }[];
+                };
             };
         };
         GetV1FarmInvitesPositiveResponse: {
@@ -3918,6 +4038,7 @@ export interface components {
                     month: number;
                     appliedCropProtections: {
                         totalAmount: number;
+                        totalProducedUnits: number;
                         productName: string;
                         /** @enum {string} */
                         unit: "ml" | "l" | "g" | "kg";
@@ -3977,6 +4098,7 @@ export interface components {
                     month: number;
                     appliedFertilizers: {
                         totalAmount: number;
+                        totalProducedUnits: number;
                         fertilizerName: string;
                         /** @enum {string} */
                         unit: "l" | "kg" | "dt" | "t";
@@ -4958,6 +5080,7 @@ export interface components {
                     month: number;
                     appliedCropProtections: {
                         totalAmount: number;
+                        totalProducedUnits: number;
                         productName: string;
                         /** @enum {string} */
                         unit: "ml" | "l" | "g" | "kg";
@@ -6667,6 +6790,7 @@ export interface components {
                     month: number;
                     appliedFertilizers: {
                         totalAmount: number;
+                        totalProducedUnits: number;
                         fertilizerName: string;
                         /** @enum {string} */
                         unit: "l" | "kg" | "dt" | "t";
@@ -11622,6 +11746,14 @@ export interface components {
             /** Format: uri */
             cancelUrl: string;
         };
+        PostV1MembershipPaymentMethodIntentPositiveResponse: {
+            data: {
+                setupIntentClientSecret: string;
+                customerId: string;
+                ephemeralKeySecret: string;
+            };
+        };
+        PostV1MembershipPaymentMethodIntentRequestBody: Record<string, never>;
         DeleteV1MembershipSubscriptionPositiveResponse: {
             data: {
                 cancelAtPeriodEnd: boolean;
@@ -11633,6 +11765,27 @@ export interface components {
             };
         };
         PostV1MembershipSubscriptionRequestBody: Record<string, never>;
+        PostV1MembershipSubscriptionIntentPositiveResponse: {
+            data: {
+                paymentIntentClientSecret: string;
+                customerId: string;
+                ephemeralKeySecret: string;
+            };
+        };
+        PostV1MembershipSubscriptionIntentRequestBody: Record<string, never>;
+        DeleteV1MembershipSubscriptionAutoRenewPositiveResponse: {
+            data: {
+                cancelAtPeriodEnd: boolean;
+            };
+        };
+        PostV1MembershipManualIntentPositiveResponse: {
+            data: {
+                paymentIntentClientSecret: string;
+                customerId: string;
+                ephemeralKeySecret: string;
+            };
+        };
+        PostV1MembershipManualIntentRequestBody: Record<string, never>;
         GetV1MembershipPaymentsPositiveResponse: {
             data: {
                 result: {
@@ -11649,6 +11802,7 @@ export interface components {
                     cardBrand: string | null;
                     cardExpMonth: number | null;
                     cardExpYear: number | null;
+                    paymentMethodType: string | null;
                     createdAt: unknown;
                 }[];
                 count: number;
@@ -11673,6 +11827,16 @@ export interface components {
             successUrl: string;
             /** Format: uri */
             cancelUrl: string;
+        };
+        PostV1DonationsIntentPositiveResponse: {
+            data: {
+                paymentIntentClientSecret: string;
+            };
+        };
+        PostV1DonationsIntentRequestBody: {
+            amount: number;
+            /** Format: email */
+            email: string;
         };
         PostV1AuthHandoffPositiveResponse: {
             data: {
@@ -12575,6 +12739,60 @@ export interface operations {
                 content?: never;
             };
             /** @description HEAD /v1/farm/fieldEvents Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1FarmStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/stats Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmStatsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/stats Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/stats Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/stats Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -24363,6 +24581,40 @@ export interface operations {
             };
         };
     };
+    PostV1MembershipPaymentMethodIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/paymentMethod/intent Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipPaymentMethodIntentRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/paymentMethod/intent Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipPaymentMethodIntentPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/paymentMethod/intent Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     PostV1MembershipSubscription: {
         parameters: {
             query?: never;
@@ -24416,6 +24668,103 @@ export interface operations {
                 };
             };
             /** @description DELETE /v1/membership/subscription Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipSubscriptionIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/subscription/intent Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipSubscriptionIntentRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/subscription/intent Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipSubscriptionIntentPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/subscription/intent Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1MembershipSubscriptionAutoRenew: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/membership/subscription/autoRenew Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1MembershipSubscriptionAutoRenewPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/membership/subscription/autoRenew Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MembershipManualIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/membership/manual/intent Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MembershipManualIntentRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/membership/manual/intent Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MembershipManualIntentPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/membership/manual/intent Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -24538,6 +24887,40 @@ export interface operations {
                 };
             };
             /** @description POST /v1/donations/checkout Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1DonationsIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/donations/intent Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1DonationsIntentRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/donations/intent Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1DonationsIntentPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/donations/intent Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

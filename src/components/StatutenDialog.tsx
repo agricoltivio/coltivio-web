@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { STATUTEN_TEXT } from "@/components/statuten-text";
 
 interface StatutenDialogProps {
   open: boolean;
@@ -38,10 +39,6 @@ export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = fals
     onConfirm(autoRenew);
   }
 
-  // The statutes text is always displayed in German (legal document).
-  // We retrieve it from de namespace directly via i18n, falling back to the key.
-  const statutenText = t("membership.statuten.text");
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -51,7 +48,7 @@ export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = fals
 
         {/* Scrollable statutes — fixed height so checkbox is always visible */}
         <div className="max-h-64 overflow-y-auto border rounded p-4 text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-          {statutenText}
+          {STATUTEN_TEXT}
         </div>
 
         {/* Acceptance checkbox — always visible below the scroll area */}
@@ -66,7 +63,7 @@ export function StatutenDialog({ open, onOpenChange, onConfirm, isLoading = fals
           </Label>
         </div>
 
-        {/* Auto-renewal toggle — hidden for trial flow */}
+        {/* Auto-renewal toggle — hidden for the early-extension flow (one-time only) */}
         {showAutoRenewal && (
           <>
             <div className="flex items-center gap-3">

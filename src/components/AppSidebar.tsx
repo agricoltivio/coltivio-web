@@ -23,8 +23,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
-import { membershipStatusQueryOptions } from "@/api/membership.queries";
-import { checkActiveMembership, checkUserActiveMembership, checkUserGracePeriod } from "@/lib/membership";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import {
   BookOpen,
@@ -71,18 +69,14 @@ export function AppSidebar() {
   const commerceAccess = useFeatureAccess("commerce");
   const tasksAccess = useFeatureAccess("tasks");
 
-  // Group visibility — hide the group label when all items in the group are hidden
+  // Group visibility — hide the group label when all items in the group are hidden.
+  // Nothing here is membership-gated any more; Treffpunkt stays visible without a
+  // membership and its route shows the "membership required" message (MembersOnlyOutlet).
   const livestockGroupVisible = animalsAccess.canRead;
   const fieldCalendarGroupVisible = fieldCalendarAccess.canRead;
   const addressBookGroupVisible = commerceAccess.canRead;
   const salesGroupVisible = commerceAccess.canRead;
   const sponsorshipsGroupVisible = commerceAccess.canRead;
-  const hasMembership = checkActiveMembership(farmQuery.data?.membership);
-  const statusQuery = useQuery(membershipStatusQueryOptions());
-  const hasUserMembership = checkUserActiveMembership(statusQuery.data);
-  const isInGracePeriod = checkUserGracePeriod(statusQuery.data);
-  // Combined flag: farm membership OR personal user membership OR within grace period
-  const hasAnyMembership = hasMembership || hasUserMembership || isInGracePeriod;
   // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
   // The browser scrolls a container synchronously during focus (before rAF), so we
   // capture the scroll position on pointerdown and restore it in onFocusCapture.
@@ -135,7 +129,7 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  {hasAnyMembership && tasksAccess.canRead && (
+                  {tasksAccess.canRead && (
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
                         <Link
@@ -357,7 +351,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>}
-        {hasAnyMembership && addressBookGroupVisible && (
+        {addressBookGroupVisible && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -375,7 +369,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {hasAnyMembership && salesGroupVisible && (
+        {salesGroupVisible && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -411,7 +405,7 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        {hasAnyMembership && sponsorshipsGroupVisible && (
+        {sponsorshipsGroupVisible && (
           <SidebarGroup>
             <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
             <SidebarGroupContent>

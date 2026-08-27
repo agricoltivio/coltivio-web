@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
+// In-page gate for the webapp extras that require a membership (contacts, orders,
+// products, sponsorships, treffpunkt). The rest of the app is free.
 export function MembersOnly() {
   const { t } = useTranslation();
   return (
