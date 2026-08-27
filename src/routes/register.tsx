@@ -24,7 +24,7 @@ interface RegisterFormData {
 export const Route = createFileRoute("/register")({
   beforeLoad: ({ context }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: "/membership" });
+      throw redirect({ to: "/dashboard" });
     }
   },
   component: RegisterForm,
@@ -77,7 +77,7 @@ export function RegisterForm({
               <h1 className="text-2xl font-bold mb-4">Coltivio</h1>
               <p className="text-green-600 mb-4">{t("auth.signUpSuccess")}</p>
               <Link
-                to="/login" search={{ redirect: "/membership" }}
+                to="/login" search={{ redirect: "/dashboard" }}
                 className="text-sm underline-offset-2 hover:underline"
               >
                 {t("auth.signIn")}

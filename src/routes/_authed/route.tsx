@@ -3,6 +3,7 @@ import { NoFarm } from "@/components/NoFarm";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { membershipStatusQueryOptions } from "@/api/membership.queries";
+import { checkUserGracePeriod } from "@/lib/membership";
 import { meQueryOptions } from "@/api/user.queries";
 import { createFileRoute, Link, Outlet, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +40,8 @@ export const Route = createFileRoute("/_authed")({
   },
   loader: async ({ context }) => {
     const me = await context.queryClient.ensureQueryData(meQueryOptions());
-    context.queryClient.ensureQueryData(membershipStatusQueryOptions());
+    // Awaited so the Treffpunkt gate and the expiry/grace banners decide on first render.
+    await context.queryClient.ensureQueryData(membershipStatusQueryOptions());
     if (me.farmId) {
       return context.queryClient.ensureQueryData(farmQueryOptions());
     }
@@ -61,49 +63,32 @@ function AuthedLayout() {
   const [graceBannerDismissed, setGraceBannerDismissed] = useState(
     () => sessionStorage.getItem(`${userId}:${GRACE_BANNER_DISMISSED_KEY}`) === "true",
   );
-  const [showTrialDialog, setShowTrialDialog] = useState(false);
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const navigate = useNavigate();
 
-  // Use the user's own membership status for dialogs/banners (not the farm's effective membership)
   const userMembership = statusQuery.data;
 
   const now = new Date();
   const periodEnd = userMembership?.lastPeriodEnd
     ? new Date(userMembership.lastPeriodEnd as string)
     : null;
-  const trialEnd = userMembership?.trialEnd
-    ? new Date(userMembership.trialEnd as string)
-    : null;
 
-  const hasActivePeriod = !!periodEnd && periodEnd > now;
-  const hasActiveTrial = !!trialEnd && trialEnd > now;
-  const hasActiveMembership = hasActivePeriod || hasActiveTrial;
-  const isTrial = hasActiveTrial && !hasActivePeriod;
-  // Most recent expiry date (whichever is later)
-  const mostRecentExpiry = periodEnd && trialEnd
-    ? periodEnd > trialEnd ? periodEnd : trialEnd
-    : (periodEnd ?? trialEnd);
+  // A declared Austritt (cancelledByUser) keeps access until the end of the paid period.
+  const hasActiveMembership = !!periodEnd && periodEnd > now;
 
-  const daysSinceExpiry = !hasActiveMembership && mostRecentExpiry
-    ? Math.floor((now.getTime() - mostRecentExpiry.getTime()) / (1000 * 60 * 60 * 24))
-    : null;
+  // Grace period: the paid period lapsed within the last 10 days — features still accessible.
+  const isInGracePeriod = checkUserGracePeriod(userMembership);
+  const daysSincePeriodEnd = periodEnd
+    ? Math.floor((now.getTime() - periodEnd.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+  const daysRemainingInGrace = isInGracePeriod
+    ? Math.max(0, GRACE_PERIOD_DAYS - daysSincePeriodEnd)
+    : 0;
 
-  // Grace period: expired but within the 10-day window — features still accessible
-  const isInGracePeriod =
-    daysSinceExpiry !== null && daysSinceExpiry >= 0 && daysSinceExpiry < GRACE_PERIOD_DAYS;
-  const daysRemainingInGrace = isInGracePeriod ? GRACE_PERIOD_DAYS - daysSinceExpiry! : 0;
-
-  // Fully expired: grace period has also passed
-  const isExpired = !statusQuery.isLoading && !hasActiveMembership && (!!periodEnd || !!trialEnd) && !isInGracePeriod;
-  const expiredAtKey = isExpired ? mostRecentExpiry!.toISOString() : null;
-
-  useEffect(() => {
-    if (isTrial && localStorage.getItem(`${userId}:trial_welcome_shown`) !== "true") {
-      localStorage.setItem(`${userId}:trial_welcome_shown`, "true");
-      setShowTrialDialog(true);
-    }
-  }, [isTrial, userId]);
+  // Fully expired: had a paid membership, grace is over. Drives the one-time auto-open dialog.
+  const isExpired =
+    !statusQuery.isLoading && !hasActiveMembership && !isInGracePeriod && !!periodEnd;
+  const expiredAtKey = isExpired ? periodEnd!.toISOString() : null;
 
   useEffect(() => {
     if (expiredAtKey && localStorage.getItem(`${userId}:membership_expired_shown`) !== expiredAtKey) {
@@ -113,21 +98,21 @@ function AuthedLayout() {
   }, [expiredAtKey, userId]);
 
   const location = useLocation();
+  // Routes that work without a farm, so the layout should not force the NoFarm wizard.
   const isExemptFromFarmCheck =
     location.pathname.startsWith("/membership") ||
     location.pathname.startsWith("/treffpunkt") ||
     location.pathname.startsWith("/account") ||
     location.pathname.startsWith("/settings");
 
-  // Subscribed during trial: Stripe creates a $0 period ending at trialEnd,
-  // then auto-renews at full price. Treat as active subscription, not expiring.
-  const isSubscribedDuringTrial = hasActivePeriod && hasActiveTrial;
+  // The whole app is free — a membership is only required for the Treffpunkt community
+  // (gated in treffpunkt/route.tsx). This layout just shows the expiry / grace nudges below.
 
-  // Only track expiry for pure trial (no subscription) or paid subscription without active trial
-  const relevantExpiry = isTrial ? trialEnd : (!isSubscribedDuringTrial ? periodEnd : null);
-  const daysUntilExpiry = relevantExpiry
-    ? Math.ceil((relevantExpiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    : null;
+  // Nudge before a non-renewing membership lapses.
+  const daysUntilExpiry =
+    periodEnd && hasActiveMembership
+      ? Math.ceil((periodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      : null;
 
   const showExpiryBanner =
     !bannerDismissed &&
@@ -155,9 +140,7 @@ function AuthedLayout() {
           {showExpiryBanner && daysUntilExpiry !== null && (
             <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900">
               <p className="text-sm font-medium">
-                {isTrial
-                  ? t("membership.expiry.trialEnding", { days: daysUntilExpiry })
-                  : t("membership.expiry.membershipExpiring", { days: daysUntilExpiry })}
+                {t("membership.expiry.membershipExpiring", { days: daysUntilExpiry })}
               </p>
               <div className="flex shrink-0 items-center gap-3">
                 <Link
@@ -218,23 +201,6 @@ function AuthedLayout() {
             </Button>
             <Button onClick={() => { setShowExpiredDialog(false); void navigate({ to: "/membership" }); }}>
               {t("membership.expiredDialog.cta")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showTrialDialog} onOpenChange={setShowTrialDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("membership.trialWelcome.title")}</DialogTitle>
-            <DialogDescription>
-              {t("membership.trialWelcome.description")}
-            </DialogDescription>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">{t("membership.trialWelcome.features")}</p>
-          <DialogFooter>
-            <Button onClick={() => setShowTrialDialog(false)}>
-              {t("membership.trialWelcome.cta")}
             </Button>
           </DialogFooter>
         </DialogContent>

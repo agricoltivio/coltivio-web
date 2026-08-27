@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
-import { useMembership } from "@/lib/useMembership";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -256,7 +255,7 @@ function AnimalDetailPage() {
         </Card>
 
         {/* Journal Card — members only */}
-        <AnimalJournalCardIfMember animalId={animalId} />
+        <AnimalJournalCard animalId={animalId} />
 
         {/* Children Card */}
         <Card>
@@ -412,12 +411,6 @@ function AnimalDetailPage() {
       </div>
     </PageContent>
   );
-}
-
-function AnimalJournalCardIfMember({ animalId }: { animalId: string }) {
-  const { hasAccess } = useMembership();
-  if (!hasAccess) return null;
-  return <AnimalJournalCard animalId={animalId} />;
 }
 
 function AnimalJournalCard({ animalId }: { animalId: string }) {

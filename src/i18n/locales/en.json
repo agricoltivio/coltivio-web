@@ -1327,7 +1327,7 @@
     "pinned": "Pinned"
   },
   "noFarm": {
-    "message": "Your account doesn't have a farm yet. Create one first in the app."
+    "message": "Your account doesn't have a farm yet. Create one first."
   },
   "onboarding": {
     "welcome": {
@@ -1371,33 +1371,23 @@
   },
   "membership": {
     "title": "Membership",
-    "trialBanner": {
-      "title": "Free trial active",
-      "description": "During the test phase, all members have unlimited access to all features. Membership management will be available at a later date."
-    },
     "expired": {
-      "message": "Your Verein membership has expired — rejoin now to regain access.",
-      "renew": "Renew membership",
-      "farmStillHasMembership": "Another farm member has an active membership — your farm retains full access to all features."
+      "renew": "Renew membership"
     },
     "expiry": {
-      "trialEnding": "Your trial membership ends in {{days}} days.",
       "membershipExpiring": "Your membership expires in {{days}} days.",
       "renew": "Renew"
     },
-    "becomeMember": "Become a member",
     "updatePaymentMethod": "Update payment method",
-    "subscribeDialog": {
-      "title": "Become a member",
-      "description": "With your membership you support the AgriColtivio association. The annual fee of CHF 75.– will be charged after your trial ends on {{date}}."
-    },
+    "extend": "Extend membership",
+    "autoRenew": "Automatic renewal",
     "cancelRenewal": "Declare resignation",
     "reactivate": "Withdraw resignation",
     "paymentHistory": "Contribution history",
     "cancelDialog": {
       "title": "Declare resignation",
       "description": "Would you like to resign from the AgriColtivio association?",
-      "art6Note": "According to Art. 6 of the statutes, your resignation takes effect immediately. You retain access until {{date}}. Fees already paid will not be refunded.",
+      "art6Note": "According to Art. 6 of the statutes, your resignation takes effect immediately. You keep access until {{date}} and can withdraw your resignation for free until then. Fees already paid will not be refunded.",
       "confirm": "Declare resignation"
     },
     "statuten": {
@@ -1405,47 +1395,36 @@
       "acceptLabel": "I have read the statutes and accept them.",
       "confirmButton": "Continue",
       "autoRenewalLabel": "Auto-renewal",
-      "autoRenewalNote": "Twint is not supported for auto-renewal. Choose one-time payment to pay with Twint.",
-      "text": "STATUTEN DES VEREINS AGRICOLTIVIO\n(gegründet gemäss Art. 60 ff. ZGB)\n\nArt. 1 – Name und Sitz\nUnter dem Namen «AgriColtivio» besteht ein Verein im Sinne von Art. 60 ff. ZGB mit Sitz in der Schweiz.\n\nArt. 2 – Zweck\nDer Verein bezweckt die Förderung einer offenen, transparenten und nachhaltigen Landwirtschaft durch die gemeinschaftliche Entwicklung und den Betrieb der Open-Source-Software Coltivio. Er ist gemeinnützig und verfolgt keine kommerziellen Interessen.\n\nArt. 3 – Mittel\nDer Verein finanziert sich durch Mitgliederbeiträge, Spenden sowie sonstige Zuwendungen. Das Geschäftsjahr entspricht dem Kalenderjahr.\n\nArt. 4 – Mitgliedschaft\n4.1 Mitglied des Vereins kann jede natürliche oder juristische Person werden, die den Vereinszweck unterstützt.\n4.2 Die Aufnahme erfolgt durch schriftliche oder elektronische Anmeldung beim Vorstand. Der Vorstand kann die Aufnahme ohne Angabe von Gründen ablehnen.\n4.3 Der jährliche Mitgliederbeitrag wird von der Generalversammlung festgesetzt.\n4.4 Mit der Anmeldung bestätigt die aufzunehmende Person, die Statuten gelesen zu haben und diese anzuerkennen.\n\nArt. 5 – Rechte und Pflichten der Mitglieder\n5.1 Die Mitglieder haben das Recht, an der Generalversammlung teilzunehmen, Anträge zu stellen und zu wählen.\n5.2 Die Mitglieder sind verpflichtet, den Jahresbeitrag fristgerecht zu entrichten und die Vereinsziele zu unterstützen.\n\nArt. 6 – Austritt und Ausschluss\n6.1 Der Austritt aus dem Verein ist jederzeit möglich. Die Austrittserklärung kann schriftlich oder elektronisch an den Vorstand gerichtet werden.\n6.2 Der Austritt wird sofort mit Zugang der Erklärung wirksam. Der Zugang zur Vereinsplattform bleibt bis zum Ende der bezahlten Periode erhalten.\n6.3 Bereits bezahlte Mitgliederbeiträge werden nicht zurückerstattet.\n6.4 Bei schwerwiegenden Verstössen gegen die Vereinsinteressen kann der Vorstand Mitglieder mit sofortiger Wirkung ausschliessen.\n\nArt. 7 – Organe\nOrgane des Vereins sind: a) die Generalversammlung; b) der Vorstand.\n\nArt. 8 – Generalversammlung\n8.1 Die ordentliche Generalversammlung findet jährlich statt. Der Vorstand lädt die Mitglieder mindestens 14 Tage im Voraus ein.\n8.2 Die Generalversammlung beschliesst über: Jahresbericht und Rechnung; Festsetzung des Mitgliederbeitrags; Wahl des Vorstands; Statutenänderungen; Auflösung des Vereins.\n\nArt. 9 – Vorstand\n9.1 Der Vorstand besteht aus mindestens zwei Personen und führt die laufenden Geschäfte.\n9.2 Vorstandsmitglieder werden von der Generalversammlung für jeweils zwei Jahre gewählt.\n\nArt. 10 – Haftung\nFür die Verbindlichkeiten des Vereins haftet ausschliesslich das Vereinsvermögen. Eine persönliche Haftung der Mitglieder ist ausgeschlossen.\n\nArt. 11 – Auflösung\nBei Auflösung des Vereins fällt das Vereinsvermögen nach Begleichung aller Verbindlichkeiten an eine gemeinnützige Organisation mit ähnlichem Zweck.\n\nArt. 12 – Inkrafttreten\nDiese Statuten wurden von der Gründungsversammlung beschlossen und treten mit der Gründung des Vereins in Kraft."
+      "autoRenewalNote": "Twint is not supported for auto-renewal. Choose one-time payment to pay with Twint."
     },
     "status": {
-      "label": "Status",
       "active": "Active member",
-      "trial": "Trial membership",
-      "inactive": "Inactive",
-      "autoRenewing": "Active member",
-      "cancelsAtPeriodEnd": "Resignation declared",
+      "featureAccess": "Access to member features",
       "validUntil": "Valid until",
       "autoRenewsOn": "Your membership will automatically renew on {{date}}.",
-      "cancelledByUser": "You have cancelled your membership with AgriColtivio. You have access to all features until {{date}}.",
-      "trialEnds": "Trial ends",
-      "subscriptionStartsAfterTrial": "Your membership is active. The annual fee of CHF 75.– will be charged after your trial ends on {{date}}."
+      "cancelledByUser": "You have left the AgriColtivio association. You keep access to member features until {{date}} and can withdraw your resignation for free until then.",
+      "expired": "Your membership expired on {{date}}.",
+      "expiredInGrace": "Your membership expired on {{date}}. Renew it to keep access."
     },
     "paywall": {
-      "noMembership": "Your farm is not yet a member of the AgriColtivio association",
-      "farmAlreadyHasMembership": "One of your farm members is already an association member — your farm already has full access. You can still get your own membership and support the association.",
+      "noMembership": "You are not yet a member of the AgriColtivio association",
       "tagline": "Become a member of the AgriColtivio association — a community of farmers for open and fair agriculture.",
-      "startTrial": "Start 30-day trial membership",
-      "trialInfo": "No credit card required",
-      "or": "or",
       "subscribe": "Become a member",
       "priceInfo": "CHF 75.– / year",
       "features": {
-        "app": {
-          "title": "App",
+        "access": {
+          "title": "With your membership",
           "items": [
-            "Tasks with animal or plot assignment and automatic checklists",
-            "Invite multiple users and plan together",
-            "Use images in wiki entries"
+            "Access to the Treffpunkt community",
+            "Connect with other farmers",
+            "Ask questions and suggest new features"
           ]
         },
-        "web": {
-          "title": "Web App",
+        "contribution": {
+          "title": "Your contribution",
           "items": [
-            "All app features in the browser",
-            "Manage contacts",
-            "Record orders and track payment",
-            "Manage animal sponsorships"
+            "You support open, non-profit software",
+            "A vote in the AgriColtivio association"
           ]
         }
       }
@@ -1464,37 +1443,30 @@
       }
     },
     "membersOnly": {
-      "title": "Members Only",
-      "description": "This feature is only available to members.",
+      "title": "Members only",
+      "description": "Access to the Treffpunkt requires an active AgriColtivio association membership.",
       "cta": "Become a member"
     },
-    "wikiImageDialog": {
-      "title": "Images for Members Only",
-      "description": "Images in wiki entries are only visible to members.",
-      "cta": "Become a member"
-    },
-    "ownerOnlyManagement": "Membership can only be managed by the farm owner.",
     "expiredDialog": {
       "title": "Your membership has expired",
       "description": "If you'd like to stay part of AgriColtivio and use the additional features, you're free to resubscribe anytime and pick up where you left off.",
       "cta": "Become a member"
     },
-    "trialWelcome": {
-      "title": "Welcome to AgriColtivio!",
-      "description": "Explore all membership features of Coltivio during your 30-day trial membership.",
-      "features": "Tasks, order book, sponsorships, field calendar, wiki, and the Treffpunkt community are now available to you.",
-      "cta": "Let's go"
-    },
     "membershipSuccess": {
       "title": "Welcome to AgriColtivio!",
       "description": "Thank you for becoming part of AgriColtivio. With your membership you help keep this project alive and become part of a community of like-minded farmers who stand for fair and open agriculture.",
       "treffpunkt": "We warmly invite you to join the Community – share your feedback, suggest new features, or ask questions.",
-      "features": "All membership features are now available to you: tasks, order book, sponsorships, field calendar, wiki, and more.",
+      "features": "The Treffpunkt community is now available to you – connect with other farmers.",
       "communityCta": "Go to Community",
       "close": "Close"
     },
+    "membershipRenewed": {
+      "title": "Thanks for staying with us!",
+      "description": "Your AgriColtivio association membership has been extended. We're glad you're still part of the community.",
+      "body": "You keep full access to all member features."
+    },
     "grace": {
-      "banner": "Your membership has expired — you still have {{days}} day(s) of grace period with full access. After that, member features will be disabled."
+      "banner": "Your membership has expired — you still have {{days}} day(s) of full access. After that, member features will be disabled."
     }
   },
   "treffpunkt": {
@@ -1522,8 +1494,6 @@
     "pinned": "Pinned",
     "editThread": "Edit post",
     "editReply": "Edit reply",
-    "trialReadOnly": "Posting is not available during the trial. Become a member to participate.",
-    "membersOnlyPosting": "Only members can create threads and comment.",
     "threadTitle": "Title",
     "body": "Content",
     "type": "Type",

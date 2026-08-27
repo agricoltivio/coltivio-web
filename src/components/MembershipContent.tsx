@@ -2,18 +2,21 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { membershipStatusQueryOptions, membershipPaymentsQueryOptions } from "@/api/membership.queries";
-import { farmQueryOptions } from "@/api/farm.queries";
-import { meQueryOptions } from "@/api/user.queries";
-import { checkActiveMembership, checkUserActiveMembership } from "@/lib/membership";
+import { membershipStatusQueryOptions } from "@/api/membership.queries";
+import {
+  checkUserActiveMembership,
+  checkUserGracePeriod,
+  checkWasEverMember,
+} from "@/lib/membership";
 import { apiClient } from "@/api/client";
-import type { MembershipPayment } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
-import { MembershipExpired } from "@/components/MembershipExpired";
 import { MembershipPaywall } from "@/components/MembershipPaywall";
+import { MembershipPaymentHistory } from "@/components/MembershipPaymentHistory";
 import { StatutenDialog } from "@/components/StatutenDialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Check, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,17 +25,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 interface MembershipContentProps {
   membershipSuccess: string | undefined;
+}
+
+// One-time (non auto-renewing) members can pay another year early once they are this
+// close to expiry. The backend stacks the new year onto the existing end date.
+const RENEWAL_WINDOW_DAYS = 60;
+
+function StatusRow({ label, ok }: { label: string; ok: boolean }) {
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      {ok ? (
+        <Check className="size-4 shrink-0 text-green-600" />
+      ) : (
+        <X className="size-4 shrink-0 text-destructive" />
+      )}
+      <span className="font-medium">{label}</span>
+    </div>
+  );
 }
 
 export function MembershipContent({ membershipSuccess }: MembershipContentProps) {
@@ -40,34 +52,25 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isLoadingPaymentMethod, setIsLoadingPaymentMethod] = useState(false);
-  const [isLoadingSubscribe, setIsLoadingSubscribe] = useState(false);
-  // subscribeDialog: shown to trial users who want to convert to paid
-  const [showSubscribeDialog, setShowSubscribeDialog] = useState(false);
-  // statutenDialog: shown before proceeding from subscribeDialog
-  const [showStatutenForSubscribe, setShowStatutenForSubscribe] = useState(false);
+  const [isLoadingRenew, setIsLoadingRenew] = useState(false);
+  // statutenDialog: shown before rejoining (expired / grace period)
+  const [showStatutenForRenew, setShowStatutenForRenew] = useState(false);
+  // statutenDialog: shown before an active one-time member pays another year early
+  const [showStatutenForExtend, setShowStatutenForExtend] = useState(false);
   // Austritt (cancel) confirmation dialog
   const [showAustrittDialog, setShowAustrittDialog] = useState(false);
-  const showSuccessDialog = membershipSuccess === "success";
+  // "success" = first-time join (welcome + onboarding); "renewed" = an existing member
+  // renewed / extended early (thanks-for-staying).
+  const isRenewal = membershipSuccess === "renewed";
+  const showSuccessDialog = membershipSuccess === "success" || isRenewal;
 
   function closeSuccessDialog() {
     void navigate({ to: "/membership", replace: true });
   }
 
-  const meQuery = useQuery(meQueryOptions());
-  const farmQuery = useQuery(farmQueryOptions(meQuery.data?.farmId != null));
   const statusQuery = useQuery(membershipStatusQueryOptions());
 
-  const farmMembership = farmQuery.data?.membership;
-  const farmHasActiveMembership = checkActiveMembership(farmMembership);
-
-  // Gate on the user's own membership, not the farm's effective membership
-  const userHasActiveMembership = checkUserActiveMembership(statusQuery.data);
-  const userIsExpired =
-    !userHasActiveMembership &&
-    (!!statusQuery.data?.lastPeriodEnd || !!statusQuery.data?.trialEnd);
-  const paymentsQuery = useQuery(membershipPaymentsQueryOptions());
-
-  // Austritt erklären (sets cancelAtPeriodEnd = true)
+  // Austritt erklären (sets cancelAtPeriodEnd = true + cancelledByUser = true)
   const cancelMutation = useMutation({
     mutationFn: async () => {
       const response = await apiClient.DELETE("/v1/membership/subscription");
@@ -81,7 +84,7 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
     },
   });
 
-  // Austritt zurückziehen (sets cancelAtPeriodEnd = false)
+  // Turn auto-renew back on (also undoes an Austritt: clears cancelAtPeriodEnd / cancelledByUser)
   const reactivateMutation = useMutation({
     mutationFn: async () => {
       const response = await apiClient.POST("/v1/membership/subscription", { body: {} });
@@ -94,24 +97,40 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
     },
   });
 
-  // Stripe checkout for trial users converting to paid — triggered after statutes acceptance
-  async function handleSubscribeFromTrial(autoRenew: boolean) {
-    setIsLoadingSubscribe(true);
-    setShowStatutenForSubscribe(false);
+  // Turn auto-renew off without resigning — the subscription runs out its paid period
+  const disableAutoRenewMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.DELETE("/v1/membership/subscription/autoRenew");
+      if (response.error) throw new Error("Failed to disable auto-renew");
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["membership", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["farm"] });
+    },
+  });
+
+  // Checkout to rejoin (expired / grace) or to extend early (one-time member). Always a
+  // returning/continuing member → the "renewed" (thanks-for-staying) dialog. For an early
+  // extension the backend adds the year onto the existing period end.
+  async function handleRenew(autoRenew: boolean) {
+    setIsLoadingRenew(true);
+    setShowStatutenForRenew(false);
+    setShowStatutenForExtend(false);
     try {
       const endpoint = autoRenew
         ? "/v1/membership/checkout/subscription"
         : "/v1/membership/checkout/manual";
       const response = await apiClient.POST(endpoint, {
         body: {
-          successUrl: `${window.location.href.split("?")[0]}?membership=success`,
+          successUrl: `${window.location.href.split("?")[0]}?membership=renewed`,
           cancelUrl: window.location.href,
         },
       });
       if (response.error || !response.data) throw new Error("Checkout failed");
       window.location.href = response.data.data.url;
     } catch {
-      setIsLoadingSubscribe(false);
+      setIsLoadingRenew(false);
     }
   }
 
@@ -132,17 +151,14 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
     }
   }
 
-  // Show paywall/expired screens based on the user's own membership
-  if (!statusQuery.isLoading && userIsExpired) {
-    return <MembershipExpired farmHasMembership={farmHasActiveMembership} />;
-  }
-  if (!statusQuery.isLoading && !userHasActiveMembership) {
-    return <MembershipPaywall farmHasMembership={farmHasActiveMembership} />;
-  }
-
   const status = statusQuery.data;
-  // Filter out $0 Stripe invoices generated when subscribing during a trial
-  const payments = (paymentsQuery.data?.result ?? []).filter((p) => p.amount > 0);
+
+  // Genuine first-timers (never had a membership) get the paywall; everyone who was ever
+  // a member keeps the normal membership page — the status reflects whether it is active,
+  // in grace, expired, or resigned.
+  if (!statusQuery.isLoading && !checkWasEverMember(status)) {
+    return <MembershipPaywall />;
+  }
 
   const dateFormatter = new Intl.DateTimeFormat(i18n.language, {
     day: "numeric",
@@ -150,82 +166,109 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
     year: "numeric",
   });
 
-  const periodEndDate = status?.lastPeriodEnd
-    ? dateFormatter.format(new Date(status.lastPeriodEnd as string))
-    : null;
+  const nowMs = Date.now();
+  const periodEndRaw = status?.lastPeriodEnd ? new Date(status.lastPeriodEnd as string) : null;
+  const periodEndDate = periodEndRaw ? dateFormatter.format(periodEndRaw) : null;
+  const periodRunning = !!periodEndRaw && periodEndRaw.getTime() > nowMs;
 
-  const trialEndDate = status?.trialEnd
-    ? dateFormatter.format(new Date(status.trialEnd as string))
-    : null;
+  const isActiveMember = checkUserActiveMembership(status); // paid period still running (ignores grace)
+  const inGracePeriod = checkUserGracePeriod(status);
+  const hasFeatureAccess = isActiveMember || inGracePeriod;
+  // Austritt declared and the paid period is still running (revocable, access continues).
+  // Once the period has ended a resigned user must rejoin like any expired member.
+  const isResignedActive = !!status?.cancelledByUser && isActiveMember;
 
-  const isTrial = !!trialEndDate && !periodEndDate;
-  // Subscribed during trial: $0 Stripe period ends at trialEnd, then auto-renews
-  const isSubscribedDuringTrial = !!trialEndDate && !!periodEndDate;
-  const isActive = !!periodEndDate || !!trialEndDate;
+  // Only one-time (non-subscription) members can top up early — the backend stacks the
+  // new year onto their remaining time. Subscription members manage renewal through the
+  // auto-renew toggle instead; the backend rejects a manual payment while a live
+  // subscription exists.
+  const daysUntilPeriodEnd =
+    periodEndRaw && periodRunning
+      ? Math.ceil((periodEndRaw.getTime() - nowMs) / (1000 * 60 * 60 * 24))
+      : null;
+  const canExtend =
+    isActiveMember &&
+    !status?.autoRenewing &&
+    !status?.cancelledByUser &&
+    daysUntilPeriodEnd !== null &&
+    daysUntilPeriodEnd <= RENEWAL_WINDOW_DAYS;
+  const canToggleAutoRenew = isActiveMember && !!status?.autoRenewing;
 
-  const isMutating = cancelMutation.isPending || reactivateMutation.isPending;
+  const isMutating =
+    cancelMutation.isPending ||
+    reactivateMutation.isPending ||
+    disableAutoRenewMutation.isPending;
 
   return (
     <PageContent title={t("membership.title")}>
       {/* Status card */}
       <div className="border rounded-lg p-6 mb-8 bg-white max-w-xl">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="font-semibold">{t("membership.status.label")}:</span>
-          {isActive ? (
-            <Badge variant="default">
-              {isTrial ? t("membership.status.trial") : t("membership.status.active")}
-            </Badge>
-          ) : (
-            <Badge variant="secondary">{t("membership.status.inactive")}</Badge>
-          )}
-          {/* Only show the cancelsAtPeriodEnd badge when active, not in trial, and auto-renewing (one-time payments always expire) */}
-          {!isTrial && !isSubscribedDuringTrial && status?.cancelAtPeriodEnd && status?.autoRenewing && (
-            <Badge variant="outline">{t("membership.status.cancelsAtPeriodEnd")}</Badge>
-          )}
+        <div className="space-y-2 mb-4">
+          {/* A declared Austritt (cancelledByUser) means the user is no longer a member,
+              even while feature access continues until the end of the paid period. */}
+          <StatusRow
+            label={t("membership.status.active")}
+            ok={isActiveMember && !status?.cancelledByUser}
+          />
+          <StatusRow label={t("membership.status.featureAccess")} ok={hasFeatureAccess} />
         </div>
-        {(isTrial || isSubscribedDuringTrial) && trialEndDate && (
-          <p className="text-sm text-muted-foreground mb-4">
-            {isSubscribedDuringTrial
-              ? t("membership.status.subscriptionStartsAfterTrial", { date: trialEndDate })
-              : `${t("membership.status.trialEnds")}: ${trialEndDate}`}
-          </p>
-        )}
-        {!isTrial && !isSubscribedDuringTrial && periodEndDate && (
-          <p className="text-sm text-muted-foreground mb-4">
-            {status?.cancelledByUser
-              ? t("membership.status.cancelledByUser", { date: periodEndDate })
-              : status?.autoRenewing && !status?.cancelAtPeriodEnd
+        <p className="text-sm text-muted-foreground mb-4">
+          {isResignedActive
+            ? t("membership.status.cancelledByUser", { date: periodEndDate })
+            : isActiveMember
+              ? status?.autoRenewing && !status?.cancelAtPeriodEnd
                 ? t("membership.status.autoRenewsOn", { date: periodEndDate })
-                : `${t("membership.status.validUntil")}: ${periodEndDate}`}
-          </p>
-        )}
+                : `${t("membership.status.validUntil")}: ${periodEndDate}`
+              : inGracePeriod
+                ? t("membership.status.expiredInGrace", { date: periodEndDate })
+                : t("membership.status.expired", { date: periodEndDate })}
+        </p>
         <div className="flex flex-wrap gap-3">
-          {isTrial && !isSubscribedDuringTrial ? (
-            <Button onClick={() => setShowSubscribeDialog(true)} disabled={isLoadingSubscribe}>
-              {isLoadingSubscribe ? t("common.loading") : t("membership.becomeMember")}
+          {isResignedActive ? (
+            <Button
+              variant="outline"
+              onClick={() => reactivateMutation.mutate()}
+              disabled={isMutating}
+            >
+              {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
             </Button>
-          ) : (
-            <>
-              {/* Hide payment method update if cancelled — no ongoing subscription to update */}
-              {!status?.cancelledByUser && (
-                <Button
-                  variant="outline"
-                  onClick={handleUpdatePaymentMethod}
-                  disabled={isLoadingPaymentMethod}
-                >
-                  {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
-                </Button>
+          ) : isActiveMember ? (
+            <div className="flex w-full flex-col gap-3">
+              {canToggleAutoRenew && (
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="auto-renew"
+                    checked={!status?.cancelAtPeriodEnd}
+                    onCheckedChange={(checked) =>
+                      checked
+                        ? reactivateMutation.mutate()
+                        : disableAutoRenewMutation.mutate()
+                    }
+                    disabled={isMutating}
+                  />
+                  <Label htmlFor="auto-renew" className="cursor-pointer text-sm">
+                    {t("membership.autoRenew")}
+                  </Label>
+                </div>
               )}
-              {isActive && (status?.cancelAtPeriodEnd || status?.cancelledByUser) && (
-                <Button
-                  variant="outline"
-                  onClick={() => reactivateMutation.mutate()}
-                  disabled={isMutating}
-                >
-                  {reactivateMutation.isPending ? t("common.loading") : t("membership.reactivate")}
-                </Button>
-              )}
-              {isActive && !status?.cancelledByUser && (
+              <div className="flex flex-wrap gap-3">
+                {canExtend && (
+                  <Button
+                    onClick={() => setShowStatutenForExtend(true)}
+                    disabled={isLoadingRenew}
+                  >
+                    {isLoadingRenew ? t("common.loading") : t("membership.extend")}
+                  </Button>
+                )}
+                {status?.autoRenewing && (
+                  <Button
+                    variant="outline"
+                    onClick={handleUpdatePaymentMethod}
+                    disabled={isLoadingPaymentMethod}
+                  >
+                    {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   onClick={() => setShowAustrittDialog(true)}
@@ -233,30 +276,15 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
                 >
                   {t("membership.cancelRenewal")}
                 </Button>
-              )}
-            </>
+              </div>
+            </div>
+          ) : (
+            // grace / expired — rejoin
+            <Button onClick={() => setShowStatutenForRenew(true)} disabled={isLoadingRenew}>
+              {isLoadingRenew ? t("common.loading") : t("membership.expired.renew")}
+            </Button>
           )}
         </div>
-
-        {/* subscribeDialog: trial → paid conversion, opens StatutenDialog before checkout */}
-        <Dialog open={showSubscribeDialog} onOpenChange={setShowSubscribeDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("membership.subscribeDialog.title")}</DialogTitle>
-              <DialogDescription>
-                {t("membership.subscribeDialog.description", { date: trialEndDate })}
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowSubscribeDialog(false)}>
-                {t("common.cancel")}
-              </Button>
-              <Button onClick={() => { setShowSubscribeDialog(false); setShowStatutenForSubscribe(true); }}>
-                {t("membership.becomeMember")}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         {/* Austritt confirmation dialog with Art. 6 explanation */}
         <Dialog open={showAustrittDialog} onOpenChange={setShowAustrittDialog}>
@@ -286,80 +314,66 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
         </Dialog>
       </div>
 
-      {/* Statuten acceptance for trial→paid conversion */}
+      {/* Statuten acceptance for rejoining after expiry / during grace */}
       <StatutenDialog
-        open={showStatutenForSubscribe}
-        onOpenChange={setShowStatutenForSubscribe}
-        onConfirm={handleSubscribeFromTrial}
-        isLoading={isLoadingSubscribe}
+        open={showStatutenForRenew}
+        onOpenChange={setShowStatutenForRenew}
+        onConfirm={handleRenew}
+        isLoading={isLoadingRenew}
       />
 
-      {/* Membership success dialog shown after Stripe checkout redirect */}
+      {/* Statuten acceptance for an early one-year extension (one-time payment only) */}
+      <StatutenDialog
+        open={showStatutenForExtend}
+        onOpenChange={setShowStatutenForExtend}
+        onConfirm={() => handleRenew(false)}
+        isLoading={isLoadingRenew}
+        showAutoRenewal={false}
+      />
+
+      {/* Shown after a Stripe checkout redirect — welcome for a first join, thanks-for-staying for a renewal */}
       <Dialog open={showSuccessDialog} onOpenChange={(open) => { if (!open) closeSuccessDialog(); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t("membership.membershipSuccess.title")}</DialogTitle>
+            <DialogTitle>
+              {isRenewal
+                ? t("membership.membershipRenewed.title")
+                : t("membership.membershipSuccess.title")}
+            </DialogTitle>
             <DialogDescription>
-              {t("membership.membershipSuccess.description")}
+              {isRenewal
+                ? t("membership.membershipRenewed.description")
+                : t("membership.membershipSuccess.description")}
             </DialogDescription>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.treffpunkt")}</p>
-          <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.features")}</p>
+          {isRenewal ? (
+            <p className="text-sm text-muted-foreground">{t("membership.membershipRenewed.body")}</p>
+          ) : (
+            <>
+              <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.treffpunkt")}</p>
+              <p className="text-sm text-muted-foreground">{t("membership.membershipSuccess.features")}</p>
+            </>
+          )}
           <DialogFooter>
-            <Button variant="outline" onClick={closeSuccessDialog}>
-              {t("membership.membershipSuccess.close")}
-            </Button>
-            <Button onClick={() => { void navigate({ to: "/treffpunkt", replace: true }); }}>
-              {t("membership.membershipSuccess.communityCta")}
-            </Button>
+            {isRenewal ? (
+              <Button onClick={closeSuccessDialog}>
+                {t("membership.membershipSuccess.close")}
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={closeSuccessDialog}>
+                  {t("membership.membershipSuccess.close")}
+                </Button>
+                <Button onClick={() => { void navigate({ to: "/treffpunkt", replace: true }); }}>
+                  {t("membership.membershipSuccess.communityCta")}
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Beitragshistorie */}
-      <h2 className="text-lg font-semibold mb-4">{t("membership.paymentHistory")}</h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{t("membership.payments.date")}</TableHead>
-            <TableHead>{t("membership.payments.amount")}</TableHead>
-            <TableHead>{t("membership.payments.currency")}</TableHead>
-            <TableHead>{t("membership.payments.card")}</TableHead>
-            <TableHead>{t("membership.payments.status")}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {payments.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
-                {t("common.noResults")}
-              </TableCell>
-            </TableRow>
-          ) : (
-            payments.map((payment: MembershipPayment) => (
-              <TableRow key={payment.id}>
-                <TableCell>
-                  {payment.createdAt
-                    ? dateFormatter.format(new Date(payment.createdAt as string))
-                    : "—"}
-                </TableCell>
-                <TableCell>{(payment.amount / 100).toFixed(2)}</TableCell>
-                <TableCell>{payment.currency.toUpperCase()}</TableCell>
-                <TableCell className="font-mono text-sm">
-                  {payment.cardBrand && payment.cardLast4
-                    ? `${payment.cardBrand} **** ${payment.cardLast4}`
-                    : "—"}
-                </TableCell>
-                <TableCell>
-                  <Badge variant={payment.status === "succeeded" ? "default" : "secondary"}>
-                    {t(`membership.payments.statuses.${payment.status}`)}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+      <MembershipPaymentHistory />
     </PageContent>
   );
 }

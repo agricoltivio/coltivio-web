@@ -19,7 +19,6 @@ import {
 } from "@/api/plots.queries";
 import type { MergePlotsBody, SplitPlotBody } from "@/api/plots.queries";
 import type { Plot } from "@/api/types";
-import { useMembership } from "@/lib/useMembership";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -1150,7 +1149,6 @@ function PlotDetailPanel({
   onEditMeta: () => void;
 }) {
   const { t } = useTranslation();
-  const { hasAccess } = useMembership();
 
   const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
@@ -1241,11 +1239,9 @@ function PlotDetailPanel({
               {label}
             </Link>
           ))}
-          {hasAccess && (
-            <Link to="/field-calendar/plots/$plotId/journal" params={{ plotId: plot.id }} search={{ returnTo: "/field-calendar/plots" }} className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors">
-              {t("journal.title")}
-            </Link>
-          )}
+          <Link to="/field-calendar/plots/$plotId/journal" params={{ plotId: plot.id }} search={{ returnTo: "/field-calendar/plots" }} className="block px-2 py-1.5 rounded hover:bg-accent text-sm transition-colors">
+            {t("journal.title")}
+          </Link>
         </div>
 
         <Link to="/field-calendar/plots/$plotId" params={{ plotId: plot.id }} className="block w-full">
