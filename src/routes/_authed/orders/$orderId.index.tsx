@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -338,7 +339,7 @@ function OrderDetailPage() {
                 label={t("orders.contact")}
                 value={
                   <Link
-                    className="hover:underline text-blue-600 hover:text-blue-800"
+                    className={inlineLink}
                     to="/contacts/$contactId"
                     params={{ contactId: order.contact.id }}
                   >

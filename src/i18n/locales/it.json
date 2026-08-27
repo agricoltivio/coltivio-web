@@ -15,6 +15,12 @@
     "next": "Avanti",
     "back": "Indietro",
     "signOut": "Esci",
+    "theme": {
+      "label": "Aspetto",
+      "system": "Sistema",
+      "light": "Chiaro",
+      "dark": "Scuro"
+    },
     "noResults": "Nessun risultato",
     "clearAll": "Cancella tutto",
     "deselectAll": "Deseleziona tutto",
@@ -44,6 +50,13 @@
       "fieldCalendar": "Calendario dei campi",
       "admin": "Amministrazione",
       "wiki": "Wiki"
+    },
+    "fieldGroups": {
+      "areas": "Superfici",
+      "crops": "Colture",
+      "measures": "Interventi",
+      "inputs": "Mezzi tecnici",
+      "analysis": "Analisi"
     },
     "dashboard": "Dashboard",
     "animals": "Animali",

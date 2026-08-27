@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/AppSidebar";
+import { SectionNav } from "@/components/SectionNav";
 import { NoFarm } from "@/components/NoFarm";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -26,6 +27,16 @@ const GRACE_BANNER_DISMISSED_KEY = "membership_grace_banner_dismissed";
 
 const EXPIRING_SOON_DAYS = 10;
 const GRACE_PERIOD_DAYS = 10;
+
+// The primary sidebar starts collapsed (icon rail); remember the user's choice
+// across reloads via the cookie that SidebarProvider writes on toggle.
+function getInitialSidebarOpen(): boolean {
+  const match =
+    typeof document !== "undefined"
+      ? document.cookie.match(/(?:^|;\s*)sidebar_state=(true|false)/)
+      : null;
+  return match ? match[1] === "true" : false;
+}
 
 export const Route = createFileRoute("/_authed")({
   beforeLoad: ({ context, location }) => {
@@ -132,13 +143,17 @@ function AuthedLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900">
-      <SidebarProvider>
+    <div className="min-h-screen bg-background font-sans antialiased text-foreground">
+      <SidebarProvider defaultOpen={getInitialSidebarOpen()}>
         <AppSidebar />
-        <main className="flex-1 min-w-0 overflow-x-hidden container mx-auto px-4 py-8">
-          <SidebarTrigger />
+        <main className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
+          <div className="flex h-12 shrink-0 items-center gap-3 border-b px-4 sm:px-6 lg:px-8">
+            <SidebarTrigger className="-ml-1.5 shrink-0" />
+            <SectionNav />
+          </div>
+          <div className="px-4 py-8 sm:px-6 lg:px-8">
           {showExpiryBanner && daysUntilExpiry !== null && (
-            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900">
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
               <p className="text-sm font-medium">
                 {t("membership.expiry.membershipExpiring", { days: daysUntilExpiry })}
               </p>
@@ -152,7 +167,7 @@ function AuthedLayout() {
                 <button
                   onClick={dismissBanner}
                   aria-label={t("common.close")}
-                  className="rounded p-0.5 hover:bg-amber-100"
+                  className="rounded p-0.5 hover:bg-amber-100 dark:hover:bg-amber-900/50"
                 >
                   <X className="size-4" />
                 </button>
@@ -160,7 +175,7 @@ function AuthedLayout() {
             </div>
           )}
           {isInGracePeriod && !graceBannerDismissed && (
-            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-orange-300 bg-orange-50 px-4 py-3 text-orange-900">
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-orange-300 bg-orange-50 px-4 py-3 text-orange-900 dark:border-orange-900 dark:bg-orange-950/50 dark:text-orange-200">
               <p className="text-sm font-medium">
                 {t("membership.grace.banner", { days: daysRemainingInGrace })}
               </p>
@@ -174,7 +189,7 @@ function AuthedLayout() {
                 <button
                   onClick={dismissGraceBanner}
                   aria-label={t("common.close")}
-                  className="rounded p-0.5 hover:bg-orange-100"
+                  className="rounded p-0.5 hover:bg-orange-100 dark:hover:bg-orange-900/50"
                 >
                   <X className="size-4" />
                 </button>
@@ -184,6 +199,7 @@ function AuthedLayout() {
           {!meQuery.isLoading && !hasFarmId && !isExemptFromFarmCheck
             ? <NoFarm />
             : <Outlet />}
+          </div>
         </main>
       </SidebarProvider>
 

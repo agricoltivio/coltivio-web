@@ -8,7 +8,6 @@ import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
@@ -36,58 +35,19 @@ function Products() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("products.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("products.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
       },
       {
         accessorKey: "category",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("products.category")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("products.category"),
         cell: ({ row }) => t(`products.categories.${row.getValue("category")}`),
       },
       {
         accessorKey: "pricePerUnit",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("products.pricePerUnit")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("products.pricePerUnit"),
         cell: ({ row }) => {
           const product = row.original;
           return `${formatCurrency(product.pricePerUnit)} / ${t(`products.units.${product.unit}`)}`;
@@ -95,20 +55,7 @@ function Products() {
       },
       {
         accessorKey: "active",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("orders.status")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("orders.status"),
         cell: ({ row }) => {
           const active = row.getValue("active") as boolean;
           return (
@@ -125,14 +72,17 @@ function Products() {
   const data = productsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("products.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        {canWriteProducts && (
+    <PageContent
+      title={t("products.title")}
+      showBackButton={false}
+      actions={
+        canWriteProducts && (
           <Button onClick={() => navigate({ to: "/products/create" })}>
             {t("common.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

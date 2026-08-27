@@ -48,16 +48,16 @@ export function MembershipPaywall() {
   }) as string[];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
+    <div className="min-h-screen bg-background flex items-center justify-center py-12">
       <div className="max-w-2xl w-full mx-auto px-6">
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Coltivio</h1>
-          <p className="text-gray-600">{t("membership.paywall.noMembership")}</p>
-          <p className="text-gray-500 text-sm mt-2 max-w-md mx-auto">{t("membership.paywall.tagline")}</p>
+          <h1 className="text-2xl font-bold mb-2">Coltivio</h1>
+          <p className="text-muted-foreground">{t("membership.paywall.noMembership")}</p>
+          <p className="text-muted-foreground text-sm mt-2 max-w-md mx-auto">{t("membership.paywall.tagline")}</p>
         </div>
         {/* Feature columns */}
         <div className="grid sm:grid-cols-2 gap-6 mb-10">
-          <div className="bg-white rounded-lg border p-5">
+          <div className="bg-card rounded-lg border p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
               {t("membership.paywall.features.access.title")}
             </p>
@@ -67,7 +67,7 @@ export function MembershipPaywall() {
               ))}
             </ul>
           </div>
-          <div className="bg-white rounded-lg border p-5">
+          <div className="bg-card rounded-lg border p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
               {t("membership.paywall.features.contribution.title")}
             </p>

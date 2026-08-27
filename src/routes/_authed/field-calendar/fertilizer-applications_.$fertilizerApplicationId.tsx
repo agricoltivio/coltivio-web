@@ -63,9 +63,8 @@ function FertilizerApplicationDetail() {
       title={`${app.fertilizer.name} – ${app.plot.name}`}
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/fertilizer-applications" })}
-    >
-      {canWrite && (
-        <div className="flex justify-end mb-6">
+      actions={
+        canWrite && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={deleteMutation.isPending}>
@@ -90,9 +89,9 @@ function FertilizerApplicationDetail() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
-      )}
-
+        )
+      }
+    >
       <div className="rounded-md border p-4 space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">{t("fieldCalendar.plots.plot")}</span>

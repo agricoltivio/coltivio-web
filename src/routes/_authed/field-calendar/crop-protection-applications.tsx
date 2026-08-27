@@ -239,15 +239,15 @@ function CropProtectionApplications() {
       title={t("fieldCalendar.cropProtectionApplications.title")}
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
-    >
-      <div className="flex justify-end mb-6">
-        {canWriteCropProtection && (
+      actions={
+        canWriteCropProtection && (
           <Button onClick={() => navigate({ to: "/field-calendar/crop-protection-applications/create", search: plotId ? { plotId } : {} })}>
             <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.cropProtectionApplications.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       {!plotId && <CropProtectionChart />}
       <DataTable
         data={data}

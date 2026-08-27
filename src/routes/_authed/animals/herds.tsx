@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/select";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 
 type OutdoorScheduleType = "pasture" | "exercise_yard";
 
@@ -68,15 +69,18 @@ function HerdsPage() {
   const [deleteHerd, setDeleteHerd] = useState<Herd | null>(null);
 
   return (
-    <PageContent title={t("herds.title")} showBackButton={false}>
-      {canWriteAnimals && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("herds.title")}
+      showBackButton={false}
+      actions={
+        canWriteAnimals && (
           <Button onClick={() => setCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             {t("herds.addHerd")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
 
       {herds.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground border border-dashed rounded-md">
@@ -99,7 +103,7 @@ function HerdsPage() {
                     <Link
                       to="/animals/herds/$herdId"
                       params={{ herdId: herd.id }}
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                     >
                       {herd.name}
                     </Link>

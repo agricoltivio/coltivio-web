@@ -269,15 +269,15 @@ function Harvests() {
       title={t("fieldCalendar.harvests.title")}
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
-    >
-      <div className="flex justify-end mb-6">
-        {canWriteHarvests && (
+      actions={
+        canWriteHarvests && (
           <Button onClick={() => navigate({ to: "/field-calendar/harvests/create", search: plotId ? { plotId } : {} })}>
             <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.harvests.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       {!plotId && <HarvestChart />}
       <DataTable
         data={data}

@@ -63,12 +63,15 @@ function MyWikiEntries() {
   }
 
   return (
-    <PageContent title={t("wiki.farmEntries")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("wiki.farmEntries")}
+      showBackButton={false}
+      actions={
         <Button onClick={() => navigate({ to: "/wiki/my-entries/new" })}>
           {t("wiki.newEntry")}
         </Button>
-      </div>
+      }
+    >
 
       {entries.length === 0 ? (
         <p className="text-muted-foreground">{t("wiki.noEntries")}</p>

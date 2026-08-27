@@ -246,15 +246,15 @@ function FertilizerApplications() {
       title={t("fieldCalendar.fertilizerApplications.title")}
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
-    >
-      <div className="flex justify-end mb-6">
-        {canWriteFertilization && (
+      actions={
+        canWriteFertilization && (
           <Button onClick={() => navigate({ to: "/field-calendar/fertilizer-applications/create", search: plotId ? { plotId } : {} })}>
             <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.fertilizerApplications.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       {!plotId && <FertilizerChart />}
       <DataTable
         data={data}

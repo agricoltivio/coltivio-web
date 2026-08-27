@@ -17,8 +17,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
-import { ArrowDown, ArrowUp, Upload, GitBranch, SlidersHorizontal } from "lucide-react";
+import { Upload, GitBranch, SlidersHorizontal } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
@@ -149,25 +150,12 @@ function Animals() {
       ] : []),
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("animals.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("animals.name"),
         cell: ({ row }) => (
           <Link
             to="/animals/$animalId"
             params={{ animalId: row.original.id }}
-            className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-800"
+            className={inlineLink}
             onClick={(e) => e.stopPropagation()}
           >
             {row.getValue("name")}
@@ -176,20 +164,7 @@ function Animals() {
       },
       {
         accessorKey: "type",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("animals.type")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("animals.type"),
         cell: ({ row }) => t(`animals.types.${row.getValue("type")}`),
         sortingFn: (rowA, rowB) => {
           const typeA = rowA.getValue("type") as string;
@@ -202,38 +177,12 @@ function Animals() {
       },
       {
         accessorKey: "earTag.number",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("animals.earTag")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("animals.earTag"),
         cell: ({ row }) => row.original.earTag?.number || "-",
       },
       {
         accessorKey: "dateOfBirth",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("animals.dateOfBirth")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("animals.dateOfBirth"),
         cell: ({ row }) => {
           const dateOfBirth = row.getValue("dateOfBirth") as string | null;
           return dateOfBirth ? formatDate(dateOfBirth) : "-";
@@ -241,20 +190,7 @@ function Animals() {
       },
       {
         accessorKey: "dateOfDeath",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("animals.dateOfDeath")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("animals.dateOfDeath"),
         cell: ({ row }) => {
           const dateOfDeath = row.getValue("dateOfDeath") as string | null;
           return dateOfDeath ? formatDate(dateOfDeath) : "-";
@@ -294,25 +230,28 @@ function Animals() {
     .filter((id): id is string => id !== undefined);
 
   return (
-    <PageContent title="Tiere">
-      <div className="flex justify-end gap-2 mb-6">
-        <Button variant="outline" onClick={() => navigate({ to: "/animals/family-tree" })}>
-          <GitBranch className="h-4 w-4 mr-2" />
-          {t("animals.familyTree")}
-        </Button>
-        {canWriteAnimals && (
-          <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
-            <Upload className="h-4 w-4 mr-2" />
-            {t("animals.import")}
+    <PageContent
+      title={t("animals.title")}
+      actions={
+        <>
+          <Button variant="outline" onClick={() => navigate({ to: "/animals/family-tree" })}>
+            <GitBranch className="h-4 w-4 mr-2" />
+            {t("animals.familyTree")}
           </Button>
-        )}
-        {canWriteAnimals && (
-          <Button onClick={() => navigate({ to: "/animals/create" })}>
-            {t("common.create")}
-          </Button>
-        )}
-      </div>
-
+          {canWriteAnimals && (
+            <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
+              <Upload className="h-4 w-4 mr-2" />
+              {t("animals.import")}
+            </Button>
+          )}
+          {canWriteAnimals && (
+            <Button onClick={() => navigate({ to: "/animals/create" })}>
+              {t("common.create")}
+            </Button>
+          )}
+        </>
+      }
+    >
       {livingAnimals.length > 0 && (
         <div className="grid grid-cols-2 gap-4 mb-6">
           <AnimalTypePieChart animals={livingAnimals} />

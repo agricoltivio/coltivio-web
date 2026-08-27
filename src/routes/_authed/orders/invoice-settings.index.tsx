@@ -43,14 +43,16 @@ function InvoiceSettingsPage() {
   });
 
   return (
-    <PageContent title={t("orders.invoiceSettings")}>
-      {canWrite && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("orders.invoiceSettings")}
+      actions={
+        canWrite && (
           <Button onClick={() => navigate({ to: "/orders/invoice-settings/create" })}>
             {t("common.create")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
 
       {settings.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">

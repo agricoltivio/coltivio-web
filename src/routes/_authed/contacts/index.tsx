@@ -8,7 +8,6 @@ import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
@@ -29,20 +28,7 @@ function Contacts() {
     () => [
       {
         accessorKey: "firstName",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("contacts.fullName")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("contacts.fullName"),
         cell: ({ row }) => (
           <span className="font-medium">
             {row.original.firstName} {row.original.lastName}
@@ -51,56 +37,17 @@ function Contacts() {
       },
       {
         accessorKey: "city",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("contacts.city")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("contacts.city"),
         cell: ({ row }) => row.getValue("city") || "-",
       },
       {
         accessorKey: "phone",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("contacts.phone")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("contacts.phone"),
         cell: ({ row }) => row.getValue("phone") || "-",
       },
       {
         accessorKey: "email",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("contacts.email")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("contacts.email"),
         cell: ({ row }) => row.getValue("email") || "-",
       },
       {
@@ -127,14 +74,17 @@ function Contacts() {
   const data = contactsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("contacts.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        {canWriteContacts && (
+    <PageContent
+      title={t("contacts.title")}
+      showBackButton={false}
+      actions={
+        canWriteContacts && (
           <Button onClick={() => navigate({ to: "/contacts/create" })}>
             {t("common.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

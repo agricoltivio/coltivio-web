@@ -223,9 +223,8 @@ function EditCropProtectionApplication() {
       backTo={() =>
         navigate({ to: "/field-calendar/crop-protection-applications" })
       }
-    >
-      {canWrite && (
-        <div className="flex justify-end mb-6">
+      actions={
+        canWrite && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" disabled={deleteMutation.isPending}>
@@ -250,8 +249,9 @@ function EditCropProtectionApplication() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </div>
-      )}
+        )
+      }
+    >
       <form
         onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
         className="space-y-4 max-w-lg"

@@ -28,14 +28,8 @@ import { apiClient } from "@/api/client";
 import { forumThreadQueryOptions, forumRepliesQueryOptions } from "@/api/forum.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
-import type { ForumReply, ForumThreadType } from "@/api/types";
-
-const THREAD_TYPE_COLORS: Record<ForumThreadType, string> = {
-  question: "bg-blue-100 text-blue-700 border-blue-200",
-  feature_request: "bg-purple-100 text-purple-700 border-purple-200",
-  bug_report: "bg-red-100 text-red-700 border-red-200",
-  general: "bg-gray-100 text-gray-700 border-gray-200",
-};
+import type { ForumReply } from "@/api/types";
+import { threadTypeBadgeClass } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -243,7 +237,7 @@ function ThreadDetail() {
     >
       {/* Thread header badges */}
       <div className="flex items-center gap-2 flex-wrap mb-4">
-        <Badge variant="outline" className={THREAD_TYPE_COLORS[thread.type]}>{t(`treffpunkt.types.${thread.type}`)}</Badge>
+        <Badge variant="outline" className={threadTypeBadgeClass[thread.type]}>{t(`treffpunkt.types.${thread.type}`)}</Badge>
         <Badge variant={thread.status === "open" ? "secondary" : "outline"}>
           {t(`treffpunkt.status.${thread.status}`)}
         </Badge>

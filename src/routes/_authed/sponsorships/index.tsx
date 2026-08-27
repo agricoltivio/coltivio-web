@@ -8,7 +8,6 @@ import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
@@ -38,20 +37,7 @@ function Sponsorships() {
     () => [
       {
         accessorKey: "contact.firstName",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("sponsorships.contact")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("sponsorships.contact"),
         cell: ({ row }) => (
           <span className="font-medium">
             {row.original.contact.firstName} {row.original.contact.lastName}
@@ -60,74 +46,22 @@ function Sponsorships() {
       },
       {
         accessorKey: "sponsorshipProgram.name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("sponsorships.program")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("sponsorships.program"),
         cell: ({ row }) => row.original.sponsorshipProgram.name,
       },
       {
         accessorKey: "animal.name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("sponsorships.animal")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("sponsorships.animal"),
         cell: ({ row }) => row.original.animal.name,
       },
       {
         accessorKey: "startDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("sponsorships.startDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("sponsorships.startDate"),
         cell: ({ row }) => formatDate(row.getValue("startDate")),
       },
       {
         accessorKey: "endDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("sponsorships.endDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("sponsorships.endDate"),
         cell: ({ row }) => {
           const endDate = row.getValue("endDate") as string | null;
           return endDate ? formatDate(endDate) : "-";
@@ -163,14 +97,17 @@ function Sponsorships() {
   const data = sponsorshipsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("sponsorships.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        {canWriteSponsorships && (
+    <PageContent
+      title={t("sponsorships.title")}
+      showBackButton={false}
+      actions={
+        canWriteSponsorships && (
           <Button onClick={() => navigate({ to: "/sponsorships/create" })}>
             {t("common.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

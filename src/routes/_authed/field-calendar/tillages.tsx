@@ -89,15 +89,15 @@ function Tillages() {
       title={t("fieldCalendar.tillages.title")}
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
-    >
-      <div className="flex justify-end mb-4">
-        {canWriteTillages && (
+      actions={
+        canWriteTillages && (
           <Button onClick={() => navigate({ to: "/field-calendar/tillages/create", search: plotId ? { plotId } : {} })}>
             <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.tillages.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

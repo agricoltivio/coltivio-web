@@ -6,6 +6,7 @@ import { MessageSquare, Pin } from "lucide-react";
 import { forumThreadsQueryOptions } from "@/api/forum.queries";
 import { useAuth } from "@/context/SupabaseAuthContext";
 import type { ForumThread, ForumThreadType } from "@/api/types";
+import { threadTypeBadgeClass } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,13 +27,6 @@ export const Route = createFileRoute("/_authed/treffpunkt/")({
   },
   component: TreffpunktPage,
 });
-
-const THREAD_TYPE_COLORS: Record<ForumThreadType, string> = {
-  question: "bg-blue-100 text-blue-700 border-blue-200",
-  feature_request: "bg-purple-100 text-purple-700 border-purple-200",
-  bug_report: "bg-red-100 text-red-700 border-red-200",
-  general: "bg-gray-100 text-gray-700 border-gray-200",
-};
 
 const THREAD_TYPES: ForumThreadType[] = [
   "question",
@@ -176,7 +170,7 @@ function TreffpunktPage() {
                       {t("treffpunkt.pinned")}
                     </Badge>
                   )}
-                  <Badge variant="outline" className={`text-xs ${THREAD_TYPE_COLORS[thread.type]}`}>
+                  <Badge variant="outline" className={`text-xs ${threadTypeBadgeClass[thread.type]}`}>
                     {t(`treffpunkt.types.${thread.type}`)}
                   </Badge>
                   <Badge

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -18,7 +19,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -112,25 +112,12 @@ function Orders() {
       },
       {
         accessorKey: "contact.firstName",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("orders.contact")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("orders.contact"),
         cell: ({ row }) => (
           <Link
             to="/orders/$orderId"
             params={{ orderId: row.original.id }}
-            className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-800"
+            className={inlineLink}
             onClick={(e) => e.stopPropagation()}
           >
             {row.original.contact.firstName} {row.original.contact.lastName}
@@ -139,20 +126,7 @@ function Orders() {
       },
       {
         accessorKey: "status",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("orders.status")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("orders.status"),
         cell: ({ row }) => {
           const status = row.getValue("status") as OrderStatus;
           return (
@@ -164,38 +138,12 @@ function Orders() {
       },
       {
         accessorKey: "orderDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("orders.orderDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("orders.orderDate"),
         cell: ({ row }) => formatDate(row.getValue("orderDate")),
       },
       {
         accessorKey: "shippingDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("orders.shippingDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("orders.shippingDate"),
         cell: ({ row }) => {
           const shippingDate = row.getValue("shippingDate") as string | null;
           return (
@@ -249,9 +197,11 @@ function Orders() {
   );
 
   return (
-    <PageContent title={t("orders.title")} showBackButton={false}>
-      <div className="flex justify-between mb-4">
-        <div>
+    <PageContent
+      title={t("orders.title")}
+      showBackButton={false}
+      actions={
+        <>
           {selectedCount > 0 && (
             <Button
               variant="outline"
@@ -260,13 +210,14 @@ function Orders() {
               {t("orders.downloadInvoices", { count: selectedCount })}
             </Button>
           )}
-        </div>
-        {canWriteOrders && (
-          <Button onClick={() => navigate({ to: "/orders/create" })}>
-            {t("common.create")}
-          </Button>
-        )}
-      </div>
+          {canWriteOrders && (
+            <Button onClick={() => navigate({ to: "/orders/create" })}>
+              {t("common.create")}
+            </Button>
+          )}
+        </>
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

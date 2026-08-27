@@ -1,6 +1,11 @@
+/**
+ * The single chart palette for the whole app, aligned to the brand tokens.
+ * Keep in sync with --chart-1..8 in src/styles.css (used by ui/chart.tsx).
+ * [0]=orange (brand secondary), [1]=teal (brand primary), then supporting hues.
+ */
 export const CHART_COLORS = [
-  "#4A90D9", "#E67E22", "#2ECC71", "#9B59B6", "#E74C3C",
-  "#1ABC9C", "#F39C12", "#3498DB", "#8E44AD", "#27AE60",
+  "#DB751D", "#2A5159", "#85A60F", "#8B6B55",
+  "#C8A43C", "#5B8A91", "#B4571C", "#6E7F3A",
 ];
 
 /** Assign stable colors by name (sorted alphabetically so colors don't shift). */

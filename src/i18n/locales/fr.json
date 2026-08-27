@@ -15,6 +15,12 @@
     "next": "Suivant",
     "back": "Retour",
     "signOut": "Déconnexion",
+    "theme": {
+      "label": "Apparence",
+      "system": "Système",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
     "noResults": "Aucun résultat",
     "clearAll": "Tout effacer",
     "deselectAll": "Désélectionner tout",
@@ -44,6 +50,13 @@
       "fieldCalendar": "Calendrier cultural",
       "admin": "Administration",
       "wiki": "Wiki"
+    },
+    "fieldGroups": {
+      "areas": "Surfaces",
+      "crops": "Cultures",
+      "measures": "Interventions",
+      "inputs": "Intrants",
+      "analysis": "Analyse"
     },
     "dashboard": "Tableau de bord",
     "animals": "Animaux",

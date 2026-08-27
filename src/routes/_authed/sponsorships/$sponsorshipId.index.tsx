@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { sponsorshipQueryOptions } from "@/api/sponsorships.queries";
@@ -162,7 +163,7 @@ function SponsorshipDetailPage() {
                 label={t("sponsorships.contact")}
                 value={
                   <Link
-                    className="hover:underline text-blue-600 hover:text-blue-800"
+                    className={inlineLink}
                     to="/contacts/$contactId"
                     params={{ contactId: sponsorship.contact.id }}
                   >
@@ -175,7 +176,7 @@ function SponsorshipDetailPage() {
                 value={
                   canReadAnimals ? (
                     <Link
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                       to="/animals/$animalId"
                       params={{ animalId: sponsorship.animal.id }}
                     >

@@ -202,7 +202,7 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
   return (
     <PageContent title={t("membership.title")}>
       {/* Status card */}
-      <div className="border rounded-lg p-6 mb-8 bg-white max-w-xl">
+      <div className="border rounded-lg p-6 mb-8 bg-card max-w-xl">
         <div className="space-y-2 mb-4">
           {/* A declared Austritt (cancelledByUser) means the user is no longer a member,
               even while feature access continues until the end of the paid period. */}

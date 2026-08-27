@@ -15,6 +15,12 @@
     "next": "Weiter",
     "back": "Zurück",
     "signOut": "Abmelden",
+    "theme": {
+      "label": "Erscheinungsbild",
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
     "noResults": "Keine Ergebnisse gefunden",
     "clearAll": "Alle zurücksetzen",
     "deselectAll": "Auswahl aufheben",
@@ -44,6 +50,13 @@
       "fieldCalendar": "Feldkalender",
       "admin": "Admin",
       "wiki": "Wiki"
+    },
+    "fieldGroups": {
+      "areas": "Flächen",
+      "crops": "Kulturen",
+      "measures": "Massnahmen",
+      "inputs": "Betriebsmittel",
+      "analysis": "Auswertung"
     },
     "dashboard": "Dashboard",
     "animals": "Tiere",

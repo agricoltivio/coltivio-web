@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -207,7 +208,7 @@ function AnimalDetailPage() {
                 value={
                   animal.mother ? (
                     <Link
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                       to="/animals/$animalId"
                       params={{ animalId: animal.mother.id }}
                     >
@@ -225,7 +226,7 @@ function AnimalDetailPage() {
                     <Link
                       to="/animals/$animalId"
                       params={{ animalId: animal.father.id }}
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                     >
                       {animal.father.name}
                     </Link>

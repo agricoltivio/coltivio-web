@@ -7,7 +7,6 @@ import type { Crop } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { type ColumnDef } from "@tanstack/react-table";
 
@@ -28,20 +27,7 @@ function CropsPage() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("crops.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("crops.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
@@ -93,14 +79,16 @@ function CropsPage() {
   const data = cropsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("crops.title")} showBackButton={false}>
-      <div className="flex justify-end mb-4">
-        {canWriteCrops && (
+    <PageContent
+      title={t("crops.title")}
+      actions={
+        canWriteCrops && (
           <Button onClick={() => navigate({ to: "/field-calendar/crops/create" })}>
             {t("common.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

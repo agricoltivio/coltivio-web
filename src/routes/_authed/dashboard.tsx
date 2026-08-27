@@ -7,8 +7,9 @@ import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOption
 import { tasksQueryOptions } from "@/api/tasks.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { forumThreadsQueryOptions } from "@/api/forum.queries";
-import type { ForumThreadType } from "@/api/types";
+import { threadTypeBadgeClass } from "@/lib/ui";
 import { FieldworkMap } from "@/components/FieldworkMap";
+import { CHART_COLORS } from "@/components/charts/chartUtils";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare } from "lucide-react";
 import {
@@ -23,23 +24,8 @@ export const Route = createFileRoute("/_authed/dashboard")({
   component: RouteComponent,
 });
 
-const THREAD_TYPE_COLORS: Record<ForumThreadType, string> = {
-  question: "bg-blue-100 text-blue-700 border-blue-200",
-  feature_request: "bg-purple-100 text-purple-700 border-purple-200",
-  bug_report: "bg-red-100 text-red-700 border-red-200",
-  general: "bg-gray-100 text-gray-700 border-gray-200",
-};
-
-const CHART_COLORS = [
-  "#4ade80",
-  "#60a5fa",
-  "#f97316",
-  "#a78bfa",
-  "#fb923c",
-  "#34d399",
-  "#f472b6",
-  "#facc15",
-];
+// Fertilizer chart legend: organic = green, mineral = teal (brand colours)
+const FERTILIZER_COLORS = { organic: "#85a60f", mineral: "#2a5159" } as const;
 
 function StatCard({
   label,
@@ -51,7 +37,7 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border p-4">
+    <div className="bg-card rounded-xl border p-4">
       <p className="text-sm text-muted-foreground">{label}</p>
       <p className="text-xl font-bold mt-1 break-words">{value}</p>
       {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
@@ -206,7 +192,9 @@ function RouteComponent() {
         type: "bar",
         data: fertilizerApplications.byFertilizer.map((f) => ({
           value: f.totalAmount,
-          itemStyle: { color: f.type === "organic" ? "#4ade80" : "#60a5fa" },
+          itemStyle: {
+            color: f.type === "organic" ? FERTILIZER_COLORS.organic : FERTILIZER_COLORS.mineral,
+          },
         })),
         label: {
           show: true,
@@ -333,7 +321,7 @@ function RouteComponent() {
 
       {/* Upcoming tasks */}
       {upcomingTasks.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-3">
             {t("dashboard.upcomingTasks", { defaultValue: "Anstehende Aufgaben" })}
           </p>
@@ -368,7 +356,7 @@ function RouteComponent() {
 
       {/* Recent Treffpunkt threads */}
       {recentForumThreads.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-semibold">
               {t("dashboard.recentTreffpunkt", { defaultValue: "Treffpunkt" })}
@@ -387,7 +375,7 @@ function RouteComponent() {
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <Badge variant="outline" className={`text-xs ${THREAD_TYPE_COLORS[thread.type]}`}>
+                    <Badge variant="outline" className={`text-xs ${threadTypeBadgeClass[thread.type]}`}>
                       {t(`treffpunkt.types.${thread.type}`)}
                     </Badge>
                     <Badge variant={thread.status === "open" ? "secondary" : "outline"} className="text-xs">
@@ -414,14 +402,14 @@ function RouteComponent() {
 
       {/* Donuts: animals by type + plots by current crop */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
             {t("dashboard.animalsByType", { defaultValue: "Tiere nach Typ" })}
           </p>
           <ReactECharts option={animalsByTypeOption} style={{ height: 220 }} />
         </div>
         {cropRotations.active.length > 0 && (
-          <div className="bg-white rounded-xl border p-4">
+          <div className="bg-card rounded-xl border p-4">
             <p className="text-sm font-semibold mb-2">
               {t("dashboard.plotsByCrop", { defaultValue: "Schläge nach Kultur" })}
             </p>
@@ -432,7 +420,7 @@ function RouteComponent() {
 
       {/* Harvest */}
       {harvests.byCrop.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
             {t("dashboard.harvestByCrop", { defaultValue: "Ernte nach Kultur" })}
           </p>
@@ -442,17 +430,23 @@ function RouteComponent() {
 
       {/* Fertilizer */}
       {fertilizerApplications.byFertilizer.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
             {t("dashboard.fertilizerApplications", { defaultValue: "Düngung" })}
           </p>
           <div className="flex gap-4 text-xs text-muted-foreground mb-2">
             <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-sm bg-[#60a5fa]" />
+              <span
+                className="inline-block w-3 h-3 rounded-sm"
+                style={{ backgroundColor: FERTILIZER_COLORS.mineral }}
+              />
               {t("dashboard.mineral", { defaultValue: "Mineral" })}
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-sm bg-[#4ade80]" />
+              <span
+                className="inline-block w-3 h-3 rounded-sm"
+                style={{ backgroundColor: FERTILIZER_COLORS.organic }}
+              />
               {t("dashboard.organic", { defaultValue: "Organisch" })}
             </span>
           </div>
@@ -462,7 +456,7 @@ function RouteComponent() {
 
       {/* Crop protection */}
       {cropProtectionApplications.byProduct.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
             {t("dashboard.cropProtection", { defaultValue: "Pflanzenschutz" })}
           </p>
@@ -472,7 +466,7 @@ function RouteComponent() {
 
       {/* Crop rotations */}
       {cropRotations.active.length > 0 && (
-        <div className="bg-white rounded-xl border p-4">
+        <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
             {t("dashboard.cropRotations", { defaultValue: "Aktive Fruchtfolgen" })}
           </p>
