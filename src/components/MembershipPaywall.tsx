@@ -48,8 +48,8 @@ export function MembershipPaywall() {
   }) as string[];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center py-12">
-      <div className="max-w-2xl w-full mx-auto px-6">
+    <div className="w-full">
+      <div className="max-w-2xl w-full mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-2xl font-bold mb-2">Coltivio</h1>
           <p className="text-muted-foreground">{t("membership.paywall.noMembership")}</p>
