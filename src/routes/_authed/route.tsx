@@ -28,14 +28,14 @@ const GRACE_BANNER_DISMISSED_KEY = "membership_grace_banner_dismissed";
 const EXPIRING_SOON_DAYS = 10;
 const GRACE_PERIOD_DAYS = 10;
 
-// The primary sidebar starts collapsed (icon rail); remember the user's choice
-// across reloads via the cookie that SidebarProvider writes on toggle.
+// The primary sidebar starts expanded; remember the user's choice across
+// reloads via the cookie that SidebarProvider writes on toggle.
 function getInitialSidebarOpen(): boolean {
   const match =
     typeof document !== "undefined"
       ? document.cookie.match(/(?:^|;\s*)sidebar_state=(true|false)/)
       : null;
-  return match ? match[1] === "true" : false;
+  return match ? match[1] === "true" : true;
 }
 
 export const Route = createFileRoute("/_authed")({
