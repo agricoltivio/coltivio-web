@@ -465,7 +465,11 @@
     "replaceLogo": "Remplacer le logo",
     "selectInvoiceMode": "Comment souhaitez-vous télécharger les factures?",
     "invoiceModeSingle": "Tout en un fichier (.docx)",
-    "invoiceModeZip": "Un fichier par facture (.zip)"
+    "invoiceModeZip": "Un fichier par facture (.zip)",
+    "filter": {
+      "unpaidOnly": "Non payé",
+      "notDeliveredOnly": "Non livré"
+    }
   },
   "treatments": {
     "title": "Traitements",

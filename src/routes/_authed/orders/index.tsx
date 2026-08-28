@@ -21,6 +21,33 @@ import {
 } from "@/components/ui/dialog";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "rounded-full border px-3 py-1 text-sm transition-colors",
+        active
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-background text-foreground hover:bg-accent",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 export const Route = createFileRoute("/_authed/orders/")({
   loader: ({ context: { queryClient } }) => {
@@ -60,6 +87,8 @@ function Orders() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [invoiceModeDialogOpen, setInvoiceModeDialogOpen] = useState(false);
   const [invoiceSettingsId, setInvoiceSettingsId] = useState("");
+  const [unpaidOnly, setUnpaidOnly] = useState(false);
+  const [notDeliveredOnly, setNotDeliveredOnly] = useState(false);
 
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString();
@@ -189,12 +218,20 @@ function Orders() {
     [t],
   );
 
-  const data = allOrders;
-
-  // Derive selected order IDs from row indices
-  const selectedOrderIds = Object.keys(rowSelection).map(
-    (idx) => allOrders[Number(idx)].id,
+  const data = useMemo(
+    () =>
+      allOrders.filter(
+        (order) =>
+          (!unpaidOnly || !order.paidInFull) &&
+          (!notDeliveredOnly || order.status !== "fulfilled"),
+      ),
+    [allOrders, unpaidOnly, notDeliveredOnly],
   );
+
+  // Derive selected order IDs from row indices into the currently shown data
+  const selectedOrderIds = Object.keys(rowSelection)
+    .map((idx) => data[Number(idx)]?.id)
+    .filter((id): id is string => id != null);
 
   return (
     <PageContent
@@ -232,6 +269,22 @@ function Orders() {
         defaultSorting={[{ id: "orderDate", desc: true }]}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
+        filterSlot={
+          <div className="flex flex-wrap gap-2">
+            <FilterPill
+              active={unpaidOnly}
+              onClick={() => setUnpaidOnly((v) => !v)}
+            >
+              {t("orders.filter.unpaidOnly")}
+            </FilterPill>
+            <FilterPill
+              active={notDeliveredOnly}
+              onClick={() => setNotDeliveredOnly((v) => !v)}
+            >
+              {t("orders.filter.notDeliveredOnly")}
+            </FilterPill>
+          </div>
+        }
       />
 
       <Dialog open={invoiceModeDialogOpen} onOpenChange={setInvoiceModeDialogOpen}>
