@@ -90,7 +90,7 @@ function Tillages() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
       actions={
         canWriteTillages && (
-          <Button onClick={() => navigate({ to: "/field-calendar/tillages/create", search: plotId ? { plotId } : {} })}>
+          <Button onClick={() => navigate({ to: "/field-calendar/tillages/create", search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {} })}>
             {t("fieldCalendar.tillages.create")}
           </Button>
         )

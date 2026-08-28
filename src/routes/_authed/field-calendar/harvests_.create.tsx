@@ -69,7 +69,10 @@ const STEPS = [
 ] as const;
 type WizardStep = (typeof STEPS)[number];
 
-const searchSchema = z.object({ plotId: z.string().optional() });
+const searchSchema = z.object({
+  plotId: z.string().optional(),
+  returnTo: z.string().optional(),
+});
 
 export const Route = createFileRoute("/_authed/field-calendar/harvests_/create")({
   validateSearch: searchSchema,
@@ -110,7 +113,16 @@ function CreateHarvest() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { plotId: defaultPlotId } = Route.useSearch();
+  const { plotId: defaultPlotId, returnTo } = Route.useSearch();
+
+  // Return to the plot's harvest list when the wizard was opened from a plot,
+  // otherwise to the global harvest overview.
+  const backSearch = defaultPlotId
+    ? { plotId: defaultPlotId, ...(returnTo ? { returnTo } : {}) }
+    : {};
+  function goToOverview() {
+    navigate({ to: "/field-calendar/harvests", search: backSearch });
+  }
 
   const [step, setStep] = useState<WizardStep>("crop");
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
@@ -196,7 +208,7 @@ function CreateHarvest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["harvests"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      navigate({ to: "/field-calendar/harvests" });
+      goToOverview();
     },
   });
 
@@ -357,7 +369,7 @@ function CreateHarvest() {
     <PageContent
       title={t("fieldCalendar.harvests.create")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/harvests" })}
+      backTo={goToOverview}
     >
       <div className="max-w-lg space-y-6">
         <WizardProgress
@@ -629,7 +641,7 @@ function CreateHarvest() {
           }
           saving={createMutation.isPending}
           onBack={goBack}
-          onCancel={() => navigate({ to: "/field-calendar/harvests" })}
+          onCancel={goToOverview}
           onNext={goNext}
           onSave={() => createMutation.mutate(getValues())}
         />

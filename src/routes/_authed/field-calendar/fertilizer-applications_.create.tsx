@@ -68,6 +68,7 @@ type WizardStep = (typeof ALL_STEPS)[number];
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
+  returnTo: z.string().optional(),
 });
 
 export const Route = createFileRoute(
@@ -104,7 +105,19 @@ function CreateFertilizerApplication() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { plotId: defaultPlotId } = Route.useSearch();
+  const { plotId: defaultPlotId, returnTo } = Route.useSearch();
+
+  // Return to the plot's application list when opened from a plot, otherwise
+  // to the global overview.
+  const backSearch = defaultPlotId
+    ? { plotId: defaultPlotId, ...(returnTo ? { returnTo } : {}) }
+    : {};
+  function goToOverview() {
+    navigate({
+      to: "/field-calendar/fertilizer-applications",
+      search: backSearch,
+    });
+  }
 
   const [step, setStep] = useState<WizardStep>("fertilizer");
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
@@ -187,7 +200,7 @@ function CreateFertilizerApplication() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fertilizerApplications"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      navigate({ to: "/field-calendar/fertilizer-applications" });
+      goToOverview();
     },
   });
 
@@ -377,7 +390,7 @@ function CreateFertilizerApplication() {
     <PageContent
       title={t("fieldCalendar.fertilizerApplications.create")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/fertilizer-applications" })}
+      backTo={goToOverview}
     >
       <div className="max-w-lg space-y-6">
         <WizardProgress
@@ -658,9 +671,7 @@ function CreateFertilizerApplication() {
           }
           saving={createMutation.isPending}
           onBack={goBack}
-          onCancel={() =>
-            navigate({ to: "/field-calendar/fertilizer-applications" })
-          }
+          onCancel={goToOverview}
           onNext={goNext}
           onSave={() => createMutation.mutate(getValues())}
         />

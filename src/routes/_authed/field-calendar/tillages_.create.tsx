@@ -24,7 +24,10 @@ import { Textarea } from "@/components/ui/textarea";
 const STEPS = ["plots", "details", "summary"] as const;
 type WizardStep = (typeof STEPS)[number];
 
-const searchSchema = z.object({ plotId: z.string().optional() });
+const searchSchema = z.object({
+  plotId: z.string().optional(),
+  returnTo: z.string().optional(),
+});
 
 export const Route = createFileRoute("/_authed/field-calendar/tillages_/create")({
   validateSearch: searchSchema,
@@ -46,7 +49,16 @@ function CreateTillage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { plotId: defaultPlotId } = Route.useSearch();
+  const { plotId: defaultPlotId, returnTo } = Route.useSearch();
+
+  // Return to the plot's tillage list when opened from a plot, otherwise to the
+  // global overview.
+  const backSearch = defaultPlotId
+    ? { plotId: defaultPlotId, ...(returnTo ? { returnTo } : {}) }
+    : {};
+  function goToOverview() {
+    navigate({ to: "/field-calendar/tillages", search: backSearch });
+  }
 
   const [step, setStep] = useState<WizardStep>("plots");
   const plotsQuery = useQuery(plotsQueryOptions());
@@ -88,7 +100,7 @@ function CreateTillage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tillages"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      navigate({ to: "/field-calendar/tillages" });
+      goToOverview();
     },
   });
 
@@ -127,7 +139,7 @@ function CreateTillage() {
     <PageContent
       title={t("fieldCalendar.tillages.create")}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/tillages" })}
+      backTo={goToOverview}
     >
       <div className="max-w-lg space-y-6">
         <WizardProgress
@@ -222,7 +234,7 @@ function CreateTillage() {
           canAdvance={stepValid(step)}
           saving={createMutation.isPending}
           onBack={() => setStep(STEPS[stepIndex - 1])}
-          onCancel={() => navigate({ to: "/field-calendar/tillages" })}
+          onCancel={goToOverview}
           onNext={() => setStep(STEPS[stepIndex + 1])}
           onSave={() => createMutation.mutate(getValues())}
         />

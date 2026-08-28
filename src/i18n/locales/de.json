@@ -465,7 +465,11 @@
     "replaceLogo": "Logo ersetzen",
     "selectInvoiceMode": "Wie sollen die Rechnungen heruntergeladen werden?",
     "invoiceModeSingle": "Alle in einer Datei (.docx)",
-    "invoiceModeZip": "Eine Datei pro Rechnung (.zip)"
+    "invoiceModeZip": "Eine Datei pro Rechnung (.zip)",
+    "filter": {
+      "unpaidOnly": "Nicht bezahlt",
+      "notDeliveredOnly": "Nicht geliefert"
+    }
   },
   "treatments": {
     "title": "Behandlungen",

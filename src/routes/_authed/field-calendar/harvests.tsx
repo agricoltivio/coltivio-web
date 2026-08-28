@@ -270,7 +270,7 @@ function Harvests() {
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
       actions={
         canWriteHarvests && (
-          <Button onClick={() => navigate({ to: "/field-calendar/harvests/create", search: plotId ? { plotId } : {} })}>
+          <Button onClick={() => navigate({ to: "/field-calendar/harvests/create", search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {} })}>
             {t("fieldCalendar.harvests.create")}
           </Button>
         )
