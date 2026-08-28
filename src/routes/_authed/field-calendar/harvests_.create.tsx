@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -14,10 +14,13 @@ import {
   type CropCategory,
   type Harvest,
   type HarvestPreset,
+  type Plot,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
-import { PlotCombobox } from "@/components/PlotCombobox";
+import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
+import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -56,13 +59,19 @@ const CONSERVATION_METHODS: ConservationMethod[] = [
   "none",
 ];
 
-const searchSchema = z.object({
-  plotId: z.string().optional(),
-});
+const STEPS = [
+  "crop",
+  "config",
+  "quantity",
+  "plots",
+  "divide",
+  "summary",
+] as const;
+type WizardStep = (typeof STEPS)[number];
 
-export const Route = createFileRoute(
-  "/_authed/field-calendar/harvests_/create",
-)({
+const searchSchema = z.object({ plotId: z.string().optional() });
+
+export const Route = createFileRoute("/_authed/field-calendar/harvests_/create")({
   validateSearch: searchSchema,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(plotsQueryOptions());
@@ -74,13 +83,12 @@ export const Route = createFileRoute(
 });
 
 type FormData = {
-  plotId: string;
+  plotIds: string[];
   cropId: string;
   date: string;
   unit: HarvestUnit;
   kilosPerUnit: string;
   numberOfUnits: string;
-  harvestCount: string;
   conservationMethod: ConservationMethod | "";
   additionalNotes: string;
 };
@@ -94,32 +102,38 @@ type CropModalFormData = {
   additionalNotes: string;
 };
 
+function round2(value: number): number {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
 function CreateHarvest() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId } = Route.useSearch();
 
+  const [step, setStep] = useState<WizardStep>("crop");
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
   const [createCropOpen, setCreateCropOpen] = useState(false);
+  const [unitsByPlot, setUnitsByPlot] = useState<Record<string, string>>({});
+  const [divideByArea, setDivideByArea] = useState(true);
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const cropsQuery = useQuery(cropsQueryOptions());
   const presetsQuery = useQuery(harvestPresetsQueryOptions());
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
-  const { register, handleSubmit, setValue, watch } = useForm<FormData>({
+  const { register, setValue, watch, getValues } = useForm<FormData>({
     defaultValues: {
-      plotId: defaultPlotId ?? "",
+      plotIds: defaultPlotId ? [defaultPlotId] : [],
       cropId: "",
       date: new Date().toISOString().slice(0, 10),
       unit: "load",
-      kilosPerUnit: "0",
+      kilosPerUnit: "",
       numberOfUnits: "1",
-      harvestCount: "",
       conservationMethod: "",
       additionalNotes: "",
     },
@@ -138,33 +152,45 @@ function CreateHarvest() {
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const plot = plots.find((p) => p.id === data.plotId);
-      if (!plot) throw new Error("Plot not found");
+      const selectedPlots = data.plotIds
+        .map((plotId) => plots.find((p) => p.id === plotId))
+        .filter((p): p is Plot => p != null);
+      if (selectedPlots.length === 0) throw new Error("Plot not found");
+
+      const kilosPerUnit = parseFloat(data.kilosPerUnit) || 0;
+      const numberOfUnits = parseFloat(data.numberOfUnits) || 0;
+      const multi = selectedPlots.length > 1;
 
       const response = await apiClient.POST("/v1/harvests/batch", {
         body: {
           date: new Date(data.date).toISOString(),
           cropId: data.cropId,
           unit: data.unit,
-          kilosPerUnit: parseFloat(data.kilosPerUnit),
-          harvestCount: data.harvestCount
-            ? parseInt(data.harvestCount)
-            : undefined,
+          kilosPerUnit,
           conservationMethod: data.conservationMethod || undefined,
           additionalNotes: data.additionalNotes || undefined,
-          plots: [
-            {
-              plotId: data.plotId,
-              numberOfUnits: parseFloat(data.numberOfUnits),
+          // The divide step works in kilograms; convert each plot's kg back to a
+          // unit count for the API.
+          plots: selectedPlots.map((plot) => {
+            if (!multi) {
+              return {
+                plotId: plot.id,
+                numberOfUnits,
+                geometry: plot.geometry,
+                size: plot.size,
+              };
+            }
+            const plotKilos = parseFloat(unitsByPlot[plot.id] ?? "") || 0;
+            return {
+              plotId: plot.id,
+              numberOfUnits: kilosPerUnit > 0 ? plotKilos / kilosPerUnit : 0,
               geometry: plot.geometry,
               size: plot.size,
-            },
-          ],
+            };
+          }),
         },
       });
-      if (response.error) {
-        throw new Error("Failed to create harvest");
-      }
+      if (response.error) throw new Error("Failed to create harvest");
       return response.data.data;
     },
     onSuccess: () => {
@@ -179,14 +205,12 @@ function CreateHarvest() {
       const response = await apiClient.POST("/v1/harvests/presets", {
         body: {
           name,
-          unit: watchedUnit,
-          kilosPerUnit: parseFloat(watchedKilosPerUnit),
-          conservationMethod: watchedConservation || undefined,
+          unit: watch("unit"),
+          kilosPerUnit: parseFloat(watch("kilosPerUnit")) || 0,
+          conservationMethod: watch("conservationMethod") || undefined,
         },
       });
-      if (response.error) {
-        throw new Error("Failed to create harvest preset");
-      }
+      if (response.error) throw new Error("Failed to create harvest preset");
       return response.data.data;
     },
     onSuccess: (preset: HarvestPreset) => {
@@ -203,15 +227,11 @@ function CreateHarvest() {
         "/v1/harvests/presets/byId/{presetId}",
         { params: { path: { presetId } } },
       );
-      if (response.error) {
-        throw new Error("Failed to delete harvest preset");
-      }
+      if (response.error) throw new Error("Failed to delete harvest preset");
     },
     onSuccess: (_data, deletedPresetId) => {
       queryClient.invalidateQueries({ queryKey: ["harvests", "presets"] });
-      if (selectedPresetId === deletedPresetId) {
-        setSelectedPresetId(null);
-      }
+      if (selectedPresetId === deletedPresetId) setSelectedPresetId(null);
     },
   });
 
@@ -249,11 +269,75 @@ function CreateHarvest() {
   const presets = presetsQuery.data?.result ?? [];
   const families = familiesQuery.data?.result ?? [];
 
-  const watchedPlotId = watch("plotId");
+  const watchedPlotIds = watch("plotIds");
   const watchedCropId = watch("cropId");
+  const watchedDate = watch("date");
   const watchedUnit = watch("unit");
   const watchedConservation = watch("conservationMethod");
   const watchedKilosPerUnit = watch("kilosPerUnit");
+  const watchedNumberOfUnits = watch("numberOfUnits");
+  const watchedNotes = watch("additionalNotes");
+
+  const plotIdsKey = watchedPlotIds.join(",");
+  useEffect(() => {
+    setDivideByArea(true);
+  }, [plotIdsKey]);
+
+  const selectedCrop = crops.find((c) => c.id === watchedCropId);
+  const selectedPlots = watchedPlotIds
+    .map((plotId) => plots.find((p) => p.id === plotId))
+    .filter((p): p is Plot => p != null);
+  const isMultiPlot = selectedPlots.length > 1;
+  const isFixedAmountUnit = watchedUnit === "total_amount";
+
+  const totalKilos =
+    (parseFloat(watchedKilosPerUnit) || 0) * (parseFloat(watchedNumberOfUnits) || 0);
+  const roundedTotal = round2(totalKilos);
+  const divideInvalid =
+    isMultiPlot &&
+    Math.abs(sumDivided(unitsByPlot, watchedPlotIds) - roundedTotal) > 0.01;
+
+  const steps = STEPS.filter((s) => {
+    if (s === "quantity") return !isFixedAmountUnit;
+    if (s === "divide") return isMultiPlot;
+    return true;
+  });
+  const activeStep = steps.includes(step)
+    ? step
+    : ([...steps]
+        .reverse()
+        .find((s) => STEPS.indexOf(s) <= STEPS.indexOf(step)) ?? steps[0]);
+  const stepIndex = steps.indexOf(activeStep);
+
+  function stepValid(s: WizardStep): boolean {
+    switch (s) {
+      case "crop":
+        return !!watchedCropId && !!watchedDate;
+      case "config":
+        return (
+          watchedKilosPerUnit.trim() !== "" &&
+          !Number.isNaN(parseFloat(watchedKilosPerUnit))
+        );
+      case "quantity":
+        return (parseFloat(watchedNumberOfUnits) || 0) > 0;
+      case "plots":
+        return watchedPlotIds.length >= 1;
+      case "divide":
+        return !divideInvalid;
+      case "summary":
+        return true;
+    }
+  }
+
+  function goNext() {
+    if (activeStep === "config" && isFixedAmountUnit) {
+      setValue("numberOfUnits", "1");
+    }
+    if (stepIndex < steps.length - 1) setStep(steps[stepIndex + 1]);
+  }
+  function goBack() {
+    if (stepIndex > 0) setStep(steps[stepIndex - 1]);
+  }
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -264,201 +348,292 @@ function CreateHarvest() {
     setValue("conservationMethod", preset.conservationMethod ?? "");
   }
 
+  const kilosPerUnitLabel =
+    watchedUnit === "total_amount"
+      ? `${t("fieldCalendar.harvests.units.total_amount")} (kg)`
+      : `kg / ${t(`fieldCalendar.harvests.units.${watchedUnit}`)}`;
+
   return (
     <PageContent
       title={t("fieldCalendar.harvests.create")}
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/harvests" })}
     >
-      <form
-        onSubmit={handleSubmit((data) => createMutation.mutate(data))}
-        className="space-y-4 max-w-lg"
-      >
-        {/* Plot + Crop on same line, wrap if tight */}
-        <div className="flex flex-wrap gap-4">
-          <div className="space-y-1 flex-1 min-w-[180px]">
-            <Label>{t("fieldCalendar.plots.plot")}</Label>
-            <PlotCombobox
-              plots={plots}
-              value={watchedPlotId || null}
-              onValueChange={(id) => setValue("plotId", id ?? "")}
-            />
-          </div>
+      <div className="max-w-lg space-y-6">
+        <WizardProgress
+          stepIndex={stepIndex}
+          total={steps.length}
+          label={t(`fieldCalendar.harvests.wizard.steps.${activeStep}`)}
+        />
 
-          <div className="space-y-1 flex-1 min-w-[180px]">
-            <Label>{t("fieldCalendar.harvests.crop")}</Label>
-            <div className="flex gap-1">
-              <div className="flex-1 min-w-0">
-              <Select
-                value={watchedCropId}
-                onValueChange={(v) => { if (v) setValue("cropId", v); }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue
-                    placeholder={t("fieldCalendar.cropRotations.selectCrop")}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {crops.map((crop) => (
-                    <SelectItem key={crop.id} value={crop.id}>
-                      {crop.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Step: crop + date */}
+        {activeStep === "crop" && (
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.harvests.crop")}</Label>
+              <div className="flex gap-1">
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={watchedCropId}
+                    onValueChange={(v) => {
+                      if (v) setValue("cropId", v);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={t("fieldCalendar.cropRotations.selectCrop")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {crops.map((crop) => (
+                        <SelectItem key={crop.id} value={crop.id}>
+                          {crop.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCreateCropOpen(true)}
+                >
+                  <PlusIcon className="size-4" />
+                </Button>
               </div>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.harvests.date")}</Label>
+              <Input type="date" {...register("date", { required: true })} />
+            </div>
+          </div>
+        )}
+
+        {/* Step: configuration */}
+        {activeStep === "config" && (
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.presets.select")}</Label>
+              <div className="flex gap-1">
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={selectedPresetId ?? ""}
+                    onValueChange={(v) => applyPreset(v)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {presets.length === 0 ? (
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          {t("fieldCalendar.presets.noPresets")}
+                        </div>
+                      ) : (
+                        presets.map((preset) => (
+                          <SelectItem key={preset.id} value={preset.id}>
+                            {preset.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setManagePresetsOpen(true)}
+                >
+                  <PencilIcon className="size-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label>{kilosPerUnitLabel}</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.1"
+                    {...register("kilosPerUnit", { required: true })}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>{t("fieldCalendar.harvests.unit")}</Label>
+                  <Select
+                    value={watchedUnit}
+                    onValueChange={(v) => setValue("unit", v as HarvestUnit)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {HARVEST_UNITS.map((unit) => (
+                        <SelectItem key={unit} value={unit}>
+                          {t(`fieldCalendar.harvests.units.${unit}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label>{t("fieldCalendar.harvests.conservationMethod")}</Label>
+                <Select
+                  value={watchedConservation}
+                  onValueChange={(v) =>
+                    setValue("conservationMethod", v as ConservationMethod | "")
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("common.noSelection")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CONSERVATION_METHODS.map((method) => (
+                      <SelectItem key={method} value={method}>
+                        {t(`fieldCalendar.harvests.conservationMethods.${method}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
               <Button
                 type="button"
                 variant="outline"
-                size="icon"
-                onClick={() => setCreateCropOpen(true)}
+                size="sm"
+                onClick={() => setSavePresetOpen(true)}
               >
-                <PlusIcon className="size-4" />
+                {t("fieldCalendar.presets.saveAs")}
               </Button>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Preset card */}
-        <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
-          {/* Preset selector row */}
-          <div className="flex items-end gap-2">
-            <div className="flex-1 space-y-1">
-              <Label>{t("fieldCalendar.presets.select")}</Label>
-              <Select
-                value={selectedPresetId ?? ""}
-                onValueChange={(v) => applyPreset(v)}
-              >
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={t("fieldCalendar.presets.select")}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {presets.length === 0 ? (
-                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                      {t("fieldCalendar.presets.noPresets")}
-                    </div>
-                  ) : (
-                    presets.map((preset) => (
-                      <SelectItem key={preset.id} value={preset.id}>
-                        {preset.name}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => setManagePresetsOpen(true)}
-            >
-              <PencilIcon className="size-4" />
-            </Button>
-          </div>
-
-          {/* kg per unit + Unit */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label>{t("fieldCalendar.harvests.kilosPerUnit")}</Label>
-              <Input
-                type="number"
-                min={0}
-                step="0.1"
-                {...register("kilosPerUnit", { required: true })}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>{t("fieldCalendar.harvests.unit")}</Label>
-              <Select
-                value={watchedUnit}
-                onValueChange={(v) => setValue("unit", v as HarvestUnit)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {HARVEST_UNITS.map((unit) => (
-                    <SelectItem key={unit} value={unit}>
-                      {t(`fieldCalendar.harvests.units.${unit}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Conservation method */}
+        {/* Step: quantity */}
+        {activeStep === "quantity" && (
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.conservationMethod")}</Label>
-            <Select
-              value={watchedConservation}
-              onValueChange={(v) =>
-                setValue("conservationMethod", v as ConservationMethod | "")
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("common.all")} />
-              </SelectTrigger>
-              <SelectContent>
-                {CONSERVATION_METHODS.map((method) => (
-                  <SelectItem key={method} value={method}>
-                    {t(`fieldCalendar.harvests.conservationMethods.${method}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Save as preset button */}
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setSavePresetOpen(true)}
-            >
-              {t("fieldCalendar.presets.saveAs")}
-            </Button>
-          </div>
-        </div>
-
-        {/* Date + numberOfUnits on same line */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.date")}</Label>
-            <Input type="date" {...register("date", { required: true })} />
-          </div>
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
+            <Label>
+              {t("fieldCalendar.harvests.numberOfUnitsWith", {
+                unit: t(`fieldCalendar.harvests.units.${watchedUnit}`),
+              })}
+            </Label>
             <Input
-              // type="number"
+              type="number"
+              min={0}
+              step="0.1"
               {...register("numberOfUnits", { required: true })}
             />
           </div>
-        </div>
+        )}
 
-        {/* Notes */}
-        <div className="space-y-1">
-          <Label>{t("fieldCalendar.tillages.notes")}</Label>
-          <Textarea {...register("additionalNotes")} rows={3} />
-        </div>
+        {/* Step: plots */}
+        {activeStep === "plots" && (
+          <div className="space-y-1">
+            <Label>{t("fieldCalendar.plots.title")}</Label>
+            <MultiPlotPicker
+              plots={plots}
+              value={watchedPlotIds}
+              onChange={(ids) => setValue("plotIds", ids)}
+            />
+          </div>
+        )}
 
-        <div className="flex gap-2 pt-2">
-          <Button type="submit" disabled={createMutation.isPending}>
-            {t("common.save")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate({ to: "/field-calendar/harvests" })}
-          >
-            {t("common.cancel")}
-          </Button>
-        </div>
-      </form>
+        {/* Step: divide */}
+        {activeStep === "divide" && (
+          <PlotDivideSection
+            plots={selectedPlots}
+            totalUnits={totalKilos}
+            unitLabel="kg"
+            byArea={divideByArea}
+            onByAreaChange={setDivideByArea}
+            unitsByPlot={unitsByPlot}
+            onChange={setUnitsByPlot}
+          />
+        )}
+
+        {/* Step: summary */}
+        {activeStep === "summary" && (
+          <div className="space-y-4">
+            <dl className="divide-y rounded-lg border text-sm">
+              <SummaryRow
+                label={t("fieldCalendar.harvests.crop")}
+                value={selectedCrop?.name ?? "-"}
+              />
+              <SummaryRow
+                label={t("fieldCalendar.harvests.date")}
+                value={new Date(watchedDate).toLocaleDateString()}
+              />
+              <SummaryRow
+                label={t("fieldCalendar.harvests.unit")}
+                value={t(`fieldCalendar.harvests.units.${watchedUnit}`)}
+              />
+              {watchedConservation && (
+                <SummaryRow
+                  label={t("fieldCalendar.harvests.conservationMethod")}
+                  value={t(
+                    `fieldCalendar.harvests.conservationMethods.${watchedConservation}`,
+                  )}
+                />
+              )}
+              <SummaryRow
+                label={kilosPerUnitLabel}
+                value={`${watchedKilosPerUnit || 0} kg`}
+              />
+              {!isFixedAmountUnit && (
+                <SummaryRow
+                  label={t("fieldCalendar.harvests.numberOfUnitsWith", {
+                    unit: t(`fieldCalendar.harvests.units.${watchedUnit}`),
+                  })}
+                  value={watchedNumberOfUnits}
+                />
+              )}
+              <SummaryRow
+                label={t("fieldCalendar.plots.title")}
+                value={
+                  <ul className="space-y-0.5">
+                    {selectedPlots.map((plot) => (
+                      <li key={plot.id}>
+                        {plot.name}
+                        {isMultiPlot && (
+                          <span className="text-muted-foreground">
+                            {" — "}
+                            {unitsByPlot[plot.id] ?? "0"} kg
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                }
+              />
+            </dl>
+
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.tillages.notes")}</Label>
+              <Textarea {...register("additionalNotes")} rows={3} />
+            </div>
+          </div>
+        )}
+
+        <WizardNav
+          isFirst={stepIndex === 0}
+          isLast={activeStep === "summary"}
+          canAdvance={
+            activeStep === "summary" ? !divideInvalid : stepValid(activeStep)
+          }
+          saving={createMutation.isPending}
+          onBack={goBack}
+          onCancel={() => navigate({ to: "/field-calendar/harvests" })}
+          onNext={goNext}
+          onSave={() => createMutation.mutate(getValues())}
+        />
+      </div>
 
       {/* Save as preset dialog */}
       <Dialog open={savePresetOpen} onOpenChange={setSavePresetOpen}>
@@ -526,10 +701,7 @@ function CreateHarvest() {
             </ul>
           )}
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setManagePresetsOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setManagePresetsOpen(false)}>
               {t("common.close")}
             </Button>
           </DialogFooter>
@@ -635,5 +807,20 @@ function CreateHarvest() {
         </DialogContent>
       </Dialog>
     </PageContent>
+  );
+}
+
+function SummaryRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-3 py-2">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="text-right">{value}</dd>
+    </div>
   );
 }

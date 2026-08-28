@@ -41,7 +41,8 @@
     "unknown": "Inconnu",
     "title": "Titre",
     "date": "Date",
-    "done": "Terminé"
+    "done": "Terminé",
+    "wizardStepOf": "Étape {{current}} sur {{total}}"
   },
   "nav": {
     "groups": {
@@ -1076,7 +1077,14 @@
         "flame_weeding": "Désherbage thermique",
         "custom": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer ce travail du sol?"
+      "deleteConfirm": "Voulez-vous vraiment supprimer ce travail du sol?",
+      "wizard": {
+        "steps": {
+          "plots": "Champs",
+          "details": "Détails",
+          "summary": "Résumé"
+        }
+      }
     },
     "presets": {
       "select": "Sélectionner un modèle",
@@ -1110,7 +1118,18 @@
         "other": "Autre",
         "none": "Aucun"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette récolte?"
+      "deleteConfirm": "Voulez-vous vraiment supprimer cette récolte?",
+      "wizard": {
+        "steps": {
+          "crop": "Culture et date",
+          "config": "Configuration",
+          "quantity": "Quantité",
+          "plots": "Champs",
+          "divide": "Répartition",
+          "summary": "Résumé"
+        }
+      },
+      "numberOfUnitsWith": "Quantité {{unit}}"
     },
     "fertilizerApplications": {
       "title": "Fertilisation",
@@ -1164,7 +1183,17 @@
         "injecting": "Injection",
         "other": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette application phytosanitaire?"
+      "deleteConfirm": "Voulez-vous vraiment supprimer cette application phytosanitaire?",
+      "wizard": {
+        "steps": {
+          "product": "Produit et date",
+          "config": "Configuration",
+          "quantity": "Quantité",
+          "plots": "Champs",
+          "divide": "Répartition",
+          "summary": "Résumé"
+        }
+      }
     },
     "timeline": {
       "years": "Années",

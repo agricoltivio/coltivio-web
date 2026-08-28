@@ -24,6 +24,7 @@ import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
+import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -379,25 +380,13 @@ function CreateFertilizerApplication() {
       backTo={() => navigate({ to: "/field-calendar/fertilizer-applications" })}
     >
       <div className="max-w-lg space-y-6">
-        {/* Progress */}
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">
-            {t("fieldCalendar.fertilizerApplications.wizard.stepOf", {
-              current: stepIndex + 1,
-              total: steps.length,
-            })}
-            {" · "}
-            <span className="text-foreground">
-              {t(`fieldCalendar.fertilizerApplications.wizard.steps.${activeStep}`)}
-            </span>
-          </p>
-          <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary transition-all"
-              style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
+        <WizardProgress
+          stepIndex={stepIndex}
+          total={steps.length}
+          label={t(
+            `fieldCalendar.fertilizerApplications.wizard.steps.${activeStep}`,
+          )}
+        />
 
         {/* Step: fertilizer + date */}
         {activeStep === "fertilizer" && (
@@ -661,38 +650,20 @@ function CreateFertilizerApplication() {
           </div>
         )}
 
-        {/* Wizard navigation */}
-        <div className="flex items-center justify-between gap-2 pt-2">
-          {stepIndex > 0 ? (
-            <Button type="button" variant="outline" onClick={goBack}>
-              {t("common.back")}
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() =>
-                navigate({ to: "/field-calendar/fertilizer-applications" })
-              }
-            >
-              {t("common.cancel")}
-            </Button>
-          )}
-
-          {activeStep === "summary" ? (
-            <Button
-              type="button"
-              onClick={() => createMutation.mutate(getValues())}
-              disabled={createMutation.isPending || divideInvalid}
-            >
-              {t("common.save")}
-            </Button>
-          ) : (
-            <Button type="button" onClick={goNext} disabled={!stepValid(activeStep)}>
-              {t("common.next")}
-            </Button>
-          )}
-        </div>
+        <WizardNav
+          isFirst={stepIndex === 0}
+          isLast={activeStep === "summary"}
+          canAdvance={
+            activeStep === "summary" ? !divideInvalid : stepValid(activeStep)
+          }
+          saving={createMutation.isPending}
+          onBack={goBack}
+          onCancel={() =>
+            navigate({ to: "/field-calendar/fertilizer-applications" })
+          }
+          onNext={goNext}
+          onSave={() => createMutation.mutate(getValues())}
+        />
       </div>
 
       {/* Save as preset dialog */}

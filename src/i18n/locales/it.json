@@ -41,7 +41,8 @@
     "unknown": "Sconosciuto",
     "title": "Titolo",
     "date": "Data",
-    "done": "Fatto"
+    "done": "Fatto",
+    "wizardStepOf": "Passo {{current}} di {{total}}"
   },
   "nav": {
     "groups": {
@@ -1076,7 +1077,14 @@
         "flame_weeding": "Diserbo termico",
         "custom": "Altro"
       },
-      "deleteConfirm": "Vuoi davvero eliminare questa lavorazione del terreno?"
+      "deleteConfirm": "Vuoi davvero eliminare questa lavorazione del terreno?",
+      "wizard": {
+        "steps": {
+          "plots": "Campi",
+          "details": "Dettagli",
+          "summary": "Riepilogo"
+        }
+      }
     },
     "presets": {
       "select": "Seleziona modello",
@@ -1110,7 +1118,18 @@
         "other": "Altro",
         "none": "Nessuno"
       },
-      "deleteConfirm": "Vuoi davvero eliminare questo raccolto?"
+      "deleteConfirm": "Vuoi davvero eliminare questo raccolto?",
+      "wizard": {
+        "steps": {
+          "crop": "Coltura e data",
+          "config": "Configurazione",
+          "quantity": "Quantità",
+          "plots": "Campi",
+          "divide": "Suddivisione",
+          "summary": "Riepilogo"
+        }
+      },
+      "numberOfUnitsWith": "Quantità {{unit}}"
     },
     "fertilizerApplications": {
       "title": "Concimazione",
@@ -1164,7 +1183,17 @@
         "injecting": "Iniezione",
         "other": "Altro"
       },
-      "deleteConfirm": "Vuoi davvero eliminare questo trattamento fitosanitario?"
+      "deleteConfirm": "Vuoi davvero eliminare questo trattamento fitosanitario?",
+      "wizard": {
+        "steps": {
+          "product": "Prodotto e data",
+          "config": "Configurazione",
+          "quantity": "Quantità",
+          "plots": "Campi",
+          "divide": "Suddivisione",
+          "summary": "Riepilogo"
+        }
+      }
     },
     "timeline": {
       "years": "Anni",

@@ -41,7 +41,8 @@
     "unknown": "Unknown",
     "title": "Title",
     "date": "Date",
-    "done": "Done"
+    "done": "Done",
+    "wizardStepOf": "Step {{current}} of {{total}}"
   },
   "nav": {
     "groups": {
@@ -1076,7 +1077,14 @@
         "flame_weeding": "Flame weeding",
         "custom": "Custom"
       },
-      "deleteConfirm": "Are you sure you want to delete this tillage?"
+      "deleteConfirm": "Are you sure you want to delete this tillage?",
+      "wizard": {
+        "steps": {
+          "plots": "Plots",
+          "details": "Details",
+          "summary": "Summary"
+        }
+      }
     },
     "presets": {
       "select": "Select preset",
@@ -1110,7 +1118,18 @@
         "other": "Other",
         "none": "None"
       },
-      "deleteConfirm": "Are you sure you want to delete this harvest?"
+      "deleteConfirm": "Are you sure you want to delete this harvest?",
+      "wizard": {
+        "steps": {
+          "crop": "Crop & date",
+          "config": "Configuration",
+          "quantity": "Quantity",
+          "plots": "Plots",
+          "divide": "Split",
+          "summary": "Summary"
+        }
+      },
+      "numberOfUnitsWith": "Quantity {{unit}}"
     },
     "fertilizerApplications": {
       "title": "Fertilizer Applications",
@@ -1164,7 +1183,17 @@
         "injecting": "Injecting",
         "other": "Other"
       },
-      "deleteConfirm": "Are you sure you want to delete this crop protection application?"
+      "deleteConfirm": "Are you sure you want to delete this crop protection application?",
+      "wizard": {
+        "steps": {
+          "product": "Product & date",
+          "config": "Configuration",
+          "quantity": "Quantity",
+          "plots": "Plots",
+          "divide": "Split",
+          "summary": "Summary"
+        }
+      }
     },
     "timeline": {
       "years": "Years",

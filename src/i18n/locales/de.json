@@ -41,7 +41,8 @@
     "unknown": "Unbekannt",
     "title": "Titel",
     "date": "Datum",
-    "done": "Fertig"
+    "done": "Fertig",
+    "wizardStepOf": "Schritt {{current}} von {{total}}"
   },
   "nav": {
     "groups": {
@@ -1076,7 +1077,14 @@
         "flame_weeding": "Abflammen",
         "custom": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Bodenbearbeitung wirklich löschen?"
+      "deleteConfirm": "Möchten Sie diese Bodenbearbeitung wirklich löschen?",
+      "wizard": {
+        "steps": {
+          "plots": "Schläge",
+          "details": "Details",
+          "summary": "Zusammenfassung"
+        }
+      }
     },
     "presets": {
       "select": "Vorlage auswählen",
@@ -1110,7 +1118,18 @@
         "other": "Sonstiges",
         "none": "Keine"
       },
-      "deleteConfirm": "Möchten Sie diese Ernte wirklich löschen?"
+      "deleteConfirm": "Möchten Sie diese Ernte wirklich löschen?",
+      "wizard": {
+        "steps": {
+          "crop": "Kultur & Datum",
+          "config": "Konfiguration",
+          "quantity": "Menge",
+          "plots": "Schläge",
+          "divide": "Aufteilen",
+          "summary": "Zusammenfassung"
+        }
+      },
+      "numberOfUnitsWith": "Anzahl {{unit}}"
     },
     "fertilizerApplications": {
       "title": "Düngung",
@@ -1164,7 +1183,17 @@
         "injecting": "Injizieren",
         "other": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Pflanzenschutzapplikation wirklich löschen?"
+      "deleteConfirm": "Möchten Sie diese Pflanzenschutzapplikation wirklich löschen?",
+      "wizard": {
+        "steps": {
+          "product": "Produkt & Datum",
+          "config": "Konfiguration",
+          "quantity": "Menge",
+          "plots": "Schläge",
+          "divide": "Aufteilen",
+          "summary": "Zusammenfassung"
+        }
+      }
     },
     "timeline": {
       "years": "Jahre",
