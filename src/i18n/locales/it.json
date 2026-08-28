@@ -1466,7 +1466,7 @@
     "updatePaymentMethod": "Aggiorna metodo di pagamento",
     "extend": "Prolunga l'iscrizione",
     "autoRenew": "Rinnovo automatico",
-    "cancelRenewal": "Dichiarare le dimissioni",
+    "cancelRenewal": "Uscire",
     "reactivate": "Ritirare le dimissioni",
     "paymentHistory": "Storico contributi",
     "cancelDialog": {
@@ -1594,7 +1594,12 @@
       "readConfirm": "Ho letto e accetto le regole.",
       "cta": "Iniziamo"
     },
-    "filterOnlyOpen": "Solo aperti"
+    "filterOnlyOpen": "Solo aperti",
+    "dateByAuthor": "{{date}} di {{author}}",
+    "entryOpened": "ha aperto questo post",
+    "entryReplied": "ha risposto",
+    "authorBadge": "Autore",
+    "addComment": "Aggiungi un commento"
   },
   "journal": {
     "title": "Diario",

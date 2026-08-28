@@ -80,8 +80,9 @@ function RouteComponent() {
     .sort((a, b) => new Date(a.dueDate as string).getTime() - new Date(b.dueDate as string).getTime());
   const upcomingTasks = (datedTasks.length > 0 ? datedTasks : openTasks).slice(0, 3);
 
-  // Sort all threads by updatedAt desc and take 3 most recently active
+  // Only open threads, sorted by updatedAt desc, take 3 most recently active
   const recentForumThreads = [...(forumThreadsQuery.data?.result ?? [])]
+    .filter((thread) => thread.status === "open")
     .sort((a, b) => {
       const aTime = typeof a.updatedAt === "string" ? new Date(a.updatedAt).getTime() : 0;
       const bTime = typeof b.updatedAt === "string" ? new Date(b.updatedAt).getTime() : 0;
@@ -421,29 +422,36 @@ function RouteComponent() {
                   key={thread.id}
                   to="/treffpunkt/$threadId"
                   params={{ threadId: thread.id }}
-                  className="block px-4 py-2.5 transition-colors hover:bg-muted/50"
+                  className="flex flex-col justify-center gap-1 px-4 py-2.5 transition-colors hover:bg-muted/50"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="min-w-0 flex-1 truncate text-sm font-medium">{thread.title}</p>
-                    <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-                      <MessageSquare className="size-3.5" />
-                      {thread.replyCount ?? 0}
+                  <div className="flex items-center gap-2">
+                    <span className="min-w-0 max-w-full truncate text-sm font-medium">
+                      {thread.title}
                     </span>
-                  </div>
-                  <p className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
                     <Badge
                       variant="outline"
-                      className={cn("shrink-0 px-1.5 py-0 text-[10px]", threadTypeBadgeClass[thread.type])}
+                      className={cn(
+                        "shrink-0 font-normal",
+                        threadTypeBadgeClass[thread.type],
+                      )}
                     >
                       {t(`treffpunkt.types.${thread.type}`)}
                     </Badge>
-                    <span className="truncate">
-                      {thread.creator.fullName ?? t("common.unknown")}
-                      {typeof thread.updatedAt === "string" && (
-                        <>{" · "}{new Date(thread.updatedAt).toLocaleDateString()}</>
-                      )}
+                    <div className="min-w-0 flex-1" />
+                    <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                      <MessageSquare className="size-4" />
+                      <span className="text-sm">{thread.replyCount ?? 0}</span>
                     </span>
-                  </p>
+                  </div>
+                  <span className="text-xs leading-4 text-muted-foreground">
+                    {t("treffpunkt.dateByAuthor", {
+                      date:
+                        typeof thread.updatedAt === "string"
+                          ? new Date(thread.updatedAt).toLocaleDateString()
+                          : "",
+                      author: thread.creator.fullName ?? t("common.unknown"),
+                    })}
+                  </span>
                 </Link>
               ))}
             </div>

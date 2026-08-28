@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { contactQueryOptions } from "@/api/contacts.queries";
+import { ordersQueryOptions } from "@/api/orders.queries";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,9 @@ import {
 export const Route = createFileRoute("/_authed/contacts/$contactId/")({
   validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
+    // Orders list carries line items, which the contact endpoint omits — used
+    // to show the products column in the orders table below.
+    queryClient.ensureQueryData(ordersQueryOptions());
     return queryClient.ensureQueryData(contactQueryOptions(params.contactId));
   },
   component: ContactDetailPage,
@@ -46,6 +50,24 @@ function ContactDetailPage() {
   const queryClient = useQueryClient();
 
   const contactQuery = useQuery(contactQueryOptions(contactId));
+  const ordersQuery = useQuery(ordersQueryOptions());
+
+  // Map orderId → aggregated "Product (qty)" string, built from the orders list
+  // which includes line items (the contact endpoint does not).
+  const orderProductsById = new Map<string, string>();
+  for (const order of ordersQuery.data?.result ?? []) {
+    const productCounts = new Map<string, number>();
+    for (const item of order.items) {
+      productCounts.set(
+        item.product.name,
+        (productCounts.get(item.product.name) ?? 0) + item.quantity,
+      );
+    }
+    const label = Array.from(productCounts.entries())
+      .map(([name, qty]) => `${name} (${qty})`)
+      .join(", ");
+    if (label) orderProductsById.set(order.id, label);
+  }
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -88,6 +110,7 @@ function ContactDetailPage() {
 
   const contact = contactQuery.data;
   const fullName = `${contact.firstName} ${contact.lastName}`;
+  const contactReturnTo = `/contacts/${contactId}`;
 
   return (
     <PageContent title={fullName} showBackButton backTo={() => navigate({ to: returnTo ?? "/contacts" })}>
@@ -182,10 +205,89 @@ function ContactDetailPage() {
           </CardContent>
         </Card>
 
+        {/* Orders Card */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>{t("contacts.orders")}</CardTitle>
+            {canWriteContacts && (
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  to="/orders/create"
+                  search={{ contactId, returnTo: contactReturnTo }}
+                >
+                  {t("common.add")}
+                </Link>
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
+            {contact.orders && contact.orders.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("orders.status")}</TableHead>
+                    <TableHead>{t("orders.orderDate")}</TableHead>
+                    <TableHead>{t("orders.shippingDate")}</TableHead>
+                    <TableHead>{t("orders.products")}</TableHead>
+                    <TableHead>{t("orders.notes")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {contact.orders.map((order) => (
+                    <TableRow
+                      key={order.id}
+                      className="cursor-pointer"
+                      onClick={() =>
+                        navigate({
+                          to: "/orders/$orderId",
+                          params: { orderId: order.id },
+                          search: { returnTo: contactReturnTo },
+                        })
+                      }
+                    >
+                      <TableCell>
+                        {t(`orders.statuses.${order.status}`)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {formatDate(order.orderDate)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {order.shippingDate
+                          ? formatDate(order.shippingDate)
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {orderProductsById.get(order.id) || "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {order.notes || "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="py-6 text-center text-muted-foreground">
+                {t("contacts.noOrders")}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Sponsorships Card */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>{t("contacts.sponsorships")}</CardTitle>
+            {canWriteContacts && (
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  to="/sponsorships/create"
+                  search={{ contactId, returnTo: contactReturnTo }}
+                >
+                  {t("common.add")}
+                </Link>
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             {contact.sponsorships && contact.sponsorships.length > 0 ? (
@@ -207,6 +309,7 @@ function ContactDetailPage() {
                         navigate({
                           to: "/sponsorships/$sponsorshipId",
                           params: { sponsorshipId: sponsorship.id },
+                          search: { returnTo: contactReturnTo },
                         })
                       }
                     >
@@ -251,8 +354,38 @@ function ContactDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {contact.payments.map((payment) => (
-                    <TableRow key={payment.id}>
+                  {contact.payments.map((payment) => {
+                    // Payments are scoped to either an order or a sponsorship;
+                    // only make the row clickable when a parent exists.
+                    const parentOrderId = payment.orderId;
+                    const parentSponsorshipId = payment.sponsorshipId;
+                    const openPayment = parentOrderId
+                      ? () =>
+                          navigate({
+                            to: "/orders/$orderId/payments/$paymentId",
+                            params: {
+                              orderId: parentOrderId,
+                              paymentId: payment.id,
+                            },
+                            search: { returnTo: contactReturnTo },
+                          })
+                      : parentSponsorshipId
+                        ? () =>
+                            navigate({
+                              to: "/sponsorships/$sponsorshipId/payments/$paymentId",
+                              params: {
+                                sponsorshipId: parentSponsorshipId,
+                                paymentId: payment.id,
+                              },
+                              search: { returnTo: contactReturnTo },
+                            })
+                        : undefined;
+                    return (
+                    <TableRow
+                      key={payment.id}
+                      className={openPayment ? "cursor-pointer" : undefined}
+                      onClick={openPayment}
+                    >
                       <TableCell>{formatDate(payment.date)}</TableCell>
                       <TableCell>
                         {payment.amount} {payment.currency}
@@ -264,55 +397,13 @@ function ContactDetailPage() {
                         {payment.notes || "-"}
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             ) : (
               <div className="py-6 text-center text-muted-foreground">
                 {t("contacts.noPayments")}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Orders Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("contacts.orders")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {contact.orders && contact.orders.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Order Date</TableHead>
-                    <TableHead>Shipping Date</TableHead>
-                    <TableHead>Notes</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {contact.orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell>{order.status}</TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {formatDate(order.orderDate)}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {order.shippingDate
-                          ? formatDate(order.shippingDate)
-                          : "-"}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {order.notes || "-"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="py-6 text-center text-muted-foreground">
-                {t("contacts.noOrders")}
               </div>
             )}
           </CardContent>

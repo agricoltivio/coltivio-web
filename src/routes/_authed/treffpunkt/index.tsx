@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authed/treffpunkt/")({
   loader: ({ context: { queryClient } }) => {
@@ -35,11 +36,37 @@ const THREAD_TYPES: ForumThreadType[] = [
   "general",
 ];
 
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "rounded-full border px-3 py-1 text-sm transition-colors",
+        active
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-background text-foreground hover:bg-accent",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 function TreffpunktPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [typeFilter, setTypeFilter] = useState<ForumThreadType | "all">("all");
-  const [onlyOpen, setOnlyOpen] = useState(false);
+  const [onlyOpen, setOnlyOpen] = useState(true);
   const [search, setSearch] = useState("");
   const { user } = useAuth();
   const userId = user!.id;
@@ -64,16 +91,16 @@ function TreffpunktPage() {
     let result = allThreads as ForumThread[];
 
     if (typeFilter !== "all") {
-      result = result.filter((t) => t.type === typeFilter);
+      result = result.filter((thread) => thread.type === typeFilter);
     }
 
     if (onlyOpen) {
-      result = result.filter((t) => t.status === "open");
+      result = result.filter((thread) => thread.status === "open");
     }
 
     if (search.trim()) {
       const lower = search.toLowerCase();
-      result = result.filter((t) => t.title.toLowerCase().includes(lower));
+      result = result.filter((thread) => thread.title.toLowerCase().includes(lower));
     }
 
     // Pinned threads first, then by most recent activity descending
@@ -92,109 +119,125 @@ function TreffpunktPage() {
   }
 
   return (
-    <PageContent title={t("treffpunkt.title")} showBackButton={false}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant={typeFilter === "all" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setTypeFilter("all")}
-          >
-            {t("treffpunkt.allTypes")}
-          </Button>
-          {THREAD_TYPES.map((type) => (
-            <Button
-              key={type}
-              variant={typeFilter === type ? "default" : "outline"}
-              size="sm"
-              onClick={() => setTypeFilter(type)}
-            >
-              {t(`treffpunkt.types.${type}`)}
-            </Button>
-          ))}
-        </div>
+    <PageContent
+      title={t("treffpunkt.title")}
+      showBackButton={false}
+      actions={
         <Button asChild>
           <Link to="/treffpunkt/create">{t("treffpunkt.newThread")}</Link>
         </Button>
-      </div>
-
-
-
-      <div className="flex items-center gap-4 mb-4">
-        <Input
-          className="w-64"
-          placeholder={t("common.search")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="only-open"
-            checked={onlyOpen}
-            onCheckedChange={(checked) => setOnlyOpen(checked === true)}
+      }
+    >
+      <div className="flex flex-col-reverse gap-6 lg:flex-row lg:items-start lg:gap-10">
+        {/* Threads */}
+        <div className="min-w-0 flex-1 space-y-4 lg:max-w-2xl">
+          <Input
+            className="h-10 text-base"
+            placeholder={t("common.search")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-          <Label htmlFor="only-open" className="text-sm cursor-pointer">
-            {t("treffpunkt.filterOnlyOpen")}
-          </Label>
-        </div>
-      </div>
 
-      {threadsQuery.isLoading && (
-        <div className="py-8 text-center text-muted-foreground">
-          {t("common.loading")}
-        </div>
-      )}
-
-      {!threadsQuery.isLoading && filtered.length === 0 && (
-        <div className="py-8 text-center text-muted-foreground">
-          {t("treffpunkt.noThreads")}
-        </div>
-      )}
-
-      <div className="space-y-2">
-        {filtered.map((thread) => (
-          <button
-            key={thread.id}
-            type="button"
-            onClick={() =>
-              navigate({ to: "/treffpunkt/$threadId", params: { threadId: thread.id } })
-            }
-            className="w-full text-left border rounded-lg px-4 py-3 hover:bg-accent transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap mb-1">
-                  {thread.isPinned && (
-                    <Badge variant="secondary" className="text-xs gap-1">
-                      <Pin className="h-3 w-3" />
-                      {t("treffpunkt.pinned")}
-                    </Badge>
-                  )}
-                  <Badge variant="outline" className={`text-xs ${threadTypeBadgeClass[thread.type]}`}>
-                    {t(`treffpunkt.types.${thread.type}`)}
-                  </Badge>
-                  <Badge
-                    variant={thread.status === "open" ? "secondary" : "outline"}
-                    className="text-xs"
-                  >
-                    {t(`treffpunkt.status.${thread.status}`)}
-                  </Badge>
-                </div>
-                <p className="font-medium truncate">{thread.title}</p>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {thread.creator.fullName ?? t("common.unknown")}
-                  {" · "}
-                  {formatDate(thread.updatedAt)}
-                </p>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
-                <MessageSquare className="h-4 w-4" />
-                <span className="text-sm">{thread.replyCount ?? 0}</span>
-              </div>
+          {threadsQuery.isLoading ? (
+            <div className="py-8 text-center text-muted-foreground">
+              {t("common.loading")}
             </div>
-          </button>
-        ))}
+          ) : filtered.length === 0 ? (
+            <div className="py-8 text-center text-muted-foreground">
+              {t("treffpunkt.noThreads")}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {filtered.map((thread) => (
+                <button
+                  key={thread.id}
+                  type="button"
+                  onClick={() =>
+                    navigate({
+                      to: "/treffpunkt/$threadId",
+                      params: { threadId: thread.id },
+                    })
+                  }
+                  className="flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors hover:bg-accent"
+                >
+                  <span
+                    title={t(`treffpunkt.status.${thread.status}`)}
+                    className={cn(
+                      "size-2.5 shrink-0 rounded-full",
+                      thread.status === "open" ? "bg-green-500" : "bg-purple-500",
+                    )}
+                  />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      {thread.isPinned && (
+                        <Pin className="size-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      <span className="min-w-0 max-w-full truncate text-sm font-medium">
+                        {thread.title}
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "shrink-0 font-normal",
+                          threadTypeBadgeClass[thread.type],
+                        )}
+                      >
+                        {t(`treffpunkt.types.${thread.type}`)}
+                      </Badge>
+                      <div className="min-w-0 flex-1" />
+                      <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                        <MessageSquare className="size-4" />
+                        <span className="text-sm">{thread.replyCount ?? 0}</span>
+                      </span>
+                    </div>
+                    <span className="text-xs leading-4 text-muted-foreground">
+                      {t("treffpunkt.dateByAuthor", {
+                        date: formatDate(thread.updatedAt),
+                        author: thread.creator.fullName ?? t("common.unknown"),
+                      })}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Filters */}
+        <aside className="space-y-4 lg:w-72 lg:shrink-0">
+          <p className="text-sm font-semibold">{t("tasks.filter.title")}</p>
+
+          <div className="flex flex-wrap gap-2">
+            <FilterPill active={onlyOpen} onClick={() => setOnlyOpen((v) => !v)}>
+              {t("treffpunkt.filterOnlyOpen")}
+            </FilterPill>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              {t("treffpunkt.type")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <FilterPill
+                active={typeFilter === "all"}
+                onClick={() => setTypeFilter("all")}
+              >
+                {t("treffpunkt.allTypes")}
+              </FilterPill>
+              {THREAD_TYPES.map((type) => (
+                <FilterPill
+                  key={type}
+                  active={typeFilter === type}
+                  onClick={() => setTypeFilter(type)}
+                >
+                  {t(`treffpunkt.types.${type}`)}
+                </FilterPill>
+              ))}
+            </div>
+          </div>
+        </aside>
       </div>
+
       <Dialog open={showWelcomeDialog}>
         <DialogContent
           showCloseButton={false}

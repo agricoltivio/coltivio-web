@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authed/sponsorships/$sponsorshipId/")({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(
       sponsorshipQueryOptions(params.sponsorshipId),
@@ -43,6 +45,7 @@ function SponsorshipDetailPage() {
   const { canWrite: canWriteSponsorships } = useFeatureAccess("commerce");
   const { canRead: canReadAnimals } = useFeatureAccess("animals");
   const { sponsorshipId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -106,7 +109,7 @@ function SponsorshipDetailPage() {
   const isPaidThisYear = paidThisYear >= yearlyCost;
 
   return (
-    <PageContent title={t("sponsorships.sponsorshipDetails")} showBackButton backTo={() => navigate({ to: "/sponsorships" })}>
+    <PageContent title={t("sponsorships.sponsorshipDetails")} showBackButton backTo={() => navigate({ to: returnTo ?? "/sponsorships" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">

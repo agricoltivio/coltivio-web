@@ -1466,7 +1466,7 @@
     "updatePaymentMethod": "Zahlungsmethode aktualisieren",
     "extend": "Mitgliedschaft verlängern",
     "autoRenew": "Automatische Erneuerung",
-    "cancelRenewal": "Austritt erklären",
+    "cancelRenewal": "Austreten",
     "reactivate": "Austritt zurückziehen",
     "paymentHistory": "Beitragshistorie",
     "cancelDialog": {
@@ -1594,7 +1594,12 @@
       "readConfirm": "Ich habe die Regeln gelesen und akzeptiere sie.",
       "cta": "Los geht's"
     },
-    "filterOnlyOpen": "Nur offene"
+    "filterOnlyOpen": "Nur offene",
+    "dateByAuthor": "{{date}} von {{author}}",
+    "entryOpened": "hat den Beitrag eröffnet",
+    "entryReplied": "hat geantwortet",
+    "authorBadge": "Autor",
+    "addComment": "Kommentar hinzufügen"
   },
   "journal": {
     "title": "Journal",

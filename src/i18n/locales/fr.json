@@ -1466,7 +1466,7 @@
     "updatePaymentMethod": "Mettre à jour le moyen de paiement",
     "extend": "Prolonger l'adhésion",
     "autoRenew": "Renouvellement automatique",
-    "cancelRenewal": "Déclarer sa démission",
+    "cancelRenewal": "Quitter",
     "reactivate": "Retirer sa démission",
     "paymentHistory": "Historique des cotisations",
     "cancelDialog": {
@@ -1594,7 +1594,12 @@
       "readConfirm": "J'ai lu et j'accepte les règles.",
       "cta": "C'est parti"
     },
-    "filterOnlyOpen": "Ouverts uniquement"
+    "filterOnlyOpen": "Ouverts uniquement",
+    "dateByAuthor": "{{date}} par {{author}}",
+    "entryOpened": "a ouvert ce sujet",
+    "entryReplied": "a répondu",
+    "authorBadge": "Auteur",
+    "addComment": "Ajouter un commentaire"
   },
   "journal": {
     "title": "Journal",

@@ -1466,7 +1466,7 @@
     "updatePaymentMethod": "Update payment method",
     "extend": "Extend membership",
     "autoRenew": "Automatic renewal",
-    "cancelRenewal": "Declare resignation",
+    "cancelRenewal": "Leave",
     "reactivate": "Withdraw resignation",
     "paymentHistory": "Contribution history",
     "cancelDialog": {
@@ -1594,7 +1594,12 @@
       "readConfirm": "I have read and accept the rules.",
       "cta": "Let's go"
     },
-    "filterOnlyOpen": "Open only"
+    "filterOnlyOpen": "Open only",
+    "dateByAuthor": "{{date}} by {{author}}",
+    "entryOpened": "opened this post",
+    "entryReplied": "replied",
+    "authorBadge": "Author",
+    "addComment": "Add a comment"
   },
   "journal": {
     "title": "Journal",
