@@ -1,12 +1,13 @@
 import type { ComponentType } from "react";
 import {
   BookOpen,
+  Contact,
   HeartHandshake,
   LayoutDashboard,
   ListTodo,
-  MessageSquare,
   ShoppingCart,
   Sprout,
+  UsersRound,
 } from "lucide-react";
 import type { FileRouteTypes } from "@/routeTree.gen";
 import type { FarmPermissionFeature } from "@/api/types";
@@ -84,13 +85,20 @@ export const SECTIONS: readonly NavSection[] = [
     match: ["/animals", "/drugs", "/treatments"],
     feature: "animals",
     requiresFarm: true,
+    groups: [
+      { key: "registry", labelKey: "nav.animalGroups.registry" },
+      { key: "health", labelKey: "nav.animalGroups.health" },
+      { key: "analysis", labelKey: "nav.animalsExport" },
+    ],
     items: [
-      { labelKey: "nav.animals", to: "/animals" },
-      { labelKey: "nav.earTags", to: "/animals/ear-tags" },
-      { labelKey: "nav.herds", to: "/animals/herds" },
-      { labelKey: "nav.treatmentsJournal", to: "/animals/treatments-journal" },
-      { labelKey: "nav.turnoutJournal", to: "/animals/turnout-journal" },
-      { labelKey: "nav.drugs", to: "/drugs" },
+      { labelKey: "nav.animals", to: "/animals", groupKey: "registry" },
+      { labelKey: "nav.earTags", to: "/animals/ear-tags", groupKey: "registry" },
+      { labelKey: "nav.herds", to: "/animals/herds", groupKey: "registry" },
+      { labelKey: "nav.turnoutJournal", to: "/animals/turnout-journal", groupKey: "registry" },
+      { labelKey: "nav.tvdImport", to: "/animals/import", groupKey: "registry" },
+      { labelKey: "treatments.title", to: "/animals/treatments-journal", groupKey: "health" },
+      { labelKey: "nav.drugs", to: "/drugs", groupKey: "health" },
+      { labelKey: "nav.animalsExport", to: "/animals/export", groupKey: "analysis" },
     ],
   },
   {
@@ -123,17 +131,26 @@ export const SECTIONS: readonly NavSection[] = [
     ],
   },
   {
+    id: "contacts",
+    labelKey: "nav.contacts",
+    icon: Contact,
+    to: "/contacts",
+    match: ["/contacts"],
+    feature: "commerce",
+    requiresFarm: true,
+    items: [],
+  },
+  {
     id: "sales",
     labelKey: "nav.groups.sales",
     icon: ShoppingCart,
     to: "/orders",
-    match: ["/orders", "/products", "/contacts"],
+    match: ["/orders", "/products"],
     feature: "commerce",
     requiresFarm: true,
     items: [
       { labelKey: "nav.orders", to: "/orders" },
       { labelKey: "nav.products", to: "/products" },
-      { labelKey: "nav.contacts", to: "/contacts" },
       { labelKey: "nav.invoiceSettings", to: "/orders/invoice-settings" },
     ],
   },
@@ -164,12 +181,15 @@ export const SECTIONS: readonly NavSection[] = [
     ],
   },
   {
-    id: "treff",
-    labelKey: "nav.treffpunkt",
-    icon: MessageSquare,
-    to: "/treffpunkt",
-    match: ["/treffpunkt"],
-    items: [],
+    id: "verein",
+    labelKey: "nav.groups.verein",
+    icon: UsersRound,
+    to: "/membership",
+    match: ["/membership", "/treffpunkt"],
+    items: [
+      { labelKey: "nav.membership", to: "/membership" },
+      { labelKey: "nav.treffpunkt", to: "/treffpunkt" },
+    ],
   },
 ];
 

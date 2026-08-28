@@ -8,64 +8,34 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/_authed/field-calendar/export")({
-  component: FieldCalendarExport,
+export const Route = createFileRoute("/_authed/animals/export")({
+  component: AnimalsExport,
 });
 
-type FieldCalendarSection =
-  | "cropRotations"
-  | "tillages"
-  | "fertilizerApplications"
-  | "cropProtectionApplications"
-  | "harvests";
-
-const SECTIONS: { key: FieldCalendarSection; labelKey: string }[] = [
-  { key: "cropRotations", labelKey: "nav.cropRotations" },
-  { key: "tillages", labelKey: "fieldCalendar.tillages.title" },
-  { key: "fertilizerApplications", labelKey: "fieldCalendar.fertilizerApplications.title" },
-  { key: "cropProtectionApplications", labelKey: "fieldCalendar.cropProtectionApplications.title" },
-  { key: "harvests", labelKey: "fieldCalendar.harvests.title" },
-];
-
-function FieldCalendarExport() {
+function AnimalsExport() {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const [fromDate, setFromDate] = useState(`${currentYear}-01-01`);
   const [toDate, setToDate] = useState(`${currentYear}-12-31`);
-  const [sections, setSections] = useState<Set<FieldCalendarSection>>(
-    new Set(["cropRotations", "tillages", "fertilizerApplications", "cropProtectionApplications", "harvests"]),
-  );
+  const [treatments, setTreatments] = useState(true);
+  const [outdoorJournal, setOutdoorJournal] = useState(true);
   const [exporting, setExporting] = useState(false);
-
-  function toggleSection(section: FieldCalendarSection) {
-    setSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(section)) {
-        next.delete(section);
-      } else {
-        next.add(section);
-      }
-      return next;
-    });
-  }
 
   async function handleExport() {
     setExporting(true);
     try {
-      const response = await apiClient.POST("/v1/reports/fieldcalendar/download", {
+      const response = await apiClient.POST("/v1/reports/animals/download", {
         body: {
           fromDate: new Date(fromDate).toISOString(),
           toDate: new Date(`${toDate}T23:59:59`).toISOString(),
-          generateCropRotations: sections.has("cropRotations"),
-          generateTillages: sections.has("tillages"),
-          generateFertilizerApplications: sections.has("fertilizerApplications"),
-          generateCropProtectionApplications: sections.has("cropProtectionApplications"),
-          generateHarvests: sections.has("harvests"),
+          generateTreatments: treatments,
+          generateOutdoorJournal: outdoorJournal,
         },
       });
       if (response.error || !response.data) throw new Error("Export failed");
       const { base64, fileName } = response.data.data;
+      // Decode base64 and trigger a file download
       const byteCharacters = atob(base64);
       const byteNumbers = Array.from({ length: byteCharacters.length }, (_, i) =>
         byteCharacters.charCodeAt(i),
@@ -85,7 +55,10 @@ function FieldCalendarExport() {
   }
 
   return (
-    <PageContent title={t("fieldCalendar.exportDialog.title")} showBackButton={false}>
+    <PageContent
+      title={t("animals.export.title")}
+      description={t("animals.export.description")}
+    >
       <div className="max-w-md space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
@@ -109,24 +82,28 @@ function FieldCalendarExport() {
         <div className="space-y-2">
           <Label>{t("fieldCalendar.exportDialog.sections")}</Label>
           <div className="space-y-2">
-            {SECTIONS.map(({ key, labelKey }) => (
-              <div key={key} className="flex items-center gap-2">
-                <Checkbox
-                  id={`section-${key}`}
-                  checked={sections.has(key)}
-                  onCheckedChange={() => toggleSection(key)}
-                />
-                <label htmlFor={`section-${key}`} className="text-sm cursor-pointer">
-                  {t(labelKey)}
-                </label>
-              </div>
-            ))}
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={treatments}
+                onCheckedChange={(value) => setTreatments(value === true)}
+              />
+              {t("nav.treatmentsJournal")}
+            </label>
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={outdoorJournal}
+                onCheckedChange={(value) => setOutdoorJournal(value === true)}
+              />
+              {t("nav.turnoutJournal")}
+            </label>
           </div>
         </div>
 
         <Button
           onClick={handleExport}
-          disabled={exporting || !fromDate || !toDate || sections.size === 0}
+          disabled={
+            exporting || !fromDate || !toDate || (!treatments && !outdoorJournal)
+          }
         >
           {exporting ? t("common.exporting") : t("common.download")}
         </Button>

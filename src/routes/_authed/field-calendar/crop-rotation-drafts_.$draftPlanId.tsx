@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dialog";
 import type { CropRotation } from "@/api/types";
 import type { TimelineRotation, ZoomLevel } from "@/lib/cropRotationTimelineUtils";
-import { Plus } from "lucide-react";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId",
@@ -122,7 +121,6 @@ function DraftPlanDetail() {
       <div className="flex items-center justify-end gap-2 mb-4">
         {selectedPlotIds.length > 0 && (
           <Button size="sm" onClick={() => navigateToEdit(selectedPlotIds)}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.cropRotations.plan")} ({selectedPlotIds.length})
           </Button>
         )}

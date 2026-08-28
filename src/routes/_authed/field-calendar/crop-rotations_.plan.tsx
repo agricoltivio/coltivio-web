@@ -417,7 +417,6 @@ function PlotRotationSection({
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-medium">{t("fieldCalendar.cropRotations.title")}</h4>
           <Button variant="outline" size="sm" onClick={() => { setEditingEntry(null); setDialogOpen(true); }}>
-            <Plus className="h-3.5 w-3.5 mr-1" />
             {t("fieldCalendar.cropRotations.addRotation")}
           </Button>
         </div>
@@ -631,7 +630,6 @@ function RotationDialog({
           <div>
             {!hasRecurrence ? (
               <Button variant="outline" size="sm" type="button" onClick={() => setHasRecurrence(true)}>
-                <Plus className="h-3.5 w-3.5 mr-1" />
                 {t("fieldCalendar.cropRotations.addRecurrence")}
               </Button>
             ) : (
@@ -649,7 +647,6 @@ function RotationDialog({
                 </div>
                 {!hasUntil ? (
                   <Button variant="outline" size="sm" type="button" onClick={() => setHasUntil(true)}>
-                    <Plus className="h-3.5 w-3.5 mr-1" />
                     {t("fieldCalendar.cropRotations.addEndDate")}
                   </Button>
                 ) : (

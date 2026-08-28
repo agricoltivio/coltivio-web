@@ -343,7 +343,6 @@ function ThreadDetail() {
             onClick={() => pinMutation.mutate(!thread.isPinned)}
             disabled={pinMutation.isPending}
           >
-            <Pin className="h-4 w-4 mr-1" />
             {thread.isPinned ? t("treffpunkt.pinned") : t("treffpunkt.pinned")}
           </Button>
         </div>

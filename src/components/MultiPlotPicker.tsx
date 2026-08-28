@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
+import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Plot } from "@/api/types";
 import {
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -23,23 +25,24 @@ type PlotOption = {
   value: string;
   name: string;
   localId: string | null;
-  usage: number | null;
   size: number;
 };
 
-type PlotComboboxProps = {
-  plots: Plot[];
-  value: string | null;
-  onValueChange: (plotId: string | null) => void;
-  id?: string;
-};
-
-export function PlotCombobox({
+/**
+ * Select one or more plots. Selected plots show as removable chips; more can be
+ * added via the search combobox or by clicking polygons on the map.
+ */
+export function MultiPlotPicker({
   plots,
   value,
-  onValueChange,
+  onChange,
   id,
-}: PlotComboboxProps) {
+}: {
+  plots: Plot[];
+  value: string[];
+  onChange: (plotIds: string[]) => void;
+  id?: string;
+}) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [mapOpen, setMapOpen] = useState(false);
@@ -50,56 +53,88 @@ export function PlotCombobox({
         value: p.id,
         name: p.name,
         localId: p.localId,
-        usage: p.usage,
         size: p.size,
       })),
     [plots],
   );
 
+  const available = useMemo(
+    () => options.filter((o) => !value.includes(o.value)),
+    [options, value],
+  );
+
   const fuse = useMemo(
     () =>
-      new Fuse(options, {
+      new Fuse(available, {
         keys: [
           { name: "name", weight: 3 },
-          { name: "localId", weight: 2 },
-          {
-            name: "usage",
-            getFn: (o) => (o.usage != null ? String(o.usage) : ""),
-            weight: 1,
-          },
+          { name: "localId", weight: 1 },
         ],
         threshold: 0.35,
         ignoreLocation: true,
       }),
-    [options],
+    [available],
   );
 
-  // Pre-filter and pre-sort via Fuse so relevance ranking is preserved.
-  // base-ui's filter prop only does boolean inclusion and loses Fuse's ordering.
-  const displayedOptions = useMemo(
-    () => (query ? fuse.search(query).map((r) => r.item) : options),
-    [fuse, options, query],
+  const displayed = useMemo(
+    () => (query ? fuse.search(query).map((r) => r.item) : available),
+    [fuse, available, query],
   );
 
-  const selectedOption = options.find((o) => o.value === value) ?? null;
+  const selectedPlots = value
+    .map((plotId) => plots.find((p) => p.id === plotId))
+    .filter((p): p is Plot => p != null);
+
+  function add(plotId: string) {
+    if (!value.includes(plotId)) onChange([...value, plotId]);
+  }
+  function remove(plotId: string) {
+    onChange(value.filter((existingId) => existingId !== plotId));
+  }
+  function toggle(plotId: string) {
+    if (value.includes(plotId)) remove(plotId);
+    else add(plotId);
+  }
 
   return (
-    <>
+    <div className="space-y-2">
+      {selectedPlots.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedPlots.map((plot) => (
+            <span
+              key={plot.id}
+              className="inline-flex items-center gap-1 rounded-full border bg-muted/40 py-1 pl-2.5 pr-1 text-sm"
+            >
+              {plot.name}
+              <button
+                type="button"
+                onClick={() => remove(plot.id)}
+                className="rounded-full p-0.5 text-muted-foreground hover:text-foreground"
+                aria-label={t("common.deselectAll")}
+              >
+                <X className="size-3.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex gap-2">
         <div className="min-w-0 flex-1">
           <Combobox
-            items={displayedOptions}
-            value={selectedOption}
+            items={displayed}
+            value={null}
             onValueChange={(item: PlotOption | null) => {
-              onValueChange(item?.value ?? null);
-              setQuery(item?.name ?? "");
+              if (item) {
+                add(item.value);
+                setQuery("");
+              }
             }}
             filter={() => true}
           >
             <ComboboxInput
               id={id}
               placeholder={t("common.search")}
-              showClear={!!value}
               value={query}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setQuery(e.target.value)
@@ -117,11 +152,6 @@ export function PlotCombobox({
                     <span className="font-medium">
                       {option.name} ({(option.size / 100).toFixed(0)}a)
                     </span>
-                    {option.usage != null && (
-                      <span className="text-xs text-muted-foreground">
-                        {t("fieldCalendar.plots.usage")}: {option.usage}
-                      </span>
-                    )}
                     {option.localId && (
                       <span className="text-xs text-muted-foreground">
                         {t("fieldCalendar.plots.localId")}: {option.localId}
@@ -148,17 +178,14 @@ export function PlotCombobox({
           <DialogHeader>
             <DialogTitle>{t("fieldCalendar.plots.selectPlot")}</DialogTitle>
           </DialogHeader>
-          <PlotPickerMap
-            plots={plots}
-            selectedIds={value ? [value] : []}
-            onPick={(plotId) => {
-              onValueChange(plotId);
-              setQuery(options.find((o) => o.value === plotId)?.name ?? "");
-              setMapOpen(false);
-            }}
-          />
+          <PlotPickerMap plots={plots} selectedIds={value} onPick={toggle} />
+          <DialogFooter>
+            <Button type="button" onClick={() => setMapOpen(false)}>
+              {t("common.done")}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

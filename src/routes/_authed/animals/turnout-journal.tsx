@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/animals/turnout-journal")({
   loader: ({ context: { queryClient } }) => {
@@ -172,7 +172,6 @@ function TurnoutJournal() {
             setExportToDate(`${selectedYear}-12-31`);
             setExportOpen(true);
           }}>
-            <Download className="h-4 w-4 mr-2" />
             {t("common.export")}
           </Button>
           <Button variant="outline" asChild>
@@ -210,7 +209,6 @@ function TurnoutJournal() {
               {t("common.cancel")}
             </Button>
             <Button onClick={handleExport} disabled={exporting || !exportFromDate || !exportToDate}>
-              <Download className="h-4 w-4 mr-2" />
               {exporting ? t("common.exporting") : t("common.download")}
             </Button>
           </DialogFooter>

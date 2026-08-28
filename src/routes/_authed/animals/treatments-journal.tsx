@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Download } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
@@ -158,7 +157,6 @@ function TreatmentsJournal() {
     <PageContent title={t("treatments.title")} showBackButton={false}>
       <div className="flex justify-end gap-2 mb-4">
         <Button variant="outline" onClick={() => setExportOpen(true)}>
-          <Download className="h-4 w-4 mr-2" />
           {t("common.export")}
         </Button>
         {canWriteTreatments && (
@@ -216,7 +214,6 @@ function TreatmentsJournal() {
               {t("common.cancel")}
             </Button>
             <Button onClick={handleExport} disabled={exporting || !exportFromDate || !exportToDate}>
-              <Download className="h-4 w-4 mr-2" />
               {exporting ? t("common.exporting") : t("common.download")}
             </Button>
           </DialogFooter>

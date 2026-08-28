@@ -9,7 +9,6 @@ import { DataTable } from "@/components/DataTable";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 const searchSchema = z.object({
@@ -92,7 +91,6 @@ function Tillages() {
       actions={
         canWriteTillages && (
           <Button onClick={() => navigate({ to: "/field-calendar/tillages/create", search: plotId ? { plotId } : {} })}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.tillages.create")}
           </Button>
         )

@@ -660,7 +660,6 @@ export function TaskForm({
             size="sm"
             onClick={() => appendChecklist({ name: "", dueDate: "" })}
           >
-            <Plus className="h-4 w-4 mr-1" />
             {t("tasks.checklist.addItem")}
           </Button>
         </Field>
@@ -716,7 +715,6 @@ export function TaskForm({
             size="sm"
             onClick={() => openPickerAt("animal")}
           >
-            <Plus className="h-4 w-4 mr-1" />
             {t("tasks.links.addLink")}
           </Button>
 

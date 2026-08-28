@@ -44,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 
@@ -75,7 +75,6 @@ function HerdsPage() {
       actions={
         canWriteAnimals && (
           <Button onClick={() => setCreateOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("herds.addHerd")}
           </Button>
         )
@@ -332,7 +331,6 @@ function HerdFormDialog({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{t("herds.outdoorSchedules")}</span>
                 <Button type="button" size="sm" variant="outline" onClick={() => setSchedules((p) => [...p, emptySchedule()])}>
-                  <Plus className="h-3 w-3 mr-1" />
                   {t("herds.addSchedule")}
                 </Button>
               </div>

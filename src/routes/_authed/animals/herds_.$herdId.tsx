@@ -50,7 +50,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 type OutdoorScheduleType = "pasture" | "exercise_yard";
 
@@ -118,31 +118,6 @@ function HerdDetailPage() {
   return (
     <PageContent title={herd.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals/herds" })}>
       <div className="space-y-6">
-        {/* Animals card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("herds.animals")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {herd.animals.length === 0 ? (
-              <div className="py-4 text-center text-muted-foreground">
-                {t("herds.noAnimals")}
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {herd.animals.map((animal) => (
-                  <span
-                    key={animal.id}
-                    className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-sm"
-                  >
-                    {animal.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
         {/* Outdoor schedules card */}
         <Card>
           <CardHeader>
@@ -156,7 +131,6 @@ function HerdDetailPage() {
                     setScheduleDialogOpen(true);
                   }}
                 >
-                  <Plus className="h-4 w-4 mr-1" />
                   {t("herds.addSchedule")}
                 </Button>
               </div>
@@ -219,6 +193,61 @@ function HerdDetailPage() {
                           </div>
                         </TableCell>
                       )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Animals card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("herds.animals")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {herd.animals.length === 0 ? (
+              <div className="py-4 text-center text-muted-foreground">
+                {t("herds.noAnimals")}
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("animals.name")}</TableHead>
+                    <TableHead>{t("animals.type")}</TableHead>
+                    <TableHead>{t("animals.earTag")}</TableHead>
+                    <TableHead>{t("animals.usage")}</TableHead>
+                    <TableHead>{t("animals.dateOfBirth")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {herd.animals.map((animal) => (
+                    <TableRow
+                      key={animal.id}
+                      className="cursor-pointer"
+                      onClick={() =>
+                        navigate({
+                          to: "/animals/$animalId",
+                          params: { animalId: animal.id },
+                          search: { returnTo: `/animals/herds/${herdId}` },
+                        })
+                      }
+                    >
+                      <TableCell className="font-medium">{animal.name}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {t(`animals.types.${animal.type}`)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {animal.earTag?.number || "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {t(`animals.usageOptions.${animal.usage}`)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {formatDate(animal.dateOfBirth)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

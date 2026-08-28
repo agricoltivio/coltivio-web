@@ -192,7 +192,25 @@ function ImportAnimals() {
   if (step === "upload") {
     return (
       <PageContent title={t("animals.importTitle")} showBackButton backTo={() => navigate({ to: "/animals" })}>
-        <div className="max-w-md space-y-6">
+        <div className="max-w-xl space-y-8">
+          <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
+            <h2 className="text-sm font-semibold">
+              {t("animals.importOnboardingHeading")}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {t("animals.importOnboardingBody")}
+            </p>
+            <img
+              src="/tvd-export-small.jpg"
+              alt={t("animals.importOnboardingHeading")}
+              className="w-full rounded-lg border"
+            />
+            <p className="text-sm text-muted-foreground">
+              {t("animals.importOnboardingColumnsHint")}
+            </p>
+          </div>
+
+          <div className="max-w-md space-y-6">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="animalType">{t("animals.type")} *</FieldLabel>
@@ -244,6 +262,7 @@ function ImportAnimals() {
             >
               {previewMutation.isPending ? t("common.loading") : t("animals.importPreview")}
             </Button>
+          </div>
           </div>
         </div>
       </PageContent>
@@ -733,7 +752,6 @@ function RowEditForm({
                 {row.mergeAnimalName}
               </Badge>
               <Button variant="ghost" size="sm" onClick={onClearMerge}>
-                <X className="h-3 w-3 mr-1" />
                 {t("animals.importClearMerge")}
               </Button>
             </div>

@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 const searchSchema = z.object({
@@ -242,7 +241,6 @@ function CropProtectionApplications() {
       actions={
         canWriteCropProtection && (
           <Button onClick={() => navigate({ to: "/field-calendar/crop-protection-applications/create", search: plotId ? { plotId } : {} })}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.cropProtectionApplications.create")}
           </Button>
         )

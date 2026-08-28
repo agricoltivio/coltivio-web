@@ -17,7 +17,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
-import { Upload, GitBranch, SlidersHorizontal } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
@@ -235,18 +234,16 @@ function Animals() {
       actions={
         <>
           <Button variant="outline" onClick={() => navigate({ to: "/animals/family-tree" })}>
-            <GitBranch className="h-4 w-4 mr-2" />
             {t("animals.familyTree")}
           </Button>
           {canWriteAnimals && (
             <Button variant="outline" onClick={() => navigate({ to: "/animals/import" })}>
-              <Upload className="h-4 w-4 mr-2" />
               {t("animals.import")}
             </Button>
           )}
           {canWriteAnimals && (
             <Button onClick={() => navigate({ to: "/animals/create" })}>
-              {t("common.create")}
+              {t("common.add")}
             </Button>
           )}
         </>
@@ -284,7 +281,6 @@ function Animals() {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="gap-2">
-                <SlidersHorizontal className="h-4 w-4" />
                 {t("animals.filters")}
                 {activeFilterCount > 0 && (
                   <span className="ml-1 rounded-full bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center">

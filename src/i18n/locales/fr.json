@@ -7,6 +7,8 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "create": "Créer",
+    "add": "Ajouter",
+    "status": "Statut",
     "search": "Rechercher",
     "actions": "Actions",
     "yes": "Oui",
@@ -38,7 +40,8 @@
     "name": "Nom",
     "unknown": "Inconnu",
     "title": "Titre",
-    "date": "Date"
+    "date": "Date",
+    "done": "Terminé"
   },
   "nav": {
     "groups": {
@@ -49,7 +52,8 @@
       "accounting": "Comptabilité",
       "fieldCalendar": "Calendrier cultural",
       "admin": "Administration",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "verein": "Association"
     },
     "fieldGroups": {
       "areas": "Surfaces",
@@ -58,6 +62,12 @@
       "inputs": "Intrants",
       "analysis": "Analyse"
     },
+    "animalGroups": {
+      "registry": "Cheptel",
+      "health": "Santé"
+    },
+    "animalsExport": "Export",
+    "tvdImport": "Import TVD",
     "dashboard": "Tableau de bord",
     "animals": "Animaux",
     "earTags": "Boucles auriculaires",
@@ -97,6 +107,13 @@
   },
   "animals": {
     "title": "Animaux",
+    "export": {
+      "title": "Exporter les données animales",
+      "description": "Télécharger le journal des traitements et des sorties au format Excel."
+    },
+    "importOnboardingHeading": "Importer des animaux depuis la TVD",
+    "importOnboardingBody": "L'import nécessite un fichier Excel issu du «Tierbestand» de la TVD. Exportez-le à l'aide du bouton «Excel generieren».",
+    "importOnboardingColumnsHint": "Sélectionnez les colonnes Ohrmarkennummer Mutter, Vater et Todesdatum si vous souhaitez importer ces données.",
     "createAnimal": "Créer un animal",
     "editAnimal": "Modifier l'animal",
     "animalDetails": "Détails de l'animal",
@@ -267,7 +284,9 @@
     "animalsBorn": "Nés",
     "animalsDied": "Décédés",
     "animalsSlaughtered": "Abattus",
-    "recentTreffpunkt": "Treffpunkt – Publications récentes"
+    "recentTreffpunkt": "Treffpunkt – Publications récentes",
+    "noUpcomingTasks": "Aucune tâche ouverte",
+    "noThreads": "Aucune publication pour le moment"
   },
   "settings": {
     "title": "Paramètres",
@@ -733,6 +752,11 @@
     }
   },
   "fieldCalendar": {
+    "divide": {
+      "heading": "Répartir sur les champs",
+      "byArea": "Répartir selon la surface",
+      "remaining": "Restant : {{amount}} {{unit}}"
+    },
     "chart": {
       "stacked": "Composition",
       "compare": "Comparaison annuelle",
@@ -742,6 +766,7 @@
       "title": "Champs",
       "plot": "Champ",
       "selectPlot": "Sélectionner un champ",
+      "openMap": "Ouvrir la carte",
       "size": "Surface",
       "usage": "Code d'utilisation",
       "cuttingDate": "Date de coupe",
@@ -1093,6 +1118,8 @@
       "date": "Date",
       "fertilizer": "Engrais",
       "selectFertilizer": "Sélectionner un engrais",
+      "selectMethod": "Sélectionner une méthode",
+      "numberOfUnitsWith": "Quantité {{unit}}",
       "unit": "Unité d'épandage",
       "amountPerUnit": "Quantité par unité",
       "amountPerUnitWith": "{{unit}} par unité",
@@ -1109,7 +1136,18 @@
         "spread": "Épandage",
         "other": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette fertilisation?"
+      "deleteConfirm": "Voulez-vous vraiment supprimer cette fertilisation?",
+      "wizard": {
+        "steps": {
+          "fertilizer": "Engrais et date",
+          "config": "Configuration",
+          "quantity": "Quantité",
+          "plots": "Champs",
+          "divide": "Répartition",
+          "summary": "Résumé"
+        },
+        "stepOf": "Étape {{current}} sur {{total}}"
+      }
     },
     "cropProtectionApplications": {
       "title": "Protection des plantes",
@@ -1286,7 +1324,12 @@
       "overdue": "En retard",
       "allAssignees": "Tous les assignés",
       "allLabels": "Toutes les étiquettes",
-      "clear": "Effacer les filtres"
+      "clear": "Effacer les filtres",
+      "title": "Filtres"
+    },
+    "sort": {
+      "dueDate": "Échéance",
+      "assignee": "Personne"
     },
     "status": {
       "todo": "À faire",

@@ -7,11 +7,14 @@ import { farmDashboardQueryOptions, farmFieldEventsQueryOptions, farmQueryOption
 import { tasksQueryOptions } from "@/api/tasks.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { forumThreadsQueryOptions } from "@/api/forum.queries";
-import { threadTypeBadgeClass } from "@/lib/ui";
+import { membershipStatusQueryOptions } from "@/api/membership.queries";
+import { checkUserHasAccess } from "@/lib/membership";
+import { inlineLink, threadTypeBadgeClass } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 import { FieldworkMap } from "@/components/FieldworkMap";
 import { CHART_COLORS } from "@/components/charts/chartUtils";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare } from "lucide-react";
+import { Lock, MessageSquare } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -61,13 +64,21 @@ function RouteComponent() {
   const tasksQuery = useQuery(tasksQueryOptions({ status: "todo" }));
   // All animals (including dead) to compute born/died/slaughtered for the selected year
   const allAnimalsQuery = useQuery(animalsQueryOptions(false));
-  const forumThreadsQuery = useQuery(forumThreadsQueryOptions());
+  const membershipStatusQuery = useQuery(membershipStatusQueryOptions());
+  const isMember = checkUserHasAccess(membershipStatusQuery.data);
+  const forumThreadsQuery = useQuery({
+    ...forumThreadsQueryOptions(),
+    enabled: isMember,
+  });
 
   const now = new Date();
-  const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const upcomingTasks = (tasksQuery.data?.result ?? [])
-    .filter((task) => typeof task.dueDate === "string" && new Date(task.dueDate) <= weekFromNow)
+  // The three tasks with the soonest due dates (overdue included). If nothing has a
+  // due date, fall back to the first three open tasks.
+  const openTasks = tasksQuery.data?.result ?? [];
+  const datedTasks = openTasks
+    .filter((task) => typeof task.dueDate === "string")
     .sort((a, b) => new Date(a.dueDate as string).getTime() - new Date(b.dueDate as string).getTime());
+  const upcomingTasks = (datedTasks.length > 0 ? datedTasks : openTasks).slice(0, 3);
 
   // Sort all threads by updatedAt desc and take 3 most recently active
   const recentForumThreads = [...(forumThreadsQuery.data?.result ?? [])]
@@ -319,86 +330,126 @@ function RouteComponent() {
         )}
       </div>
 
-      {/* Upcoming tasks */}
-      {upcomingTasks.length > 0 && (
-        <div className="bg-card rounded-xl border p-4">
-          <p className="text-sm font-semibold mb-3">
-            {t("dashboard.upcomingTasks", { defaultValue: "Anstehende Aufgaben" })}
-          </p>
-          <div className="divide-y">
-            {upcomingTasks.map((task) => {
-              const dueDate = new Date(task.dueDate as string);
-              const isOverdue = dueDate < now;
-              return (
-                <Link
-                  key={task.id}
-                  to="/tasks/$taskId"
-                  params={{ taskId: task.id }}
-                  className="flex items-center justify-between px-3 py-2 hover:bg-accent transition-colors text-sm"
-                >
-                  <div className="flex-1 min-w-0">
-                    <span className="font-medium truncate">{task.name}</span>
-                    {task.assignee && (
-                      <span className="text-muted-foreground ml-2 text-xs">
-                        {task.assignee.fullName || task.assignee.email}
-                      </span>
-                    )}
-                  </div>
-                  <span className={`text-xs shrink-0 ml-4 ${isOverdue ? "text-destructive font-medium" : "text-muted-foreground"}`}>
-                    {dueDate.toLocaleDateString()}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Recent Treffpunkt threads */}
-      {recentForumThreads.length > 0 && (
-        <div className="bg-card rounded-xl border p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold">
-              {t("dashboard.recentTreffpunkt", { defaultValue: "Treffpunkt" })}
-            </p>
-            <Link to="/treffpunkt" className="text-xs text-muted-foreground hover:underline">
+      {/* Upcoming tasks + Treffpunkt, side by side */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="bg-card rounded-xl border">
+          <div className="flex items-center justify-between border-b px-4 py-3">
+            <p className="text-sm font-semibold">{t("nav.tasks")}</p>
+            <Link to="/tasks" className="text-xs text-muted-foreground hover:text-foreground">
               {t("common.viewAll", { defaultValue: "Alle anzeigen" })}
             </Link>
           </div>
-          <div className="space-y-2">
-            {recentForumThreads.map((thread) => (
-              <Link
-                key={thread.id}
-                to="/treffpunkt/$threadId"
-                params={{ threadId: thread.id }}
-                className="flex items-center gap-3 border rounded-lg px-4 py-3 hover:bg-accent transition-colors"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <Badge variant="outline" className={`text-xs ${threadTypeBadgeClass[thread.type]}`}>
+          {upcomingTasks.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+              {t("dashboard.noUpcomingTasks")}
+            </p>
+          ) : (
+            <div className="divide-y">
+              {upcomingTasks.map((task) => {
+                const dueDate = task.dueDate ? new Date(task.dueDate as string) : null;
+                const isOverdue = dueDate ? dueDate < now : false;
+                return (
+                  <Link
+                    key={task.id}
+                    to="/tasks/$taskId"
+                    params={{ taskId: task.id }}
+                    className="flex h-14 flex-col justify-center gap-0.5 px-4 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                        {task.name}
+                      </span>
+                      {task.assignee && (
+                        <Badge
+                          variant="secondary"
+                          className="max-w-[9rem] shrink-0 text-ellipsis font-normal"
+                        >
+                          {task.assignee.fullName || task.assignee.email}
+                        </Badge>
+                      )}
+                      {dueDate && (
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "shrink-0 font-normal",
+                            isOverdue && "border-destructive/40 text-destructive",
+                          )}
+                        >
+                          {dueDate.toLocaleDateString()}
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="block h-4 truncate text-xs leading-4 text-muted-foreground">
+                      {task.description}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-card rounded-xl border">
+          <div className="flex items-center justify-between border-b px-4 py-3">
+            <p className="text-sm font-semibold">
+              {t("dashboard.recentTreffpunkt", { defaultValue: "Treffpunkt" })}
+            </p>
+            {isMember && (
+              <Link to="/treffpunkt" className="text-xs text-muted-foreground hover:text-foreground">
+                {t("common.viewAll", { defaultValue: "Alle anzeigen" })}
+              </Link>
+            )}
+          </div>
+          {!isMember ? (
+            <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+              <Lock className="size-6 text-muted-foreground" />
+              <p className="max-w-[36ch] text-sm text-muted-foreground">
+                {t("membership.membersOnly.description")}
+              </p>
+              <Link to="/membership" className={cn(inlineLink, "text-sm")}>
+                {t("membership.membersOnly.cta")}
+              </Link>
+            </div>
+          ) : recentForumThreads.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+              {t("dashboard.noThreads")}
+            </p>
+          ) : (
+            <div className="divide-y">
+              {recentForumThreads.map((thread) => (
+                <Link
+                  key={thread.id}
+                  to="/treffpunkt/$threadId"
+                  params={{ threadId: thread.id }}
+                  className="block px-4 py-2.5 transition-colors hover:bg-muted/50"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="min-w-0 flex-1 truncate text-sm font-medium">{thread.title}</p>
+                    <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+                      <MessageSquare className="size-3.5" />
+                      {thread.replyCount ?? 0}
+                    </span>
+                  </div>
+                  <p className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+                    <Badge
+                      variant="outline"
+                      className={cn("shrink-0 px-1.5 py-0 text-[10px]", threadTypeBadgeClass[thread.type])}
+                    >
                       {t(`treffpunkt.types.${thread.type}`)}
                     </Badge>
-                    <Badge variant={thread.status === "open" ? "secondary" : "outline"} className="text-xs">
-                      {t(`treffpunkt.status.${thread.status}`)}
-                    </Badge>
-                  </div>
-                  <p className="font-medium truncate text-sm">{thread.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {thread.creator.fullName ?? t("common.unknown")}
-                    {typeof thread.updatedAt === "string" && (
-                      <>{" · "}{new Date(thread.updatedAt).toLocaleDateString()}</>
-                    )}
+                    <span className="truncate">
+                      {thread.creator.fullName ?? t("common.unknown")}
+                      {typeof thread.updatedAt === "string" && (
+                        <>{" · "}{new Date(thread.updatedAt).toLocaleDateString()}</>
+                      )}
+                    </span>
                   </p>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
-                  <MessageSquare className="h-4 w-4" />
-                  <span className="text-sm">{thread.replyCount ?? 0}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Donuts: animals by type + plots by current crop */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

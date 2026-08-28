@@ -7,6 +7,8 @@
     "delete": "Elimina",
     "edit": "Modifica",
     "create": "Crea",
+    "add": "Aggiungi",
+    "status": "Stato",
     "search": "Cerca",
     "actions": "Azioni",
     "yes": "Sì",
@@ -38,7 +40,8 @@
     "name": "Nome",
     "unknown": "Sconosciuto",
     "title": "Titolo",
-    "date": "Data"
+    "date": "Data",
+    "done": "Fatto"
   },
   "nav": {
     "groups": {
@@ -49,7 +52,8 @@
       "accounting": "Contabilità",
       "fieldCalendar": "Calendario dei campi",
       "admin": "Amministrazione",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "verein": "Associazione"
     },
     "fieldGroups": {
       "areas": "Superfici",
@@ -58,6 +62,12 @@
       "inputs": "Mezzi tecnici",
       "analysis": "Analisi"
     },
+    "animalGroups": {
+      "registry": "Effettivo",
+      "health": "Salute"
+    },
+    "animalsExport": "Export",
+    "tvdImport": "Import TVD",
     "dashboard": "Dashboard",
     "animals": "Animali",
     "earTags": "Marche auricolari",
@@ -97,6 +107,13 @@
   },
   "animals": {
     "title": "Animali",
+    "export": {
+      "title": "Esporta dati animali",
+      "description": "Scarica il registro dei trattamenti e delle uscite come file Excel."
+    },
+    "importOnboardingHeading": "Importa animali dalla TVD",
+    "importOnboardingBody": "L'importazione richiede un file Excel dal «Tierbestand» della TVD. Esportalo tramite il pulsante «Excel generieren».",
+    "importOnboardingColumnsHint": "Seleziona le colonne Ohrmarkennummer Mutter, Vater e Todesdatum se vuoi importare questi dati.",
     "createAnimal": "Crea animale",
     "editAnimal": "Modifica animale",
     "animalDetails": "Dettagli animale",
@@ -267,7 +284,9 @@
     "animalsBorn": "Nati",
     "animalsDied": "Morti",
     "animalsSlaughtered": "Macellati",
-    "recentTreffpunkt": "Treffpunkt – Post recenti"
+    "recentTreffpunkt": "Treffpunkt – Post recenti",
+    "noUpcomingTasks": "Nessuna attività aperta",
+    "noThreads": "Ancora nessun post"
   },
   "settings": {
     "title": "Impostazioni",
@@ -733,6 +752,11 @@
     }
   },
   "fieldCalendar": {
+    "divide": {
+      "heading": "Suddividi sui campi",
+      "byArea": "Suddividi in base alla superficie",
+      "remaining": "Rimanente: {{amount}} {{unit}}"
+    },
     "chart": {
       "stacked": "Composizione",
       "compare": "Confronto annuale",
@@ -742,6 +766,7 @@
       "title": "Campi",
       "plot": "Campo",
       "selectPlot": "Seleziona campo",
+      "openMap": "Apri mappa",
       "size": "Superficie",
       "usage": "Codice utilizzo",
       "cuttingDate": "Data di taglio",
@@ -1093,6 +1118,8 @@
       "date": "Data",
       "fertilizer": "Fertilizzante",
       "selectFertilizer": "Seleziona fertilizzante",
+      "selectMethod": "Seleziona metodo",
+      "numberOfUnitsWith": "Quantità {{unit}}",
       "unit": "Unità di distribuzione",
       "amountPerUnit": "Quantità per unità",
       "amountPerUnitWith": "{{unit}} per unità",
@@ -1109,7 +1136,18 @@
         "spread": "Spandimento",
         "other": "Altro"
       },
-      "deleteConfirm": "Vuoi davvero eliminare questa concimazione?"
+      "deleteConfirm": "Vuoi davvero eliminare questa concimazione?",
+      "wizard": {
+        "steps": {
+          "fertilizer": "Concime e data",
+          "config": "Configurazione",
+          "quantity": "Quantità",
+          "plots": "Campi",
+          "divide": "Suddivisione",
+          "summary": "Riepilogo"
+        },
+        "stepOf": "Passo {{current}} di {{total}}"
+      }
     },
     "cropProtectionApplications": {
       "title": "Difesa fitosanitaria",
@@ -1286,7 +1324,12 @@
       "overdue": "Scaduto",
       "allAssignees": "Tutti gli assegnatari",
       "allLabels": "Tutte le etichette",
-      "clear": "Azzera filtri"
+      "clear": "Azzera filtri",
+      "title": "Filtri"
+    },
+    "sort": {
+      "dueDate": "Scadenza",
+      "assignee": "Persona"
     },
     "status": {
       "todo": "Da fare",

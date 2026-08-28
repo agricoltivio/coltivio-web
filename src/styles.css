@@ -50,7 +50,7 @@ code {
   --chart-8: #6e7f3a;                        /* olive */
   --mocha: oklch(0.53 0.06 59);              /* #8b6b55 */
   --mocha-foreground: oklch(0.985 0 0);
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --sidebar: oklch(0.978 0.009 196);
   --sidebar-foreground: oklch(0.162 0.003 264);
   --sidebar-primary: oklch(0.37 0.063 198);

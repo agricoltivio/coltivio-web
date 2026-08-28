@@ -146,8 +146,8 @@ function AuthedLayout() {
     <div className="min-h-screen bg-background font-sans antialiased text-foreground">
       <SidebarProvider defaultOpen={getInitialSidebarOpen()}>
         <AppSidebar />
-        <main className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
-          <div className="flex h-12 shrink-0 items-center gap-3 border-b px-4 sm:px-6 lg:px-8">
+        <main className="flex min-w-0 flex-1 flex-col overflow-x-clip">
+          <div className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b bg-background px-4 sm:px-6 lg:px-8">
             <SidebarTrigger className="-ml-1.5 shrink-0" />
             <SectionNav />
           </div>

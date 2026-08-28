@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 
 type GlobalHarvest = components["schemas"]["GetV1HarvestsPositiveResponse"]["data"]["result"][number];
 type PlotHarvest = components["schemas"]["GetV1PlotsByIdPlotIdHarvestsPositiveResponse"]["data"]["result"][number];
@@ -272,7 +271,6 @@ function Harvests() {
       actions={
         canWriteHarvests && (
           <Button onClick={() => navigate({ to: "/field-calendar/harvests/create", search: plotId ? { plotId } : {} })}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.harvests.create")}
           </Button>
         )

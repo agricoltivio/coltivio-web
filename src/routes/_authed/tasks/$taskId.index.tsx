@@ -202,11 +202,7 @@ function TaskDetailPage() {
   }, {});
 
   return (
-    <PageContent
-      title={task.name}
-      showBackButton
-      backTo={() => navigate({ to: "/tasks" })}
-    >
+    <PageContent showBackButton backTo={() => navigate({ to: "/tasks" })}>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-end gap-2">
         {canWriteTasks && <>
@@ -274,7 +270,7 @@ function TaskDetailPage() {
           <CardContent>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <DetailItem
-                label={t("tasks.status.todo")}
+                label={t("common.status")}
                 value={
                   <Badge variant={task.status === "done" ? "default" : "secondary"}>
                     {t(`tasks.status.${task.status}`)}

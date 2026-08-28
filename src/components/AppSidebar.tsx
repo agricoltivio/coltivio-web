@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import {
   ChevronsUpDown,
-  CreditCard,
   Globe,
   LogOut,
   Monitor,
@@ -196,12 +195,6 @@ export function AppSidebar() {
                   <Link to="/settings">
                     <Settings className="size-4" />
                     {t("nav.settings")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/membership">
-                    <CreditCard className="size-4" />
-                    {t("nav.membership")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

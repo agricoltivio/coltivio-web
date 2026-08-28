@@ -5,7 +5,7 @@ import { inlineLink } from "@/lib/ui";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { PlusIcon, PencilIcon, TrashIcon, CheckIcon, XIcon } from "lucide-react";
+import { PencilIcon, TrashIcon, CheckIcon, XIcon } from "lucide-react";
 import { orderQueryOptions, invoiceSettingsQueryOptions } from "@/api/orders.queries";
 import { InvoiceSettingSelect } from "@/components/InvoiceSettingSelect";
 import { activeProductsQueryOptions } from "@/api/products.queries";
@@ -382,7 +382,6 @@ function OrderDetailPage() {
                   setNewPrice(0);
                 }}
               >
-                <PlusIcon className="h-4 w-4 mr-1" />
                 {t("orders.addItem")}
               </Button>
             )}

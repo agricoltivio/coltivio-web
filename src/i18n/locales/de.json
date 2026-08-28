@@ -7,6 +7,8 @@
     "delete": "Löschen",
     "edit": "Bearbeiten",
     "create": "Erstellen",
+    "add": "Hinzufügen",
+    "status": "Status",
     "search": "Suchen",
     "actions": "Aktionen",
     "yes": "Ja",
@@ -38,7 +40,8 @@
     "name": "Name",
     "unknown": "Unbekannt",
     "title": "Titel",
-    "date": "Datum"
+    "date": "Datum",
+    "done": "Fertig"
   },
   "nav": {
     "groups": {
@@ -49,7 +52,8 @@
       "accounting": "Buchhaltung",
       "fieldCalendar": "Feldkalender",
       "admin": "Admin",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "verein": "Verein"
     },
     "fieldGroups": {
       "areas": "Flächen",
@@ -58,6 +62,12 @@
       "inputs": "Betriebsmittel",
       "analysis": "Auswertung"
     },
+    "animalGroups": {
+      "registry": "Tierbestand",
+      "health": "Gesundheit"
+    },
+    "animalsExport": "Export",
+    "tvdImport": "TVD Import",
     "dashboard": "Dashboard",
     "animals": "Tiere",
     "earTags": "Ohrmarken",
@@ -97,6 +107,13 @@
   },
   "animals": {
     "title": "Tiere",
+    "export": {
+      "title": "Tierdaten exportieren",
+      "description": "Behandlungs- und Auslaufjournal als Excel-Datei herunterladen."
+    },
+    "importOnboardingHeading": "Tiere aus TVD importieren",
+    "importOnboardingBody": "Für den Import wird eine Excel-Datei aus dem «Tierbestand» der TVD benötigt. Exportiere diese über den Button «Excel generieren».",
+    "importOnboardingColumnsHint": "Wähle die Spalten Ohrmarkennummer Mutter und Vater sowie Todesdatum falls du diese Daten importieren möchtest.",
     "createAnimal": "Tier erstellen",
     "editAnimal": "Tier bearbeiten",
     "animalDetails": "Tierdetails",
@@ -267,7 +284,9 @@
     "animalsBorn": "Geboren",
     "animalsDied": "Gestorben",
     "animalsSlaughtered": "Geschlachtet",
-    "recentTreffpunkt": "Treffpunkt – Neueste Beiträge"
+    "recentTreffpunkt": "Treffpunkt – Neueste Beiträge",
+    "noUpcomingTasks": "Keine offenen Aufgaben",
+    "noThreads": "Noch keine Beiträge"
   },
   "settings": {
     "title": "Einstellungen",
@@ -733,6 +752,11 @@
     }
   },
   "fieldCalendar": {
+    "divide": {
+      "heading": "Auf Schläge aufteilen",
+      "byArea": "Nach Schlaggrösse aufteilen",
+      "remaining": "Verbleibend: {{amount}} {{unit}}"
+    },
     "chart": {
       "stacked": "Zusammensetzung",
       "compare": "Jahresvergleich",
@@ -742,6 +766,7 @@
       "title": "Schläge",
       "plot": "Schlag",
       "selectPlot": "Schlag auswählen",
+      "openMap": "Karte öffnen",
       "size": "Fläche",
       "usage": "Nutzungscode",
       "cuttingDate": "Schnittzeitpunkt",
@@ -1093,6 +1118,8 @@
       "date": "Datum",
       "fertilizer": "Düngemittel",
       "selectFertilizer": "Düngemittel auswählen",
+      "selectMethod": "Methode auswählen",
+      "numberOfUnitsWith": "Anzahl {{unit}}",
       "unit": "Ausbringungseinheit",
       "amountPerUnit": "Menge pro Einheit",
       "amountPerUnitWith": "{{unit}} pro Einheit",
@@ -1109,7 +1136,18 @@
         "spread": "Streuen",
         "other": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Düngung wirklich löschen?"
+      "deleteConfirm": "Möchten Sie diese Düngung wirklich löschen?",
+      "wizard": {
+        "steps": {
+          "fertilizer": "Düngemittel & Datum",
+          "config": "Konfiguration",
+          "quantity": "Menge",
+          "plots": "Schläge",
+          "divide": "Aufteilen",
+          "summary": "Zusammenfassung"
+        },
+        "stepOf": "Schritt {{current}} von {{total}}"
+      }
     },
     "cropProtectionApplications": {
       "title": "Pflanzenschutz",
@@ -1286,7 +1324,12 @@
       "overdue": "Überfällig",
       "allAssignees": "Alle Personen",
       "allLabels": "Alle Labels",
-      "clear": "Filter zurücksetzen"
+      "clear": "Filter zurücksetzen",
+      "title": "Filter"
+    },
+    "sort": {
+      "dueDate": "Fälligkeit",
+      "assignee": "Person"
     },
     "status": {
       "todo": "Offen",
