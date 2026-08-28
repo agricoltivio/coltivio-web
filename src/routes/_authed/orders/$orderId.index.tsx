@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { PlusIcon, PencilIcon, TrashIcon, CheckIcon, XIcon } from "lucide-react";
+import { PencilIcon, TrashIcon, CheckIcon, XIcon } from "lucide-react";
 import { orderQueryOptions, invoiceSettingsQueryOptions } from "@/api/orders.queries";
 import { InvoiceSettingSelect } from "@/components/InvoiceSettingSelect";
 import { activeProductsQueryOptions } from "@/api/products.queries";
@@ -338,7 +339,7 @@ function OrderDetailPage() {
                 label={t("orders.contact")}
                 value={
                   <Link
-                    className="hover:underline text-blue-600 hover:text-blue-800"
+                    className={inlineLink}
                     to="/contacts/$contactId"
                     params={{ contactId: order.contact.id }}
                   >
@@ -381,7 +382,6 @@ function OrderDetailPage() {
                   setNewPrice(0);
                 }}
               >
-                <PlusIcon className="h-4 w-4 mr-1" />
                 {t("orders.addItem")}
               </Button>
             )}

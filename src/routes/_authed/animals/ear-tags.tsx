@@ -29,7 +29,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
@@ -112,40 +112,14 @@ function EarTags() {
     () => [
       {
         accessorKey: "number",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("earTags.number")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("earTags.number"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("number")}</span>
         ),
       },
       {
         accessorKey: "animal",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("earTags.status")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("earTags.status"),
         cell: ({ row }) => {
           const animal = row.original.animal;
           if (animal) {
@@ -201,9 +175,11 @@ function EarTags() {
   const data = earTagsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("earTags.title")} showBackButton={false}>
-      {canWriteAnimals && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("earTags.title")}
+      showBackButton={false}
+      actions={
+        canWriteAnimals && (
           <CreateRangeDialog
             open={createDialogOpen}
             onOpenChange={setCreateDialogOpen}
@@ -212,8 +188,9 @@ function EarTags() {
             }
             isPending={createRangeMutation.isPending}
           />
-        </div>
-      )}
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

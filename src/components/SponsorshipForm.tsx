@@ -39,6 +39,8 @@ type ComboboxOption = { value: string; label: string };
 
 export interface SponsorshipFormProps {
   sponsorship?: SponsorshipDetail;
+  /** Preselects the contact when creating a new sponsorship (ignored in edit mode) */
+  defaultContactId?: string;
   contactOptions: ComboboxOption[];
   animalOptions: ComboboxOption[];
   typeOptions: ComboboxOption[];
@@ -48,6 +50,7 @@ export interface SponsorshipFormProps {
 
 export function SponsorshipForm({
   sponsorship,
+  defaultContactId,
   contactOptions,
   animalOptions,
   typeOptions,
@@ -70,7 +73,7 @@ export function SponsorshipForm({
           preferredCommunication: sponsorship.preferredCommunication,
         }
       : {
-          contactId: "",
+          contactId: defaultContactId ?? "",
           animalId: "",
           sponsorshipProgramId: "",
           startDate: "",

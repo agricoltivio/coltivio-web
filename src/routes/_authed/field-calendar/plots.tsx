@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Check, FileEdit, GitMerge, Home, Lasso, Layers, List, Minus, MousePointerClick, Palette, Pencil, Plus, Save, Scissors, Undo2, X } from "lucide-react";
+import { Home, Layers, List, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -26,6 +26,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { PlotColorModeToggle } from "@/components/PlotColorModeToggle";
+import {
+  plotIdToColor,
+  resolvePlotColor,
+  type PlotColorMode,
+} from "@/lib/plotColor";
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
@@ -185,45 +191,6 @@ function readSavedViewport(): SavedViewport | null {
   }
 }
 
-// djb2 hash → golden-angle hue → hex color, matching the RN app's plotIdToColor.
-function plotIdToColor(id: string): string {
-  let hash = 5381;
-  for (let i = 0; i < id.length; i++) hash = (hash * 33) ^ id.charCodeAt(i);
-  const hue = Math.abs(hash % 360) * 137.508;
-  const h = hue / 360;
-  const s = 0.7;
-  const l = 0.45;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => {
-    const k = (n + h * 12) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, "0");
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
-
-export type PlotColorMode = "plot" | "crop" | "usage" | "cutting";
-
-// Golden-angle hue walk for sequential indices (used for cutting-date month coloring).
-function indexToDistinctColor(index: number): string {
-  const hue = (index * 137.508) % 360;
-  return plotIdToColor(`__index_${Math.round(hue)}__`);
-}
-
-function resolvePlotColor(plot: Plot, mode: PlotColorMode): string {
-  switch (mode) {
-    case "crop":
-      return plotIdToColor(plot.currentCropRotation?.cropId ?? "__no_crop__");
-    case "usage":
-      return plotIdToColor(String(plot.usage ?? "__no_usage__"));
-    case "cutting":
-      if (!plot.cuttingDate) return plotIdToColor("__no_cutting__");
-      return indexToDistinctColor(new Date(plot.cuttingDate).getMonth());
-    default:
-      return plotIdToColor(plot.id);
-  }
-}
-
 // Splits a MultiPolygon by a line using half-plane intersection.
 // Works for full cuts, corner cuts, and diagonal cuts.
 function splitMultiPolygonByLine(
@@ -364,34 +331,6 @@ export const Route = createFileRoute("/_authed/field-calendar/plots")({
 });
 
 type BaseLayer = "satellite" | "pixelkarte";
-
-const COLOR_MODE_OPTIONS: PlotColorMode[] = ["plot", "crop", "usage", "cutting"];
-
-function ColorModeToggle({ plotColorMode, onSelect }: { plotColorMode: PlotColorMode; onSelect: (m: PlotColorMode) => void }) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="relative">
-      <Button variant="outline" size="icon" onClick={() => setOpen((p) => !p)}>
-        <Palette className="h-4 w-4" />
-      </Button>
-      {open && (
-        <div className="absolute top-0 right-9 bg-background border rounded-md shadow-md py-1 min-w-32">
-          {COLOR_MODE_OPTIONS.map((m) => (
-            <button
-              key={m}
-              className={`w-full text-left px-3 py-1.5 text-sm hover:bg-accent ${m === plotColorMode ? "font-semibold text-primary" : ""}`}
-              onClick={() => { onSelect(m); setOpen(false); }}
-            >
-              {t(`fieldCalendar.plots.colorMode.${m}`)}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function PlotsMap() {
   const { t } = useTranslation();
@@ -781,7 +720,6 @@ function PlotsMap() {
     <PageContent title={t("fieldCalendar.plots.title")} showBackButton={false}>
       <div className="flex justify-end mb-2">
         <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-          <Plus className="h-4 w-4 mr-1.5" />
           {t("fieldCalendar.plots.newPlot")}
         </Button>
       </div>
@@ -941,7 +879,7 @@ function PlotsMap() {
             <Layers className="h-4 w-4" />
           </Button>
           {mode.type === "view" && (
-            <ColorModeToggle plotColorMode={plotColorMode} onSelect={setPlotColorMode} />
+            <PlotColorModeToggle value={plotColorMode} onChange={setPlotColorMode} />
           )}
         </div>
 
@@ -964,13 +902,12 @@ function PlotsMap() {
           {mode.type === "merge" && (
             <div className="flex items-center gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
               <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
-                <X className="h-4 w-4 mr-1" />{t("common.cancel")}
+                {t("common.cancel")}
               </Button>
               <span className="text-sm text-muted-foreground px-1">
                 {t("fieldCalendar.plots.merge.toolbar", { count: mode.selectedPlotIds.length })}
               </span>
               <Button size="sm" disabled={mode.selectedPlotIds.length < 2} onClick={() => setMergeFormOpen(true)}>
-                <Check className="h-4 w-4 mr-1" />
                 {t("fieldCalendar.plots.merge.confirm", { count: mode.selectedPlotIds.length })}
               </Button>
             </div>
@@ -981,40 +918,40 @@ function PlotsMap() {
             <div className="flex flex-col items-center gap-1.5">
               <div className="flex gap-1 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-2 py-1">
                 <Button variant={mode.tool === "line" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "line" })}>
-                  <Minus className="h-3.5 w-3.5 mr-1" />{t("fieldCalendar.plots.split.toolLine")}
+                  {t("fieldCalendar.plots.split.toolLine")}
                 </Button>
                 <Button variant={mode.tool === "polygon" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "polygon" })}>
-                  <Lasso className="h-3.5 w-3.5 mr-1" />{t("fieldCalendar.plots.split.toolArea")}
+                  {t("fieldCalendar.plots.split.toolArea")}
                 </Button>
                 {targetIsMultiPolygon && (
                   <Button variant={mode.tool === "extract" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "extract" })}>
-                    <MousePointerClick className="h-3.5 w-3.5 mr-1" />{t("fieldCalendar.plots.split.toolExtract")}
+                    {t("fieldCalendar.plots.split.toolExtract")}
                   </Button>
                 )}
               </div>
 
               <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
                 <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "EXIT_MODE" }); setToolError(null); }}>
-                  <X className="h-4 w-4 mr-1" />{t("common.cancel")}
+                  {t("common.cancel")}
                 </Button>
                 {mode.tool !== "extract" && mode.drawnVertices.length > 0 && (
                   <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "UNDO_VERTEX" }); setToolError(null); }}>
-                    <Undo2 className="h-4 w-4 mr-1" />{t("common.back")}
+                    {t("common.back")}
                   </Button>
                 )}
                 {mode.tool === "line" && (
                   <Button size="sm" disabled={mode.drawnVertices.length < 2} onClick={handleCommitSplitLine}>
-                    <Scissors className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.split.applyCut")}
+                    {t("fieldCalendar.plots.split.applyCut")}
                   </Button>
                 )}
                 {mode.tool === "polygon" && mode.polygonClosed && (
                   <Button size="sm" onClick={handleCommitSplitPolygon}>
-                    <Scissors className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.split.applyCut")}
+                    {t("fieldCalendar.plots.split.applyCut")}
                   </Button>
                 )}
                 {mode.splitPolygons.length >= 2 && (
                   <Button size="sm" variant="default" disabled={mode.drawnVertices.length > 0} onClick={() => setSplitFormOpen(true)}>
-                    <Save className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.split.confirmSplit")}
+                    {t("fieldCalendar.plots.split.confirmSplit")}
                   </Button>
                 )}
               </div>
@@ -1025,18 +962,18 @@ function PlotsMap() {
           {mode.type === "create" && (
             <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
               <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
-                <X className="h-4 w-4 mr-1" />{t("common.cancel")}
+                {t("common.cancel")}
               </Button>
               {mode.drawnVertices.length > 0 && (
                 <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "UNDO_VERTEX" })}>
-                  <Undo2 className="h-4 w-4 mr-1" />{t("common.back")}
+                  {t("common.back")}
                 </Button>
               )}
               {mode.closed && (
                 <>
                   {createArea > 0 && <span className="text-sm text-muted-foreground px-1">{(createArea / 100).toFixed(2)} a</span>}
                   <Button size="sm" onClick={() => setCreateFormOpen(true)}>
-                    <Save className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.create.confirm")}
+                    {t("fieldCalendar.plots.create.confirm")}
                   </Button>
                 </>
               )}
@@ -1047,11 +984,11 @@ function PlotsMap() {
           {mode.type === "edit" && (
             <div className="flex items-center gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
               <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
-                <X className="h-4 w-4 mr-1" />{t("common.cancel")}
+                {t("common.cancel")}
               </Button>
               <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.edit.dragInstruction")}</span>
               <Button size="sm" disabled={!mode.geometryChanged || updateMutation.isPending} onClick={handleSaveShape}>
-                <Save className="h-4 w-4 mr-1" />{t("fieldCalendar.plots.edit.saveShape")}
+                {t("fieldCalendar.plots.edit.saveShape")}
               </Button>
             </div>
           )}
@@ -1206,7 +1143,7 @@ function PlotDetailPanel({
         {/* Edit / merge / split actions */}
         <div className="border-t pt-3 flex flex-col gap-2">
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={onEditMeta}>
-            <FileEdit className="h-3.5 w-3.5 mr-1.5" />{t("fieldCalendar.plots.edit.editInfo")}
+            {t("fieldCalendar.plots.edit.editInfo")}
           </Button>
           <Button
             variant="outline"
@@ -1220,13 +1157,13 @@ function PlotDetailPanel({
               })
             }
           >
-            <Pencil className="h-3.5 w-3.5 mr-1.5" />{t("fieldCalendar.plots.edit.editShape")}
+            {t("fieldCalendar.plots.edit.editShape")}
           </Button>
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => dispatch({ type: "ENTER_MERGE", primaryPlotId: plot.id })}>
-            <GitMerge className="h-3.5 w-3.5 mr-1.5" />{t("fieldCalendar.plots.enterMerge")}
+            {t("fieldCalendar.plots.enterMerge")}
           </Button>
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => dispatch({ type: "ENTER_SPLIT", plotId: plot.id })}>
-            <Scissors className="h-3.5 w-3.5 mr-1.5" />{t("fieldCalendar.plots.enterSplit")}
+            {t("fieldCalendar.plots.enterSplit")}
           </Button>
         </div>
 

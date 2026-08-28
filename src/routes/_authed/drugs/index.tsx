@@ -7,7 +7,6 @@ import type { Drug } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
@@ -28,20 +27,7 @@ function Drugs() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("drugs.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("drugs.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
@@ -78,14 +64,17 @@ function Drugs() {
   const data = drugsQuery.data?.result ?? [];
 
   return (
-    <PageContent title={t("drugs.title")} showBackButton={false}>
-      {canWriteTreatments && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("drugs.title")}
+      showBackButton={false}
+      actions={
+        canWriteTreatments && (
           <Button onClick={() => navigate({ to: "/drugs/create" })}>
             {t("common.create")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

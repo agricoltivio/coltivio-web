@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
@@ -22,6 +23,7 @@ import {
 export const Route = createFileRoute(
   "/_authed/orders/$orderId_/payments/$paymentId/",
 )({
+  validateSearch: z.object({ returnTo: z.string().optional() }),
   loader: ({ params, context: { queryClient } }) => {
     return queryClient.ensureQueryData(
       orderPaymentQueryOptions(params.orderId, params.paymentId),
@@ -34,6 +36,7 @@ function OrderPaymentDetailPage() {
   const { t } = useTranslation();
   const { canWrite } = useFeatureAccess("commerce");
   const { orderId, paymentId } = Route.useParams();
+  const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -90,7 +93,11 @@ function OrderPaymentDetailPage() {
     <PageContent
       title={t("payments.title")}
       showBackButton
-      backTo={() => navigate({ to: "/orders/$orderId", params: { orderId } })}
+      backTo={() =>
+        returnTo
+          ? navigate({ to: returnTo })
+          : navigate({ to: "/orders/$orderId", params: { orderId } })
+      }
     >
       <div className="mb-6 flex items-center justify-end">
         {canWrite && (

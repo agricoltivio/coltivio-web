@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/plots_/$plotId_/journal/",
@@ -60,7 +59,6 @@ function PlotJournalPage() {
               })
             }
           >
-            <Plus className="h-4 w-4 mr-1" />
             {t("journal.add")}
           </Button>
         </div>

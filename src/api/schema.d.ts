@@ -1460,6 +1460,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/reports/animals/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1ReportsAnimalsDownload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals": {
         parameters: {
             query?: never;
@@ -3584,7 +3600,6 @@ export interface components {
         PatchV1MeRequestBody: {
             fullName?: string;
             emailVerified?: boolean;
-            farmId?: string;
         };
         GetV1MePositiveResponse: {
             data: {
@@ -7076,6 +7091,27 @@ export interface components {
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
             toDate: string;
+        };
+        PostV1ReportsAnimalsDownloadPositiveResponse: {
+            data: {
+                base64: string;
+                fileName: string;
+            };
+        };
+        PostV1ReportsAnimalsDownloadRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            fromDate: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            toDate: string;
+            generateTreatments: boolean;
+            generateOutdoorJournal: boolean;
+            treatmentAnimalTypes?: ("goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer")[];
         };
         /** Format: array (preprocessed) */
         GetV1AnimalsParameterAnimalTypes: unknown;
@@ -18604,6 +18640,40 @@ export interface operations {
                 };
             };
             /** @description POST /v1/reports/outdoorjournal/download Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ReportsAnimalsDownload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/reports/animals/download Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ReportsAnimalsDownloadRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/reports/animals/download Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ReportsAnimalsDownloadPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/reports/animals/download Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

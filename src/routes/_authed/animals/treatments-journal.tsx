@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, Download } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
@@ -93,38 +92,12 @@ function TreatmentsJournal() {
     () => [
       {
         accessorKey: "startDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("treatments.startDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("treatments.startDate"),
         cell: ({ row }) => formatDate(row.getValue("startDate")),
       },
       {
         id: "animals",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("treatments.animals")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("treatments.animals"),
         cell: ({ row }) => {
           const animals = row.original.animals;
           const visible = animals.slice(0, 2);
@@ -141,20 +114,7 @@ function TreatmentsJournal() {
       },
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("treatments.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("treatments.name"),
         cell: ({ row }) => (
           <span className="block max-w-48 truncate">{row.getValue("name")}</span>
         ),
@@ -171,20 +131,7 @@ function TreatmentsJournal() {
       },
       {
         accessorKey: "milkUsableDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("treatments.milkUsableDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("treatments.milkUsableDate"),
         cell: ({ row }) => (
           <span className="text-muted-foreground">
             {formatDate(row.getValue("milkUsableDate"))}
@@ -193,20 +140,7 @@ function TreatmentsJournal() {
       },
       {
         accessorKey: "meatUsableDate",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("treatments.meatUsableDate")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("treatments.meatUsableDate"),
         cell: ({ row }) => (
           <span className="text-muted-foreground">
             {formatDate(row.getValue("meatUsableDate"))}
@@ -223,7 +157,6 @@ function TreatmentsJournal() {
     <PageContent title={t("treatments.title")} showBackButton={false}>
       <div className="flex justify-end gap-2 mb-4">
         <Button variant="outline" onClick={() => setExportOpen(true)}>
-          <Download className="h-4 w-4 mr-2" />
           {t("common.export")}
         </Button>
         {canWriteTreatments && (
@@ -281,7 +214,6 @@ function TreatmentsJournal() {
               {t("common.cancel")}
             </Button>
             <Button onClick={handleExport} disabled={exporting || !exportFromDate || !exportToDate}>
-              <Download className="h-4 w-4 mr-2" />
               {exporting ? t("common.exporting") : t("common.download")}
             </Button>
           </DialogFooter>

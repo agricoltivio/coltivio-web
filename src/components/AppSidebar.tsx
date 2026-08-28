@@ -1,559 +1,249 @@
+import { useMemo } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { useTheme } from "next-themes";
+import {
+  ChevronsUpDown,
+  Globe,
+  LogOut,
+  Monitor,
+  Moon,
+  Settings,
+  Sun,
+  User,
+  Users,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
-import { useRef } from "react";
-import { useTranslation } from "react-i18next";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
-import {
-  BookOpen,
-  CreditCard,
-  Download,
-  Droplets,
-  FileText,
-  FlaskConical,
-  HeartHandshake,
-  Home,
-  LayoutDashboard,
-  Layers,
-  Leaf,
-  ListTodo,
-  Map,
-  MessageSquare,
-  NotebookPen,
-  NotepadText,
-  ClipboardList,
-  Package,
-  Pill,
-  RefreshCw,
-  Settings,
-  Shield,
-  ShoppingCart,
-  Syringe,
-  Tag,
-  User,
-  Users,
-  Wheat,
-} from "lucide-react";
+import { useAuth } from "@/context/SupabaseAuthContext";
+import { cn } from "@/lib/utils";
+import type { FarmPermissionFeature } from "@/api/types";
+import { SECTIONS, findActiveSection } from "@/components/navigation/navConfig";
+
+const LANGUAGES = [
+  { code: "de", label: "Deutsch" },
+  { code: "fr", label: "Français" },
+  { code: "it", label: "Italiano" },
+  { code: "en", label: "English" },
+] as const;
 
 export function AppSidebar() {
   const { t, i18n } = useTranslation();
+  const { signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const pathname = useLocation({ select: (location) => location.pathname });
+
+  const themeOptions = [
+    { value: "system", label: t("common.theme.system"), icon: Monitor },
+    { value: "light", label: t("common.theme.light"), icon: Sun },
+    { value: "dark", label: t("common.theme.dark"), icon: Moon },
+  ];
+
   const meQuery = useQuery(meQueryOptions());
-  const hasFarm = meQuery.data?.farmId != null;
+  const me = meQuery.data;
+  const hasFarm = me?.farmId != null;
   const farmQuery = useQuery(farmQueryOptions(hasFarm));
-  const isWikiModerator = meQuery.data?.isWikiModerator ?? false;
-  const isOwner = meQuery.data?.farmRole === "owner";
+  const isOwner = me?.farmRole === "owner";
 
-  // Feature access — owners always get full access (handled inside the hook)
-  const animalsAccess = useFeatureAccess("animals");
-  const fieldCalendarAccess = useFeatureAccess("field_calendar");
-  const commerceAccess = useFeatureAccess("commerce");
-  const tasksAccess = useFeatureAccess("tasks");
+  // Feature gates — one hook per feature (owners get full access inside the hook).
+  const access: Record<FarmPermissionFeature, boolean> = {
+    animals: useFeatureAccess("animals").canRead,
+    field_calendar: useFeatureAccess("field_calendar").canRead,
+    commerce: useFeatureAccess("commerce").canRead,
+    tasks: useFeatureAccess("tasks").canRead,
+  };
 
-  // Group visibility — hide the group label when all items in the group are hidden.
-  // Nothing here is membership-gated any more; Treffpunkt stays visible without a
-  // membership and its route shows the "membership required" message (MembersOnlyOutlet).
-  const livestockGroupVisible = animalsAccess.canRead;
-  const fieldCalendarGroupVisible = fieldCalendarAccess.canRead;
-  const addressBookGroupVisible = commerceAccess.canRead;
-  const salesGroupVisible = commerceAccess.canRead;
-  const sponsorshipsGroupVisible = commerceAccess.canRead;
-  // Prevent the browser from auto-scrolling the sidebar when a link is clicked.
-  // The browser scrolls a container synchronously during focus (before rAF), so we
-  // capture the scroll position on pointerdown and restore it in onFocusCapture.
-  // Keyboard navigation is unaffected because it never sets isPointerFocus.
-  const savedScrollRef = useRef(0);
-  const isPointerFocusRef = useRef(false);
+  const activeSection = findActiveSection(pathname);
 
-  function changeLanguage(lang: string) {
-    i18n.changeLanguage(lang);
-    localStorage.setItem("language", lang);
+  const visibleSections = useMemo(
+    () =>
+      SECTIONS.filter((section) => {
+        if (section.requiresFarm && !hasFarm) return false;
+        if (section.feature && !access[section.feature]) return false;
+        return true;
+      }),
+    [hasFarm, access.animals, access.field_calendar, access.commerce, access.tasks],
+  );
+
+  function changeLanguage(code: string) {
+    i18n.changeLanguage(code);
+    localStorage.setItem("language", code);
   }
+
+  const userName = me?.fullName ?? me?.email ?? "";
+  const initials = userName
+    .split(/\s+/)
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b">
-        <div className="text-sm font-semibold truncate">{farmQuery.data?.name ?? "Coltivio"}</div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="h-14 flex-row items-center border-b">
+        <div className="flex items-center gap-2 px-1">
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
+            {(farmQuery.data?.name ?? "Coltivio").charAt(0)}
+          </div>
+          <span className="truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
+            {farmQuery.data?.name ?? "Coltivio"}
+          </span>
+        </div>
       </SidebarHeader>
-      <SidebarContent
-        onPointerDownCapture={(e) => {
-          savedScrollRef.current = e.currentTarget.scrollTop;
-          isPointerFocusRef.current = true;
-        }}
-        onFocusCapture={(e) => {
-          if (!isPointerFocusRef.current) return;
-          isPointerFocusRef.current = false;
-          const container = e.currentTarget;
-          const saved = savedScrollRef.current;
-          container.scrollTop = saved;
-          // Browser may scroll again after this handler — restore once more next frame
-          requestAnimationFrame(() => {
-            container.scrollTop = saved;
-          });
-        }}
-      >
+
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {hasFarm ? (
-                <>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        activeOptions={{ exact: true, includeSearch: false }}
-                        activeProps={{
-                          className:
-                            "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                        }}
-                        to="/dashboard"
-                      >
-                        <LayoutDashboard /> {t("nav.dashboard")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  {tasksAccess.canRead && (
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <Link
-                          activeOptions={{ exact: true, includeSearch: false }}
-                          activeProps={{
-                            className:
-                              "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                          }}
-                          to="/tasks"
-                        >
-                          <ListTodo /> {t("nav.tasks")}
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )}
-                </>
-              ) : (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      activeOptions={{ exact: true, includeSearch: false }}
-                      activeProps={{
-                        className:
-                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                      }}
-                      to="/dashboard"
+              {visibleSections.map((section) => {
+                const Icon = section.icon;
+                const label =
+                  section.id === "overview" && !hasFarm
+                    ? t("nav.myFarm")
+                    : t(section.labelKey);
+                return (
+                  <SidebarMenuItem key={section.id}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={activeSection?.id === section.id}
+                      tooltip={label}
                     >
-                      <Home /> {t("nav.myFarm")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/treffpunkt"
-                  >
-                    <MessageSquare /> {t("nav.treffpunkt")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        {hasFarm && livestockGroupVisible && <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.livestock")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      activeOptions={{ exact: true, includeSearch: false }}
-                      activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
-                      to="/animals"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                        <path d="M96 288L96 480C96 497.7 110.3 512 128 512L160 512C177.7 512 192 497.7 192 480L192 391.8C201.9 398.4 212.6 403.8 224 407.9L224 432.1C224 440.9 231.2 448.1 240 448.1C248.8 448.1 256 440.9 256 432.1L256 415.2C261.3 415.8 266.6 416.1 272 416.1C277.4 416.1 282.7 415.8 288 415.2L288 432.1C288 440.9 295.2 448.1 304 448.1C312.8 448.1 320 440.9 320 432.1L320 407.9C331.4 403.9 342.1 398.5 352 391.8L352 480C352 497.7 366.3 512 384 512L416 512C433.7 512 448 497.7 448 480L448 320L480 352L480 401.5C480 411 482.8 420.2 488.1 428.1L530 491C538.8 504.1 553.5 512 569.3 512C591.8 512 611.2 496.1 615.6 474L635.9 372.4C638.5 359.4 635.6 345.9 627.9 335.1L624 329.6L624 248C624 234.7 613.3 224 600 224C586.7 224 576 234.7 576 248L576 262.4L523.1 188.3C496 150.5 452.4 128 405.9 128L144 128C77.7 128 24 181.7 24 248L24 302C9.4 313.8 0 331.8 0 352L0 369.6C0 377.6 6.4 384 14.4 384C46.2 384 72 358.2 72 326.4L72 248C72 223.7 84.1 202.2 102.5 189.1C98.3 199.9 96 211.7 96 224L96 288zM560 400C560 391.2 567.2 384 576 384C584.8 384 592 391.2 592 400C592 408.8 584.8 416 576 416C567.2 416 560 408.8 560 400zM166.6 230.6C162.4 226.4 160 220.6 160 214.6C160 202.1 170.1 192 182.6 192L361.3 192C373.8 192 383.9 202.1 383.9 214.6C383.9 220.6 381.5 226.4 377.3 230.6L353.9 254C332.2 275.8 302.7 288 272 288C241.3 288 211.8 275.8 190.1 254.1L166.7 230.7z" />
-                      </svg>{" "}
-                      {t("nav.animals")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/animals/ear-tags">
-                      <Tag /> {t("nav.earTags")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/drugs">
-                      <Pill /> {t("nav.drugs")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/animals/treatments-journal">
-                      <Syringe /> {t("nav.treatmentsJournal")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/animals/herds">
-                      <Users /> {t("nav.herds")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {animalsAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/animals/turnout-journal">
-                      <NotebookPen /> {t("nav.turnoutJournal")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>}
-        {hasFarm && fieldCalendarGroupVisible && <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.fieldCalendar")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/plots">
-                      <Map /> {t("nav.plots")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crops">
-                      <Leaf /> {t("nav.crops")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-families">
-                      <Leaf /> {t("nav.cropFamilies")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-rotations">
-                      <RefreshCw /> {t("nav.cropRotations")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/tillages">
-                      <Layers /> {t("nav.tillages")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/fertilizers">
-                      <Droplets /> {t("nav.fertilizers")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/fertilizer-applications">
-                      <Droplets /> {t("nav.fertilizerApplications")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-protection-applications">
-                      <Shield /> {t("nav.cropProtectionApplications")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/harvests">
-                      <Wheat /> {t("nav.harvests")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              {fieldCalendarAccess.canRead && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/crop-protection-products">
-                      <FlaskConical /> {t("nav.cropProtectionProducts")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/field-calendar/export">
-                    <Download /> {t("nav.fieldCalendarExport")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>}
-        {addressBookGroupVisible && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{t("nav.groups.addressBook")}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/contacts">
-                        <Users /> {t("nav.contacts")}
+                      <Link to={section.to}>
+                        <Icon className="size-4" />
+                        <span>{label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-        {salesGroupVisible && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{t("nav.groups.sales")}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/orders">
-                        <ShoppingCart /> {t("nav.orders")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/products">
-                        <Package /> {t("nav.products")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/orders/invoice-settings">
-                        <FileText /> {t("nav.invoiceSettings")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-        {sponsorshipsGroupVisible && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{t("nav.groups.sponsorships")}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/sponsorships/programs">
-                        <NotepadText /> {t("nav.sponsorshipPrograms")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-                {commerceAccess.canRead && (
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link activeOptions={{ exact: true, includeSearch: false }} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }} to="/sponsorships">
-                        <HeartHandshake /> {t("nav.sponsorships")}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-        {hasFarm && <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.wiki")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
-                    to="/wiki"
-                  >
-                    <BookOpen /> {t("nav.wiki")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
-                    to="/wiki/my-submissions"
-                  >
-                    <ClipboardList /> {t("nav.wikiMySubmissions")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              {isWikiModerator && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      activeOptions={{ exact: true, includeSearch: false }}
-                      activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground transition-colors" }}
-                      to="/wiki/admin"
-                    >
-                      <Shield /> {t("nav.wikiAdmin")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>}
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("nav.groups.admin")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {isOwner && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      activeProps={{
-                        className:
-                          "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                      }}
-                      to="/users"
-                    >
-                      <Users /> {t("nav.users")}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/account"
-                  >
-                    <User /> {t("nav.account")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/settings"
-                  >
-                    <Settings /> {t("nav.settings")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    activeOptions={{ exact: true, includeSearch: false }}
-                    activeProps={{
-                      className:
-                        "bg-sidebar-accent text-sidebar-accent-foreground transition-colors",
-                    }}
-                    to="/membership"
-                  >
-                    <CreditCard /> {t("nav.membership")}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter className="border-t">
-        <div className="flex items-center justify-between gap-2 px-2 py-3">
-          <span className="text-xs text-muted-foreground truncate min-w-0">
-            {meQuery.data?.fullName ?? meQuery.data?.email}
-          </span>
-          <Select value={i18n.language} onValueChange={changeLanguage}>
-            <SelectTrigger className="h-7 w-20 shrink-0 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="de">DE</SelectItem>
-              <SelectItem value="en">EN</SelectItem>
-              <SelectItem value="fr">FR</SelectItem>
-              <SelectItem value="it">IT</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent"
+                >
+                  <Avatar className="size-7 rounded-md">
+                    <AvatarFallback className="rounded-md bg-mocha text-xs text-mocha-foreground">
+                      {initials || <User className="size-3.5" />}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
+                    <span className="truncate text-sm font-medium">{me?.fullName ?? ""}</span>
+                    <span className="truncate text-xs text-muted-foreground">{me?.email}</span>
+                  </span>
+                  <ChevronsUpDown className="ml-auto size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                align="start"
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+              >
+                <DropdownMenuLabel className="truncate font-normal text-muted-foreground">
+                  {me?.email}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {isOwner && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/users">
+                      <Users className="size-4" />
+                      {t("nav.users")}
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/account">
+                    <User className="size-4" />
+                    {t("nav.account")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">
+                    <Settings className="size-4" />
+                    {t("nav.settings")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Globe className="size-4" />
+                    {LANGUAGES.find((lang) => lang.code === i18n.language)?.label ??
+                      "Sprache"}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    {LANGUAGES.map((lang) => (
+                      <DropdownMenuItem
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={cn(i18n.language === lang.code && "font-semibold")}
+                      >
+                        {lang.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Sun className="size-4 dark:hidden" />
+                    <Moon className="hidden size-4 dark:block" />
+                    {t("common.theme.label")}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    {themeOptions.map((option) => (
+                      <DropdownMenuItem
+                        key={option.value}
+                        onClick={() => setTheme(option.value)}
+                        className={cn(theme === option.value && "font-semibold")}
+                      >
+                        <option.icon className="size-4" />
+                        {option.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => void signOut()}>
+                  <LogOut className="size-4" />
+                  {t("common.signOut")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

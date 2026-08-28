@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 type DoseUnit = "tablet" | "capsule" | "patch" | "dose" | "mg" | "mcg" | "g" | "ml" | "drop";
 type DosePerUnit = "kg" | "animal" | "day" | "total_amount";
@@ -182,7 +182,6 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
               size="sm"
               onClick={handleAddAnimalType}
             >
-              <Plus className="h-4 w-4 mr-1" />
               {t("drugs.addAnimalType")}
             </Button>
           )}

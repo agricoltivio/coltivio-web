@@ -13,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/animals/$animalId_/journal/")({
   loader: ({ context: { queryClient }, params: { animalId } }) => {
@@ -50,7 +49,6 @@ function AnimalJournalPage() {
               })
             }
           >
-            <Plus className="h-4 w-4 mr-1" />
             {t("journal.add")}
           </Button>
         </div>

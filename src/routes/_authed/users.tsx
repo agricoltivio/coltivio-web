@@ -417,10 +417,12 @@ function UsersPage() {
   );
 
   return (
-    <PageContent title={t("users.title")}>
-      <div className="flex justify-end mb-6">
+    <PageContent
+      title={t("users.title")}
+      actions={
         <Button onClick={() => setShowInviteDialog(true)}>{t("users.invite")}</Button>
-      </div>
+      }
+    >
 
       {/* Members list */}
       <div className="mb-8">

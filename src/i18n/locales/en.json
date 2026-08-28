@@ -7,6 +7,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "create": "Create",
+    "add": "Add",
+    "status": "Status",
     "search": "Search",
     "actions": "Actions",
     "yes": "Yes",
@@ -15,6 +17,12 @@
     "next": "Next",
     "back": "Back",
     "signOut": "Sign Out",
+    "theme": {
+      "label": "Appearance",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "noResults": "No results found",
     "clearAll": "Clear all",
     "deselectAll": "Deselect all",
@@ -32,7 +40,9 @@
     "name": "Name",
     "unknown": "Unknown",
     "title": "Title",
-    "date": "Date"
+    "date": "Date",
+    "done": "Done",
+    "wizardStepOf": "Step {{current}} of {{total}}"
   },
   "nav": {
     "groups": {
@@ -43,8 +53,22 @@
       "accounting": "Accounting",
       "fieldCalendar": "Field Calendar",
       "admin": "Admin",
-      "wiki": "Wiki"
+      "wiki": "Wiki",
+      "verein": "Association"
     },
+    "fieldGroups": {
+      "areas": "Areas",
+      "crops": "Crops",
+      "measures": "Operations",
+      "inputs": "Inputs",
+      "analysis": "Analysis"
+    },
+    "animalGroups": {
+      "registry": "Livestock",
+      "health": "Health"
+    },
+    "animalsExport": "Export",
+    "tvdImport": "TVD import",
     "dashboard": "Dashboard",
     "animals": "Animals",
     "earTags": "Ear Tags",
@@ -84,6 +108,13 @@
   },
   "animals": {
     "title": "Animals",
+    "export": {
+      "title": "Export animal data",
+      "description": "Download the treatment and turnout journal as an Excel file."
+    },
+    "importOnboardingHeading": "Import animals from the TVD",
+    "importOnboardingBody": "The import needs an Excel file from the TVD «Tierbestand» (livestock register). Export it with the «Excel generieren» button.",
+    "importOnboardingColumnsHint": "Select the columns Ohrmarkennummer Mutter, Vater and Todesdatum if you want to import that data.",
     "createAnimal": "Create Animal",
     "editAnimal": "Edit Animal",
     "animalDetails": "Animal Details",
@@ -254,7 +285,9 @@
     "animalsBorn": "Born",
     "animalsDied": "Died",
     "animalsSlaughtered": "Slaughtered",
-    "recentTreffpunkt": "Treffpunkt – Recent Posts"
+    "recentTreffpunkt": "Treffpunkt – Recent Posts",
+    "noUpcomingTasks": "No open tasks",
+    "noThreads": "No posts yet"
   },
   "settings": {
     "title": "Settings",
@@ -720,6 +753,11 @@
     }
   },
   "fieldCalendar": {
+    "divide": {
+      "heading": "Split across plots",
+      "byArea": "Split by plot size",
+      "remaining": "Remaining: {{amount}} {{unit}}"
+    },
     "chart": {
       "stacked": "Composition",
       "compare": "Year comparison",
@@ -729,6 +767,7 @@
       "title": "Plots",
       "plot": "Plot",
       "selectPlot": "Select plot",
+      "openMap": "Open map",
       "size": "Area",
       "usage": "Usage code",
       "cuttingDate": "Cutting date",
@@ -1038,7 +1077,14 @@
         "flame_weeding": "Flame weeding",
         "custom": "Custom"
       },
-      "deleteConfirm": "Are you sure you want to delete this tillage?"
+      "deleteConfirm": "Are you sure you want to delete this tillage?",
+      "wizard": {
+        "steps": {
+          "plots": "Plots",
+          "details": "Details",
+          "summary": "Summary"
+        }
+      }
     },
     "presets": {
       "select": "Select preset",
@@ -1072,7 +1118,18 @@
         "other": "Other",
         "none": "None"
       },
-      "deleteConfirm": "Are you sure you want to delete this harvest?"
+      "deleteConfirm": "Are you sure you want to delete this harvest?",
+      "wizard": {
+        "steps": {
+          "crop": "Crop & date",
+          "config": "Configuration",
+          "quantity": "Quantity",
+          "plots": "Plots",
+          "divide": "Split",
+          "summary": "Summary"
+        }
+      },
+      "numberOfUnitsWith": "Quantity {{unit}}"
     },
     "fertilizerApplications": {
       "title": "Fertilizer Applications",
@@ -1080,6 +1137,8 @@
       "date": "Date",
       "fertilizer": "Fertilizer",
       "selectFertilizer": "Select fertilizer",
+      "selectMethod": "Select method",
+      "numberOfUnitsWith": "Quantity {{unit}}",
       "unit": "Application unit",
       "amountPerUnit": "Amount per unit",
       "amountPerUnitWith": "{{unit}} per unit",
@@ -1096,7 +1155,18 @@
         "spread": "Spreading",
         "other": "Other"
       },
-      "deleteConfirm": "Are you sure you want to delete this fertilizer application?"
+      "deleteConfirm": "Are you sure you want to delete this fertilizer application?",
+      "wizard": {
+        "steps": {
+          "fertilizer": "Fertilizer & date",
+          "config": "Configuration",
+          "quantity": "Quantity",
+          "plots": "Plots",
+          "divide": "Split",
+          "summary": "Summary"
+        },
+        "stepOf": "Step {{current}} of {{total}}"
+      }
     },
     "cropProtectionApplications": {
       "title": "Crop Protection",
@@ -1113,7 +1183,17 @@
         "injecting": "Injecting",
         "other": "Other"
       },
-      "deleteConfirm": "Are you sure you want to delete this crop protection application?"
+      "deleteConfirm": "Are you sure you want to delete this crop protection application?",
+      "wizard": {
+        "steps": {
+          "product": "Product & date",
+          "config": "Configuration",
+          "quantity": "Quantity",
+          "plots": "Plots",
+          "divide": "Split",
+          "summary": "Summary"
+        }
+      }
     },
     "timeline": {
       "years": "Years",
@@ -1273,7 +1353,12 @@
       "overdue": "Overdue",
       "allAssignees": "All assignees",
       "allLabels": "All labels",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "title": "Filters"
+    },
+    "sort": {
+      "dueDate": "Due date",
+      "assignee": "Assignee"
     },
     "status": {
       "todo": "Todo",
@@ -1381,7 +1466,7 @@
     "updatePaymentMethod": "Update payment method",
     "extend": "Extend membership",
     "autoRenew": "Automatic renewal",
-    "cancelRenewal": "Declare resignation",
+    "cancelRenewal": "Leave",
     "reactivate": "Withdraw resignation",
     "paymentHistory": "Contribution history",
     "cancelDialog": {
@@ -1509,7 +1594,12 @@
       "readConfirm": "I have read and accept the rules.",
       "cta": "Let's go"
     },
-    "filterOnlyOpen": "Open only"
+    "filterOnlyOpen": "Open only",
+    "dateByAuthor": "{{date}} by {{author}}",
+    "entryOpened": "opened this post",
+    "entryReplied": "replied",
+    "authorBadge": "Author",
+    "addComment": "Add a comment"
   },
   "journal": {
     "title": "Journal",

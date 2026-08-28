@@ -7,7 +7,6 @@ import type { CropFamily } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
@@ -28,20 +27,7 @@ function CropFamiliesPage() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("cropFamilies.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("cropFamilies.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
@@ -73,9 +59,11 @@ function CropFamiliesPage() {
   const data = query.data?.result ?? [];
 
   return (
-    <PageContent title={t("cropFamilies.title")} showBackButton={false}>
-      {canWriteCrops && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("cropFamilies.title")}
+      showBackButton={false}
+      actions={
+        canWriteCrops && (
           <Button
             onClick={() =>
               navigate({ to: "/field-calendar/crop-families/create" })
@@ -83,8 +71,9 @@ function CropFamiliesPage() {
           >
             {t("common.create")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

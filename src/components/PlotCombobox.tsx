@@ -10,6 +10,14 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PlotPickerMap } from "@/components/PlotPickerMap";
 
 type PlotOption = {
   value: string;
@@ -34,6 +42,7 @@ export function PlotCombobox({
 }: PlotComboboxProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
+  const [mapOpen, setMapOpen] = useState(false);
 
   const options: PlotOption[] = useMemo(
     () =>
@@ -75,50 +84,81 @@ export function PlotCombobox({
   const selectedOption = options.find((o) => o.value === value) ?? null;
 
   return (
-    <Combobox
-      items={displayedOptions}
-      value={selectedOption}
-      onValueChange={(item: PlotOption | null) => {
-        onValueChange(item?.value ?? null);
-        setQuery(item?.name ?? "");
-      }}
-      filter={() => true}
-    >
-      <ComboboxInput
-        id={id}
-        placeholder={t("common.search")}
-        showClear={!!value}
-        value={query}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setQuery(e.target.value)
-        }
-      />
-      <ComboboxContent>
-        <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
-        <ComboboxList>
-          {(option: PlotOption) => (
-            <ComboboxItem
-              key={option.value}
-              value={option}
-              className="flex-col items-start gap-0.5 py-2"
-            >
-              <span className="font-medium">
-                {option.name} ({(option.size / 100).toFixed(0)}a)
-              </span>
-              {option.usage != null && (
-                <span className="text-xs text-muted-foreground">
-                  {t("fieldCalendar.plots.usage")}: {option.usage}
-                </span>
-              )}
-              {option.localId && (
-                <span className="text-xs text-muted-foreground">
-                  {t("fieldCalendar.plots.localId")}: {option.localId}
-                </span>
-              )}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
+    <>
+      <div className="flex gap-2">
+        <div className="min-w-0 flex-1">
+          <Combobox
+            items={displayedOptions}
+            value={selectedOption}
+            onValueChange={(item: PlotOption | null) => {
+              onValueChange(item?.value ?? null);
+              setQuery(item?.name ?? "");
+            }}
+            filter={() => true}
+          >
+            <ComboboxInput
+              id={id}
+              placeholder={t("common.search")}
+              showClear={!!value}
+              value={query}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setQuery(e.target.value)
+              }
+            />
+            <ComboboxContent>
+              <ComboboxEmpty>{t("common.noResults")}</ComboboxEmpty>
+              <ComboboxList>
+                {(option: PlotOption) => (
+                  <ComboboxItem
+                    key={option.value}
+                    value={option}
+                    className="flex-col items-start gap-0.5 py-2"
+                  >
+                    <span className="font-medium">
+                      {option.name} ({(option.size / 100).toFixed(0)}a)
+                    </span>
+                    {option.usage != null && (
+                      <span className="text-xs text-muted-foreground">
+                        {t("fieldCalendar.plots.usage")}: {option.usage}
+                      </span>
+                    )}
+                    {option.localId && (
+                      <span className="text-xs text-muted-foreground">
+                        {t("fieldCalendar.plots.localId")}: {option.localId}
+                      </span>
+                    )}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="shrink-0"
+          onClick={() => setMapOpen(true)}
+        >
+          {t("fieldCalendar.plots.openMap")}
+        </Button>
+      </div>
+
+      <Dialog open={mapOpen} onOpenChange={setMapOpen}>
+        <DialogContent className="sm:max-w-[95vw]">
+          <DialogHeader>
+            <DialogTitle>{t("fieldCalendar.plots.selectPlot")}</DialogTitle>
+          </DialogHeader>
+          <PlotPickerMap
+            plots={plots}
+            selectedIds={value ? [value] : []}
+            onPick={(plotId) => {
+              onValueChange(plotId);
+              setQuery(options.find((o) => o.value === plotId)?.name ?? "");
+              setMapOpen(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -8,6 +9,10 @@ import { PageContent } from "@/components/PageContent";
 import { OrderForm, type OrderFormData } from "@/components/OrderForm";
 
 export const Route = createFileRoute("/_authed/orders/create")({
+  validateSearch: z.object({
+    contactId: z.string().optional(),
+    returnTo: z.string().optional(),
+  }),
   loader: ({ context: { queryClient } }) => {
     return Promise.all([
       queryClient.ensureQueryData(contactsQueryOptions()),
@@ -40,6 +45,7 @@ function CreateOrder() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { contactId, returnTo } = Route.useSearch();
 
   const contacts = useQuery(contactsQueryOptions()).data!;
   const products = useQuery(activeProductsQueryOptions()).data!;
@@ -68,16 +74,21 @@ function CreateOrder() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      navigate({ to: "/orders" });
+      navigate({ to: returnTo ?? "/orders" });
     },
   });
 
   return (
-    <PageContent title={t("orders.createOrder")} showBackButton backTo={() => navigate({ to: "/orders" })}>
+    <PageContent
+      title={t("orders.createOrder")}
+      showBackButton
+      backTo={() => navigate({ to: returnTo ?? "/orders" })}
+    >
       <OrderForm
         contactOptions={contactOptions}
         productOptions={productOptions}
         productPriceMap={productPriceMap}
+        defaultValues={contactId ? { contactId } : undefined}
         onSubmit={(data) => createMutation.mutate(data)}
         isSubmitting={createMutation.isPending}
         showConfirmedCheckbox

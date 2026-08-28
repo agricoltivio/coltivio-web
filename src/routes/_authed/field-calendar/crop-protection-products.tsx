@@ -7,7 +7,6 @@ import type { CropProtectionProduct } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
@@ -30,20 +29,7 @@ function CropProtectionProductsPage() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("cropProtectionProducts.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("cropProtectionProducts.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
@@ -76,9 +62,8 @@ function CropProtectionProductsPage() {
     <PageContent
       title={t("cropProtectionProducts.title")}
       showBackButton={false}
-    >
-      {canWriteCropProtection && (
-        <div className="flex justify-end mb-4">
+      actions={
+        canWriteCropProtection && (
           <Button
             onClick={() =>
               navigate({
@@ -88,8 +73,9 @@ function CropProtectionProductsPage() {
           >
             {t("common.create")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

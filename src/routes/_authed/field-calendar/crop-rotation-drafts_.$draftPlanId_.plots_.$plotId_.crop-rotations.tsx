@@ -552,7 +552,6 @@ function PlanDraftCropRotations() {
             {t("fieldCalendar.cropRotations.title")}
           </h2>
           <Button variant="outline" size="sm" onClick={openAddDialog}>
-            <Plus className="h-3.5 w-3.5 mr-1" />
             {t("fieldCalendar.cropRotations.addRotation")}
           </Button>
         </div>
@@ -853,7 +852,6 @@ function RotationDialog({
                 type="button"
                 onClick={() => setHasRecurrence(true)}
               >
-                <Plus className="h-3.5 w-3.5 mr-1" />
                 {t("fieldCalendar.cropRotations.addRecurrence")}
               </Button>
             ) : (
@@ -890,7 +888,6 @@ function RotationDialog({
                     type="button"
                     onClick={() => setHasUntil(true)}
                   >
-                    <Plus className="h-3.5 w-3.5 mr-1" />
                     {t("fieldCalendar.cropRotations.addEndDate")}
                   </Button>
                 ) : (

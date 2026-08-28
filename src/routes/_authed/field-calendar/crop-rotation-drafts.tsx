@@ -138,14 +138,14 @@ function CropRotationDrafts() {
       title={t("fieldCalendar.cropRotationDrafts.title")}
       showBackButton
       backTo={() => void navigate({ to: "/field-calendar/crop-rotations" })}
-    >
-      {canWrite && (
-        <div className="flex justify-end mb-4">
+      actions={
+        canWrite && (
           <Button onClick={handleOpenCreate}>
             {t("fieldCalendar.cropRotationDrafts.createDraft")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
 
       {drafts.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-10">

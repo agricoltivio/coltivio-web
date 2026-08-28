@@ -39,14 +39,18 @@ code {
   --border: oklch(0.92 0.006 198);
   --input: oklch(0.92 0.006 198);
   --ring: oklch(0.37 0.063 198);              /* #2a5159 */
-  --chart-1: oklch(0.62 0.163 50);           /* #DB751D orange */
-  --chart-2: oklch(0.63 0.15 120);           /* #85A60F green */
-  --chart-3: oklch(0.37 0.063 198);          /* #2a5159 teal */
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* Single chart palette — keep in sync with CHART_COLORS in src/components/charts/chartUtils.ts */
+  --chart-1: #db751d;                        /* orange — brand secondary */
+  --chart-2: #2a5159;                        /* teal — brand primary */
+  --chart-3: #85a60f;                        /* green */
+  --chart-4: #8b6b55;                        /* mocha */
+  --chart-5: #c8a43c;                        /* gold */
+  --chart-6: #5b8a91;                        /* slate-teal */
+  --chart-7: #b4571c;                        /* burnt orange */
+  --chart-8: #6e7f3a;                        /* olive */
   --mocha: oklch(0.53 0.06 59);              /* #8b6b55 */
   --mocha-foreground: oklch(0.985 0 0);
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --sidebar: oklch(0.978 0.009 196);
   --sidebar-foreground: oklch(0.162 0.003 264);
   --sidebar-primary: oklch(0.37 0.063 198);
@@ -77,11 +81,15 @@ code {
   --border: oklch(0.30 0.035 198);
   --input: oklch(0.30 0.035 198);
   --ring: oklch(0.72 0.08 198);
-  --chart-1: oklch(0.72 0.18 50);            /* orange */
-  --chart-2: oklch(0.72 0.17 120);           /* green */
-  --chart-3: oklch(0.72 0.08 198);           /* teal */
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  /* Lighter variants of the shared palette for dark backgrounds */
+  --chart-1: #e8873a;                        /* orange */
+  --chart-2: #6fa6ae;                        /* teal */
+  --chart-3: #9fc23a;                        /* green */
+  --chart-4: #b08c74;                        /* mocha */
+  --chart-5: #d8bc5e;                        /* gold */
+  --chart-6: #8fbac1;                        /* slate-teal */
+  --chart-7: #d9772f;                        /* burnt orange */
+  --chart-8: #9db05c;                        /* olive */
   --mocha: oklch(0.60 0.06 59);
   --mocha-foreground: oklch(0.985 0 0);
   --sidebar: oklch(0.20 0.028 198);
@@ -119,6 +127,9 @@ code {
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -142,6 +153,40 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* MDXEditor (rich text). Its built-in theming is unreliable, so drive it
+   explicitly: an editing surface stays a light "paper" card in both themes,
+   while read-only rendered markdown follows the app theme. Keyed off the
+   contenteditable state of the inner Lexical surface. */
+.mdxeditor:has([contenteditable="true"]) {
+  --basePageBg: #ffffff;
+  --baseBase: #ffffff;
+  --baseBg: #ffffff;
+  --baseBgSubtle: #f6f7f7;
+  --baseBgHover: #eef1f1;
+  --baseBorder: #e1e6e6;
+  --baseText: #566060;
+  --baseTextContrast: #1a1e1f;
+  color-scheme: light;
+  background: #ffffff;
+  color: #1a1e1f;
+}
+
+.mdxeditor:has([contenteditable="false"]) {
+  --baseText: var(--foreground);
+  --baseTextContrast: var(--foreground);
+  --baseBg: var(--muted);
+  --baseBgSubtle: var(--muted);
+  background: transparent;
+  color: var(--foreground);
+}
+.mdxeditor:has([contenteditable="false"]) [contenteditable="false"] {
+  padding: 0;
+  color: var(--foreground);
+}
+.mdxeditor:has([contenteditable="false"]) a {
+  color: var(--primary);
 }
 
 /* Restore heading/prose styles inside MDXEditor — Tailwind preflight resets these */

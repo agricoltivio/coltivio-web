@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { inlineLink } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,6 @@ import {
   CardTitle,
   CardAction,
 } from "@/components/ui/card";
-import { Plus, GitBranch } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -138,7 +138,6 @@ function AnimalDetailPage() {
               to="/animals/family-tree"
               search={{ type: animal.type, focusId: animal.id }}
             >
-              <GitBranch className="h-4 w-4 mr-1" />
               {t("animals.familyTree")}
             </Link>
           </Button>
@@ -207,7 +206,7 @@ function AnimalDetailPage() {
                 value={
                   animal.mother ? (
                     <Link
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                       to="/animals/$animalId"
                       params={{ animalId: animal.mother.id }}
                     >
@@ -225,7 +224,7 @@ function AnimalDetailPage() {
                     <Link
                       to="/animals/$animalId"
                       params={{ animalId: animal.father.id }}
-                      className="hover:underline text-blue-600 hover:text-blue-800"
+                      className={inlineLink}
                     >
                       {animal.father.name}
                     </Link>
@@ -253,9 +252,6 @@ function AnimalDetailPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Journal Card — members only */}
-        <AnimalJournalCard animalId={animalId} />
 
         {/* Children Card */}
         <Card>
@@ -355,7 +351,6 @@ function AnimalDetailPage() {
                   })
                 }
               >
-                <Plus className="h-4 w-4 mr-1" />
                 {t("treatments.addTreatment")}
               </Button>
             </CardAction>}
@@ -408,6 +403,9 @@ function AnimalDetailPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Journal Card — members only */}
+        <AnimalJournalCard animalId={animalId} />
       </div>
     </PageContent>
   );
@@ -438,7 +436,6 @@ function AnimalJournalCard({ animalId }: { animalId: string }) {
               })
             }
           >
-            <Plus className="h-4 w-4 mr-1" />
             {t("journal.add")}
           </Button>
         </CardAction>}

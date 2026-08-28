@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { plotsQueryOptions } from "@/api/plots.queries";
 import type {
   FertilizerApplication,
   FertilizerApplicationPreset,
+  Plot,
 } from "@/api/types";
 import {
   FERTILIZER_TYPES,
@@ -21,7 +22,9 @@ import {
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
-import { PlotCombobox } from "@/components/PlotCombobox";
+import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
+import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -53,6 +56,16 @@ const FERTILIZER_APPLICATION_UNITS: FertilizerApplicationUnit[] = [
 
 const FERTILIZER_METHODS: FertilizerMethod[] = ["spray", "spread", "other"];
 
+const ALL_STEPS = [
+  "fertilizer",
+  "config",
+  "quantity",
+  "plots",
+  "divide",
+  "summary",
+] as const;
+type WizardStep = (typeof ALL_STEPS)[number];
+
 const searchSchema = z.object({
   plotId: z.string().optional(),
 });
@@ -70,7 +83,7 @@ export const Route = createFileRoute(
 });
 
 type FormData = {
-  plotId: string;
+  plotIds: string[];
   fertilizerId: string;
   date: string;
   unit: FertilizerApplicationUnit;
@@ -93,42 +106,47 @@ function CreateFertilizerApplication() {
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId } = Route.useSearch();
 
+  const [step, setStep] = useState<WizardStep>("fertilizer");
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
   const [createFertilizerOpen, setCreateFertilizerOpen] = useState(false);
+  // Per-plot amount split (used only when more than one plot is selected).
+  const [unitsByPlot, setUnitsByPlot] = useState<Record<string, string>>({});
+  const [divideByArea, setDivideByArea] = useState(true);
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const fertilizersQuery = useQuery(fertilizersQueryOptions());
   const presetsQuery = useQuery(fertilizerApplicationPresetsQueryOptions());
 
-  const { register, handleSubmit, setValue, watch } = useForm<FormData>({
+  const { register, setValue, watch, getValues } = useForm<FormData>({
     defaultValues: {
-      plotId: defaultPlotId ?? "",
+      plotIds: defaultPlotId ? [defaultPlotId] : [],
       fertilizerId: "",
       date: new Date().toISOString().slice(0, 10),
-      unit: "total_amount",
-      method: "",
-      amountPerUnit: "0",
+      unit: "load",
+      method: "spread",
+      amountPerUnit: "",
       numberOfUnits: "1",
       additionalNotes: "",
     },
   });
 
   const fertilizerForm = useForm<FertilizerModalFormData>({
-    defaultValues: {
-      name: "",
-      type: "mineral",
-      unit: "kg",
-      description: "",
-    },
+    defaultValues: { name: "", type: "mineral", unit: "kg", description: "" },
   });
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const plot = plots.find((p) => p.id === data.plotId);
-      if (!plot) throw new Error("Plot not found");
+      const selectedPlots = data.plotIds
+        .map((plotId) => plots.find((p) => p.id === plotId))
+        .filter((p): p is Plot => p != null);
+      if (selectedPlots.length === 0) throw new Error("Plot not found");
+
+      const amountPerUnit = parseFloat(data.amountPerUnit) || 0;
+      const numberOfUnits = parseFloat(data.numberOfUnits) || 0;
+      const multi = selectedPlots.length > 1;
 
       const response = await apiClient.POST("/v1/fertilizerApplications", {
         body: {
@@ -136,21 +154,34 @@ function CreateFertilizerApplication() {
           fertilizerId: data.fertilizerId,
           unit: data.unit,
           method: data.method || undefined,
-          amountPerUnit: parseFloat(data.amountPerUnit),
+          amountPerUnit,
           additionalNotes: data.additionalNotes || undefined,
-          plots: [
-            {
-              plotId: data.plotId,
-              numberOfUnits: parseFloat(data.numberOfUnits),
+          // The divide step works in total-amount space (amountPerUnit ×
+          // numberOfUnits); convert each plot's amount back to a unit count.
+          plots: selectedPlots.map((plot) => {
+            if (!multi) {
+              return {
+                plotId: plot.id,
+                // amount_per_hectare: the unit count is the plot's hectares.
+                numberOfUnits:
+                  data.unit === "amount_per_hectare"
+                    ? plot.size / 10000
+                    : numberOfUnits,
+                geometry: plot.geometry,
+                size: plot.size,
+              };
+            }
+            const plotAmount = parseFloat(unitsByPlot[plot.id] ?? "") || 0;
+            return {
+              plotId: plot.id,
+              numberOfUnits: amountPerUnit > 0 ? plotAmount / amountPerUnit : 0,
               geometry: plot.geometry,
               size: plot.size,
-            },
-          ],
+            };
+          }),
         },
       });
-      if (response.error) {
-        throw new Error("Failed to create fertilizer application");
-      }
+      if (response.error) throw new Error("Failed to create fertilizer application");
       return response.data.data;
     },
     onSuccess: () => {
@@ -162,18 +193,15 @@ function CreateFertilizerApplication() {
 
   const createPresetMutation = useMutation({
     mutationFn: async (name: string) => {
-      const response = await apiClient.POST(
-        "/v1/fertilizerApplications/presets",
-        {
-          body: {
-            name,
-            fertilizerId: watchedFertilizerId,
-            unit: watchedUnit,
-            method: watchedMethod || undefined,
-            amountPerUnit: parseFloat(watchedAmountPerUnit),
-          },
+      const response = await apiClient.POST("/v1/fertilizerApplications/presets", {
+        body: {
+          name,
+          fertilizerId: watch("fertilizerId"),
+          unit: watch("unit"),
+          method: watch("method") || undefined,
+          amountPerUnit: parseFloat(watch("amountPerUnit")) || 0,
         },
-      );
+      });
       if (response.error) {
         throw new Error("Failed to create fertilizer application preset");
       }
@@ -203,9 +231,7 @@ function CreateFertilizerApplication() {
       queryClient.invalidateQueries({
         queryKey: ["fertilizerApplications", "presets"],
       });
-      if (selectedPresetId === deletedPresetId) {
-        setSelectedPresetId(null);
-      }
+      if (selectedPresetId === deletedPresetId) setSelectedPresetId(null);
     },
   });
 
@@ -238,13 +264,94 @@ function CreateFertilizerApplication() {
   const fertilizers = fertilizersQuery.data?.result ?? [];
   const presets = presetsQuery.data?.result ?? [];
 
-  const watchedPlotId = watch("plotId");
+  const watchedPlotIds = watch("plotIds");
   const watchedFertilizerId = watch("fertilizerId");
+  const watchedDate = watch("date");
   const watchedUnit = watch("unit");
   const watchedMethod = watch("method");
   const watchedAmountPerUnit = watch("amountPerUnit");
+  const watchedNumberOfUnits = watch("numberOfUnits");
+  const watchedNotes = watch("additionalNotes");
+
+  // Re-enable "split by plot size" whenever the selected plots change, so the
+  // divide step always starts from a fresh proportional split.
+  const plotIdsKey = watchedPlotIds.join(",");
+  useEffect(() => {
+    setDivideByArea(true);
+  }, [plotIdsKey]);
 
   const selectedFertilizer = fertilizers.find((f) => f.id === watchedFertilizerId);
+  const fertilizerUnitLabel = selectedFertilizer?.unit ?? "";
+
+  const selectedPlots = watchedPlotIds
+    .map((plotId) => plots.find((p) => p.id === plotId))
+    .filter((p): p is Plot => p != null);
+  const isMultiPlot = selectedPlots.length > 1;
+
+  // total_amount and amount_per_hectare carry a fixed amount, so the number of
+  // units is always 1 and the quantity step is skipped.
+  const isFixedAmountUnit =
+    watchedUnit === "total_amount" || watchedUnit === "amount_per_hectare";
+
+  // The divide step distributes the total fertilizer amount, in the fertilizer's
+  // unit. For amount_per_hectare it's derived from the selected plots' area.
+  const amountPerUnitNum = parseFloat(watchedAmountPerUnit) || 0;
+  const selectedHectares =
+    selectedPlots.reduce((sum, plot) => sum + plot.size, 0) / 10000;
+  const totalAmount =
+    watchedUnit === "amount_per_hectare"
+      ? amountPerUnitNum * selectedHectares
+      : amountPerUnitNum * (parseFloat(watchedNumberOfUnits) || 0);
+  const roundedTotal = Math.round((totalAmount + Number.EPSILON) * 100) / 100;
+  const divideInvalid =
+    isMultiPlot &&
+    Math.abs(sumDivided(unitsByPlot, watchedPlotIds) - roundedTotal) > 0.01;
+
+  // --- Wizard step machinery ---
+  const steps = ALL_STEPS.filter((s) => {
+    if (s === "quantity") return !isFixedAmountUnit;
+    if (s === "divide") return isMultiPlot;
+    return true;
+  });
+  // If the current step got hidden (e.g. unit switched to total_amount while on
+  // "quantity"), fall back to the nearest still-visible step at or before it.
+  const activeStep = steps.includes(step)
+    ? step
+    : ([...steps]
+        .reverse()
+        .find((s) => ALL_STEPS.indexOf(s) <= ALL_STEPS.indexOf(step)) ?? steps[0]);
+  const stepIndex = steps.indexOf(activeStep);
+
+  function stepValid(s: WizardStep): boolean {
+    switch (s) {
+      case "fertilizer":
+        return !!watchedFertilizerId && !!watchedDate;
+      case "config":
+        return (
+          watchedAmountPerUnit.trim() !== "" &&
+          !Number.isNaN(parseFloat(watchedAmountPerUnit)) &&
+          watchedMethod !== ""
+        );
+      case "quantity":
+        return (parseFloat(watchedNumberOfUnits) || 0) > 0;
+      case "plots":
+        return watchedPlotIds.length >= 1;
+      case "divide":
+        return !divideInvalid;
+      case "summary":
+        return true;
+    }
+  }
+
+  function goNext() {
+    if (activeStep === "config" && isFixedAmountUnit) {
+      setValue("numberOfUnits", "1");
+    }
+    if (stepIndex < steps.length - 1) setStep(steps[stepIndex + 1]);
+  }
+  function goBack() {
+    if (stepIndex > 0) setStep(steps[stepIndex - 1]);
+  }
 
   function applyPreset(presetId: string) {
     const preset = presets.find((p) => p.id === presetId);
@@ -256,211 +363,308 @@ function CreateFertilizerApplication() {
     setValue("amountPerUnit", preset.amountPerUnit.toString());
   }
 
+  // Label for the "amount per unit" input, matching the RN app: "l / Fuder",
+  // "Gesamtmenge (l)" for total_amount, "l / ha" for amount_per_hectare.
+  const fertilizerUnit = selectedFertilizer?.unit ?? "kg";
+  const amountPerUnitLabel =
+    watchedUnit === "total_amount"
+      ? `${t("fieldCalendar.fertilizerApplications.units.total_amount")} (${fertilizerUnit})`
+      : watchedUnit === "amount_per_hectare"
+        ? `${fertilizerUnit} / ha`
+        : `${fertilizerUnit} / ${t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`)}`;
+
   return (
     <PageContent
       title={t("fieldCalendar.fertilizerApplications.create")}
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/fertilizer-applications" })}
     >
-      <form
-        onSubmit={handleSubmit((data) => createMutation.mutate(data))}
-        className="space-y-4 max-w-lg"
-      >
-        {/* Plot - searchable combobox */}
-        <div className="space-y-1">
-          <Label>{t("fieldCalendar.plots.plot")}</Label>
-          <PlotCombobox
-            plots={plots}
-            value={watchedPlotId || null}
-            onValueChange={(id) => setValue("plotId", id ?? "")}
-          />
-        </div>
+      <div className="max-w-lg space-y-6">
+        <WizardProgress
+          stepIndex={stepIndex}
+          total={steps.length}
+          label={t(
+            `fieldCalendar.fertilizerApplications.wizard.steps.${activeStep}`,
+          )}
+        />
 
-        {/* Preset card */}
-        <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
-          {/* Preset selector row */}
-          <div className="flex items-end gap-2">
-            <div className="flex-1 space-y-1">
-              <Label>{t("fieldCalendar.presets.select")}</Label>
-              <Select
-                value={selectedPresetId ?? ""}
-                onValueChange={(v) => applyPreset(v)}
-              >
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder={t("fieldCalendar.presets.select")}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {presets.length === 0 ? (
-                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                      {t("fieldCalendar.presets.noPresets")}
-                    </div>
-                  ) : (
-                    presets.map((preset) => (
-                      <SelectItem key={preset.id} value={preset.id}>
-                        {preset.name}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => setManagePresetsOpen(true)}
-            >
-              <PencilIcon className="size-4" />
-            </Button>
-          </div>
-
-          {/* Fertilizer */}
-          <div className="space-y-1">
-            <Label>
-              {t("fieldCalendar.fertilizerApplications.fertilizer")}
-            </Label>
-            <div className="flex gap-1">
-              <div className="flex-1 min-w-0">
-              <Select
-                value={watchedFertilizerId}
-                onValueChange={(v) => { if (v) setValue("fertilizerId", v); }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue
-                    placeholder={t(
-                      "fieldCalendar.fertilizerApplications.selectFertilizer",
-                    )}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {fertilizers.map((fertilizer) => (
-                    <SelectItem key={fertilizer.id} value={fertilizer.id}>
-                      {fertilizer.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Step: fertilizer + date */}
+        {activeStep === "fertilizer" && (
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.fertilizer")}</Label>
+              <div className="flex gap-1">
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={watchedFertilizerId}
+                    onValueChange={(v) => {
+                      if (v) setValue("fertilizerId", v);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={t(
+                          "fieldCalendar.fertilizerApplications.selectFertilizer",
+                        )}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fertilizers.map((fertilizer) => (
+                        <SelectItem key={fertilizer.id} value={fertilizer.id}>
+                          {fertilizer.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCreateFertilizerOpen(true)}
+                >
+                  <PlusIcon className="size-4" />
+                </Button>
               </div>
+            </div>
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.fertilizerApplications.date")}</Label>
+              <Input type="date" {...register("date", { required: true })} />
+            </div>
+          </div>
+        )}
+
+        {/* Step: configuration */}
+        {activeStep === "config" && (
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.presets.select")}</Label>
+              <div className="flex gap-1">
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={selectedPresetId ?? ""}
+                    onValueChange={(v) => applyPreset(v)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {presets.length === 0 ? (
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          {t("fieldCalendar.presets.noPresets")}
+                        </div>
+                      ) : (
+                        presets.map((preset) => (
+                          <SelectItem key={preset.id} value={preset.id}>
+                            {preset.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setManagePresetsOpen(true)}
+                >
+                  <PencilIcon className="size-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label>{amountPerUnitLabel}</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.1"
+                    {...register("amountPerUnit", { required: true })}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
+                  <Select
+                    value={watchedUnit}
+                    onValueChange={(v) =>
+                      setValue("unit", v as FertilizerApplicationUnit)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FERTILIZER_APPLICATION_UNITS.map((unit) => (
+                        <SelectItem key={unit} value={unit}>
+                          {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label>{t("fieldCalendar.fertilizerApplications.method")}</Label>
+                <Select
+                  value={watchedMethod}
+                  onValueChange={(v) => setValue("method", v as FertilizerMethod | "")}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={t("fieldCalendar.fertilizerApplications.selectMethod")}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FERTILIZER_METHODS.map((method) => (
+                      <SelectItem key={method} value={method}>
+                        {t(`fieldCalendar.fertilizerApplications.methods.${method}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
               <Button
                 type="button"
                 variant="outline"
-                size="icon"
-                onClick={() => setCreateFertilizerOpen(true)}
+                size="sm"
+                onClick={() => setSavePresetOpen(true)}
+                disabled={!watchedFertilizerId}
               >
-                <PlusIcon className="size-4" />
+                {t("fieldCalendar.presets.saveAs")}
               </Button>
             </div>
           </div>
+        )}
 
-          {/* Unit + Amount per unit */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label>
-                {selectedFertilizer
-                  ? t("fieldCalendar.fertilizerApplications.amountPerUnitWith", { unit: selectedFertilizer.unit })
-                  : t("fieldCalendar.fertilizerApplications.amountPerUnit")}
-              </Label>
-              <Input
-                type="number"
-                min={0}
-                step="0.1"
-                {...register("amountPerUnit", { required: true })}
+        {/* Step: quantity */}
+        {activeStep === "quantity" && (
+          <div className="space-y-1">
+            <Label>
+              {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
+                unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
+              })}
+            </Label>
+            <Input
+              type="number"
+              min={0}
+              step="0.1"
+              {...register("numberOfUnits", { required: true })}
+            />
+          </div>
+        )}
+
+        {/* Step: plots */}
+        {activeStep === "plots" && (
+          <div className="space-y-1">
+            <Label>{t("fieldCalendar.plots.title")}</Label>
+            <MultiPlotPicker
+              plots={plots}
+              value={watchedPlotIds}
+              onChange={(ids) => setValue("plotIds", ids)}
+            />
+          </div>
+        )}
+
+        {/* Step: divide */}
+        {activeStep === "divide" && (
+          <PlotDivideSection
+            plots={selectedPlots}
+            totalUnits={totalAmount}
+            unitLabel={fertilizerUnitLabel}
+            byArea={divideByArea}
+            onByAreaChange={setDivideByArea}
+            unitsByPlot={unitsByPlot}
+            onChange={setUnitsByPlot}
+          />
+        )}
+
+        {/* Step: summary */}
+        {activeStep === "summary" && (
+          <div className="space-y-4">
+            <dl className="divide-y rounded-lg border text-sm">
+              <SummaryRow
+                label={t("fieldCalendar.fertilizerApplications.fertilizer")}
+                value={selectedFertilizer?.name ?? "-"}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>{t("fieldCalendar.fertilizerApplications.unit")}</Label>
-              <Select
-                value={watchedUnit}
-                onValueChange={(v) =>
-                  setValue("unit", v as FertilizerApplicationUnit)
+              <SummaryRow
+                label={t("fieldCalendar.fertilizerApplications.date")}
+                value={new Date(watchedDate).toLocaleDateString()}
+              />
+              <SummaryRow
+                label={t("fieldCalendar.fertilizerApplications.unit")}
+                value={t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`)}
+              />
+              {watchedMethod && (
+                <SummaryRow
+                  label={t("fieldCalendar.fertilizerApplications.method")}
+                  value={t(
+                    `fieldCalendar.fertilizerApplications.methods.${watchedMethod}`,
+                  )}
+                />
+              )}
+              <SummaryRow
+                label={amountPerUnitLabel}
+                value={`${watchedAmountPerUnit || 0} ${fertilizerUnitLabel}`}
+              />
+              {!isFixedAmountUnit && (
+                <SummaryRow
+                  label={t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
+                    unit: t(
+                      `fieldCalendar.fertilizerApplications.units.${watchedUnit}`,
+                    ),
+                  })}
+                  value={watchedNumberOfUnits}
+                />
+              )}
+              <SummaryRow
+                label={t("fieldCalendar.plots.title")}
+                value={
+                  <ul className="space-y-0.5">
+                    {selectedPlots.map((plot) => (
+                      <li key={plot.id}>
+                        {plot.name}
+                        {isMultiPlot && (
+                          <span className="text-muted-foreground">
+                            {" — "}
+                            {unitsByPlot[plot.id] ?? "0"} {fertilizerUnitLabel}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {FERTILIZER_APPLICATION_UNITS.map((unit) => (
-                    <SelectItem key={unit} value={unit}>
-                      {t(`fieldCalendar.fertilizerApplications.units.${unit}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
+            </dl>
+
+            <div className="space-y-1">
+              <Label>{t("fieldCalendar.tillages.notes")}</Label>
+              <Textarea {...register("additionalNotes")} rows={3} />
             </div>
           </div>
+        )}
 
-          {/* Method */}
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.method")}</Label>
-            <Select
-              value={watchedMethod}
-              onValueChange={(v) =>
-                setValue("method", v as FertilizerMethod | "")
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("common.all")} />
-              </SelectTrigger>
-              <SelectContent>
-                {FERTILIZER_METHODS.map((method) => (
-                  <SelectItem key={method} value={method}>
-                    {t(
-                      `fieldCalendar.fertilizerApplications.methods.${method}`,
-                    )}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Save as preset button */}
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setSavePresetOpen(true)}
-            >
-              {t("fieldCalendar.presets.saveAs")}
-            </Button>
-          </div>
-        </div>
-
-        {/* Date + numberOfUnits on same line */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.fertilizerApplications.date")}</Label>
-            <Input type="date" {...register("date", { required: true })} />
-          </div>
-          <div className="space-y-1">
-            <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
-            <Input {...register("numberOfUnits", { required: true })} />
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div className="space-y-1">
-          <Label>{t("fieldCalendar.tillages.notes")}</Label>
-          <Textarea {...register("additionalNotes")} rows={3} />
-        </div>
-
-        <div className="flex gap-2 pt-2">
-          <Button type="submit" disabled={createMutation.isPending}>
-            {t("common.save")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() =>
-              navigate({ to: "/field-calendar/fertilizer-applications" })
-            }
-          >
-            {t("common.cancel")}
-          </Button>
-        </div>
-      </form>
+        <WizardNav
+          isFirst={stepIndex === 0}
+          isLast={activeStep === "summary"}
+          canAdvance={
+            activeStep === "summary" ? !divideInvalid : stepValid(activeStep)
+          }
+          saving={createMutation.isPending}
+          onBack={goBack}
+          onCancel={() =>
+            navigate({ to: "/field-calendar/fertilizer-applications" })
+          }
+          onNext={goNext}
+          onSave={() => createMutation.mutate(getValues())}
+        />
+      </div>
 
       {/* Save as preset dialog */}
       <Dialog open={savePresetOpen} onOpenChange={setSavePresetOpen}>
@@ -528,10 +732,7 @@ function CreateFertilizerApplication() {
             </ul>
           )}
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setManagePresetsOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setManagePresetsOpen(false)}>
               {t("common.close")}
             </Button>
           </DialogFooter>
@@ -553,9 +754,7 @@ function CreateFertilizerApplication() {
           <div className="space-y-4">
             <div className="space-y-1">
               <Label>{t("fertilizers.name")} *</Label>
-              <Input
-                {...fertilizerForm.register("name", { required: true })}
-              />
+              <Input {...fertilizerForm.register("name", { required: true })} />
             </div>
             <div className="space-y-1">
               <Label>{t("fertilizers.type")} *</Label>
@@ -624,5 +823,20 @@ function CreateFertilizerApplication() {
         </DialogContent>
       </Dialog>
     </PageContent>
+  );
+}
+
+function SummaryRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-3 py-2">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="text-right">{value}</dd>
+    </div>
   );
 }

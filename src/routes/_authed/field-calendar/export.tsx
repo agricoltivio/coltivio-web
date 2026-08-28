@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/field-calendar/export")({
   component: FieldCalendarExport,
@@ -129,7 +128,6 @@ function FieldCalendarExport() {
           onClick={handleExport}
           disabled={exporting || !fromDate || !toDate || sections.size === 0}
         >
-          <Download className="h-4 w-4 mr-2" />
           {exporting ? t("common.exporting") : t("common.download")}
         </Button>
       </div>

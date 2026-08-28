@@ -154,7 +154,7 @@ function AnimalNode({ data }: NodeProps<AnimalRFNode>) {
         transition: "opacity 0.15s",
       }}
       className={[
-        "cursor-pointer rounded-lg border bg-white p-2.5 flex flex-col gap-1 shadow-sm hover:shadow-md transition-shadow",
+        "cursor-pointer rounded-lg border bg-card p-2.5 flex flex-col gap-1 shadow-sm hover:shadow-md transition-shadow",
         isFocused
           ? "border-primary ring-2 ring-primary/30"
           : isConnected

@@ -202,7 +202,7 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
   return (
     <PageContent title={t("membership.title")}>
       {/* Status card */}
-      <div className="border rounded-lg p-6 mb-8 bg-white max-w-xl">
+      <div className="border rounded-lg p-6 mb-8 bg-card max-w-xl">
         <div className="space-y-2 mb-4">
           {/* A declared Austritt (cancelledByUser) means the user is no longer a member,
               even while feature access continues until the end of the paid period. */}
@@ -212,17 +212,30 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
           />
           <StatusRow label={t("membership.status.featureAccess")} ok={hasFeatureAccess} />
         </div>
-        <p className="text-sm text-muted-foreground mb-4">
-          {isResignedActive
-            ? t("membership.status.cancelledByUser", { date: periodEndDate })
-            : isActiveMember
-              ? status?.autoRenewing && !status?.cancelAtPeriodEnd
-                ? t("membership.status.autoRenewsOn", { date: periodEndDate })
-                : `${t("membership.status.validUntil")}: ${periodEndDate}`
-              : inGracePeriod
-                ? t("membership.status.expiredInGrace", { date: periodEndDate })
-                : t("membership.status.expired", { date: periodEndDate })}
-        </p>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {isResignedActive
+              ? t("membership.status.cancelledByUser", { date: periodEndDate })
+              : isActiveMember
+                ? status?.autoRenewing && !status?.cancelAtPeriodEnd
+                  ? t("membership.status.autoRenewsOn", { date: periodEndDate })
+                  : `${t("membership.status.validUntil")}: ${periodEndDate}`
+                : inGracePeriod
+                  ? t("membership.status.expiredInGrace", { date: periodEndDate })
+                  : t("membership.status.expired", { date: periodEndDate })}
+          </p>
+          {isActiveMember && !isResignedActive && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="shrink-0 border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive dark:border-destructive"
+              onClick={() => setShowAustrittDialog(true)}
+              disabled={isMutating}
+            >
+              {t("membership.cancelRenewal")}
+            </Button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-3">
           {isResignedActive ? (
             <Button
@@ -269,13 +282,6 @@ export function MembershipContent({ membershipSuccess }: MembershipContentProps)
                     {isLoadingPaymentMethod ? t("common.loading") : t("membership.updatePaymentMethod")}
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowAustrittDialog(true)}
-                  disabled={isMutating}
-                >
-                  {t("membership.cancelRenewal")}
-                </Button>
               </div>
             </div>
           ) : (

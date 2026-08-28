@@ -1,6 +1,6 @@
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -255,7 +255,6 @@ export function OrderForm({
           className="mt-4"
           onClick={() => append({ productId: "", quantity: 1, unitPrice: "" })}
         >
-          <PlusIcon className="h-4 w-4 mr-1" />
           {t("orders.addItem")}
         </Button>
       </div>

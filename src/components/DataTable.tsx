@@ -132,7 +132,9 @@ export function DataTable<TData>({
                         <div className="flex items-center gap-1">
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {canSort && (
-                            <span className="text-muted-foreground">
+                            <span
+                              className={sorted ? "text-foreground" : "text-muted-foreground/40"}
+                            >
                               {sorted === "asc"
                                 ? <ArrowUp className="h-3 w-3" />
                                 : sorted === "desc"

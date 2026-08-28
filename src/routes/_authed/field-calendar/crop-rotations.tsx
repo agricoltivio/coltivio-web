@@ -10,7 +10,6 @@ import { CropRotationTimeline } from "@/components/CropRotationTimeline";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import type { ZoomLevel } from "@/lib/cropRotationTimelineUtils";
-import { Plus } from "lucide-react";
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -73,7 +72,6 @@ function CropRotations() {
             size="sm"
             onClick={() => navigate({ to: "/field-calendar/crop-rotations/plan", search: { plotIds: selectedPlotIds } })}
           >
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.cropRotations.plan")} ({selectedPlotIds.length})
           </Button>
         )}

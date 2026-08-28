@@ -68,6 +68,7 @@ import { Route as AuthedAnimalsTreatmentsJournalRouteImport } from './routes/_au
 import { Route as AuthedAnimalsImportRouteImport } from './routes/_authed/animals/import'
 import { Route as AuthedAnimalsHerdsRouteImport } from './routes/_authed/animals/herds'
 import { Route as AuthedAnimalsFamilyTreeRouteImport } from './routes/_authed/animals/family-tree'
+import { Route as AuthedAnimalsExportRouteImport } from './routes/_authed/animals/export'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
 import { Route as AuthedWikiMySubmissionsIndexRouteImport } from './routes/_authed/wiki/my-submissions/index'
@@ -459,6 +460,11 @@ const AuthedAnimalsHerdsRoute = AuthedAnimalsHerdsRouteImport.update({
 const AuthedAnimalsFamilyTreeRoute = AuthedAnimalsFamilyTreeRouteImport.update({
   id: '/animals/family-tree',
   path: '/animals/family-tree',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
+const AuthedAnimalsExportRoute = AuthedAnimalsExportRouteImport.update({
+  id: '/animals/export',
+  path: '/animals/export',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
 const AuthedAnimalsEarTagsRoute = AuthedAnimalsEarTagsRouteImport.update({
@@ -970,6 +976,7 @@ export interface FileRoutesByFullPath {
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/animals/export': typeof AuthedAnimalsExportRoute
   '/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/animals/import': typeof AuthedAnimalsImportRoute
@@ -1105,6 +1112,7 @@ export interface FileRoutesByTo {
   '/auth/token': typeof AuthTokenRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/animals/export': typeof AuthedAnimalsExportRoute
   '/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/animals/import': typeof AuthedAnimalsImportRoute
@@ -1245,6 +1253,7 @@ export interface FileRoutesById {
   '/auth/token': typeof AuthTokenRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
+  '/_authed/animals/export': typeof AuthedAnimalsExportRoute
   '/_authed/animals/family-tree': typeof AuthedAnimalsFamilyTreeRoute
   '/_authed/animals/herds': typeof AuthedAnimalsHerdsRoute
   '/_authed/animals/import': typeof AuthedAnimalsImportRoute
@@ -1388,6 +1397,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
+    | '/animals/export'
     | '/animals/family-tree'
     | '/animals/herds'
     | '/animals/import'
@@ -1523,6 +1533,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/animals/create'
     | '/animals/ear-tags'
+    | '/animals/export'
     | '/animals/family-tree'
     | '/animals/herds'
     | '/animals/import'
@@ -1662,6 +1673,7 @@ export interface FileRouteTypes {
     | '/auth/token'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
+    | '/_authed/animals/export'
     | '/_authed/animals/family-tree'
     | '/_authed/animals/herds'
     | '/_authed/animals/import'
@@ -2208,6 +2220,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/family-tree'
       fullPath: '/animals/family-tree'
       preLoaderRoute: typeof AuthedAnimalsFamilyTreeRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/animals/export': {
+      id: '/_authed/animals/export'
+      path: '/animals/export'
+      fullPath: '/animals/export'
+      preLoaderRoute: typeof AuthedAnimalsExportRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/animals/ear-tags': {
@@ -3016,6 +3035,7 @@ interface AuthedRouteRouteChildren {
   AuthedUsersRoute: typeof AuthedUsersRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
+  AuthedAnimalsExportRoute: typeof AuthedAnimalsExportRoute
   AuthedAnimalsFamilyTreeRoute: typeof AuthedAnimalsFamilyTreeRoute
   AuthedAnimalsHerdsRoute: typeof AuthedAnimalsHerdsRoute
   AuthedAnimalsImportRoute: typeof AuthedAnimalsImportRoute
@@ -3102,6 +3122,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedUsersRoute: AuthedUsersRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
+  AuthedAnimalsExportRoute: AuthedAnimalsExportRoute,
   AuthedAnimalsFamilyTreeRoute: AuthedAnimalsFamilyTreeRoute,
   AuthedAnimalsHerdsRoute: AuthedAnimalsHerdsRoute,
   AuthedAnimalsImportRoute: AuthedAnimalsImportRoute,

@@ -7,7 +7,6 @@ import type { Fertilizer } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
@@ -28,20 +27,7 @@ function FertilizersPage() {
     () => [
       {
         accessorKey: "name",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            className="p-0 has-[>svg]:px-0 hover:bg-transparent justify-start"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {t("fertilizers.name")}
-            {column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
+        header: t("fertilizers.name"),
         cell: ({ row }) => (
           <span className="font-medium">{row.getValue("name")}</span>
         ),
@@ -81,9 +67,11 @@ function FertilizersPage() {
   const data = query.data?.result ?? [];
 
   return (
-    <PageContent title={t("fertilizers.title")} showBackButton={false}>
-      {canWriteFertilization && (
-        <div className="flex justify-end mb-4">
+    <PageContent
+      title={t("fertilizers.title")}
+      showBackButton={false}
+      actions={
+        canWriteFertilization && (
           <Button
             onClick={() =>
               navigate({ to: "/field-calendar/fertilizers/create" })
@@ -91,8 +79,9 @@ function FertilizersPage() {
           >
             {t("common.create")}
           </Button>
-        </div>
-      )}
+        )
+      }
+    >
       <DataTable
         data={data}
         columns={columns}

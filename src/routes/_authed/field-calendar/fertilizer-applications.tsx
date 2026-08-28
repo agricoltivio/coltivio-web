@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 
 type GlobalFertApp = components["schemas"]["GetV1FertilizerApplicationsPositiveResponse"]["data"]["result"][number];
@@ -246,15 +245,14 @@ function FertilizerApplications() {
       title={t("fieldCalendar.fertilizerApplications.title")}
       showBackButton={!!plotId}
       backTo={plotId ? () => returnTo ? navigate({ to: returnTo as "/" }) : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } }) : undefined}
-    >
-      <div className="flex justify-end mb-6">
-        {canWriteFertilization && (
+      actions={
+        canWriteFertilization && (
           <Button onClick={() => navigate({ to: "/field-calendar/fertilizer-applications/create", search: plotId ? { plotId } : {} })}>
-            <Plus className="h-4 w-4 mr-2" />
             {t("fieldCalendar.fertilizerApplications.create")}
           </Button>
-        )}
-      </div>
+        )
+      }
+    >
       {!plotId && <FertilizerChart />}
       <DataTable
         data={data}
