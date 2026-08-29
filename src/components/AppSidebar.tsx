@@ -9,7 +9,6 @@ import {
   LogOut,
   Monitor,
   Moon,
-  Settings,
   Sun,
   User,
   Users,
@@ -190,12 +189,6 @@ export function AppSidebar() {
                   <Link to="/account">
                     <User className="size-4" />
                     {t("nav.account")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings">
-                    <Settings className="size-4" />
-                    {t("nav.settings")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
