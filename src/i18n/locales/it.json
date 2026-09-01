@@ -1458,6 +1458,30 @@
       }
     }
   },
+  "farm": {
+    "switcher": {
+      "label": "Cambia azienda",
+      "add": "Crea un'azienda o unisciti a una"
+    },
+    "picker": {
+      "heading": "Scegli un'azienda",
+      "subheading": "Appartieni a più aziende. Scegli quella con cui vuoi lavorare."
+    },
+    "leave": {
+      "action": "Abbandona l'azienda",
+      "title": "Abbandonare l'azienda?",
+      "description": "Perderai l'accesso a «{{farm}}». Per rientrare servirà un nuovo invito.",
+      "lastMember": "Sei l'unico membro rimasto e non puoi abbandonare l'azienda. Elimina invece l'azienda.",
+      "confirm": "Abbandona"
+    },
+    "delete": {
+      "action": "Elimina l'azienda",
+      "title": "Eliminare l'azienda?",
+      "description": "«{{farm}}» e tutti i suoi dati verranno eliminati definitivamente. Questo riguarda anche tutti gli altri membri.",
+      "confirmPrompt": "Digita il nome dell'azienda «{{farm}}» per confermare.",
+      "confirm": "Elimina definitivamente"
+    }
+  },
   "membership": {
     "title": "Iscrizione",
     "expired": {

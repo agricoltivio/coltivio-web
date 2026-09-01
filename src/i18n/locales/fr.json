@@ -1458,6 +1458,30 @@
       }
     }
   },
+  "farm": {
+    "switcher": {
+      "label": "Changer de ferme",
+      "add": "Créer une ferme ou en rejoindre une"
+    },
+    "picker": {
+      "heading": "Choisir une ferme",
+      "subheading": "Vous appartenez à plusieurs fermes. Choisissez celle avec laquelle vous souhaitez travailler."
+    },
+    "leave": {
+      "action": "Quitter la ferme",
+      "title": "Quitter la ferme ?",
+      "description": "Vous perdrez l'accès à « {{farm}} ». Une nouvelle invitation sera nécessaire pour la rejoindre.",
+      "lastMember": "Vous êtes le seul membre restant et ne pouvez pas quitter la ferme. Supprimez plutôt la ferme.",
+      "confirm": "Quitter"
+    },
+    "delete": {
+      "action": "Supprimer la ferme",
+      "title": "Supprimer la ferme ?",
+      "description": "« {{farm}} » et toutes ses données seront définitivement supprimées. Cela concerne aussi tous les autres membres.",
+      "confirmPrompt": "Saisissez le nom de la ferme « {{farm}} » pour confirmer.",
+      "confirm": "Supprimer définitivement"
+    }
+  },
   "membership": {
     "title": "Adhésion",
     "expired": {

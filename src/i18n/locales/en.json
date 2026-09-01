@@ -1458,6 +1458,30 @@
       }
     }
   },
+  "farm": {
+    "switcher": {
+      "label": "Switch farm",
+      "add": "Create or join a farm"
+    },
+    "picker": {
+      "heading": "Choose a farm",
+      "subheading": "You belong to several farms. Pick the one you want to work with."
+    },
+    "leave": {
+      "action": "Leave farm",
+      "title": "Leave farm?",
+      "description": "You will lose access to \"{{farm}}\". You'll need a new invitation to rejoin.",
+      "lastMember": "You're the only member left and can't leave the farm. Delete the farm instead.",
+      "confirm": "Leave"
+    },
+    "delete": {
+      "action": "Delete farm",
+      "title": "Delete farm?",
+      "description": "\"{{farm}}\" and all of its data will be permanently deleted. This affects every other member too.",
+      "confirmPrompt": "Type the farm name \"{{farm}}\" to confirm.",
+      "confirm": "Delete permanently"
+    }
+  },
   "membership": {
     "title": "Membership",
     "expired": {
