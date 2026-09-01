@@ -269,6 +269,10 @@ export type TaskRecurrence = NonNullable<Task["recurrence"]>;
 export type FarmUser =
   components["schemas"]["GetV1UsersPositiveResponse"]["data"]["result"][number];
 
+// One entry from GET /v1/farms — a farm the current user belongs to.
+export type Farm =
+  components["schemas"]["GetV1FarmsPositiveResponse"]["data"]["result"][number];
+
 export type FarmInvite =
   components["schemas"]["GetV1FarmInvitesPositiveResponse"]["data"]["result"][number];
 

@@ -61,6 +61,7 @@ import { Route as AuthedFieldCalendarCropRotationDraftsRouteImport } from './rou
 import { Route as AuthedFieldCalendarCropProtectionProductsRouteImport } from './routes/_authed/field-calendar/crop-protection-products'
 import { Route as AuthedFieldCalendarCropProtectionApplicationsRouteImport } from './routes/_authed/field-calendar/crop-protection-applications'
 import { Route as AuthedFieldCalendarCropFamiliesRouteImport } from './routes/_authed/field-calendar/crop-families'
+import { Route as AuthedFarmsNewRouteImport } from './routes/_authed/farms.new'
 import { Route as AuthedDrugsCreateRouteImport } from './routes/_authed/drugs/create'
 import { Route as AuthedContactsCreateRouteImport } from './routes/_authed/contacts/create'
 import { Route as AuthedAnimalsTurnoutJournalRouteImport } from './routes/_authed/animals/turnout-journal'
@@ -425,6 +426,11 @@ const AuthedFieldCalendarCropFamiliesRoute =
     path: '/field-calendar/crop-families',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFarmsNewRoute = AuthedFarmsNewRouteImport.update({
+  id: '/farms/new',
+  path: '/farms/new',
+  getParentRoute: () => AuthedRouteRoute,
+} as any)
 const AuthedDrugsCreateRoute = AuthedDrugsCreateRouteImport.update({
   id: '/drugs/create',
   path: '/drugs/create',
@@ -984,6 +990,7 @@ export interface FileRoutesByFullPath {
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
   '/drugs/create': typeof AuthedDrugsCreateRoute
+  '/farms/new': typeof AuthedFarmsNewRoute
   '/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
   '/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
@@ -1120,6 +1127,7 @@ export interface FileRoutesByTo {
   '/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/contacts/create': typeof AuthedContactsCreateRoute
   '/drugs/create': typeof AuthedDrugsCreateRoute
+  '/farms/new': typeof AuthedFarmsNewRoute
   '/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
   '/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
@@ -1261,6 +1269,7 @@ export interface FileRoutesById {
   '/_authed/animals/turnout-journal': typeof AuthedAnimalsTurnoutJournalRoute
   '/_authed/contacts/create': typeof AuthedContactsCreateRoute
   '/_authed/drugs/create': typeof AuthedDrugsCreateRoute
+  '/_authed/farms/new': typeof AuthedFarmsNewRoute
   '/_authed/field-calendar/crop-families': typeof AuthedFieldCalendarCropFamiliesRoute
   '/_authed/field-calendar/crop-protection-applications': typeof AuthedFieldCalendarCropProtectionApplicationsRoute
   '/_authed/field-calendar/crop-protection-products': typeof AuthedFieldCalendarCropProtectionProductsRoute
@@ -1405,6 +1414,7 @@ export interface FileRouteTypes {
     | '/animals/turnout-journal'
     | '/contacts/create'
     | '/drugs/create'
+    | '/farms/new'
     | '/field-calendar/crop-families'
     | '/field-calendar/crop-protection-applications'
     | '/field-calendar/crop-protection-products'
@@ -1541,6 +1551,7 @@ export interface FileRouteTypes {
     | '/animals/turnout-journal'
     | '/contacts/create'
     | '/drugs/create'
+    | '/farms/new'
     | '/field-calendar/crop-families'
     | '/field-calendar/crop-protection-applications'
     | '/field-calendar/crop-protection-products'
@@ -1681,6 +1692,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/turnout-journal'
     | '/_authed/contacts/create'
     | '/_authed/drugs/create'
+    | '/_authed/farms/new'
     | '/_authed/field-calendar/crop-families'
     | '/_authed/field-calendar/crop-protection-applications'
     | '/_authed/field-calendar/crop-protection-products'
@@ -2171,6 +2183,13 @@ declare module '@tanstack/react-router' {
       path: '/field-calendar/crop-families'
       fullPath: '/field-calendar/crop-families'
       preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/farms/new': {
+      id: '/_authed/farms/new'
+      path: '/farms/new'
+      fullPath: '/farms/new'
+      preLoaderRoute: typeof AuthedFarmsNewRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/drugs/create': {
@@ -3042,6 +3061,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsTreatmentsJournalRoute: typeof AuthedAnimalsTreatmentsJournalRoute
   AuthedAnimalsTurnoutJournalRoute: typeof AuthedAnimalsTurnoutJournalRoute
   AuthedDrugsCreateRoute: typeof AuthedDrugsCreateRoute
+  AuthedFarmsNewRoute: typeof AuthedFarmsNewRoute
   AuthedFieldCalendarCropFamiliesRoute: typeof AuthedFieldCalendarCropFamiliesRoute
   AuthedFieldCalendarCropProtectionApplicationsRoute: typeof AuthedFieldCalendarCropProtectionApplicationsRoute
   AuthedFieldCalendarCropProtectionProductsRoute: typeof AuthedFieldCalendarCropProtectionProductsRoute
@@ -3129,6 +3149,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsTreatmentsJournalRoute: AuthedAnimalsTreatmentsJournalRoute,
   AuthedAnimalsTurnoutJournalRoute: AuthedAnimalsTurnoutJournalRoute,
   AuthedDrugsCreateRoute: AuthedDrugsCreateRoute,
+  AuthedFarmsNewRoute: AuthedFarmsNewRoute,
   AuthedFieldCalendarCropFamiliesRoute: AuthedFieldCalendarCropFamiliesRoute,
   AuthedFieldCalendarCropProtectionApplicationsRoute:
     AuthedFieldCalendarCropProtectionApplicationsRoute,

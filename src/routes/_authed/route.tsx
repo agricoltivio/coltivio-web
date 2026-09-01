@@ -1,11 +1,14 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SectionNav } from "@/components/SectionNav";
 import { NoFarm } from "@/components/NoFarm";
+import { FarmPicker } from "@/components/FarmPicker";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { farmQueryOptions } from "@/api/farm.queries";
+import { farmQueryOptions, farmsQueryOptions } from "@/api/farm.queries";
 import { membershipStatusQueryOptions } from "@/api/membership.queries";
 import { checkUserGracePeriod } from "@/lib/membership";
 import { meQueryOptions } from "@/api/user.queries";
+import { useActiveFarm } from "@/context/ActiveFarmContext";
+import { getStoredActiveFarmId } from "@/lib/activeFarm";
 import { createFileRoute, Link, Outlet, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -50,6 +53,16 @@ export const Route = createFileRoute("/_authed")({
     }
   },
   loader: async ({ context }) => {
+    const farms = await context.queryClient.ensureQueryData(farmsQueryOptions());
+    const userId = context.auth.user?.id;
+    const storedFarmId = userId ? getStoredActiveFarmId(userId) : null;
+    const farmSelectionResolved =
+      farms.count <= 1 ||
+      (storedFarmId != null && farms.result.some((farm) => farm.id === storedFarmId));
+    // 2+ farms with no valid selection: the FarmPicker gate renders. Skip the farm-scoped
+    // prefetch below — with no x-farm-id it would 400 and hit the route error boundary.
+    if (!farmSelectionResolved) return;
+
     const me = await context.queryClient.ensureQueryData(meQueryOptions());
     // Awaited so the Treffpunkt gate and the expiry/grace banners decide on first render.
     await context.queryClient.ensureQueryData(membershipStatusQueryOptions());
@@ -65,6 +78,7 @@ function AuthedLayout() {
   const { user } = useAuth();
   const userId = user!.id;
   const meQuery = useQuery(meQueryOptions());
+  const { status: activeFarmStatus } = useActiveFarm();
   const hasFarmId = meQuery.data?.farmId != null;
   const farmQuery = useQuery(farmQueryOptions(hasFarmId));
   const statusQuery = useQuery(membershipStatusQueryOptions());
@@ -196,9 +210,13 @@ function AuthedLayout() {
               </div>
             </div>
           )}
-          {!meQuery.isLoading && !hasFarmId && !isExemptFromFarmCheck
-            ? <NoFarm />
-            : <Outlet />}
+          {activeFarmStatus === "must-select" ? (
+            <FarmPicker />
+          ) : !meQuery.isLoading && !hasFarmId && !isExemptFromFarmCheck ? (
+            <NoFarm />
+          ) : (
+            <Outlet />
+          )}
           </div>
         </main>
       </SidebarProvider>

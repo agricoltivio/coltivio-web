@@ -1,15 +1,18 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import {
+  Check,
   ChevronsUpDown,
   Globe,
   LogOut,
   Monitor,
   Moon,
+  Plus,
   Sun,
+  Trash2,
   User,
   Users,
 } from "lucide-react";
@@ -36,11 +39,27 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { meQueryOptions } from "@/api/user.queries";
-import { farmQueryOptions } from "@/api/farm.queries";
+import { Input } from "@/components/ui/input";
+import { meQueryOptions, farmUsersQueryOptions } from "@/api/user.queries";
+import {
+  farmQueryOptions,
+  useDeleteFarmMutation,
+  useLeaveFarmMutation,
+} from "@/api/farm.queries";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useAuth } from "@/context/SupabaseAuthContext";
+import { useActiveFarm } from "@/context/ActiveFarmContext";
 import { cn } from "@/lib/utils";
 import type { FarmPermissionFeature } from "@/api/types";
 import { SECTIONS, findActiveSection } from "@/components/navigation/navConfig";
@@ -69,6 +88,56 @@ export function AppSidebar() {
   const hasFarm = me?.farmId != null;
   const farmQuery = useQuery(farmQueryOptions(hasFarm));
   const isOwner = me?.farmRole === "owner";
+
+  const { farms, activeFarmId, setActiveFarm, onActiveFarmRemoved } = useActiveFarm();
+  const activeFarm = farms.find((farm) => farm.id === activeFarmId);
+  const farmName = activeFarm?.name ?? farmQuery.data?.name ?? "Coltivio";
+  const hasAnyFarm = farms.length > 0;
+  const isActiveFarmOwner = activeFarm?.role === "owner";
+
+  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [farmActionError, setFarmActionError] = useState<string | null>(null);
+  const leaveFarmMutation = useLeaveFarmMutation();
+  const deleteFarmMutation = useDeleteFarmMutation();
+
+  // Member list of the active farm — only needed to tell whether the user is the last one.
+  const farmUsersQuery = useQuery({
+    ...farmUsersQueryOptions(),
+    enabled: leaveDialogOpen,
+  });
+  // Only block leaving when we positively know the user is the sole member; on load/error
+  // fall through and let the backend decide.
+  const isLastFarmMember = farmUsersQuery.data?.result.length === 1;
+  const leaveConfirmDisabled =
+    isLastFarmMember || farmUsersQuery.isLoading || leaveFarmMutation.isPending;
+
+  // Require the farm name to be re-typed exactly before delete is allowed.
+  const deleteConfirmed =
+    activeFarm != null && deleteConfirmText.trim() === activeFarm.name;
+
+  function confirmLeaveFarm() {
+    setFarmActionError(null);
+    leaveFarmMutation.mutate(undefined, {
+      onSuccess: () => {
+        setLeaveDialogOpen(false);
+        void onActiveFarmRemoved();
+      },
+      onError: (error) => setFarmActionError(error.message),
+    });
+  }
+
+  function confirmDeleteFarm() {
+    setFarmActionError(null);
+    deleteFarmMutation.mutate(undefined, {
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+        void onActiveFarmRemoved();
+      },
+      onError: (error) => setFarmActionError(error.message),
+    });
+  }
 
   // Feature gates — one hook per feature (owners get full access inside the hook).
   const access: Record<FarmPermissionFeature, boolean> = {
@@ -107,14 +176,88 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-14 flex-row items-center border-b">
-        <div className="flex items-center gap-2 px-1">
-          <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-            {(farmQuery.data?.name ?? "Coltivio").charAt(0)}
+        {hasAnyFarm ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex w-full items-center gap-2 rounded-md px-1 py-1 hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent">
+                <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
+                  {farmName.charAt(0)}
+                </div>
+                <span className="truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
+                  {farmName}
+                </span>
+                <ChevronsUpDown className="ml-auto size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+            >
+              {farms.length > 1 && (
+                <DropdownMenuLabel className="font-normal text-muted-foreground">
+                  {t("farm.switcher.label")}
+                </DropdownMenuLabel>
+              )}
+              {farms.map((farm) => (
+                <DropdownMenuItem
+                  key={farm.id}
+                  onClick={() => {
+                    if (farm.id !== activeFarmId) setActiveFarm(farm.id);
+                  }}
+                  className={cn(farm.id === activeFarmId && "font-semibold")}
+                >
+                  <Check
+                    className={cn(
+                      "size-4",
+                      farm.id === activeFarmId ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  <span className="truncate">{farm.name}</span>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/farms/new">
+                  <Plus className="size-4" />
+                  {t("farm.switcher.add")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => {
+                  setFarmActionError(null);
+                  setLeaveDialogOpen(true);
+                }}
+              >
+                <LogOut className="size-4" />
+                {t("farm.leave.action")}
+              </DropdownMenuItem>
+              {isActiveFarmOwner && (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={() => {
+                    setFarmActionError(null);
+                    setDeleteConfirmText("");
+                    setDeleteDialogOpen(true);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                  {t("farm.delete.action")}
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-2 px-1">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
+              {farmName.charAt(0)}
+            </div>
+            <span className="truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
+              {farmName}
+            </span>
           </div>
-          <span className="truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
-            {farmQuery.data?.name ?? "Coltivio"}
-          </span>
-        </div>
+        )}
       </SidebarHeader>
 
       <SidebarContent>
@@ -240,6 +383,89 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
+
+      <AlertDialog
+        open={leaveDialogOpen}
+        onOpenChange={(open) => {
+          if (!leaveFarmMutation.isPending) setLeaveDialogOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("farm.leave.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("farm.leave.description", { farm: farmName })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {isLastFarmMember && (
+            <p className="text-sm text-destructive">{t("farm.leave.lastMember")}</p>
+          )}
+          {farmActionError && (
+            <p className="text-sm text-destructive">{farmActionError}</p>
+          )}
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={leaveFarmMutation.isPending}>
+              {t("common.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                confirmLeaveFarm();
+              }}
+              disabled={leaveConfirmDisabled}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t("farm.leave.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          if (!deleteFarmMutation.isPending) setDeleteDialogOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("farm.delete.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("farm.delete.description", { farm: farmName })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="delete-farm-confirm" className="text-sm text-muted-foreground">
+              {t("farm.delete.confirmPrompt", { farm: farmName })}
+            </label>
+            <Input
+              id="delete-farm-confirm"
+              value={deleteConfirmText}
+              onChange={(event) => setDeleteConfirmText(event.target.value)}
+              autoComplete="off"
+              disabled={deleteFarmMutation.isPending}
+            />
+          </div>
+          {farmActionError && (
+            <p className="text-sm text-destructive">{farmActionError}</p>
+          )}
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteFarmMutation.isPending}>
+              {t("common.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                confirmDeleteFarm();
+              }}
+              disabled={!deleteConfirmed || deleteFarmMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t("farm.delete.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Sidebar>
   );
 }

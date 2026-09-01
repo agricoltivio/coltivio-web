@@ -1458,6 +1458,30 @@
       }
     }
   },
+  "farm": {
+    "switcher": {
+      "label": "Hof wechseln",
+      "add": "Hof erstellen oder beitreten"
+    },
+    "picker": {
+      "heading": "Hof auswählen",
+      "subheading": "Du gehörst zu mehreren Höfen. Wähle aus, mit welchem du arbeiten möchtest."
+    },
+    "leave": {
+      "action": "Hof verlassen",
+      "title": "Hof verlassen?",
+      "description": "Du verlierst den Zugriff auf «{{farm}}». Um wieder beizutreten, brauchst du eine neue Einladung.",
+      "lastMember": "Du bist das einzige verbleibende Mitglied und kannst den Hof nicht verlassen. Lösche stattdessen den Hof.",
+      "confirm": "Verlassen"
+    },
+    "delete": {
+      "action": "Hof löschen",
+      "title": "Hof löschen?",
+      "description": "«{{farm}}» und alle zugehörigen Daten werden unwiderruflich gelöscht. Das betrifft auch alle anderen Mitglieder.",
+      "confirmPrompt": "Gib zur Bestätigung den Hofnamen «{{farm}}» ein.",
+      "confirm": "Endgültig löschen"
+    }
+  },
   "membership": {
     "title": "Mitgliedschaft",
     "expired": {

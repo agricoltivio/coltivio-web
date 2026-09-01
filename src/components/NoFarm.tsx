@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAcceptFarmInviteMutation, useCreateFarmMutation } from "@/api/farm.queries";
+import { useActiveFarm } from "@/context/ActiveFarmContext";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -45,6 +46,7 @@ function stripHtml(html: string): string {
 
 export function NoFarm() {
   const { t } = useTranslation();
+  const { farms, setActiveFarm, activateNewFarm } = useActiveFarm();
   const [step, setStep] = useState<Step>("welcome");
   const [createData, setCreateData] = useState<CreateData>({ name: "", location: null, federalId: null });
 
@@ -149,19 +151,30 @@ export function NoFarm() {
 
   function onJoinSubmit() {
     setJoinError(null);
+    const knownFarmIdsBefore = farms.map((farm) => farm.id);
     acceptInviteMutation.mutate(inviteCode.trim(), {
+      // The backend doesn't auto-select the joined farm, and the accept response's farmId
+      // reflects the current farm (from x-farm-id), not the joined one — so refetch the
+      // list and switch to whichever farm is new.
+      onSuccess: () => {
+        void activateNewFarm(knownFarmIdsBefore);
+      },
       onError: () => setJoinError(t("onboarding.join.invalid_code")),
     });
   }
 
   function onCreateSubmit() {
     if (!createData.location) return;
-    createFarmMutation.mutate({
-      name: createData.name,
-      address: createData.location.label,
-      location: { type: "Point", coordinates: [createData.location.lng, createData.location.lat] },
-      federalId: createData.federalId ?? null,
-    });
+    createFarmMutation.mutate(
+      {
+        name: createData.name,
+        address: createData.location.label,
+        location: { type: "Point", coordinates: [createData.location.lng, createData.location.lat] },
+        federalId: createData.federalId ?? null,
+      },
+      // Proactively make the new farm the active one (backend doesn't do this for us).
+      { onSuccess: (farm) => setActiveFarm(farm.id) },
+    );
   }
 
   // Step indicator for create flow (1-based, out of 3)
