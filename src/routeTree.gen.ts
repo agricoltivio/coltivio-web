@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -154,11 +153,6 @@ import { Route as AuthedAnimalsAnimalIdJournalEntryIdEditRouteImport } from './r
 import { Route as AuthedFieldCalendarPlotsPlotIdJournalEntryIdEditRouteImport } from './routes/_authed/field-calendar/plots_.$plotId_.journal.$entryId_.edit'
 import { Route as AuthedFieldCalendarCropRotationDraftsDraftPlanIdPlotsPlotIdCropRotationsRouteImport } from './routes/_authed/field-calendar/crop-rotation-drafts_.$draftPlanId_.plots_.$plotId_.crop-rotations'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -980,7 +974,6 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/contacts': typeof AuthedContactsRouteRouteWithChildren
   '/orders': typeof AuthedOrdersRouteRouteWithChildren
   '/products': typeof AuthedProductsRouteRouteWithChildren
@@ -1125,7 +1118,6 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/account': typeof AuthedAccountRoute
   '/dashboard': typeof AuthedDashboardRoute
   '/settings': typeof AuthedSettingsRoute
@@ -1263,7 +1255,6 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/_authed/contacts': typeof AuthedContactsRouteRouteWithChildren
   '/_authed/orders': typeof AuthedOrdersRouteRouteWithChildren
   '/_authed/products': typeof AuthedProductsRouteRouteWithChildren
@@ -1410,7 +1401,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/reset-password'
-    | '/unsubscribe'
     | '/contacts'
     | '/orders'
     | '/products'
@@ -1555,7 +1545,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/reset-password'
-    | '/unsubscribe'
     | '/account'
     | '/dashboard'
     | '/settings'
@@ -1692,7 +1681,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/reset-password'
-    | '/unsubscribe'
     | '/_authed/contacts'
     | '/_authed/orders'
     | '/_authed/products'
@@ -1839,7 +1827,6 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  UnsubscribeRoute: typeof UnsubscribeRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
   AuthTokenRoute: typeof AuthTokenRoute
   AuthVerifyRoute: typeof AuthVerifyRoute
@@ -1847,13 +1834,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -3303,7 +3283,6 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  UnsubscribeRoute: UnsubscribeRoute,
   AuthConfirmRoute: AuthConfirmRoute,
   AuthTokenRoute: AuthTokenRoute,
   AuthVerifyRoute: AuthVerifyRoute,
