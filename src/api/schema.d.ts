@@ -3076,22 +3076,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/auth/unsubscribe": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["PostV1AuthUnsubscribe"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/v1/forum/threads": {
         parameters: {
             query?: never;
@@ -11998,14 +11982,6 @@ export interface components {
             };
         };
         PostV1AuthVerifyEmailRequestBody: {
-            token: string;
-        };
-        PostV1AuthUnsubscribePositiveResponse: {
-            data: {
-                unsubscribed: boolean;
-            };
-        };
-        PostV1AuthUnsubscribeRequestBody: {
             token: string;
         };
         /** @enum {string} */
@@ -25327,40 +25303,6 @@ export interface operations {
                 };
             };
             /** @description POST /v1/auth/verify-email Negative response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
-                };
-            };
-        };
-    };
-    PostV1AuthUnsubscribe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description POST /v1/auth/unsubscribe Request body */
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostV1AuthUnsubscribeRequestBody"];
-            };
-        };
-        responses: {
-            /** @description POST /v1/auth/unsubscribe Positive response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PostV1AuthUnsubscribePositiveResponse"];
-                };
-            };
-            /** @description POST /v1/auth/unsubscribe Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

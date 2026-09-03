@@ -1667,10 +1667,5 @@
       "read": "Read",
       "write": "Write"
     }
-  },
-  "unsubscribe": {
-    "pending": "Unsubscribing…",
-    "done": "You are unsubscribed. You will not receive further association emails.",
-    "error": "Unsubscribing failed. Please write to info@coltivio.ch."
   }
 }

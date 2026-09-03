@@ -1667,10 +1667,5 @@
       "read": "Lettura",
       "write": "Scrittura"
     }
-  },
-  "unsubscribe": {
-    "pending": "Disiscrizione in corso…",
-    "done": "Sei disiscritto. Non riceverai altre informazioni dell'associazione per e-mail.",
-    "error": "La disiscrizione non è riuscita. Scrivici a info@coltivio.ch."
   }
 }

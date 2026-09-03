@@ -10,6 +10,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { privacyPolicyUrl } from "@/lib/links";
 import { cn } from "@/lib/utils";
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -37,7 +38,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const { auth } = Route.useRouteContext();
@@ -204,7 +205,7 @@ export function RegisterForm({
                         >
                           {t("auth.newsletterConsent")}{" "}
                           <a
-                            href="https://coltivio.ch/datenschutz"
+                            href={privacyPolicyUrl(i18n.language)}
                             target="_blank"
                             rel="noreferrer"
                             className="underline underline-offset-2"

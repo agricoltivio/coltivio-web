@@ -1667,10 +1667,5 @@
       "read": "Lire",
       "write": "Écrire"
     }
-  },
-  "unsubscribe": {
-    "pending": "Désabonnement en cours…",
-    "done": "Tu es désabonné. Tu ne recevras plus d'informations de l'association par e-mail.",
-    "error": "Le désabonnement a échoué. Écris-nous à info@coltivio.ch."
   }
 }

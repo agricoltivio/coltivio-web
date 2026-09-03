@@ -1667,10 +1667,5 @@
       "read": "Lesen",
       "write": "Schreiben"
     }
-  },
-  "unsubscribe": {
-    "pending": "Abmeldung läuft…",
-    "done": "Du bist abgemeldet. Du erhältst keine weiteren Vereinsinformationen per E-Mail.",
-    "error": "Die Abmeldung ist fehlgeschlagen. Schreib uns an info@coltivio.ch."
   }
 }
