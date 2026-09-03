@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User, Session } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 export interface SupabaseAuthState {
@@ -23,6 +24,7 @@ export interface SupabaseAuthState {
 const AuthContext = createContext<SupabaseAuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,7 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === "SIGNED_OUT") queryClient.clear();
       setSession(newSession);
       setUser(newSession?.user ?? null);
       setIsAuthenticated(!!newSession?.user);
@@ -48,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   async function signIn(email: string, password: string) {
     const { error } = await supabase.auth.signInWithPassword({
