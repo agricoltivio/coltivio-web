@@ -372,6 +372,22 @@ export interface paths {
         patch: operations["PatchV1Me"];
         trace?: never;
     };
+    "/v1/me/verification-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MeVerificationEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots": {
         parameters: {
             query?: never;
@@ -3044,6 +3060,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthVerifyEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AuthUnsubscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/forum/threads": {
         parameters: {
             query?: never;
@@ -3646,7 +3694,7 @@ export interface components {
         };
         PatchV1MeRequestBody: {
             fullName?: string;
-            emailVerified?: boolean;
+            newsletterConsent?: boolean;
         };
         GetV1MePositiveResponse: {
             data: {
@@ -3666,6 +3714,12 @@ export interface components {
                 }[];
             };
         };
+        PostV1MeVerificationEmailPositiveResponse: {
+            data: {
+                sent: boolean;
+            };
+        };
+        PostV1MeVerificationEmailRequestBody: Record<string, never>;
         GetV1PlotsPositiveResponse: {
             data: {
                 result: {
@@ -11938,6 +11992,22 @@ export interface components {
             /** Format: uri */
             redirectTo: string;
         };
+        PostV1AuthVerifyEmailPositiveResponse: {
+            data: {
+                url: string;
+            };
+        };
+        PostV1AuthVerifyEmailRequestBody: {
+            token: string;
+        };
+        PostV1AuthUnsubscribePositiveResponse: {
+            data: {
+                unsubscribed: boolean;
+            };
+        };
+        PostV1AuthUnsubscribeRequestBody: {
+            token: string;
+        };
         /** @enum {string} */
         GetV1ForumThreadsParameterType: "question" | "feature_request" | "bug_report" | "general";
         /** @enum {string} */
@@ -13515,6 +13585,40 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/me Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MeVerificationEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/me/verification-email Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PostV1MeVerificationEmailRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/me/verification-email Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MeVerificationEmailPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/me/verification-email Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -25189,6 +25293,74 @@ export interface operations {
                 };
             };
             /** @description POST /v1/auth/exchange Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthVerifyEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/verify-email Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthVerifyEmailRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/verify-email Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthVerifyEmailPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/verify-email Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AuthUnsubscribe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/auth/unsubscribe Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AuthUnsubscribeRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/auth/unsubscribe Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AuthUnsubscribePositiveResponse"];
+                };
+            };
+            /** @description POST /v1/auth/unsubscribe Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

@@ -278,7 +278,10 @@
     "emailChanged": "E-Mail-Adresse erfolgreich geändert!",
     "goToDashboard": "Zum Dashboard",
     "emailVerificationFailed": "Die E-Mail-Bestätigung ist fehlgeschlagen.",
-    "linkExpired": "Dieser Link ist abgelaufen oder wurde bereits verwendet."
+    "linkExpired": "Dieser Link ist abgelaufen oder wurde bereits verwendet.",
+    "verificationLinkExpiredHint": "Melde dich an und fordere im Konto einen neuen Bestätigungslink an.",
+    "newsletterConsent": "Ja, ich möchte Informationen zum Verein AgriColtivio und zu neuen Funktionen per E-Mail erhalten. Abmelden kannst du dich jederzeit.",
+    "privacyPolicy": "Datenschutzerklärung"
   },
   "dashboard": {
     "welcome": "Hallo {{name}}, {{farmName}}",
@@ -301,7 +304,9 @@
     "changeEmailSent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach und klicke auf den Link.",
     "emailNotVerified": "Deine E-Mail-Adresse ist noch nicht bestätigt.",
     "resendVerification": "Bestätigungs-E-Mail erneut senden",
-    "verificationEmailSent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach."
+    "verificationEmailSent": "Bestätigungs-E-Mail gesendet. Prüfe dein Postfach.",
+    "verifyNow": "Jetzt bestätigen",
+    "verificationEmailFailed": "Die Bestätigungs-E-Mail konnte nicht gesendet werden. Warte einige Minuten und versuche es erneut."
   },
   "contacts": {
     "title": "Kontakte",
@@ -717,10 +722,10 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "sub": "Bleib auf dem Laufenden. Wir informieren dich über neue Funktionen, Updates und alles rund um Coltivio.",
+      "sub": "Wir informieren dich über den Verein AgriColtivio und über neue Funktionen. Abmelden kannst du dich jederzeit.",
       "placeholder": "deine@email.ch",
       "cta": "Anmelden",
-      "success": "Danke! Du erhältst in Kürze eine Bestätigungs-E-Mail.",
+      "success": "Danke für deine Anmeldung! Wir halten dich auf dem Laufenden.",
       "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
     },
     "demo": {
@@ -1662,5 +1667,10 @@
       "read": "Lesen",
       "write": "Schreiben"
     }
+  },
+  "unsubscribe": {
+    "pending": "Abmeldung läuft…",
+    "done": "Du bist abgemeldet. Du erhältst keine weiteren Vereinsinformationen per E-Mail.",
+    "error": "Die Abmeldung ist fehlgeschlagen. Schreib uns an info@coltivio.ch."
   }
 }

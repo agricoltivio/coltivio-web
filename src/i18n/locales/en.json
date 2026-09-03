@@ -278,7 +278,10 @@
     "emailChanged": "Email address successfully changed!",
     "goToDashboard": "Go to dashboard",
     "emailVerificationFailed": "Email verification failed.",
-    "linkExpired": "This link has expired or has already been used."
+    "linkExpired": "This link has expired or has already been used.",
+    "verificationLinkExpiredHint": "Sign in and request a new confirmation link from your account page.",
+    "newsletterConsent": "Yes, I would like to receive information about the AgriColtivio association and new features by email. You can unsubscribe at any time.",
+    "privacyPolicy": "Privacy policy"
   },
   "dashboard": {
     "welcome": "Hello {{name}}, {{farmName}}",
@@ -301,7 +304,9 @@
     "changeEmailSent": "Confirmation email sent. Check your inbox and click the link.",
     "emailNotVerified": "Your email address has not been verified yet.",
     "resendVerification": "Resend verification email",
-    "verificationEmailSent": "Verification email sent. Check your inbox."
+    "verificationEmailSent": "Verification email sent. Check your inbox.",
+    "verifyNow": "Verify now",
+    "verificationEmailFailed": "The verification email could not be sent. Wait a few minutes and try again."
   },
   "contacts": {
     "title": "Contacts",
@@ -651,10 +656,10 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "sub": "Stay in the loop. We'll keep you updated on new features, releases, and everything Coltivio.",
+      "sub": "We keep you posted on the AgriColtivio association and on new features. You can unsubscribe at any time.",
       "placeholder": "your@email.com",
       "cta": "Subscribe",
-      "success": "Thanks! You'll receive a confirmation email shortly.",
+      "success": "Thanks for signing up! We'll keep you in the loop.",
       "error": "Something went wrong. Please try again."
     },
     "demo": {
@@ -1662,5 +1667,10 @@
       "read": "Read",
       "write": "Write"
     }
+  },
+  "unsubscribe": {
+    "pending": "Unsubscribing…",
+    "done": "You are unsubscribed. You will not receive further association emails.",
+    "error": "Unsubscribing failed. Please write to info@coltivio.ch."
   }
 }

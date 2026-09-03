@@ -278,7 +278,10 @@
     "emailChanged": "Adresse e-mail modifiée avec succès !",
     "goToDashboard": "Aller au tableau de bord",
     "emailVerificationFailed": "La vérification de l'e-mail a échoué.",
-    "linkExpired": "Ce lien a expiré ou a déjà été utilisé."
+    "linkExpired": "Ce lien a expiré ou a déjà été utilisé.",
+    "verificationLinkExpiredHint": "Connecte-toi et demande un nouveau lien de confirmation depuis ton compte.",
+    "newsletterConsent": "Oui, je souhaite recevoir par e-mail des informations sur l'association AgriColtivio et sur les nouvelles fonctionnalités. Tu peux te désabonner à tout moment.",
+    "privacyPolicy": "Déclaration de protection des données"
   },
   "dashboard": {
     "welcome": "Bonjour {{name}}, {{farmName}}",
@@ -301,7 +304,9 @@
     "changeEmailSent": "E-mail de confirmation envoyé. Vérifie ta boîte de réception et clique sur le lien.",
     "emailNotVerified": "Ton adresse e-mail n'a pas encore été vérifiée.",
     "resendVerification": "Renvoyer l'e-mail de vérification",
-    "verificationEmailSent": "E-mail de vérification envoyé. Vérifie ta boîte de réception."
+    "verificationEmailSent": "E-mail de vérification envoyé. Vérifie ta boîte de réception.",
+    "verifyNow": "Vérifier maintenant",
+    "verificationEmailFailed": "L'e-mail de vérification n'a pas pu être envoyé. Attends quelques minutes et réessaie."
   },
   "contacts": {
     "title": "Contacts",
@@ -717,10 +722,10 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "sub": "Restez informé. Nous vous tiendrons au courant des nouvelles fonctionnalités, mises à jour et tout ce qui concerne Coltivio.",
+      "sub": "Nous vous informons sur l'association AgriColtivio et sur les nouvelles fonctionnalités. Vous pouvez vous désabonner à tout moment.",
       "placeholder": "votre@email.ch",
       "cta": "S'inscrire",
-      "success": "Merci ! Vous recevrez un e-mail de confirmation sous peu.",
+      "success": "Merci pour votre inscription ! Nous vous tiendrons informé.",
       "error": "Une erreur s'est produite. Veuillez réessayer."
     },
     "demo": {
@@ -1662,5 +1667,10 @@
       "read": "Lire",
       "write": "Écrire"
     }
+  },
+  "unsubscribe": {
+    "pending": "Désabonnement en cours…",
+    "done": "Tu es désabonné. Tu ne recevras plus d'informations de l'association par e-mail.",
+    "error": "Le désabonnement a échoué. Écris-nous à info@coltivio.ch."
   }
 }

@@ -56,18 +56,14 @@ function Account() {
       emailForm.setError("email", { message: error.message });
       return;
     }
-    // Mark email as unverified in our API while the new address is pending confirmation
-    await apiClient.PATCH("/v1/me", { body: { emailVerified: false } });
     setChangeEmailState("sent");
     setShowChangeEmail(false);
   }
 
   async function handleSendVerification() {
-    if (!auth.user?.email) return;
     setVerifyState("pending");
-    const { error } = await supabase.auth.signInWithOtp({
-      email: auth.user.email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/confirm` },
+    const { error } = await apiClient.POST("/v1/me/verification-email", {
+      body: {},
     });
     setVerifyState(error ? "error" : "sent");
   }
@@ -104,13 +100,20 @@ function Account() {
             {verifyState === "sent" ? (
               <p className="text-sm text-muted-foreground">{t("settings.verificationEmailSent")}</p>
             ) : (
-              <Button
-                variant="outline"
-                disabled={verifyState === "pending"}
-                onClick={handleSendVerification}
-              >
-                {t("settings.resendVerification")}
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  disabled={verifyState === "pending"}
+                  onClick={handleSendVerification}
+                >
+                  {t("settings.resendVerification")}
+                </Button>
+                {verifyState === "error" && (
+                  <p className="mt-2 text-sm text-destructive">
+                    {t("settings.verificationEmailFailed")}
+                  </p>
+                )}
+              </>
             )}
           </div>
         )}

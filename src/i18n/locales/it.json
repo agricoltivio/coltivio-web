@@ -278,7 +278,10 @@
     "emailChanged": "Indirizzo e-mail modificato con successo!",
     "goToDashboard": "Vai alla dashboard",
     "emailVerificationFailed": "Verifica dell'e-mail non riuscita.",
-    "linkExpired": "Questo link è scaduto o è già stato utilizzato."
+    "linkExpired": "Questo link è scaduto o è già stato utilizzato.",
+    "verificationLinkExpiredHint": "Accedi e richiedi un nuovo link di conferma dal tuo profilo.",
+    "newsletterConsent": "Sì, desidero ricevere per e-mail informazioni sull'associazione AgriColtivio e sulle nuove funzioni. Puoi disiscriverti in qualsiasi momento.",
+    "privacyPolicy": "Informativa sulla privacy"
   },
   "dashboard": {
     "welcome": "Ciao {{name}}, {{farmName}}",
@@ -301,7 +304,9 @@
     "changeEmailSent": "E-mail di conferma inviata. Controlla la tua casella di posta e clicca sul link.",
     "emailNotVerified": "Il tuo indirizzo e-mail non è ancora stato verificato.",
     "resendVerification": "Invia di nuovo l'e-mail di verifica",
-    "verificationEmailSent": "E-mail di verifica inviata. Controlla la tua casella di posta."
+    "verificationEmailSent": "E-mail di verifica inviata. Controlla la tua casella di posta.",
+    "verifyNow": "Conferma ora",
+    "verificationEmailFailed": "Non è stato possibile inviare l'e-mail di verifica. Attendi qualche minuto e riprova."
   },
   "contacts": {
     "title": "Contatti",
@@ -717,10 +722,10 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "sub": "Rimani aggiornato. Ti terremo informato su nuove funzionalità, aggiornamenti e tutto ciò che riguarda Coltivio.",
+      "sub": "Ti informiamo sull'associazione AgriColtivio e sulle nuove funzioni. Puoi disiscriverti in qualsiasi momento.",
       "placeholder": "tua@email.ch",
       "cta": "Iscriviti",
-      "success": "Grazie! Riceverai a breve un'email di conferma.",
+      "success": "Grazie per l'iscrizione! Ti terremo aggiornato.",
       "error": "Qualcosa è andato storto. Riprova."
     },
     "demo": {
@@ -1662,5 +1667,10 @@
       "read": "Lettura",
       "write": "Scrittura"
     }
+  },
+  "unsubscribe": {
+    "pending": "Disiscrizione in corso…",
+    "done": "Sei disiscritto. Non riceverai altre informazioni dell'associazione per e-mail.",
+    "error": "La disiscrizione non è riuscita. Scrivici a info@coltivio.ch."
   }
 }
