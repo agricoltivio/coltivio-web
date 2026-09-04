@@ -42,6 +42,8 @@ export function NewsletterForm() {
       formData.append("EMAIL", email);
       formData.append("email_address_check", "");
       formData.append("locale", i18n.language.slice(0, 2));
+      formData.append("SPRACHE", i18n.language.slice(0, 2));
+      formData.append("QUELLE", "webapp");
       await fetch(BREVO_ACTION, { method: "POST", body: formData, mode: "no-cors" });
 
       setStatus("success");

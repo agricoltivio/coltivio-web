@@ -1,7 +1,7 @@
-import { apiClient } from "@/api/client";
 import { useAuth } from "@/context/SupabaseAuthContext";
 import { supabase } from "@/lib/supabase";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -23,6 +23,7 @@ const HASH_TYPE = initialHashParams.get("type");
 function AuthConfirm() {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
 
   const [state, setState] = useState<"verifying" | "verified" | "error">(
     HASH_ERROR ? "error" : "verifying",
@@ -31,16 +32,10 @@ function AuthConfirm() {
     HASH_ERROR === "access_denied" ? t("auth.linkExpired") : null,
   );
 
+
   async function markVerified() {
-    const { error: apiError } = await apiClient.PATCH("/v1/me", {
-      body: { emailVerified: true },
-    });
-    if (apiError) {
-      setErrorMessage(t("auth.emailVerificationFailed"));
-      setState("error");
-    } else {
-      setState("verified");
-    }
+    await queryClient.invalidateQueries({ queryKey: ["me"] });
+    setState("verified");
   }
 
   // If we captured hash tokens before Supabase cleared them, set the session manually

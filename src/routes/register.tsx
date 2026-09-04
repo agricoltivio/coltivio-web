@@ -1,5 +1,7 @@
+import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldDescription,
@@ -8,6 +10,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { privacyPolicyUrl } from "@/lib/links";
 import { cn } from "@/lib/utils";
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -19,6 +22,7 @@ interface RegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  newsletterConsent: boolean;
 }
 
 export const Route = createFileRoute("/register")({
@@ -34,7 +38,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const { auth } = Route.useRouteContext();
@@ -45,6 +49,7 @@ export function RegisterForm({
       email: "",
       password: "",
       confirmPassword: "",
+      newsletterConsent: false,
     },
   });
 
@@ -60,9 +65,13 @@ export function RegisterForm({
 
     if (error) {
       setServerError(error.message);
-    } else {
-      setSuccess(true);
+      return;
     }
+    if (data.newsletterConsent) {
+      await apiClient.PATCH("/v1/me", { body: { newsletterConsent: true } });
+    }
+    await apiClient.POST("/v1/me/verification-email", { body: {} });
+    setSuccess(true);
   }
 
   return (
@@ -176,6 +185,35 @@ export function RegisterForm({
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="newsletterConsent"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field>
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="newsletterConsent"
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked === true)}
+                        />
+                        <label
+                          htmlFor="newsletterConsent"
+                          className="text-sm text-muted-foreground leading-snug"
+                        >
+                          {t("auth.newsletterConsent")}{" "}
+                          <a
+                            href={privacyPolicyUrl(i18n.language)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline underline-offset-2"
+                          >
+                            {t("auth.privacyPolicy")}
+                          </a>
+                        </label>
+                      </div>
                     </Field>
                   )}
                 />

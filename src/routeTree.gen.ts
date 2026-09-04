@@ -18,6 +18,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
 import { Route as AuthTokenRouteImport } from './routes/auth.token'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthedUsersRouteImport } from './routes/_authed/users'
@@ -194,6 +195,11 @@ const AuthedRouteRoute = AuthedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthVerifyRoute = AuthVerifyRouteImport.update({
+  id: '/auth/verify',
+  path: '/auth/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthTokenRoute = AuthTokenRouteImport.update({
@@ -980,6 +986,7 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1117,6 +1124,7 @@ export interface FileRoutesByTo {
   '/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1259,6 +1267,7 @@ export interface FileRoutesById {
   '/_authed/users': typeof AuthedUsersRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/export': typeof AuthedAnimalsExportRoute
@@ -1404,6 +1413,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/auth/confirm'
     | '/auth/token'
+    | '/auth/verify'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1541,6 +1551,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/auth/confirm'
     | '/auth/token'
+    | '/auth/verify'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1682,6 +1693,7 @@ export interface FileRouteTypes {
     | '/_authed/users'
     | '/auth/confirm'
     | '/auth/token'
+    | '/auth/verify'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/export'
@@ -1817,6 +1829,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
   AuthTokenRoute: typeof AuthTokenRoute
+  AuthVerifyRoute: typeof AuthVerifyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1882,6 +1895,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/verify': {
+      id: '/auth/verify'
+      path: '/auth/verify'
+      fullPath: '/auth/verify'
+      preLoaderRoute: typeof AuthVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/token': {
@@ -3265,6 +3285,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   AuthConfirmRoute: AuthConfirmRoute,
   AuthTokenRoute: AuthTokenRoute,
+  AuthVerifyRoute: AuthVerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
