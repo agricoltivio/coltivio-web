@@ -300,7 +300,7 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent"
                 >
                   <Avatar className="size-7 rounded-md">
-                    <AvatarFallback className="rounded-md bg-mocha text-xs text-mocha-foreground">
+                    <AvatarFallback className="rounded-md bg-primary text-xs text-primary-foreground">
                       {initials || <User className="size-3.5" />}
                     </AvatarFallback>
                   </Avatar>
