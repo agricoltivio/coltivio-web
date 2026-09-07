@@ -717,12 +717,15 @@ function PlotsMap() {
   }, [mode]);
 
   return (
-    <PageContent title={t("fieldCalendar.plots.title")} showBackButton={false}>
-      <div className="flex justify-end mb-2">
+    <PageContent
+      title={t("fieldCalendar.plots.title")}
+      showBackButton={false}
+      actions={
         <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
           {t("fieldCalendar.plots.newPlot")}
         </Button>
-      </div>
+      }
+    >
       <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
         <Map
           ref={mapRef}

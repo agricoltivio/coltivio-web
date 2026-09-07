@@ -21,7 +21,7 @@ import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table";
 import ReactECharts from "echarts-for-react";
-import { CHART_COLORS } from "@/components/charts/chartUtils";
+import { CHART_COLORS, groupSmallPieSlices, pieTooltipFormatter } from "@/components/charts/chartUtils";
 import z from "zod";
 
 const animalSearchSchema = z.object({
@@ -542,22 +542,22 @@ function AnimalTypePieChart({ animals }: { animals: Animal[] }) {
     for (const animal of animals) {
       counts[animal.type] = (counts[animal.type] ?? 0) + 1;
     }
-    return Object.entries(counts).map(([type, count], i) => ({
+    const items = Object.entries(counts).map(([type, count]) => ({
       name: t(`animals.types.${type}`),
       value: count,
-      itemStyle: { color: CHART_COLORS[i % CHART_COLORS.length] },
     }));
+    return groupSmallPieSlices(items, t("common.other"));
   }, [animals, t]);
 
   const option = {
-    tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-    legend: { bottom: 0, type: "scroll", textStyle: { fontSize: 11 } },
+    tooltip: { trigger: "item", formatter: pieTooltipFormatter((v) => `${v}`) },
     series: [
       {
         type: "pie",
         radius: ["40%", "70%"],
-        center: ["50%", "45%"],
+        center: ["50%", "50%"],
         data: pieData,
+        color: CHART_COLORS,
         label: {
           show: true,
           formatter: "{b}: {c}",

@@ -12,7 +12,7 @@ import { checkUserHasAccess } from "@/lib/membership";
 import { inlineLink, threadTypeBadgeClass } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { FieldworkMap } from "@/components/FieldworkMap";
-import { CHART_COLORS } from "@/components/charts/chartUtils";
+import { CHART_COLORS, groupSmallPieSlices, pieTooltipFormatter } from "@/components/charts/chartUtils";
 import { Badge } from "@/components/ui/badge";
 import { Lock, MessageSquare } from "lucide-react";
 import {
@@ -124,40 +124,46 @@ function RouteComponent() {
     ? [...harvests.byCrop].sort((a, b) => b.totalKilos - a.totalKilos)[0]
     : null;
 
-  // Animals by type donut
+  // Animals by type donut. Outside labels + leader lines identify slices instead of a
+  // legend (which overlapped the donut once there were enough types) — tiny slices are
+  // folded into "other" so the lines stay legible instead of overlapping.
   const animalsByTypeOption = {
-    tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-    legend: { orient: "horizontal", bottom: 0, left: "center", textStyle: { fontSize: 12 } },
+    tooltip: { trigger: "item", formatter: pieTooltipFormatter((v) => `${v}`) },
     series: [
       {
         type: "pie",
         radius: ["40%", "68%"],
-        center: ["50%", "42%"],
-        data: animals.byType.map((item) => ({
-          name: t(`animals.types.${item.type}`, { defaultValue: item.type }),
-          value: item.count,
-        })),
+        center: ["50%", "50%"],
+        data: groupSmallPieSlices(
+          animals.byType.map((item) => ({
+            name: t(`animals.types.${item.type}`, { defaultValue: item.type }),
+            value: item.count,
+          })),
+          t("common.other"),
+        ),
         color: CHART_COLORS,
-        label: { show: false },
+        label: { show: true, formatter: "{b}: {c}", fontSize: 11 },
       },
     ],
   };
 
   // Plots by current crop (from active crop rotations — plotCount per crop)
   const plotsByCropOption = {
-    tooltip: { trigger: "item", formatter: "{b}: {c} Schläge ({d}%)" },
-    legend: { orient: "horizontal", bottom: 0, left: "center", textStyle: { fontSize: 12 } },
+    tooltip: { trigger: "item", formatter: pieTooltipFormatter((v) => `${v} Schläge`) },
     series: [
       {
         type: "pie",
         radius: ["40%", "68%"],
-        center: ["50%", "42%"],
-        data: cropRotations.active.map((item) => ({
-          name: item.cropName,
-          value: item.plotCount,
-        })),
+        center: ["50%", "50%"],
+        data: groupSmallPieSlices(
+          cropRotations.active.map((item) => ({
+            name: item.cropName,
+            value: item.plotCount,
+          })),
+          t("common.other"),
+        ),
         color: CHART_COLORS,
-        label: { show: false },
+        label: { show: true, formatter: "{b}: {c}", fontSize: 11 },
       },
     ],
   };

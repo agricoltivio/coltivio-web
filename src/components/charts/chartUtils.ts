@@ -59,6 +59,66 @@ export function toBaseAmount(
   }
 }
 
+export interface PieSlice {
+  name: string;
+  value: number;
+  // Present only on a synthetic "other" slice — the individual slices it was folded from,
+  // so the tooltip can still break them out on hover. See pieTooltipFormatter.
+  children?: PieSlice[];
+}
+
+/**
+ * Collapse small pie/donut slices into a single trailing "other" slice so outside labels
+ * with leader lines stay legible instead of overlapping. A slice's label needs room
+ * proportional to its share of the total, not to how many slices there are — so the only
+ * cutoff is `minSharePercent`; a chart with many slices above it is left alone.
+ */
+export function groupSmallPieSlices(
+  items: PieSlice[],
+  otherLabel: string,
+  { minSharePercent = 4 }: { minSharePercent?: number } = {},
+): PieSlice[] {
+  const total = items.reduce((sum, item) => sum + item.value, 0);
+  if (total <= 0) return items;
+
+  const sorted = [...items].sort((a, b) => b.value - a.value);
+  const kept: PieSlice[] = [];
+  const otherChildren: PieSlice[] = [];
+  for (const item of sorted) {
+    if ((item.value / total) * 100 < minSharePercent) {
+      otherChildren.push(item);
+    } else {
+      kept.push(item);
+    }
+  }
+  if (otherChildren.length > 0) {
+    const otherValue = otherChildren.reduce((sum, item) => sum + item.value, 0);
+    kept.push({ name: otherLabel, value: otherValue, children: otherChildren });
+  }
+  return kept;
+}
+
+/**
+ * Echarts pie tooltip formatter: the usual "name: value (pct%)" line, plus — for the
+ * synthetic "other" slice produced by groupSmallPieSlices — one indented line per folded-in
+ * slice showing what it's made up of. `formatValue` renders a slice's raw value (add units,
+ * a suffix, etc.); the same formatting is reused for the breakdown lines.
+ */
+export function pieTooltipFormatter(formatValue: (value: number) => string) {
+  return (params: { name: string; value: number; percent: number; marker: string; data: PieSlice }) => {
+    const mainLine = `${params.marker}${params.name}: ${formatValue(params.value)} (${params.percent}%)`;
+    if (!params.data.children || params.data.children.length === 0) return mainLine;
+
+    const breakdown = params.data.children
+      .map((child) => {
+        const share = params.value > 0 ? Math.round((child.value / params.value) * 100) : 0;
+        return `<div style="margin-left:16px">${child.name}: ${formatValue(child.value)} (${share}%)</div>`;
+      })
+      .join("");
+    return `${mainLine}${breakdown}`;
+  };
+}
+
 /** Compute running cumulative sum of a 12-element monthly array. */
 export function computeCumulative(data: number[]): number[] {
   let running = 0;
