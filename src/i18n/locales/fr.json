@@ -278,6 +278,8 @@
     "emailVerified": "E-mail vérifié avec succès !",
     "emailChanged": "Adresse e-mail modifiée avec succès !",
     "goToDashboard": "Aller au tableau de bord",
+    "emailVerifiedClose": "Tu peux maintenant fermer cette fenêtre.",
+    "emailNotYetVerified": "Ton adresse e-mail n'est pas encore confirmée. Vérifie ta boîte de réception : l'e-mail « Confirmez votre adresse e-mail ».",
     "emailVerificationFailed": "La vérification de l'e-mail a échoué.",
     "linkExpired": "Ce lien a expiré ou a déjà été utilisé.",
     "verificationLinkExpiredHint": "Connecte-toi et demande un nouveau lien de confirmation depuis ton compte.",

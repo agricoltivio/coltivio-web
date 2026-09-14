@@ -15,28 +15,24 @@ const VERIFY_TOKEN =
 
 function AuthVerify() {
   const { t } = useTranslation();
-  const [state, setState] = useState<"verifying" | "error">("verifying");
+  const [state, setState] = useState<"verifying" | "verified" | "error">(
+    VERIFY_TOKEN ? "verifying" : "error",
+  );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!VERIFY_TOKEN) {
-      setErrorMessage(t("auth.emailVerificationFailed"));
-      setState("error");
-      return;
-    }
-    // Exchanging the token verifies the address and hands back a fresh magic link, so the click
-    // also logs the user in, even on a device that never had a session.
+    if (!VERIFY_TOKEN) return;
     let cancelled = false;
     apiClient
       .POST("/v1/auth/verify-email", { body: { token: VERIFY_TOKEN } })
       .then(({ data, error }) => {
         if (cancelled) return;
-        if (error || !data?.data?.url) {
+        if (error || !data?.data?.verified) {
           setErrorMessage(t("auth.linkExpired"));
           setState("error");
           return;
         }
-        window.location.href = data.data.url;
+        setState("verified");
       });
     return () => {
       cancelled = true;
@@ -65,9 +61,24 @@ function AuthVerify() {
     );
   }
 
+  if (state === "verified") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="space-y-3 text-center">
+          <p className="text-sm text-green-600">{t("auth.emailVerified")}</p>
+          <p className="text-muted-foreground text-sm">
+            {t("auth.emailVerifiedClose")}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground text-sm">{t("auth.verifyingEmail")}</p>
+      <p className="text-muted-foreground text-sm">
+        {t("auth.verifyingEmail")}
+      </p>
     </div>
   );
 }

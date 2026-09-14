@@ -70,7 +70,6 @@ export function RegisterForm({
     if (data.newsletterConsent) {
       await apiClient.PATCH("/v1/me", { body: { newsletterConsent: true } });
     }
-    await apiClient.POST("/v1/me/verification-email", { body: {} });
     setSuccess(true);
   }
 

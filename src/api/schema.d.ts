@@ -11978,7 +11978,7 @@ export interface components {
         };
         PostV1AuthVerifyEmailPositiveResponse: {
             data: {
-                url: string;
+                verified: boolean;
             };
         };
         PostV1AuthVerifyEmailRequestBody: {

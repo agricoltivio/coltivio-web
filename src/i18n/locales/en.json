@@ -278,6 +278,8 @@
     "emailVerified": "Email successfully verified!",
     "emailChanged": "Email address successfully changed!",
     "goToDashboard": "Go to dashboard",
+    "emailVerifiedClose": "You can close this window now.",
+    "emailNotYetVerified": "Your email address is not confirmed yet. Check your inbox for the email “Confirm your email address”.",
     "emailVerificationFailed": "Email verification failed.",
     "linkExpired": "This link has expired or has already been used.",
     "verificationLinkExpiredHint": "Sign in and request a new confirmation link from your account page.",

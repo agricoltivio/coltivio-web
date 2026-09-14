@@ -278,6 +278,8 @@
     "emailVerified": "E-Mail erfolgreich bestätigt!",
     "emailChanged": "E-Mail-Adresse erfolgreich geändert!",
     "goToDashboard": "Zum Dashboard",
+    "emailVerifiedClose": "Du kannst dieses Fenster jetzt schliessen.",
+    "emailNotYetVerified": "Deine E-Mail-Adresse ist noch nicht bestätigt. Prüfe dein Postfach auf die Mail „Bestätige deine E-Mail-Adresse“.",
     "emailVerificationFailed": "Die E-Mail-Bestätigung ist fehlgeschlagen.",
     "linkExpired": "Dieser Link ist abgelaufen oder wurde bereits verwendet.",
     "verificationLinkExpiredHint": "Melde dich an und fordere im Konto einen neuen Bestätigungslink an.",
