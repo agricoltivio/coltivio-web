@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { components } from "@/api/schema";
+import { mapAttribution } from "@/lib/mapAttribution";
 
 type FieldEvent =
   components["schemas"]["GetV1FarmFieldEventsPositiveResponse"]["data"]["result"][number];
@@ -152,13 +153,15 @@ export function FieldworkMap({
 
   const handleMapLoad = (e: maplibregl.MapLibreEvent) => {
     const map = e.target;
+    const attribution = mapAttribution(t, i18n.language);
     map.addSource("satellite", {
       type: "raster",
       tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"],
       tileSize: 256,
+      attribution: attribution.swisstopo,
     });
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite" });
-    map.addSource("fieldwork", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addSource("fieldwork", { type: "geojson", data: EMPTY_GEOJSON, attribution: attribution.cantons });
     map.addLayer({
       id: "fieldwork-fill",
       type: "fill",
@@ -222,8 +225,9 @@ export function FieldworkMap({
           style={{ width: "100%", height: "100%" }}
         >
           <NavigationControl position="top-left" />
-          {/* Attribution moved to top-right, compact */}
-          <AttributionControl compact position="top-right" />
+          {/* Top-right because the playback controls cover the bottom. Not compact:
+              the cantonal terms ask for a visible source note. */}
+          <AttributionControl compact={false} position="top-right" />
 
           {activeLabels.map((label) => (
             <Marker key={label.key} longitude={label.lng} latitude={label.lat} anchor="bottom">

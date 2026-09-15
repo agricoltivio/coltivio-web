@@ -295,6 +295,9 @@
     "noUpcomingTasks": "Nessuna attività aperta",
     "noThreads": "Ancora nessun post"
   },
+  "map": {
+    "attributionCantons": "Cantoni (geodienste.ch)"
+  },
   "settings": {
     "title": "Impostazioni",
     "language": "Lingua",

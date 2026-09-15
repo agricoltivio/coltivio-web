@@ -6,7 +6,7 @@ import { Home, Layers, List, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
-import Map, { Marker, NavigationControl } from "react-map-gl/maplibre";
+import Map, { AttributionControl, Marker, NavigationControl } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -32,6 +32,7 @@ import {
   resolvePlotColor,
   type PlotColorMode,
 } from "@/lib/plotColor";
+import { mapAttribution } from "@/lib/mapAttribution";
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
@@ -333,7 +334,7 @@ export const Route = createFileRoute("/_authed/field-calendar/plots")({
 type BaseLayer = "satellite" | "pixelkarte";
 
 function PlotsMap() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeLayer, setActiveLayer] = useState<BaseLayer>("satellite");
   const [plotColorMode, setPlotColorMode] = useState<PlotColorMode>("plot");
   const mapRef = useRef<MapRef>(null);
@@ -512,13 +513,14 @@ function PlotsMap() {
 
   const handleMapLoad = (e: maplibregl.MapLibreEvent) => {
     const map = e.target;
+    const attribution = mapAttribution(t, i18n.language);
 
-    map.addSource("satellite", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256 });
+    map.addSource("satellite", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite", layout: { visibility: activeLayerRef.current === "satellite" ? "visible" : "none" } });
-    map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256 });
+    map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
     map.addLayer({ id: "pixelkarte-layer", type: "raster", source: "pixelkarte", layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" } });
 
-    map.addSource("plots", { type: "geojson", data: geojsonRef.current });
+    map.addSource("plots", { type: "geojson", data: geojsonRef.current, attribution: attribution.cantons });
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
     map.addLayer({ id: "plots-fill", type: "fill", source: "plots", paint: { "fill-color": ["case", ["==", ["get", "selected"], 1], "#4ade80", ["get", "color"]], "fill-opacity": 0.5 } });
     map.addLayer({ id: "plots-line", type: "line", source: "plots", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#ffffff"], "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1] } });
@@ -732,6 +734,7 @@ function PlotsMap() {
           initialViewState={{ longitude: savedViewport?.lng ?? 8.2, latitude: savedViewport?.lat ?? 46.8, zoom: savedViewport?.zoom ?? 8 }}
           mapStyle={EMPTY_MAP_STYLE}
           onLoad={handleMapLoad}
+          attributionControl={false}
           onMoveEnd={(e) => {
             sessionStorage.setItem(VIEWPORT_STORAGE_KEY, JSON.stringify({ lng: e.viewState.longitude, lat: e.viewState.latitude, zoom: e.viewState.zoom }));
           }}
@@ -850,6 +853,7 @@ function PlotsMap() {
           ))}
 
           <NavigationControl position="top-left" />
+          <AttributionControl compact={false} position="bottom-right" />
         </Map>
 
         {/* Drawing instruction — top center */}

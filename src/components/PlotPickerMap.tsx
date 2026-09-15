@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Map, {
+  AttributionControl,
   Marker,
   NavigationControl,
   type MapRef,
@@ -13,7 +14,9 @@ import { farmQueryOptions } from "@/api/farm.queries";
 import { Button } from "@/components/ui/button";
 import { PlotColorModeToggle } from "@/components/PlotColorModeToggle";
 import { resolvePlotColor, type PlotColorMode } from "@/lib/plotColor";
+import { mapAttribution } from "@/lib/mapAttribution";
 import type { Plot } from "@/api/types";
+import { useTranslation } from "react-i18next";
 
 const EMPTY_STYLE: maplibregl.StyleSpecification = {
   version: 8,
@@ -64,6 +67,7 @@ export function PlotPickerMap({
   selectedIds: string[];
   onPick: (plotId: string) => void;
 }) {
+  const { t, i18n } = useTranslation();
   const mapRef = useRef<MapRef>(null);
   const hoveredIdRef = useRef<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -80,11 +84,13 @@ export function PlotPickerMap({
   const handleLoad = useCallback(
     (event: maplibregl.MapLibreEvent) => {
       const map = event.target;
+      const attribution = mapAttribution(t, i18n.language);
 
       map.addSource("satellite", {
         type: "raster",
         tiles: [SWISS_SATELLITE],
         tileSize: 256,
+        attribution: attribution.swisstopo,
       });
       map.addLayer({
         id: "satellite-layer",
@@ -98,6 +104,7 @@ export function PlotPickerMap({
         type: "raster",
         tiles: [SWISS_PIXELKARTE],
         tileSize: 256,
+        attribution: attribution.swisstopo,
       });
       map.addLayer({
         id: "pixelkarte-layer",
@@ -112,6 +119,7 @@ export function PlotPickerMap({
         type: "geojson",
         promoteId: "id",
         data: toFeatureCollection(plots, selectedIds, colorModeRef.current),
+        attribution: attribution.cantons,
       });
       map.addLayer({
         id: "plots-fill",
@@ -222,6 +230,7 @@ export function PlotPickerMap({
         initialViewState={{ longitude: 8.23, latitude: 46.8, zoom: 7 }}
         mapStyle={EMPTY_STYLE}
         onLoad={handleLoad}
+        attributionControl={false}
         interactiveLayerIds={["plots-fill"]}
         onMouseMove={(event) =>
           setHover(
@@ -238,6 +247,7 @@ export function PlotPickerMap({
         style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="top-left" />
+        <AttributionControl compact={false} position="bottom-right" />
         {farm?.location?.coordinates && (
           <Marker
             longitude={farm.location.coordinates[0]}
