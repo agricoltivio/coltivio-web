@@ -210,6 +210,17 @@ function AuthedLayout() {
               </div>
             </div>
           )}
+          {meQuery.data && !meQuery.data.emailVerified && (
+            <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
+              <p className="text-sm font-medium">{t("settings.emailNotVerified")}</p>
+              <Link
+                to="/account"
+                className="shrink-0 text-sm font-semibold underline underline-offset-2 hover:text-amber-700"
+              >
+                {t("settings.verifyNow")}
+              </Link>
+            </div>
+          )}
           {activeFarmStatus === "must-select" ? (
             <FarmPicker />
           ) : !meQuery.isLoading && !hasFarmId && !isExemptFromFarmCheck ? (
