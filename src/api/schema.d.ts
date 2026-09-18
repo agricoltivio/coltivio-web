@@ -3742,12 +3742,7 @@ export interface components {
                     id: string;
                     name: string;
                     /** @enum {string} */
-                    outcome: "leave" | "transfer" | "delete";
-                    candidates: {
-                        id: string;
-                        fullName: string | null;
-                        email: string;
-                    }[];
+                    outcome: "leave" | "delete";
                 }[];
             };
         };
@@ -3756,9 +3751,6 @@ export interface components {
         };
         PostV1MeDeletionRequestBody: {
             email: string;
-            transfers: {
-                [key: string]: string;
-            };
         };
         GetV1PlotsPositiveResponse: {
             data: {
