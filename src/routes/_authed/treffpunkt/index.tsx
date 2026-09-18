@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { forumAuthorName } from "@/lib/forum";
 
 export const Route = createFileRoute("/_authed/treffpunkt/")({
   loader: ({ context: { queryClient } }) => {
@@ -193,7 +194,7 @@ function TreffpunktPage() {
                     <span className="text-xs leading-4 text-muted-foreground">
                       {t("treffpunkt.dateByAuthor", {
                         date: formatDate(thread.updatedAt),
-                        author: thread.creator.fullName ?? t("common.unknown"),
+                        author: forumAuthorName(thread.creator, t),
                       })}
                     </span>
                   </div>

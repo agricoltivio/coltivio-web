@@ -15,6 +15,7 @@ import { FieldworkMap } from "@/components/FieldworkMap";
 import { CHART_COLORS, groupSmallPieSlices, pieTooltipFormatter } from "@/components/charts/chartUtils";
 import { Badge } from "@/components/ui/badge";
 import { Lock, MessageSquare } from "lucide-react";
+import { forumAuthorName } from "@/lib/forum";
 import {
   Select,
   SelectContent,
@@ -455,7 +456,7 @@ function RouteComponent() {
                         typeof thread.updatedAt === "string"
                           ? new Date(thread.updatedAt).toLocaleDateString()
                           : "",
-                      author: thread.creator.fullName ?? t("common.unknown"),
+                      author: forumAuthorName(thread.creator, t),
                     })}
                   </span>
                 </Link>

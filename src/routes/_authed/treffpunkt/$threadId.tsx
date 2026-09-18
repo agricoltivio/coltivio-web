@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { forumAuthorName } from "@/lib/forum";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -367,7 +368,7 @@ function ThreadDetail() {
             headerLeft={
               <span className="min-w-0 flex-1 truncate text-sm">
                 <span className="font-medium text-foreground">
-                  {thread.creator.fullName ?? t("common.unknown")}
+                  {forumAuthorName(thread.creator, t)}
                 </span>{" "}
                 <span className="text-muted-foreground">
                   {t("treffpunkt.entryOpened")} · {timeAgo(thread.createdAt)}
@@ -441,7 +442,7 @@ function ThreadDetail() {
         {/* Replies */}
         {(replies as ForumReply[]).map((reply) => {
           const isReplyOwner = me?.id === reply.createdBy;
-          const isReplyByThreadAuthor = reply.createdBy === thread.createdBy;
+          const isReplyByThreadAuthor = reply.createdBy != null && reply.createdBy === thread.createdBy;
           const isEditingThis = editingReplyId === reply.id;
 
           return (
@@ -452,7 +453,7 @@ function ThreadDetail() {
                 headerLeft={
                   <span className="min-w-0 flex-1 truncate text-sm">
                     <span className="font-medium text-foreground">
-                      {reply.creator.fullName ?? t("common.unknown")}
+                      {forumAuthorName(reply.creator, t)}
                     </span>{" "}
                     <span className="text-muted-foreground">
                       {t("treffpunkt.entryReplied")} · {timeAgo(reply.createdAt)}
