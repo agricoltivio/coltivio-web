@@ -25,6 +25,7 @@
       "dark": "Scuro"
     },
     "noResults": "Nessun risultato",
+    "selectAll": "Seleziona tutti",
     "clearAll": "Cancella tutto",
     "deselectAll": "Deseleziona tutto",
     "close": "Chiudi",
@@ -1395,31 +1396,15 @@
       "addItem": "Aggiungi elemento",
       "itemName": "Nome elemento",
       "itemDueDate": "Data di scadenza",
-      "createFromLinks": "Crea lista di controllo dai collegamenti"
-    },
-    "links": {
-      "title": "Collegamento",
-      "addLink": "Aggiungi collegamento",
-      "selectAll": "Seleziona tutti",
-      "clearAll": "Rimuovi tutti",
-      "selected": "selezionato/i",
-      "types": {
+      "generate": "Genera lista di controllo",
+      "generateHint": "Genera una lista di controllo da animali, mandrie o appezzamenti.",
+      "entityTypes": {
         "animal": "Animale",
+        "animalPlural": "Animali",
         "herd": "Mandria",
+        "herdPlural": "Mandrie",
         "plot": "Appezzamento",
-        "contact": "Contatto",
-        "order": "Ordine",
-        "treatment": "Trattamento",
-        "wiki_entry": "Voce Wiki"
-      },
-      "typesPlural": {
-        "animal": "Animali",
-        "herd": "Mandrie",
-        "plot": "Appezzamenti",
-        "contact": "Contatti",
-        "order": "Ordini",
-        "treatment": "Trattamenti",
-        "wiki_entry": "Voci Wiki"
+        "plotPlural": "Appezzamenti"
       }
     },
     "pin": "Fissa",

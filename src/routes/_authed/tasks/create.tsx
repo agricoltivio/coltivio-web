@@ -29,10 +29,7 @@ function buildApiBody(data: TaskFormData) {
             : undefined,
         }
       : undefined,
-    links: data.links.map((l) => ({
-      linkType: l.linkType,
-      linkedId: l.linkedId,
-    })),
+    links: [],
     checklistItems:
       data.checklistItems.length > 0
         ? data.checklistItems.map((ci) => ({

@@ -260,8 +260,6 @@ export type Task =
   components["schemas"]["GetV1TasksPositiveResponse"]["data"]["result"][number];
 export type TaskDetail =
   components["schemas"]["GetV1TasksByIdTaskIdPositiveResponse"]["data"];
-export type TaskLink = TaskDetail["links"][number];
-export type TaskLinkType = TaskLink["linkType"];
 export type TaskStatus = Task["status"];
 export type TaskChecklistItem = TaskDetail["checklistItems"][number];
 export type TaskRecurrence = NonNullable<Task["recurrence"]>;

@@ -25,6 +25,7 @@
       "dark": "Sombre"
     },
     "noResults": "Aucun résultat",
+    "selectAll": "Tout sélectionner",
     "clearAll": "Tout effacer",
     "deselectAll": "Désélectionner tout",
     "close": "Fermer",
@@ -1395,31 +1396,15 @@
       "addItem": "Ajouter un élément",
       "itemName": "Nom de l'élément",
       "itemDueDate": "Date d'échéance",
-      "createFromLinks": "Créer une liste de contrôle à partir des liens"
-    },
-    "links": {
-      "title": "Liens",
-      "addLink": "Ajouter un lien",
-      "selectAll": "Tout sélectionner",
-      "clearAll": "Tout effacer",
-      "selected": "sélectionné(s)",
-      "types": {
+      "generate": "Générer une liste de contrôle",
+      "generateHint": "Générez une liste de contrôle à partir de vos animaux, troupeaux ou parcelles.",
+      "entityTypes": {
         "animal": "Animal",
+        "animalPlural": "Animaux",
         "herd": "Troupeau",
+        "herdPlural": "Troupeaux",
         "plot": "Parcelle",
-        "contact": "Contact",
-        "order": "Commande",
-        "treatment": "Traitement",
-        "wiki_entry": "Article Wiki"
-      },
-      "typesPlural": {
-        "animal": "Animaux",
-        "herd": "Troupeaux",
-        "plot": "Parcelles",
-        "contact": "Contacts",
-        "order": "Commandes",
-        "treatment": "Traitements",
-        "wiki_entry": "Articles Wiki"
+        "plotPlural": "Parcelles"
       }
     },
     "pin": "Épingler",

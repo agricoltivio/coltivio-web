@@ -1,23 +1,16 @@
-import { createFileRoute, Link, useNavigate, type LinkProps } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { Pin, Check, SquarePen, Trash2 } from "lucide-react";
 import { taskQueryOptions } from "@/api/tasks.queries";
 import { apiClient } from "@/api/client";
-import type { TaskLinkType, TaskChecklistItem } from "@/api/types";
+import type { TaskChecklistItem } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,60 +30,9 @@ export const Route = createFileRoute("/_authed/tasks/$taskId/")({
   component: TaskDetailPage,
 });
 
-interface LinkAccess {
-  canReadAnimals: boolean;
-  canReadFieldCalendar: boolean;
-  canReadCommerce: boolean;
-}
-
-// Maps a linkType + linkedId to a TanStack Router LinkProps for navigation.
-// Returns null when the user lacks read access for that entity's feature.
-function linkHref(
-  linkType: TaskLinkType,
-  linkedId: string,
-  taskId: string,
-  access: LinkAccess,
-): LinkProps | null {
-  const returnTo = `/tasks/${taskId}`;
-  switch (linkType) {
-    case "animal":
-      return access.canReadAnimals
-        ? { to: "/animals/$animalId", params: { animalId: linkedId }, search: { returnTo } }
-        : null;
-    case "herd":
-      return access.canReadAnimals
-        ? { to: "/animals/herds/$herdId", params: { herdId: linkedId }, search: { returnTo } }
-        : null;
-    case "plot":
-      return access.canReadFieldCalendar
-        ? { to: "/field-calendar/plots/$plotId", params: { plotId: linkedId }, search: { returnTo } }
-        : null;
-    case "contact":
-      return access.canReadCommerce
-        ? { to: "/contacts/$contactId", params: { contactId: linkedId }, search: { returnTo } }
-        : null;
-    case "order":
-      return access.canReadCommerce
-        ? { to: "/orders/$orderId", params: { orderId: linkedId }, search: { returnTo } }
-        : null;
-    case "treatment":
-      return access.canReadAnimals
-        ? { to: "/treatments/$treatmentId", params: { treatmentId: linkedId }, search: { returnTo } }
-        : null;
-    case "wiki_entry":
-      return { to: "/wiki/$entryId", params: { entryId: linkedId }, search: { returnTo } };
-    default:
-      return null;
-  }
-}
-
 function TaskDetailPage() {
   const { t } = useTranslation();
   const { canWrite: canWriteTasks } = useFeatureAccess("tasks");
-  const { canRead: canReadAnimals } = useFeatureAccess("animals");
-  const { canRead: canReadFieldCalendar } = useFeatureAccess("field_calendar");
-  const { canRead: canReadCommerce } = useFeatureAccess("commerce");
-  const linkAccess = { canReadAnimals, canReadFieldCalendar, canReadCommerce };
   const { taskId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -163,8 +105,6 @@ function TaskDetailPage() {
     },
   });
 
-  const [openLinksType, setOpenLinksType] = useState<TaskLinkType | null>(null);
-
   function formatDate(date: string | unknown) {
     if (!date || typeof date !== "string") return "-";
     return new Date(date).toLocaleDateString();
@@ -191,15 +131,6 @@ function TaskDetailPage() {
   }
 
   const task = taskQuery.data;
-
-  // Group links by linkType
-  const linksByType = task.links.reduce<
-    Partial<Record<TaskLinkType, typeof task.links>>
-  >((acc, link) => {
-    if (!acc[link.linkType]) acc[link.linkType] = [];
-    acc[link.linkType]!.push(link);
-    return acc;
-  }, {});
 
   return (
     <PageContent showBackButton backTo={() => navigate({ to: "/tasks" })}>
@@ -376,72 +307,6 @@ function TaskDetailPage() {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Links — compact chips, click opens detail modal */}
-        {task.links.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("tasks.links.title")}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {(Object.entries(linksByType) as [TaskLinkType, typeof task.links][]).map(
-                  ([linkType, links]) => {
-                    const label =
-                      links.length <= 2
-                        ? links.map((l) => l.displayName || l.linkedId).join(", ")
-                        : `${links.length} ${t(`tasks.links.typesPlural.${linkType}`)}`;
-                    return (
-                      <button
-                        key={linkType}
-                        type="button"
-                        onClick={() => setOpenLinksType(linkType)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-sm border rounded-full hover:bg-accent transition-colors"
-                      >
-                        <span className="text-xs text-muted-foreground">
-                          {t(`tasks.links.types.${linkType}`)}:
-                        </span>
-                        <span className="font-medium">{label}</span>
-                      </button>
-                    );
-                  },
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Modal listing items for the selected link type */}
-        {openLinksType && linksByType[openLinksType] && (
-          <Dialog open onOpenChange={(open) => !open && setOpenLinksType(null)}>
-            <DialogContent className="max-w-sm">
-              <DialogHeader>
-                <DialogTitle>{t(`tasks.links.types.${openLinksType}`)}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-1">
-                {linksByType[openLinksType]!.map((link) => {
-                  const href = linkHref(link.linkType, link.linkedId, taskId, linkAccess);
-                  const label = link.displayName || link.linkedId;
-                  return href ? (
-                    <Link
-                      key={link.id}
-                      {...href}
-                      onClick={() => setOpenLinksType(null)}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-md hover:bg-accent transition-colors text-sm"
-                    >
-                      <span>{label}</span>
-                      <span className="text-muted-foreground text-xs">›</span>
-                    </Link>
-                  ) : (
-                    <div key={link.id} className="px-3 py-2.5 text-sm text-muted-foreground">
-                      {label}
-                    </div>
-                  );
-                })}
-              </div>
-            </DialogContent>
-          </Dialog>
         )}
       </div>
     </PageContent>

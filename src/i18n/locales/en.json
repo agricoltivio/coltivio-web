@@ -25,6 +25,7 @@
       "dark": "Dark"
     },
     "noResults": "No results found",
+    "selectAll": "Select all",
     "clearAll": "Clear all",
     "deselectAll": "Deselect all",
     "close": "Close",
@@ -1395,31 +1396,15 @@
       "addItem": "Add item",
       "itemName": "Item name",
       "itemDueDate": "Due date",
-      "createFromLinks": "Create checklist from links"
-    },
-    "links": {
-      "title": "Links",
-      "addLink": "Add link",
-      "selectAll": "Select all",
-      "clearAll": "Clear all",
-      "selected": "selected",
-      "types": {
+      "generate": "Generate checklist",
+      "generateHint": "Generate a checklist from your animals, herds, or plots.",
+      "entityTypes": {
         "animal": "Animal",
+        "animalPlural": "Animals",
         "herd": "Herd",
-        "plot": "Plot",
-        "contact": "Contact",
-        "order": "Order",
-        "treatment": "Treatment",
-        "wiki_entry": "Wiki Entry"
-      },
-      "typesPlural": {
-        "animal": "Animals",
-        "herd": "Herds",
-        "plot": "Plots",
-        "contact": "Contacts",
-        "order": "Orders",
-        "treatment": "Treatments",
-        "wiki_entry": "Wiki Entries"
+        "herdPlural": "Herds",
+        "plot": "Field",
+        "plotPlural": "Fields"
       }
     },
     "pin": "Pin",

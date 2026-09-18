@@ -25,6 +25,7 @@
       "dark": "Dunkel"
     },
     "noResults": "Keine Ergebnisse gefunden",
+    "selectAll": "Alle auswählen",
     "clearAll": "Alle zurücksetzen",
     "deselectAll": "Auswahl aufheben",
     "close": "Schliessen",
@@ -1395,31 +1396,15 @@
       "addItem": "Element hinzufügen",
       "itemName": "Elementname",
       "itemDueDate": "Fälligkeitsdatum",
-      "createFromLinks": "Checkliste aus Verknüpfungen erstellen"
-    },
-    "links": {
-      "title": "Verknüpfungen",
-      "addLink": "Verknüpfung hinzufügen",
-      "selectAll": "Alle auswählen",
-      "clearAll": "Alle entfernen",
-      "selected": "ausgewählt",
-      "types": {
+      "generate": "Checkliste generieren",
+      "generateHint": "Checkliste aus Tieren, Herden oder Schlägen erstellen.",
+      "entityTypes": {
         "animal": "Tier",
+        "animalPlural": "Tiere",
         "herd": "Herde",
+        "herdPlural": "Herden",
         "plot": "Schlag",
-        "contact": "Kontakt",
-        "order": "Bestellung",
-        "treatment": "Behandlung",
-        "wiki_entry": "Wiki-Eintrag"
-      },
-      "typesPlural": {
-        "animal": "Tiere",
-        "herd": "Herden",
-        "plot": "Schläge",
-        "contact": "Kontakte",
-        "order": "Bestellungen",
-        "treatment": "Behandlungen",
-        "wiki_entry": "Wiki-Einträge"
+        "plotPlural": "Schläge"
       }
     },
     "pin": "Anheften",
