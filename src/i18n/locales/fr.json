@@ -41,6 +41,7 @@
     "download": "Télécharger",
     "name": "Nom",
     "unknown": "Inconnu",
+    "deletedUser": "Utilisateur supprimé",
     "title": "Titre",
     "date": "Date",
     "done": "Terminé",
