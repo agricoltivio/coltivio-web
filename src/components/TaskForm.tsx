@@ -264,7 +264,7 @@ export function TaskForm({
             <FieldLabel>{t("tasks.checklist.title")}</FieldLabel>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               size="icon"
               title={t("tasks.checklist.generate")}
               onClick={() => setChecklistGenOpen(true)}
