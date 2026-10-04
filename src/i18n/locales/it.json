@@ -1028,7 +1028,6 @@
         "998": "Altre superfici fuori dall'azienda agricola e dai pascoli d'alpeggio"
       },
       "import": {
-        "button": "Importa",
         "title": "Importa particelle",
         "previewTitle": "Anteprima importazione",
         "summaryTitle": "Riepilogo",
@@ -1047,7 +1046,7 @@
         "editRow": "Modifica particella",
         "noRows": "Nessuna particella.",
         "noGeometry": "Nessuna geometria – non importabile.",
-        "conflictWarning": "Si sovrappone a: {{plots}}. All'importazione l'area viene ritagliata da queste particelle.",
+        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. All'importazione, l'area verrà rimossa da queste particelle.",
         "conflictExplanation": "Questa particella si sovrappone a particelle esistenti. Se la importi, la parte sovrapposta viene ritagliata dalle particelle esistenti – come quando crei una particella manualmente.",
         "name": "Nome",
         "summaryDesc": "Verranno importate {{count}} particelle ({{size}}).",
@@ -1072,7 +1071,8 @@
           "partial": "Non tutti gli attributi sono stati letti dal file. Controlla nomi, numeri di particella e utilizzazioni.",
           "geometries_only": "Dal file sono stati letti solo i contorni delle particelle – mancano nomi, numeri di particella e utilizzazioni. Completali dove necessario.",
           "defaultUsage": "Le utilizzazioni mancanti vengono impostate su «Altri prati permanenti»."
-        }
+        },
+        "supportHint": "Problemi con l'importazione? Contatta <mail>support@coltivio.ch</mail>."
       },
       "delete": {
         "button": "Elimina particella",
@@ -1496,8 +1496,7 @@
       "federal_id": {
         "heading": "Il tuo codice azienda agricola",
         "label": "Codice azienda agricola",
-        "skip": "Salta",
-        "no_plots_hint": "Nessuna particella trovata? Puoi anche importare le tue particelle manualmente più tardi, ad es. come export shapefile da LAWIS o dal GIS cantonale (vista azienda)."
+        "skip": "Salta"
       },
       "confirm": {
         "heading": "Riepilogo",

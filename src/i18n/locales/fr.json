@@ -1028,7 +1028,6 @@
         "998": "Autres surfaces hors zone agricole et pâturages d'alpage"
       },
       "import": {
-        "button": "Importer",
         "title": "Importer des parcelles",
         "previewTitle": "Aperçu de l'import",
         "summaryTitle": "Résumé",
@@ -1047,7 +1046,7 @@
         "editRow": "Modifier la parcelle",
         "noRows": "Aucune parcelle.",
         "noGeometry": "Pas de géométrie – import impossible.",
-        "conflictWarning": "Chevauche : {{plots}}. À l'import, la surface est découpée de ces parcelles.",
+        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. À l'import, la surface sera retirée de ces parcelles.",
         "conflictExplanation": "Cette parcelle chevauche des parcelles existantes. Si tu l'importes, la partie qui se chevauche est découpée des parcelles existantes – comme lors de la création manuelle d'une parcelle.",
         "name": "Nom",
         "summaryDesc": "{{count}} parcelles ({{size}}) seront importées.",
@@ -1072,7 +1071,8 @@
           "partial": "Tous les attributs n'ont pas pu être lus dans le fichier. Vérifie les noms, numéros de parcelle et utilisations.",
           "geometries_only": "Seuls les contours des parcelles ont pu être lus – les noms, numéros de parcelle et utilisations manquent. Complète-les si nécessaire.",
           "defaultUsage": "Les utilisations manquantes sont définies sur « Autres prairies permanentes »."
-        }
+        },
+        "supportHint": "Un problème avec l'import ? Contacte <mail>support@coltivio.ch</mail>."
       },
       "delete": {
         "button": "Supprimer la parcelle",
@@ -1496,8 +1496,7 @@
       "federal_id": {
         "heading": "Votre numéro d'exploitation agricole",
         "label": "Numéro d'exploitation",
-        "skip": "Passer",
-        "no_plots_hint": "Aucune parcelle trouvée ? Tu peux aussi importer tes parcelles manuellement plus tard, p. ex. un export shapefile de LAWIS ou du SIG cantonal (vue de l'exploitation)."
+        "skip": "Passer"
       },
       "confirm": {
         "heading": "Récapitulatif",

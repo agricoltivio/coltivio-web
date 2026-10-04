@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { AlertTriangle, Pencil } from "lucide-react";
 import type { components } from "@/api/schema";
 import { apiClient } from "@/api/client";
@@ -115,8 +115,9 @@ function ImportPlots() {
   const existingPlotsData = useQuery(plotsQueryOptions()).data;
   // Stable reference so the map doesn't push new data on every render
   const existingPlots = useMemo(() => existingPlotsData?.result ?? [], [existingPlotsData]);
+  // Existing plots are referred to by parcel number, falling back to the name
   const plotNameById = useMemo(
-    () => new Map(existingPlots.map((plot) => [plot.id, plot.name])),
+    () => new Map(existingPlots.map((plot) => [plot.id, plot.localId || plot.name])),
     [existingPlots],
   );
 
@@ -239,6 +240,12 @@ function ImportPlots() {
               className="w-full rounded-lg border"
             />
             <p className="text-sm text-muted-foreground">{t("fieldCalendar.plots.import.onboardingFilesHint")}</p>
+            <p className="text-sm text-muted-foreground">
+              <Trans
+                i18nKey="fieldCalendar.plots.import.supportHint"
+                components={{ mail: <a href="mailto:support@coltivio.ch" className="font-medium underline underline-offset-2" /> }}
+              />
+            </p>
           </div>
 
           <div className="max-w-md space-y-6">
@@ -255,7 +262,15 @@ function ImportPlots() {
             </FieldGroup>
 
             {previewMutation.error && (
-              <p className="text-destructive text-sm">{previewMutation.error.message}</p>
+              <div className="space-y-1 text-sm">
+                <p className="text-destructive">{previewMutation.error.message}</p>
+                <p className="text-muted-foreground">
+                  <Trans
+                    i18nKey="fieldCalendar.plots.import.supportHint"
+                    components={{ mail: <a href="mailto:support@coltivio.ch" className="font-medium underline underline-offset-2" /> }}
+                  />
+                </p>
+              </div>
             )}
 
             <div className="flex gap-2">
@@ -569,7 +584,11 @@ function RowStatusNotice({
   if (status === "conflict") {
     return (
       <p className="text-xs text-red-700 dark:text-red-400">
-        {t("fieldCalendar.plots.import.conflictWarning", { plots: overlappingPlotNames })}
+        <Trans
+          i18nKey="fieldCalendar.plots.import.conflictWarning"
+          values={{ plots: overlappingPlotNames }}
+          components={{ bold: <strong className="font-semibold" /> }}
+        />
       </p>
     );
   }

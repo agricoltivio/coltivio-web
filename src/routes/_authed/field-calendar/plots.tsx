@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Home, Layers, List, Trash2, Upload, X } from "lucide-react";
+import { Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -723,17 +723,9 @@ function PlotsMap() {
       title={t("fieldCalendar.plots.title")}
       showBackButton={false}
       actions={
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" asChild>
-            <Link to="/field-calendar/plots/import">
-              <Upload className="size-4" />
-              {t("fieldCalendar.plots.import.button")}
-            </Link>
-          </Button>
-          <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-            {t("fieldCalendar.plots.newPlot")}
-          </Button>
-        </div>
+        <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
+          {t("fieldCalendar.plots.newPlot")}
+        </Button>
       }
     >
       <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
