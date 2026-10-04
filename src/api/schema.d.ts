@@ -436,6 +436,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/plots/import/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1PlotsImportPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/plots/import/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1PlotsImportCommit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots/byId/{plotId}": {
         parameters: {
             query?: never;
@@ -3028,6 +3060,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/donations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Donations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Donations"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/donations/checkout": {
         parameters: {
             query?: never;
@@ -3894,6 +3942,58 @@ export interface components {
             };
             size: number;
             additionalNotes?: string;
+        };
+        PostV1PlotsImportPreviewPositiveResponse: {
+            data: {
+                /** @enum {string} */
+                completeness: "full" | "partial" | "geometries_only";
+                rows: {
+                    rowNumber: number;
+                    externalId: string | null;
+                    name: string;
+                    localId: string | null;
+                    usage: number | null;
+                    usageName: string | null;
+                    size: number;
+                    municipality: string | null;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    } | null;
+                    overlappingPlotIds: string[];
+                    parseErrors: string[];
+                }[];
+            };
+        };
+        PostV1PlotsImportPreviewRequestBody: {
+            /** Format: binary */
+            file: string;
+        };
+        PostV1PlotsImportCommitPositiveResponse: {
+            data: {
+                created: number;
+            };
+        };
+        PostV1PlotsImportCommitRequestBody: {
+            rows: {
+                name: string;
+                localId?: string;
+                usage?: number;
+                additionalUsages?: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                cuttingDate?: string | null;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes?: string;
+            }[];
         };
         GetV1PlotsByIdPlotIdPositiveResponse: {
             data: {
@@ -11983,6 +12083,24 @@ export interface components {
             };
         };
         PostV1MembershipTrialRequestBody: Record<string, never>;
+        GetV1DonationsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    userId: string | null;
+                    email: string;
+                    amount: number;
+                    currency: string;
+                    /** @enum {string} */
+                    status: "pending" | "succeeded" | "failed" | "refunded";
+                    paymentMethodType: string | null;
+                    cardLast4: string | null;
+                    cardBrand: string | null;
+                    createdAt: unknown;
+                }[];
+                count: number;
+            };
+        };
         PostV1DonationsCheckoutPositiveResponse: {
             data: {
                 url: string;
@@ -13826,6 +13944,74 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    PostV1PlotsImportPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/plots/import/preview Request body */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PostV1PlotsImportPreviewRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/plots/import/preview Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1PlotsImportPreviewPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/plots/import/preview Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1PlotsImportCommit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/plots/import/commit Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1PlotsImportCommitRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/plots/import/commit Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1PlotsImportCommitPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/plots/import/commit Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };
@@ -25276,6 +25462,60 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
                 };
+            };
+        };
+    };
+    GetV1Donations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/donations Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1DonationsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/donations Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Donations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/donations Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/donations Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

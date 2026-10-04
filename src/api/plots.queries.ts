@@ -129,3 +129,18 @@ export function useMergePlotsMutation() {
     },
   });
 }
+
+export function useDeletePlotMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (plotId: string) => {
+      const response = await apiClient.DELETE("/v1/plots/byId/{plotId}", {
+        params: { path: { plotId } },
+      });
+      if (response.error) throw new Error("Failed to delete plot");
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["plots"] });
+    },
+  });
+}

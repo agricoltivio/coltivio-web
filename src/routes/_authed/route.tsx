@@ -210,7 +210,8 @@ function AuthedLayout() {
               </div>
             </div>
           )}
-          {meQuery.data && !meQuery.data.emailVerified && (
+          {/* Only nag on the dashboard, not on every page */}
+          {meQuery.data && !meQuery.data.emailVerified && location.pathname.startsWith("/dashboard") && (
             <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
               <p className="text-sm font-medium">{t("settings.emailNotVerified")}</p>
               <Link

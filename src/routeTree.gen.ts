@@ -97,6 +97,7 @@ import { Route as AuthedOrdersInvoiceSettingsSettingsIdRouteImport } from './rou
 import { Route as AuthedOrdersOrderIdEditRouteImport } from './routes/_authed/orders/$orderId.edit'
 import { Route as AuthedFieldCalendarTillagesCreateRouteImport } from './routes/_authed/field-calendar/tillages_.create'
 import { Route as AuthedFieldCalendarTillagesTillageIdRouteImport } from './routes/_authed/field-calendar/tillages_.$tillageId'
+import { Route as AuthedFieldCalendarPlotsImportRouteImport } from './routes/_authed/field-calendar/plots_.import'
 import { Route as AuthedFieldCalendarPlotsPlotIdRouteImport } from './routes/_authed/field-calendar/plots_.$plotId'
 import { Route as AuthedFieldCalendarHarvestsCreateRouteImport } from './routes/_authed/field-calendar/harvests_.create'
 import { Route as AuthedFieldCalendarHarvestsHarvestIdRouteImport } from './routes/_authed/field-calendar/harvests_.$harvestId'
@@ -627,6 +628,12 @@ const AuthedFieldCalendarTillagesTillageIdRoute =
     path: '/field-calendar/tillages/$tillageId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedFieldCalendarPlotsImportRoute =
+  AuthedFieldCalendarPlotsImportRouteImport.update({
+    id: '/field-calendar/plots_/import',
+    path: '/field-calendar/plots/import',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedFieldCalendarPlotsPlotIdRoute =
   AuthedFieldCalendarPlotsPlotIdRouteImport.update({
     id: '/field-calendar/plots_/$plotId',
@@ -1051,6 +1058,7 @@ export interface FileRoutesByFullPath {
   '/field-calendar/harvests/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/field-calendar/harvests/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/field-calendar/plots/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
+  '/field-calendar/plots/import': typeof AuthedFieldCalendarPlotsImportRoute
   '/field-calendar/tillages/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/field-calendar/tillages/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
@@ -1187,6 +1195,7 @@ export interface FileRoutesByTo {
   '/field-calendar/harvests/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/field-calendar/harvests/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/field-calendar/plots/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
+  '/field-calendar/plots/import': typeof AuthedFieldCalendarPlotsImportRoute
   '/field-calendar/tillages/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/field-calendar/tillages/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
@@ -1332,6 +1341,7 @@ export interface FileRoutesById {
   '/_authed/field-calendar/harvests_/$harvestId': typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   '/_authed/field-calendar/harvests_/create': typeof AuthedFieldCalendarHarvestsCreateRoute
   '/_authed/field-calendar/plots_/$plotId': typeof AuthedFieldCalendarPlotsPlotIdRoute
+  '/_authed/field-calendar/plots_/import': typeof AuthedFieldCalendarPlotsImportRoute
   '/_authed/field-calendar/tillages_/$tillageId': typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   '/_authed/field-calendar/tillages_/create': typeof AuthedFieldCalendarTillagesCreateRoute
   '/_authed/orders/$orderId/edit': typeof AuthedOrdersOrderIdEditRoute
@@ -1478,6 +1488,7 @@ export interface FileRouteTypes {
     | '/field-calendar/harvests/$harvestId'
     | '/field-calendar/harvests/create'
     | '/field-calendar/plots/$plotId'
+    | '/field-calendar/plots/import'
     | '/field-calendar/tillages/$tillageId'
     | '/field-calendar/tillages/create'
     | '/orders/$orderId/edit'
@@ -1614,6 +1625,7 @@ export interface FileRouteTypes {
     | '/field-calendar/harvests/$harvestId'
     | '/field-calendar/harvests/create'
     | '/field-calendar/plots/$plotId'
+    | '/field-calendar/plots/import'
     | '/field-calendar/tillages/$tillageId'
     | '/field-calendar/tillages/create'
     | '/orders/$orderId/edit'
@@ -1758,6 +1770,7 @@ export interface FileRouteTypes {
     | '/_authed/field-calendar/harvests_/$harvestId'
     | '/_authed/field-calendar/harvests_/create'
     | '/_authed/field-calendar/plots_/$plotId'
+    | '/_authed/field-calendar/plots_/import'
     | '/_authed/field-calendar/tillages_/$tillageId'
     | '/_authed/field-calendar/tillages_/create'
     | '/_authed/orders/$orderId/edit'
@@ -2450,6 +2463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarTillagesTillageIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/field-calendar/plots_/import': {
+      id: '/_authed/field-calendar/plots_/import'
+      path: '/field-calendar/plots/import'
+      fullPath: '/field-calendar/plots/import'
+      preLoaderRoute: typeof AuthedFieldCalendarPlotsImportRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/field-calendar/plots_/$plotId': {
       id: '/_authed/field-calendar/plots_/$plotId'
       path: '/field-calendar/plots/$plotId'
@@ -3121,6 +3141,7 @@ interface AuthedRouteRouteChildren {
   AuthedFieldCalendarHarvestsHarvestIdRoute: typeof AuthedFieldCalendarHarvestsHarvestIdRoute
   AuthedFieldCalendarHarvestsCreateRoute: typeof AuthedFieldCalendarHarvestsCreateRoute
   AuthedFieldCalendarPlotsPlotIdRoute: typeof AuthedFieldCalendarPlotsPlotIdRoute
+  AuthedFieldCalendarPlotsImportRoute: typeof AuthedFieldCalendarPlotsImportRoute
   AuthedFieldCalendarTillagesTillageIdRoute: typeof AuthedFieldCalendarTillagesTillageIdRouteWithChildren
   AuthedFieldCalendarTillagesCreateRoute: typeof AuthedFieldCalendarTillagesCreateRoute
   AuthedTreatmentsTreatmentIdEditRoute: typeof AuthedTreatmentsTreatmentIdEditRoute
@@ -3227,6 +3248,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedFieldCalendarHarvestsCreateRoute:
     AuthedFieldCalendarHarvestsCreateRoute,
   AuthedFieldCalendarPlotsPlotIdRoute: AuthedFieldCalendarPlotsPlotIdRoute,
+  AuthedFieldCalendarPlotsImportRoute: AuthedFieldCalendarPlotsImportRoute,
   AuthedFieldCalendarTillagesTillageIdRoute:
     AuthedFieldCalendarTillagesTillageIdRouteWithChildren,
   AuthedFieldCalendarTillagesCreateRoute:

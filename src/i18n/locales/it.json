@@ -1026,6 +1026,59 @@
         "950": "Fasce di rispetto sui seminativi",
         "951": "Cereali a file larghe",
         "998": "Altre superfici fuori dall'azienda agricola e dai pascoli d'alpeggio"
+      },
+      "import": {
+        "title": "Importa particelle",
+        "previewTitle": "Anteprima importazione",
+        "summaryTitle": "Riepilogo",
+        "onboardingHeading": "Importa particelle da uno shapefile",
+        "onboardingBody": "Esporta le tue particelle dal portale agricolo cantonale (ad es. LAWIS) come shapefile e carica qui lo ZIP.",
+        "onboardingFilesHint": "Lo ZIP deve contenere esattamente un file .shp e il relativo file .dbf (.prj, .shx e .cpg sono facoltativi).",
+        "file": "File ZIP",
+        "preview": "Anteprima",
+        "previewError": "Impossibile leggere il file.",
+        "commitError": "Importazione non riuscita.",
+        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non sono selezionate per impostazione predefinita.",
+        "selectedCount": "{{selected}} di {{total}} verranno importate",
+        "selectAll": "Seleziona tutto",
+        "deselectAll": "Deseleziona tutto",
+        "unnamed": "(senza nome)",
+        "editRow": "Modifica particella",
+        "noRows": "Nessuna particella.",
+        "noGeometry": "Nessuna geometria – non importabile.",
+        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. All'importazione, l'area verrà rimossa da queste particelle.",
+        "conflictExplanation": "Questa particella si sovrappone a particelle esistenti. Se la importi, la parte sovrapposta viene ritagliata dalle particelle esistenti – come quando crei una particella manualmente.",
+        "name": "Nome",
+        "summaryDesc": "Verranno importate {{count}} particelle ({{size}}).",
+        "conflictsNeedApproval": "Queste particelle si sovrappongono a particelle esistenti e devono essere confermate:",
+        "confirmConflict": "Importa «{{name}}» e ritagliala da {{plots}}",
+        "total": "Totale",
+        "cuttingDateHint": "Le date di sfalcio non vengono importate e possono essere impostate più tardi per ogni particella.",
+        "commit_one": "Importa {{count}} particella",
+        "commit_other": "Importa {{count}} particelle",
+        "status": {
+          "conflict": "Sovrapposizione"
+        },
+        "legend": {
+          "new": "Nuova",
+          "conflict": "Sovrapposizione",
+          "error": "Errore",
+          "existing": "Esistente",
+          "skipped": "Non selezionata"
+        },
+        "includeInImport": "Importa",
+        "completeness": {
+          "partial": "Non tutti gli attributi sono stati letti dal file. Controlla nomi, numeri di particella e utilizzazioni.",
+          "geometries_only": "Dal file sono stati letti solo i contorni delle particelle – mancano nomi, numeri di particella e utilizzazioni. Completali dove necessario.",
+          "defaultUsage": "Le utilizzazioni mancanti vengono impostate su «Altri prati permanenti»."
+        },
+        "supportHint": "Problemi con l'importazione? Contatta <mail>support@coltivio.ch</mail>."
+      },
+      "delete": {
+        "button": "Elimina particella",
+        "title": "Eliminare «{{name}}»?",
+        "confirm": "La particella e tutti i dati associati, come rotazioni e voci del diario, verranno eliminati definitivamente. L'operazione non può essere annullata.",
+        "error": "Impossibile eliminare la particella."
       }
     },
     "cropRotations": {

@@ -1026,6 +1026,59 @@
         "950": "Bandes de protection sur terres arables",
         "951": "Céréales en rangs larges",
         "998": "Autres surfaces hors zone agricole et pâturages d'alpage"
+      },
+      "import": {
+        "title": "Importer des parcelles",
+        "previewTitle": "Aperçu de l'import",
+        "summaryTitle": "Résumé",
+        "onboardingHeading": "Importer des parcelles depuis un shapefile",
+        "onboardingBody": "Exporte tes parcelles depuis le portail agricole cantonal (p. ex. LAWIS) en shapefile et téléverse le ZIP ici.",
+        "onboardingFilesHint": "Le ZIP doit contenir exactement un fichier .shp et son fichier .dbf (.prj, .shx et .cpg sont facultatifs).",
+        "file": "Fichier ZIP",
+        "preview": "Aperçu",
+        "previewError": "Le fichier n'a pas pu être lu.",
+        "commitError": "L'import a échoué.",
+        "previewDesc": "Vérifie les parcelles sur la carte et dans la liste. Clique sur une parcelle pour la modifier. Les parcelles qui se chevauchent ne sont pas sélectionnées par défaut.",
+        "selectedCount": "{{selected}} sur {{total}} seront importées",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner",
+        "unnamed": "(sans nom)",
+        "editRow": "Modifier la parcelle",
+        "noRows": "Aucune parcelle.",
+        "noGeometry": "Pas de géométrie – import impossible.",
+        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. À l'import, la surface sera retirée de ces parcelles.",
+        "conflictExplanation": "Cette parcelle chevauche des parcelles existantes. Si tu l'importes, la partie qui se chevauche est découpée des parcelles existantes – comme lors de la création manuelle d'une parcelle.",
+        "name": "Nom",
+        "summaryDesc": "{{count}} parcelles ({{size}}) seront importées.",
+        "conflictsNeedApproval": "Ces parcelles chevauchent des parcelles existantes et doivent être confirmées :",
+        "confirmConflict": "Importer « {{name}} » et la découper de {{plots}}",
+        "total": "Total",
+        "cuttingDateHint": "Les dates de fauche ne sont pas importées et peuvent être définies plus tard par parcelle.",
+        "commit_one": "Importer {{count}} parcelle",
+        "commit_other": "Importer {{count}} parcelles",
+        "status": {
+          "conflict": "Chevauchement"
+        },
+        "legend": {
+          "new": "Nouvelle",
+          "conflict": "Chevauchement",
+          "error": "Erreur",
+          "existing": "Existante",
+          "skipped": "Non sélectionnée"
+        },
+        "includeInImport": "Importer",
+        "completeness": {
+          "partial": "Tous les attributs n'ont pas pu être lus dans le fichier. Vérifie les noms, numéros de parcelle et utilisations.",
+          "geometries_only": "Seuls les contours des parcelles ont pu être lus – les noms, numéros de parcelle et utilisations manquent. Complète-les si nécessaire.",
+          "defaultUsage": "Les utilisations manquantes sont définies sur « Autres prairies permanentes »."
+        },
+        "supportHint": "Un problème avec l'import ? Contacte <mail>support@coltivio.ch</mail>."
+      },
+      "delete": {
+        "button": "Supprimer la parcelle",
+        "title": "Supprimer « {{name}} » ?",
+        "confirm": "La parcelle et toutes les données associées, comme les rotations et les entrées de journal, seront définitivement supprimées. Cette action est irréversible.",
+        "error": "La parcelle n'a pas pu être supprimée."
       }
     },
     "cropRotations": {
