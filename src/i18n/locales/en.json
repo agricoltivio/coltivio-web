@@ -1026,6 +1026,59 @@
         "950": "Arable conservation strips",
         "951": "Cereals in wide rows",
         "998": "Other areas outside the agricultural and summer pasture area"
+      },
+      "import": {
+        "button": "Import",
+        "title": "Import plots",
+        "previewTitle": "Plot import preview",
+        "summaryTitle": "Summary",
+        "onboardingHeading": "Import plots from a shapefile",
+        "onboardingBody": "Export your plots from the cantonal agriculture portal (e.g. LAWIS) as a shapefile and upload the ZIP here.",
+        "onboardingFilesHint": "The ZIP must contain exactly one .shp file and its .dbf file (.prj, .shx and .cpg are optional).",
+        "file": "ZIP file",
+        "preview": "Preview",
+        "previewError": "The file could not be read.",
+        "commitError": "Import failed.",
+        "previewDesc": "Review the plots on the map and in the list. Click a plot to edit it. Overlapping plots are not selected by default.",
+        "selectedCount": "{{selected}} of {{total}} will be imported",
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all",
+        "unnamed": "(no name)",
+        "editRow": "Edit plot",
+        "noRows": "No plots.",
+        "noGeometry": "No geometry – cannot be imported.",
+        "conflictWarning": "Overlaps with: {{plots}}. Importing cuts this area out of those plots.",
+        "conflictExplanation": "This plot overlaps existing plots. If you import it, the overlapping area is cut out of the existing plots – just like creating a plot manually.",
+        "name": "Name",
+        "summaryDesc": "{{count}} plots ({{size}}) will be imported.",
+        "conflictsNeedApproval": "These plots overlap existing plots and need your confirmation:",
+        "confirmConflict": "Import \"{{name}}\" and cut it out of {{plots}}",
+        "total": "Total",
+        "cuttingDateHint": "Cutting dates are not imported and can be set later per plot.",
+        "commit_one": "Import {{count}} plot",
+        "commit_other": "Import {{count}} plots",
+        "status": {
+          "conflict": "Overlap"
+        },
+        "legend": {
+          "new": "New",
+          "conflict": "Overlap",
+          "error": "Error",
+          "existing": "Existing",
+          "skipped": "Not selected"
+        },
+        "includeInImport": "Import",
+        "completeness": {
+          "partial": "Not all attributes could be read from the file. Please check names, parcel numbers and usages.",
+          "geometries_only": "Only the plot outlines could be read from the file – names, parcel numbers and usages are missing. Please fill them in where needed.",
+          "defaultUsage": "Missing usages are set to \"Other permanent meadows\"."
+        }
+      },
+      "delete": {
+        "button": "Delete plot",
+        "title": "Delete \"{{name}}\"?",
+        "confirm": "The plot and all related data such as crop rotations and journal entries will be permanently deleted. This cannot be undone.",
+        "error": "The plot could not be deleted."
       }
     },
     "cropRotations": {
@@ -1443,7 +1496,8 @@
       "federal_id": {
         "heading": "Your farm registration number",
         "label": "Farm registration number",
-        "skip": "Skip"
+        "skip": "Skip",
+        "no_plots_hint": "No plots found? You can also import your plots manually later, e.g. as a shapefile export from LAWIS or the cantonal GIS (farm view)."
       },
       "confirm": {
         "heading": "Summary",

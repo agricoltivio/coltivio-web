@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Home, Layers, List, X } from "lucide-react";
+import { Home, Layers, List, Trash2, Upload, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -13,6 +13,7 @@ import { farmQueryOptions } from "@/api/farm.queries";
 import {
   plotsQueryOptions,
   useCreatePlotMutation,
+  useDeletePlotMutation,
   useMergePlotsMutation,
   useSplitPlotMutation,
   useUpdatePlotMutation,
@@ -24,6 +25,18 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UsageCombobox } from "@/components/UsageCombobox";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { PlotColorModeToggle } from "@/components/PlotColorModeToggle";
@@ -37,19 +50,6 @@ import { mapAttribution } from "@/lib/mapAttribution";
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
 
-const USAGE_CODES = [
-  501, 502, 504, 505, 506, 507, 508, 510, 511, 512, 513, 514, 515, 516, 519,
-  520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 531, 534, 536, 537, 538,
-  539, 540, 541, 543, 544, 545, 546, 548, 551, 552, 553, 554, 556, 557, 559,
-  566, 567, 568, 569, 570, 572, 573, 574, 575, 576, 577, 578, 579, 580, 581,
-  591, 592, 594, 595, 597, 598, 601, 602, 611, 612, 613, 616, 617, 618, 621,
-  622, 623, 625, 631, 632, 635, 660, 693, 694, 697, 698, 701, 702, 703, 704,
-  705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 717, 718, 719, 720, 721,
-  722, 723, 724, 725, 730, 731, 735, 797, 798, 801, 802, 803, 804, 807, 808,
-  810, 811, 812, 813, 814, 830, 847, 848, 849, 851, 852, 857, 858, 897, 898,
-  901, 902, 903, 904, 905, 906, 907, 908, 909, 911, 921, 922, 923, 924, 926,
-  927, 928, 930, 933, 935, 936, 950, 951, 998,
-] as const;
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
 const SPLIT_PIECE_COLORS = ["#4ade80", "#60a5fa", "#f97316", "#a78bfa"];
 
@@ -723,9 +723,17 @@ function PlotsMap() {
       title={t("fieldCalendar.plots.title")}
       showBackButton={false}
       actions={
-        <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-          {t("fieldCalendar.plots.newPlot")}
-        </Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" asChild>
+            <Link to="/field-calendar/plots/import">
+              <Upload className="size-4" />
+              {t("fieldCalendar.plots.import.button")}
+            </Link>
+          </Button>
+          <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
+            {t("fieldCalendar.plots.newPlot")}
+          </Button>
+        </div>
       }
     >
       <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
@@ -1093,6 +1101,7 @@ function PlotDetailPanel({
   onEditMeta: () => void;
 }) {
   const { t } = useTranslation();
+  const deleteMutation = useDeletePlotMutation();
 
   const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
@@ -1172,6 +1181,33 @@ function PlotDetailPanel({
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => dispatch({ type: "ENTER_SPLIT", plotId: plot.id })}>
             {t("fieldCalendar.plots.enterSplit")}
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" className="w-full justify-start text-destructive hover:text-destructive">
+                <Trash2 className="h-4 w-4" />
+                {t("fieldCalendar.plots.delete.button")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("fieldCalendar.plots.delete.title", { name: plot.name })}</AlertDialogTitle>
+                <AlertDialogDescription>{t("fieldCalendar.plots.delete.confirm")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate(plot.id, { onSuccess: onClose })}
+                  disabled={deleteMutation.isPending}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {t("common.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          {deleteMutation.isError && (
+            <p className="text-xs text-destructive">{t("fieldCalendar.plots.delete.error")}</p>
+          )}
         </div>
 
         <div className="border-t pt-3 space-y-1">
@@ -1346,79 +1382,6 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-// Inline searchable usage code picker — avoids portal/focus-trap conflicts inside Dialog.
-// Uses onMouseDown to select before onBlur fires, keeping the dropdown open while scrolling.
-function UsageCombobox({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const { t } = useTranslation();
-  const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-
-  const options = useMemo(
-    () => USAGE_CODES.map((code) => ({ code, label: t(`fieldCalendar.plots.usageCodes.${code}`) })),
-    [t],
-  );
-
-  const selected = options.find((o) => String(o.code) === value) ?? null;
-
-  // Sync display when value is reset externally (dialog reopen)
-  useEffect(() => {
-    if (!value) setQuery("");
-  }, [value]);
-
-  const filtered = useMemo(() => {
-    if (!query.trim()) return options;
-    const q = query.toLowerCase();
-    return options.filter((o) => o.label.toLowerCase().includes(q) || String(o.code).includes(q));
-  }, [options, query]);
-
-  return (
-    <div className="space-y-1.5">
-      <Label>{t("fieldCalendar.plots.usage")}</Label>
-      <div className="relative">
-        {selected && !open ? (
-          <div className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm bg-background cursor-pointer" onClick={() => setOpen(true)}>
-            <span className="flex-1 truncate">{selected.label} ({selected.code})</span>
-            <button
-              type="button"
-              className="text-muted-foreground hover:text-foreground shrink-0"
-              onMouseDown={(e) => { e.stopPropagation(); onChange(""); }}
-            >
-              ✕
-            </button>
-          </div>
-        ) : (
-          <Input
-            placeholder={t("fieldCalendar.plots.usage")}
-            value={query}
-            onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-            onFocus={() => setOpen(true)}
-            onBlur={() => setTimeout(() => setOpen(false), 150)}
-            autoComplete="off"
-          />
-        )}
-        {open && (
-          <div className="absolute z-50 mt-1 w-full border rounded-md bg-popover shadow-md max-h-48 overflow-y-auto">
-            {filtered.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-muted-foreground">{t("common.noResults")}</div>
-            ) : (
-              filtered.map((o) => (
-                <button
-                  key={o.code}
-                  type="button"
-                  className="w-full text-left px-3 py-1.5 text-sm hover:bg-accent"
-                  onMouseDown={(e) => { e.preventDefault(); onChange(String(o.code)); setQuery(""); setOpen(false); }}
-                >
-                  {o.label} ({o.code})
-                </button>
-              ))
-            )}
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 

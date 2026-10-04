@@ -1026,6 +1026,59 @@
         "950": "Ackerschonstreifen",
         "951": "Getreide in weiter Reihen",
         "998": "Übrige Flächen ausserhalb der LN und SF"
+      },
+      "import": {
+        "button": "Importieren",
+        "title": "Flächen importieren",
+        "previewTitle": "Vorschau Flächenimport",
+        "summaryTitle": "Zusammenfassung",
+        "onboardingHeading": "Flächen aus Shapefile importieren",
+        "onboardingBody": "Exportiere deine Flächen aus dem kantonalen Agrarportal (z.B. LAWIS) als Shapefile und lade das ZIP hier hoch.",
+        "onboardingFilesHint": "Das ZIP muss genau eine .shp- und die zugehörige .dbf-Datei enthalten (.prj, .shx und .cpg sind optional).",
+        "file": "ZIP-Datei",
+        "preview": "Vorschau",
+        "previewError": "Die Datei konnte nicht gelesen werden.",
+        "commitError": "Import fehlgeschlagen.",
+        "previewDesc": "Prüfe die Flächen auf der Karte und in der Liste. Klicke auf eine Fläche, um sie zu bearbeiten. Überlappende Flächen sind standardmässig nicht ausgewählt.",
+        "selectedCount": "{{selected}} von {{total}} werden importiert",
+        "selectAll": "Alle auswählen",
+        "deselectAll": "Keine auswählen",
+        "unnamed": "(ohne Namen)",
+        "editRow": "Fläche bearbeiten",
+        "noRows": "Keine Flächen vorhanden.",
+        "noGeometry": "Keine Geometrie – kann nicht importiert werden.",
+        "conflictWarning": "Überlappt mit: {{plots}}. Beim Import wird die Fläche aus diesen Schlägen ausgeschnitten.",
+        "conflictExplanation": "Diese Fläche überlappt mit bestehenden Schlägen. Wenn du sie importierst, wird der überlappende Teil aus den bestehenden Schlägen ausgeschnitten – wie beim manuellen Erstellen eines Schlags.",
+        "name": "Name",
+        "summaryDesc": "{{count}} Flächen ({{size}}) werden importiert.",
+        "conflictsNeedApproval": "Diese Flächen überlappen mit bestehenden Schlägen und müssen bestätigt werden:",
+        "confirmConflict": "«{{name}}» importieren und aus {{plots}} ausschneiden",
+        "total": "Total",
+        "cuttingDateHint": "Schnittdaten werden nicht importiert und können später pro Schlag gesetzt werden.",
+        "commit_one": "{{count}} Fläche importieren",
+        "commit_other": "{{count}} Flächen importieren",
+        "status": {
+          "conflict": "Überlappung"
+        },
+        "legend": {
+          "new": "Neu",
+          "conflict": "Überlappung",
+          "error": "Fehler",
+          "existing": "Bestehend",
+          "skipped": "Nicht ausgewählt"
+        },
+        "includeInImport": "Importieren",
+        "completeness": {
+          "partial": "Nicht alle Attribute konnten aus der Datei gelesen werden. Bitte prüfe Namen, Parzellennummern und Nutzungen.",
+          "geometries_only": "Aus der Datei konnten nur die Flächenumrisse gelesen werden – Namen, Parzellennummern und Nutzungen fehlen. Bitte ergänze sie, wo nötig.",
+          "defaultUsage": "Fehlende Nutzungen werden auf «Übrige Dauerwiesen» gesetzt."
+        }
+      },
+      "delete": {
+        "button": "Schlag löschen",
+        "title": "«{{name}}» löschen?",
+        "confirm": "Der Schlag wird mit allen zugehörigen Daten wie Fruchtfolgen und Journaleinträgen endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.",
+        "error": "Der Schlag konnte nicht gelöscht werden."
       }
     },
     "cropRotations": {
@@ -1443,7 +1496,8 @@
       "federal_id": {
         "heading": "Deine Betriebsnummer",
         "label": "Betriebsnummer",
-        "skip": "Überspringen"
+        "skip": "Überspringen",
+        "no_plots_hint": "Keine Flächen gefunden? Du kannst deine Flächen später auch manuell importieren, z.B. als Shapefile-Export aus LAWIS oder dem kantonalen GIS (Betriebsansicht)."
       },
       "confirm": {
         "heading": "Zusammenfassung",

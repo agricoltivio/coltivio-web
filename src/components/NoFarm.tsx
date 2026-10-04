@@ -387,6 +387,9 @@ export function NoFarm() {
                       ))}
                     </ul>
                   )}
+                  {!federalIdSearching && federalIdResults.length === 0 && (
+                    <p className="text-sm text-muted-foreground">{t("onboarding.create.federal_id.no_plots_hint")}</p>
+                  )}
                 </>
               )}
             </Field>
@@ -428,6 +431,9 @@ export function NoFarm() {
               <dd className="font-medium">{createData.federalId ?? t("onboarding.create.confirm.none")}</dd>
             </div>
           </dl>
+          {!createData.federalId && (
+            <p className="text-sm text-muted-foreground">{t("onboarding.create.federal_id.no_plots_hint")}</p>
+          )}
           {createFarmMutation.isError && (
             <p className="text-sm text-destructive">{t("common.error")}</p>
           )}
