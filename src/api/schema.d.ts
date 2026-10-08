@@ -420,6 +420,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/push-tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1MePushTokens"];
+        delete: operations["DeleteV1MePushTokens"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots": {
         parameters: {
             query?: never;
@@ -3754,11 +3770,13 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                taskPushNotifications: boolean;
             };
         };
         PatchV1MeRequestBody: {
             fullName?: string;
             newsletterConsent?: boolean;
+            taskPushNotifications?: boolean;
         };
         GetV1MePositiveResponse: {
             data: {
@@ -3776,6 +3794,7 @@ export interface components {
                     /** @enum {string} */
                     access: "none" | "read" | "write";
                 }[];
+                taskPushNotifications: boolean;
             };
         };
         PostV1MeVerificationEmailPositiveResponse: {
@@ -3799,6 +3818,17 @@ export interface components {
         };
         PostV1MeDeletionRequestBody: {
             email: string;
+        };
+        PostV1MePushTokensPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1MePushTokensRequestBody: {
+            token: string;
+            /** @enum {string} */
+            platform?: "ios" | "android";
+        };
+        DeleteV1MePushTokensPositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1PlotsPositiveResponse: {
             data: {
@@ -11869,12 +11899,12 @@ export interface components {
             name?: string;
             description?: string;
             labels?: string[];
-            assigneeId?: string;
+            assigneeId?: string | null;
             /**
              * Format: date-time
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
-            dueDate?: string;
+            dueDate?: string | null;
             pinned?: boolean;
             recurrence?: {
                 /** @enum {string} */
@@ -13849,6 +13879,72 @@ export interface operations {
                 };
             };
             /** @description POST /v1/me/deletion Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1MePushTokens: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/me/push-tokens Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MePushTokensRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/me/push-tokens Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MePushTokensPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/me/push-tokens Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1MePushTokens: {
+        parameters: {
+            query: {
+                /** @description DELETE /v1/me/push-tokens Parameter */
+                token: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/me/push-tokens Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1MePushTokensPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/me/push-tokens Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

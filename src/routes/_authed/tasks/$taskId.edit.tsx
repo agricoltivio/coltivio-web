@@ -20,8 +20,8 @@ function buildApiBody(data: TaskFormData) {
     name: data.name,
     description: data.description || undefined,
     labels: data.labels,
-    assigneeId: data.assigneeId || undefined,
-    dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
+    assigneeId: data.assigneeId || null,
+    dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null,
     recurrence: data.recurrence.enabled
       ? {
           frequency: data.recurrence.frequency,
