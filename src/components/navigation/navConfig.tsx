@@ -39,6 +39,8 @@ export interface NavSection {
   feature?: FarmPermissionFeature;
   /** section is only relevant once the user has a farm */
   requiresFarm?: boolean;
+  /** only visible to farm owners */
+  ownerOnly?: boolean;
   /** ordered subnav groups; omit for a flat list */
   groups?: readonly { key: string; labelKey: string }[];
   items: readonly NavSubItem[];
@@ -175,6 +177,7 @@ export const SECTIONS: readonly NavSection[] = [
     to: "/journal",
     match: ["/journal"],
     requiresFarm: true,
+    ownerOnly: true,
     items: [],
   },
   {
