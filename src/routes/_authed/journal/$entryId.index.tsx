@@ -64,65 +64,68 @@ function FarmJournalEntryPage() {
   return (
     <PageContent
       title={entry.title}
+      description={new Date(entry.date).toLocaleDateString()}
       showBackButton
       backTo={() => navigate({ to: "/journal" })}
+      actions={
+        <>
+          <Button
+            variant="outline"
+            onClick={() =>
+              navigate({ to: "/journal/$entryId/edit", params: { entryId } })
+            }
+          >
+            {t("common.edit")}
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">{t("common.delete")}</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("journal.deleteConfirm")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => deleteMutation.mutate()}
+                  disabled={deleteMutation.isPending}
+                  className="bg-destructive text-white hover:bg-destructive/90"
+                >
+                  {t("common.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      }
     >
-      <div className="mb-6 flex justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={() =>
-            navigate({ to: "/journal/$entryId/edit", params: { entryId } })
-          }
-        >
-          {t("common.edit")}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">{t("common.delete")}</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("journal.deleteConfirm")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => deleteMutation.mutate()}
-                disabled={deleteMutation.isPending}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-
-      <div className="space-y-4 max-w-lg">
-        <div className="text-sm text-muted-foreground">
-          {new Date(entry.date).toLocaleDateString()}
-        </div>
-
+      <div className="max-w-2xl space-y-8">
         {entry.content && (
-          <div className="rounded-md border p-4 whitespace-pre-wrap text-sm">
+          <p className="whitespace-pre-wrap leading-relaxed">
             {entry.content}
-          </div>
+          </p>
         )}
 
         {entry.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-2">
-            {entry.images.map((image) => (
-              <img
-                key={image.id}
-                src={image.signedUrl}
-                alt=""
-                className="rounded-md object-cover aspect-square w-full"
-              />
-            ))}
-          </div>
+          <section className="space-y-3">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              {t("journal.images")}
+            </h2>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {entry.images.map((image) => (
+                <img
+                  key={image.id}
+                  src={image.signedUrl}
+                  alt=""
+                  className="rounded-md object-cover aspect-square w-full"
+                />
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </PageContent>
