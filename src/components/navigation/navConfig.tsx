@@ -5,6 +5,7 @@ import {
   HeartHandshake,
   LayoutDashboard,
   ListTodo,
+  NotebookPen,
   ShoppingCart,
   Sprout,
   UsersRound,
@@ -166,6 +167,15 @@ export const SECTIONS: readonly NavSection[] = [
       { labelKey: "nav.sponsorships", to: "/sponsorships" },
       { labelKey: "nav.sponsorshipPrograms", to: "/sponsorships/programs" },
     ],
+  },
+  {
+    id: "journal",
+    labelKey: "nav.farmJournal",
+    icon: NotebookPen,
+    to: "/journal",
+    match: ["/journal"],
+    requiresFarm: true,
+    items: [],
   },
   {
     id: "wiki",
