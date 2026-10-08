@@ -196,6 +196,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/farm/journal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmJournal"];
+        put?: never;
+        post: operations["PostV1FarmJournal"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1FarmJournal"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/farm/journal/byId/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1FarmJournalByIdEntryId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1FarmJournalByIdEntryId"];
+        options?: never;
+        head: operations["HeadV1FarmJournalByIdEntryId"];
+        patch: operations["PatchV1FarmJournalByIdEntryId"];
+        trace?: never;
+    };
+    "/v1/farm/journal/images/signedUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1FarmJournalImagesSignedUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/farm/journal/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1FarmJournalImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/farm/journal/images/byId/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1FarmJournalImagesByIdImageId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/farm/invites": {
         parameters: {
             query?: never;
@@ -3626,6 +3706,166 @@ export interface components {
                 };
             };
         };
+        GetV1FarmJournalPositiveResponse: {
+            data: {
+                entries: {
+                    id: string;
+                    farmId: string;
+                    title: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    content: string | null;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                }[];
+            };
+        };
+        PostV1FarmJournalPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PostV1FarmJournalRequestBody: {
+            title: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            content?: string;
+        };
+        GetV1FarmJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                images: {
+                    id: string;
+                    journalEntryId: string;
+                    storagePath: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    signedUrl: string;
+                }[];
+            };
+        };
+        PatchV1FarmJournalByIdEntryIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                title: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                content: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+            };
+        };
+        PatchV1FarmJournalByIdEntryIdRequestBody: {
+            title?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            content?: string;
+        };
+        DeleteV1FarmJournalByIdEntryIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1FarmJournalImagesSignedUrlPositiveResponse: {
+            data: {
+                signedUrl: string;
+                path: string;
+            };
+        };
+        PostV1FarmJournalImagesSignedUrlRequestBody: {
+            journalEntryId: string;
+            filename: string;
+        };
+        PostV1FarmJournalImagesPositiveResponse: {
+            data: {
+                id: string;
+                journalEntryId: string;
+                storagePath: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                signedUrl: string;
+            };
+        };
+        PostV1FarmJournalImagesRequestBody: {
+            journalEntryId: string;
+            storagePath: string;
+        };
+        DeleteV1FarmJournalImagesByIdImageIdPositiveResponse: {
+            data: Record<string, never>;
+        };
         GetV1FarmInvitesPositiveResponse: {
             data: {
                 result: {
@@ -4566,17 +4806,6 @@ export interface components {
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
                     updatedAt: string;
-                    images: {
-                        id: string;
-                        journalEntryId: string;
-                        storagePath: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        createdAt: string;
-                        signedUrl: string;
-                    }[];
                 }[];
             };
         };
@@ -8128,17 +8357,6 @@ export interface components {
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
                     updatedAt: string;
-                    images: {
-                        id: string;
-                        journalEntryId: string;
-                        storagePath: string;
-                        /**
-                         * Format: date-time
-                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-                         */
-                        createdAt: string;
-                        signedUrl: string;
-                    }[];
                 }[];
             };
         };
@@ -13177,6 +13395,323 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    GetV1FarmJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmJournalPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1FarmJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/farm/journal Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1FarmJournalRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/farm/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1FarmJournalPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/farm/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/journal Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/journal Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1FarmJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/farm/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/farm/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1FarmJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/farm/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1FarmJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/farm/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/farm/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1FarmJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/farm/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1FarmJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/farm/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/farm/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/farm/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1FarmJournalByIdEntryId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/farm/journal/byId/:entryId Parameter */
+                entryId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/farm/journal/byId/:entryId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1FarmJournalByIdEntryIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/farm/journal/byId/:entryId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1FarmJournalByIdEntryIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/farm/journal/byId/:entryId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1FarmJournalImagesSignedUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/farm/journal/images/signedUrl Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1FarmJournalImagesSignedUrlRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/farm/journal/images/signedUrl Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1FarmJournalImagesSignedUrlPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/farm/journal/images/signedUrl Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1FarmJournalImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/farm/journal/images Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1FarmJournalImagesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/farm/journal/images Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1FarmJournalImagesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/farm/journal/images Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1FarmJournalImagesByIdImageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/farm/journal/images/byId/:imageId Parameter */
+                imageId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/farm/journal/images/byId/:imageId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1FarmJournalImagesByIdImageIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/farm/journal/images/byId/:imageId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

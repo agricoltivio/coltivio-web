@@ -153,10 +153,11 @@ export function AppSidebar() {
     () =>
       SECTIONS.filter((section) => {
         if (section.requiresFarm && !hasFarm) return false;
+        if (section.ownerOnly && !isOwner) return false;
         if (section.feature && !access[section.feature]) return false;
         return true;
       }),
-    [hasFarm, access.animals, access.field_calendar, access.commerce, access.tasks],
+    [hasFarm, isOwner, access.animals, access.field_calendar, access.commerce, access.tasks],
   );
 
   function changeLanguage(code: string) {
