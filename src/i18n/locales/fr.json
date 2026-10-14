@@ -1678,7 +1678,10 @@
     "entryOpened": "a ouvert ce sujet",
     "entryReplied": "a répondu",
     "authorBadge": "Auteur",
-    "addComment": "Ajouter un commentaire"
+    "addComment": "Ajouter un commentaire",
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "subscribeHint": "Recevez un e-mail lorsque quelqu'un répond à ce sujet."
   },
   "journal": {
     "title": "Journal",

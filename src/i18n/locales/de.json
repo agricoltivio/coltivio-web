@@ -1678,7 +1678,10 @@
     "entryOpened": "hat den Beitrag eröffnet",
     "entryReplied": "hat geantwortet",
     "authorBadge": "Autor",
-    "addComment": "Kommentar hinzufügen"
+    "addComment": "Kommentar hinzufügen",
+    "subscribe": "Abonnieren",
+    "unsubscribe": "Abbestellen",
+    "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet."
   },
   "journal": {
     "title": "Journal",

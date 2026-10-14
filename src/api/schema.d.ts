@@ -3332,6 +3332,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/forum/threads/byId/{threadId}/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["PutV1ForumThreadsByIdThreadIdSubscription"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/forum/replies/byId/{replyId}": {
         parameters: {
             query?: never;
@@ -12425,6 +12441,7 @@ export interface components {
                         fullName: string | null;
                     } | null;
                     replyCount?: number;
+                    isSubscribed?: boolean;
                 }[];
                 total: number;
             };
@@ -12447,6 +12464,7 @@ export interface components {
                     fullName: string | null;
                 } | null;
                 replyCount?: number;
+                isSubscribed?: boolean;
             };
         };
         PostV1ForumThreadsRequestBody: {
@@ -12477,6 +12495,7 @@ export interface components {
                     fullName: string | null;
                 } | null;
                 replyCount?: number;
+                isSubscribed?: boolean;
             };
         };
         PatchV1ForumThreadsByIdThreadIdPositiveResponse: {
@@ -12497,6 +12516,7 @@ export interface components {
                     fullName: string | null;
                 } | null;
                 replyCount?: number;
+                isSubscribed?: boolean;
             };
         };
         PatchV1ForumThreadsByIdThreadIdRequestBody: {
@@ -12552,6 +12572,14 @@ export interface components {
         };
         PostV1ForumThreadsByIdThreadIdPinRequestBody: {
             pinned: boolean;
+        };
+        PutV1ForumThreadsByIdThreadIdSubscriptionPositiveResponse: {
+            data: {
+                subscribed: boolean;
+            };
+        };
+        PutV1ForumThreadsByIdThreadIdSubscriptionRequestBody: {
+            subscribed: boolean;
         };
         PatchV1ForumRepliesByIdReplyIdPositiveResponse: {
             data: {
@@ -26720,6 +26748,43 @@ export interface operations {
                 };
             };
             /** @description POST /v1/forum/threads/byId/:threadId/pin Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PutV1ForumThreadsByIdThreadIdSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PUT /v1/forum/threads/byId/:threadId/subscription Parameter */
+                threadId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PUT /v1/forum/threads/byId/:threadId/subscription Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1ForumThreadsByIdThreadIdSubscriptionRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/forum/threads/byId/:threadId/subscription Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1ForumThreadsByIdThreadIdSubscriptionPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/forum/threads/byId/:threadId/subscription Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

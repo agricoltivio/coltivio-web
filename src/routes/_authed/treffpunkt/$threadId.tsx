@@ -23,7 +23,7 @@ import {
   InsertCodeBlock,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import { Pin, MoreHorizontal } from "lucide-react";
+import { Pin, MoreHorizontal, Bell, BellOff } from "lucide-react";
 import { apiClient } from "@/api/client";
 import { forumThreadQueryOptions, forumRepliesQueryOptions } from "@/api/forum.queries";
 import { meQueryOptions } from "@/api/user.queries";
@@ -201,6 +201,19 @@ function ThreadDetail() {
     },
   });
 
+  const subscriptionMutation = useMutation({
+    mutationFn: async (subscribed: boolean) => {
+      const response = await apiClient.PUT(
+        "/v1/forum/threads/byId/{threadId}/subscription",
+        { params: { path: { threadId } }, body: { subscribed } },
+      );
+      if (response.error) throw new Error("Failed to update subscription");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+    },
+  });
+
   // ── Reply mutations ────────────────────────────────────────────────
   const createReplyMutation = useMutation({
     mutationFn: async (body: string) => {
@@ -212,9 +225,8 @@ function ThreadDetail() {
       return response.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["forum", "threads", "byId", threadId, "replies"],
-      });
+      // Replying subscribes the author, so the thread's isSubscribed changes too.
+      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
       setReplyBody("");
       setReplyFocused(false);
       replyEditorRef.current?.setMarkdown("");
@@ -317,20 +329,40 @@ function ThreadDetail() {
       showBackButton
       backTo={() => navigate({ to: "/treffpunkt" })}
       actions={
-        isOwner ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              statusMutation.mutate(thread.status === "open" ? "closed" : "open")
-            }
-            disabled={statusMutation.isPending}
-          >
-            {thread.status === "open"
-              ? t("treffpunkt.closeThread")
-              : t("treffpunkt.reopenThread")}
-          </Button>
-        ) : undefined
+        <>
+          {thread.isSubscribed !== undefined && (
+            <Button
+              variant="outline"
+              size="sm"
+              title={t("treffpunkt.subscribeHint")}
+              onClick={() => subscriptionMutation.mutate(!thread.isSubscribed)}
+              disabled={subscriptionMutation.isPending}
+            >
+              {thread.isSubscribed ? (
+                <BellOff className="size-4" />
+              ) : (
+                <Bell className="size-4" />
+              )}
+              {thread.isSubscribed
+                ? t("treffpunkt.unsubscribe")
+                : t("treffpunkt.subscribe")}
+            </Button>
+          )}
+          {isOwner && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                statusMutation.mutate(thread.status === "open" ? "closed" : "open")
+              }
+              disabled={statusMutation.isPending}
+            >
+              {thread.status === "open"
+                ? t("treffpunkt.closeThread")
+                : t("treffpunkt.reopenThread")}
+            </Button>
+          )}
+        </>
       }
     >
       {/* Thread meta badges */}
