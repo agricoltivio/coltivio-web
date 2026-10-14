@@ -1039,7 +1039,7 @@
         "preview": "Anteprima",
         "previewError": "Impossibile leggere il file.",
         "commitError": "Importazione non riuscita.",
-        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non sono selezionate per impostazione predefinita.",
+        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non possono essere importate.",
         "selectedCount": "{{selected}} di {{total}} verranno importate",
         "selectAll": "Seleziona tutto",
         "deselectAll": "Deseleziona tutto",
@@ -1047,7 +1047,7 @@
         "editRow": "Modifica particella",
         "noRows": "Nessuna particella.",
         "noGeometry": "Nessuna geometria – non importabile.",
-        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. All'importazione, l'area verrà rimossa da queste particelle.",
+        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. Le particelle sovrapposte non possono essere importate.",
         "name": "Nome",
         "summaryDesc": "Verranno importate {{count}} particelle ({{size}}).",
         "total": "Totale",
@@ -1091,10 +1091,7 @@
           "missing_geometry": "Nessuna geometria",
           "invalid_geometry": "Geometria non valida"
         },
-        "summaryOverlays": "Superfici sovrapposte: {{count}} verranno salvate, {{present}} già presenti.",
-        "conflictExplanation": "Questa particella si sovrappone a particelle esistenti. Se la importi, la parte sovrapposta viene ritagliata dalle particelle esistenti – come quando crei una particella manualmente.",
-        "conflictsNeedApproval": "Queste particelle si sovrappongono a particelle esistenti e devono essere confermate:",
-        "confirmConflict": "Importa «{{name}}» e ritagliala da {{plots}}"
+        "summaryOverlays": "Superfici sovrapposte: {{count}} verranno salvate, {{present}} già presenti."
       },
       "delete": {
         "button": "Elimina particella",

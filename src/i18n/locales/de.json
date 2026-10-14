@@ -1039,7 +1039,7 @@
         "preview": "Vorschau",
         "previewError": "Die Datei konnte nicht gelesen werden.",
         "commitError": "Import fehlgeschlagen.",
-        "previewDesc": "Prüfe die Flächen auf der Karte und in der Liste. Klicke auf eine Fläche, um sie zu bearbeiten. Überlappende Flächen sind standardmässig nicht ausgewählt.",
+        "previewDesc": "Prüfe die Flächen auf der Karte und in der Liste. Klicke auf eine Fläche, um sie zu bearbeiten. Überlappende Flächen können nicht importiert werden.",
         "selectedCount": "{{selected}} von {{total}} werden importiert",
         "selectAll": "Alle auswählen",
         "deselectAll": "Keine auswählen",
@@ -1047,7 +1047,7 @@
         "editRow": "Fläche bearbeiten",
         "noRows": "Keine Flächen vorhanden.",
         "noGeometry": "Keine Geometrie – kann nicht importiert werden.",
-        "conflictWarning": "Überlappt mit: <bold>{{plots}}</bold>. Beim Import wird die Fläche aus diesen Schlägen entfernt.",
+        "conflictWarning": "Überlappt mit: <bold>{{plots}}</bold>. Überlappende Flächen können nicht importiert werden.",
         "name": "Name",
         "summaryDesc": "{{count}} Flächen ({{size}}) werden importiert.",
         "total": "Total",
@@ -1091,10 +1091,7 @@
           "missing_geometry": "Keine Geometrie",
           "invalid_geometry": "Ungültige Geometrie"
         },
-        "summaryOverlays": "Überlagernde Flächen: {{count}} werden gespeichert, {{present}} bereits vorhanden.",
-        "conflictExplanation": "Diese Fläche überlappt mit bestehenden Schlägen. Wenn du sie importierst, wird der überlappende Teil aus den bestehenden Schlägen ausgeschnitten – wie beim manuellen Erstellen eines Schlags.",
-        "conflictsNeedApproval": "Diese Flächen überlappen mit bestehenden Schlägen und müssen bestätigt werden:",
-        "confirmConflict": "«{{name}}» importieren und aus {{plots}} ausschneiden"
+        "summaryOverlays": "Überlagernde Flächen: {{count}} werden gespeichert, {{present}} bereits vorhanden."
       },
       "delete": {
         "button": "Schlag löschen",

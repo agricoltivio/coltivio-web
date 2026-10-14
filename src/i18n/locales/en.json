@@ -1039,7 +1039,7 @@
         "preview": "Preview",
         "previewError": "The file could not be read.",
         "commitError": "Import failed.",
-        "previewDesc": "Review the plots on the map and in the list. Click a plot to edit it. Overlapping plots are not selected by default.",
+        "previewDesc": "Review the plots on the map and in the list. Click a plot to edit it. Overlapping plots cannot be imported.",
         "selectedCount": "{{selected}} of {{total}} will be imported",
         "selectAll": "Select all",
         "deselectAll": "Deselect all",
@@ -1047,7 +1047,7 @@
         "editRow": "Edit plot",
         "noRows": "No plots.",
         "noGeometry": "No geometry – cannot be imported.",
-        "conflictWarning": "Overlaps with: <bold>{{plots}}</bold>. On import, this area will be removed from these plots.",
+        "conflictWarning": "Overlaps with: <bold>{{plots}}</bold>. Overlapping plots cannot be imported.",
         "name": "Name",
         "summaryDesc": "{{count}} plots ({{size}}) will be imported.",
         "total": "Total",
@@ -1091,10 +1091,7 @@
           "missing_geometry": "No geometry",
           "invalid_geometry": "Invalid geometry"
         },
-        "summaryOverlays": "Overlay areas: {{count}} will be stored, {{present}} already present.",
-        "conflictExplanation": "This plot overlaps existing plots. If you import it, the overlapping area is cut out of the existing plots – just like creating a plot manually.",
-        "conflictsNeedApproval": "These plots overlap existing plots and need your confirmation:",
-        "confirmConflict": "Import \"{{name}}\" and cut it out of {{plots}}"
+        "summaryOverlays": "Overlay areas: {{count}} will be stored, {{present}} already present."
       },
       "delete": {
         "button": "Delete plot",

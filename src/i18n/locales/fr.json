@@ -1039,7 +1039,7 @@
         "preview": "Aperçu",
         "previewError": "Le fichier n'a pas pu être lu.",
         "commitError": "L'import a échoué.",
-        "previewDesc": "Vérifie les parcelles sur la carte et dans la liste. Clique sur une parcelle pour la modifier. Les parcelles qui se chevauchent ne sont pas sélectionnées par défaut.",
+        "previewDesc": "Vérifie les parcelles sur la carte et dans la liste. Clique sur une parcelle pour la modifier. Les parcelles qui se chevauchent ne peuvent pas être importées.",
         "selectedCount": "{{selected}} sur {{total}} seront importées",
         "selectAll": "Tout sélectionner",
         "deselectAll": "Tout désélectionner",
@@ -1047,7 +1047,7 @@
         "editRow": "Modifier la parcelle",
         "noRows": "Aucune parcelle.",
         "noGeometry": "Pas de géométrie – import impossible.",
-        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. À l'import, la surface sera retirée de ces parcelles.",
+        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. Les parcelles qui se chevauchent ne peuvent pas être importées.",
         "name": "Nom",
         "summaryDesc": "{{count}} parcelles ({{size}}) seront importées.",
         "total": "Total",
@@ -1091,10 +1091,7 @@
           "missing_geometry": "Pas de géométrie",
           "invalid_geometry": "Géométrie invalide"
         },
-        "summaryOverlays": "Surfaces superposées : {{count}} seront enregistrées, {{present}} déjà présentes.",
-        "conflictExplanation": "Cette parcelle chevauche des parcelles existantes. Si tu l'importes, la partie qui se chevauche est découpée des parcelles existantes – comme lors de la création manuelle d'une parcelle.",
-        "conflictsNeedApproval": "Ces parcelles chevauchent des parcelles existantes et doivent être confirmées :",
-        "confirmConflict": "Importer « {{name}} » et la découper de {{plots}}"
+        "summaryOverlays": "Surfaces superposées : {{count}} seront enregistrées, {{present}} déjà présentes."
       },
       "delete": {
         "button": "Supprimer la parcelle",

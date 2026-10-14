@@ -209,8 +209,8 @@ export function PlotImportMap({
         id: "import-fill",
         type: "fill",
         source: "import",
-        // Skipped conflicts fall into this layer and are drawn plain grey
-        filter: ["!", ["all", ["==", ["get", "status"], "conflict"], ["get", "selected"]]],
+        // Conflicts are never importable and always drawn striped in their own layer
+        filter: ["!=", ["get", "status"], "conflict"],
         paint: {
           "fill-color": [
             "case",
@@ -236,7 +236,7 @@ export function PlotImportMap({
         id: "import-conflict-fill",
         type: "fill",
         source: "import",
-        filter: ["all", ["==", ["get", "status"], "conflict"], ["get", "selected"]],
+        filter: ["==", ["get", "status"], "conflict"],
         paint: { "fill-pattern": "conflict-stripes" },
       });
       map.addLayer({
@@ -248,17 +248,22 @@ export function PlotImportMap({
             "case",
             ["get", "focused"], "#ffffff",
             ["==", ["get", "status"], "overlay"], IMPORT_STATUS_COLORS.overlay,
+            ["==", ["get", "status"], "conflict"], IMPORT_STATUS_COLORS.conflict,
             ["!", ["get", "selected"]], SKIPPED_ROW_COLOR,
             [
               "match",
               ["get", "status"],
               "new", IMPORT_STATUS_COLORS.new,
-              "conflict", IMPORT_STATUS_COLORS.conflict,
               "error", IMPORT_STATUS_COLORS.error,
               IMPORT_STATUS_COLORS.invalid,
             ],
           ],
-          "line-width": ["case", ["get", "focused"], 4, ["get", "selected"], 2, 1],
+          "line-width": [
+            "case",
+            ["get", "focused"], 4,
+            ["any", ["get", "selected"], ["==", ["get", "status"], "conflict"]], 2,
+            1,
+          ],
         },
       });
       map.addLayer({
