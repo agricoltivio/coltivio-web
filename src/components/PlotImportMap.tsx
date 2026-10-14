@@ -26,13 +26,15 @@ const SWISS_PIXELKARTE =
 
 type BaseLayer = "satellite" | "pixelkarte";
 
-export type ImportRowStatus = "new" | "conflict" | "error" | "invalid";
+// overlay: tree or strip element stored apart from the plots, shown muted and not pickable
+export type ImportRowStatus = "new" | "conflict" | "error" | "invalid" | "overlay";
 
 export const IMPORT_STATUS_COLORS: Record<ImportRowStatus, string> = {
   new: "#16a34a",
   conflict: "#dc2626",
   error: "#7c3aed",
   invalid: "#6b7280",
+  overlay: "#0ea5e9",
 };
 export const SKIPPED_ROW_COLOR = "#9ca3af";
 const EXISTING_PLOT_COLOR = "#facc15";
@@ -212,6 +214,7 @@ export function PlotImportMap({
         paint: {
           "fill-color": [
             "case",
+            ["==", ["get", "status"], "overlay"], IMPORT_STATUS_COLORS.overlay,
             ["!", ["get", "selected"]], SKIPPED_ROW_COLOR,
             [
               "match",
@@ -221,7 +224,12 @@ export function PlotImportMap({
               IMPORT_STATUS_COLORS.invalid,
             ],
           ],
-          "fill-opacity": ["case", ["get", "selected"], 0.55, 0.35],
+          "fill-opacity": [
+            "case",
+            ["==", ["get", "status"], "overlay"], 0.25,
+            ["get", "selected"], 0.55,
+            0.35,
+          ],
         },
       });
       map.addLayer({
@@ -239,6 +247,7 @@ export function PlotImportMap({
           "line-color": [
             "case",
             ["get", "focused"], "#ffffff",
+            ["==", ["get", "status"], "overlay"], IMPORT_STATUS_COLORS.overlay,
             ["!", ["get", "selected"]], SKIPPED_ROW_COLOR,
             [
               "match",
@@ -256,6 +265,7 @@ export function PlotImportMap({
         id: "import-label",
         type: "symbol",
         source: "import",
+        filter: ["!=", ["get", "status"], "overlay"],
         layout: { "text-field": ["get", "name"], "text-size": 12 },
         paint: {
           "text-color": "#ffffff",
@@ -354,6 +364,7 @@ export function PlotImportMap({
         <LegendItem color={IMPORT_STATUS_COLORS.new} label={t("fieldCalendar.plots.import.legend.new")} />
         <LegendItem color={IMPORT_STATUS_COLORS.conflict} striped label={t("fieldCalendar.plots.import.legend.conflict")} />
         <LegendItem color={IMPORT_STATUS_COLORS.error} label={t("fieldCalendar.plots.import.legend.error")} />
+        <LegendItem color={IMPORT_STATUS_COLORS.overlay} label={t("fieldCalendar.plots.import.legend.overlay")} />
         <LegendItem color={SKIPPED_ROW_COLOR} label={t("fieldCalendar.plots.import.legend.skipped")} />
         <LegendItem color={EXISTING_PLOT_COLOR} label={t("fieldCalendar.plots.import.legend.existing")} />
       </div>
