@@ -5,6 +5,7 @@ import {
   HeartHandshake,
   LayoutDashboard,
   ListTodo,
+  MessagesSquare,
   NotebookPen,
   ShoppingCart,
   Sprout,
@@ -68,6 +69,14 @@ export const SECTIONS: readonly NavSection[] = [
     icon: LayoutDashboard,
     to: "/dashboard",
     match: ["/dashboard"],
+    items: [],
+  },
+  {
+    id: "treffpunkt",
+    labelKey: "nav.treffpunkt",
+    icon: MessagesSquare,
+    to: "/treffpunkt",
+    match: ["/treffpunkt"],
     items: [],
   },
   {
@@ -198,9 +207,10 @@ export const SECTIONS: readonly NavSection[] = [
     labelKey: "nav.groups.verein",
     icon: UsersRound,
     to: "/membership",
-    match: ["/membership", "/treffpunkt"],
+    match: ["/membership"],
     items: [
       { labelKey: "nav.membership", to: "/membership" },
+      // also a top-level section; kept here for users used to finding it under Verein
       { labelKey: "nav.treffpunkt", to: "/treffpunkt" },
     ],
   },
