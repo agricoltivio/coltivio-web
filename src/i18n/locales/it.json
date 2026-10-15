@@ -1702,8 +1702,9 @@
     "entryReplied": "ha risposto",
     "authorBadge": "Autore",
     "addComment": "Aggiungi un commento",
-    "subscribe": "Attiva le notifiche",
-    "unsubscribe": "Disattiva le notifiche"
+    "subscribe": "Iscriviti",
+    "unsubscribe": "Annulla iscrizione",
+    "subscribeHint": "Ricevi un'e-mail quando qualcuno risponde a questo post."
   },
   "journal": {
     "title": "Diario",

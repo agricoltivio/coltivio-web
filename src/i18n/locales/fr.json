@@ -1702,8 +1702,9 @@
     "entryReplied": "a répondu",
     "authorBadge": "Auteur",
     "addComment": "Ajouter un commentaire",
-    "subscribe": "Activer les notifications",
-    "unsubscribe": "Désactiver les notifications"
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "subscribeHint": "Recevez un e-mail lorsque quelqu'un répond à ce sujet."
   },
   "journal": {
     "title": "Journal",

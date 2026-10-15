@@ -1703,7 +1703,8 @@
     "authorBadge": "Author",
     "addComment": "Add a comment",
     "subscribe": "Subscribe",
-    "unsubscribe": "Unsubscribe"
+    "unsubscribe": "Unsubscribe",
+    "subscribeHint": "Get an email when someone replies to this post."
   },
   "journal": {
     "title": "Journal",
