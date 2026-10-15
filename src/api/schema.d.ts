@@ -1393,7 +1393,7 @@ export interface paths {
         delete: operations["DeleteV1HarvestsByIdHarvestId"];
         options?: never;
         head: operations["HeadV1HarvestsByIdHarvestId"];
-        patch?: never;
+        patch: operations["PatchV1HarvestsByIdHarvestId"];
         trace?: never;
     };
     "/v1/harvests/summaries": {
@@ -1489,7 +1489,7 @@ export interface paths {
         delete: operations["DeleteV1FertilizerApplicationsByIdFertilizerApplicationId"];
         options?: never;
         head: operations["HeadV1FertilizerApplicationsByIdFertilizerApplicationId"];
-        patch?: never;
+        patch: operations["PatchV1FertilizerApplicationsByIdFertilizerApplicationId"];
         trace?: never;
     };
     "/v1/fertilizerApplications/summaries": {
@@ -5582,19 +5582,13 @@ export interface components {
              */
             dateTime?: string;
             productId?: string;
-            geometry?: {
-                /** @constant */
-                type: "MultiPolygon";
-                coordinates: number[][][][];
-            };
-            size?: number;
             /** @enum {string|null} */
             method?: "spraying" | "misting" | "broadcasting" | "injecting" | "other" | null;
             amountPerUnit?: number;
             numberOfUnits?: number;
             /** @enum {string} */
             unit?: "load" | "bag" | "total_amount" | "amount_per_hectare" | "other";
-            additionalNotes?: string;
+            additionalNotes?: string | null;
         };
         GetV1CropProtectionApplicationsSummariesPositiveResponse: {
             data: {
@@ -5901,12 +5895,6 @@ export interface components {
             };
         };
         PatchV1TillagesByIdTillageIdRequestBody: {
-            geometry?: {
-                /** @constant */
-                type: "MultiPolygon";
-                coordinates: number[][][][];
-            };
-            size?: number;
             /** @enum {string} */
             action?: "plowing" | "tilling" | "harrowing" | "rolling" | "rotavating" | "weed_harrowing" | "hoeing" | "flame_weeding" | "custom";
             customAction?: string | null;
@@ -5915,7 +5903,7 @@ export interface components {
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
             date?: string;
-            additionalNotes?: string;
+            additionalNotes?: string | null;
         };
         GetV1TillagesYearsPositiveResponse: {
             data: {
@@ -7041,6 +7029,71 @@ export interface components {
         DeleteV1HarvestsByIdHarvestIdPositiveResponse: {
             data: Record<string, never>;
         };
+        PatchV1HarvestsByIdHarvestIdPositiveResponse: {
+            data: {
+                id: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                farmId: string;
+                additionalNotes: string | null;
+                /** @enum {string|null} */
+                conservationMethod: "dried" | "silage" | "haylage" | "other" | "none" | null;
+                /** @enum {string} */
+                unit: "load" | "square_bale" | "round_bale" | "crate" | "total_amount" | "other";
+                kilosPerUnit: number;
+                numberOfUnits: number;
+                harvestCount: number | null;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                plotId: string;
+                plot: {
+                    id: string;
+                    name: string;
+                };
+                size: number;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PatchV1HarvestsByIdHarvestIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            cropId?: string;
+            /** @enum {string|null} */
+            conservationMethod?: "dried" | "silage" | "haylage" | "other" | "none" | null;
+            /** @enum {string} */
+            unit?: "load" | "square_bale" | "round_bale" | "crate" | "total_amount" | "other";
+            kilosPerUnit?: number;
+            numberOfUnits?: number;
+            harvestCount?: number | null;
+            additionalNotes?: string | null;
+        };
         GetV1HarvestsSummariesPositiveResponse: {
             data: {
                 monthlyHarvests: {
@@ -7305,6 +7358,67 @@ export interface components {
         };
         DeleteV1FertilizerApplicationsByIdFertilizerApplicationIdPositiveResponse: {
             data: Record<string, never>;
+        };
+        PatchV1FertilizerApplicationsByIdFertilizerApplicationIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+                plotId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                /** @enum {string} */
+                unit: "load" | "bag" | "total_amount" | "amount_per_hectare" | "other";
+                /** @enum {string|null} */
+                method: "spray" | "spread" | "other" | null;
+                amountPerUnit: number;
+                numberOfUnits: number;
+                fertilizerId: string;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                plot: {
+                    id: string;
+                    name: string;
+                };
+                fertilizer: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    /** @enum {string} */
+                    type: "mineral" | "organic";
+                    /** @enum {string} */
+                    unit: "l" | "kg" | "dt" | "t";
+                };
+            };
+        };
+        PatchV1FertilizerApplicationsByIdFertilizerApplicationIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            /** @enum {string} */
+            unit?: "load" | "bag" | "total_amount" | "amount_per_hectare" | "other";
+            /** @enum {string|null} */
+            method?: "spray" | "spread" | "other" | null;
+            amountPerUnit?: number;
+            numberOfUnits?: number;
+            fertilizerId?: string;
+            additionalNotes?: string | null;
         };
         GetV1FertilizerApplicationsSummariesPositiveResponse: {
             data: {
@@ -18588,6 +18702,43 @@ export interface operations {
             };
         };
     };
+    PatchV1HarvestsByIdHarvestId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/harvests/byId/:harvestId Parameter */
+                harvestId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/harvests/byId/:harvestId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1HarvestsByIdHarvestIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/harvests/byId/:harvestId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1HarvestsByIdHarvestIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/harvests/byId/:harvestId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
     GetV1HarvestsSummaries: {
         parameters: {
             query?: never;
@@ -19100,6 +19251,43 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    PatchV1FertilizerApplicationsByIdFertilizerApplicationId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/fertilizerApplications/byId/:fertilizerApplicationId Parameter */
+                fertilizerApplicationId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/fertilizerApplications/byId/:fertilizerApplicationId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1FertilizerApplicationsByIdFertilizerApplicationIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/fertilizerApplications/byId/:fertilizerApplicationId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1FertilizerApplicationsByIdFertilizerApplicationIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/fertilizerApplications/byId/:fertilizerApplicationId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

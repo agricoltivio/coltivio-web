@@ -14,6 +14,26 @@ export const cropProtectionApplicationsQueryOptions = () => {
   });
 };
 
+export const cropProtectionApplicationQueryOptions = (
+  cropProtectionApplicationId: string,
+) => {
+  return queryOptions({
+    queryKey: ["cropProtectionApplications", "byId", cropProtectionApplicationId],
+    queryFn: async () => {
+      const response = await apiClient.GET(
+        "/v1/cropProtectionApplications/byId/{cropProtectionApplicationId}",
+        {
+          params: { path: { cropProtectionApplicationId } },
+        },
+      );
+      if (response.error) {
+        throw new Error("Failed to fetch crop protection application");
+      }
+      return response.data.data;
+    },
+  });
+};
+
 export const plotCropProtectionApplicationsQueryOptions = (plotId: string) => {
   return queryOptions({
     queryKey: ["plots", "byId", plotId, "cropProtectionApplications"],
