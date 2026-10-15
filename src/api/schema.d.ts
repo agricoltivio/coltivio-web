@@ -4231,6 +4231,11 @@ export interface components {
         };
         PostV1PlotsImportPreviewPositiveResponse: {
             data: {
+                format: {
+                    name: string;
+                    label: string;
+                    geometryOnly: boolean;
+                };
                 /** @enum {string} */
                 completeness: "full" | "partial" | "geometries_only";
                 rows: {
@@ -4241,6 +4246,11 @@ export interface components {
                     usage: number | null;
                     usageName: string | null;
                     size: number;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    cuttingDate: string | null;
                     municipality: string | null;
                     geometry: {
                         /** @constant */
@@ -4248,7 +4258,25 @@ export interface components {
                         coordinates: number[][][][];
                     } | null;
                     overlappingPlotIds: string[];
-                    parseErrors: string[];
+                    parseErrors: {
+                        code: string;
+                        value?: string;
+                    }[];
+                }[];
+                overlays: {
+                    externalId: string;
+                    name: string;
+                    localId: string | null;
+                    usage: number;
+                    usageName: string | null;
+                    size: number;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    rowNumber: number;
+                    alreadyPresent: boolean;
                 }[];
             };
         };
@@ -4259,9 +4287,12 @@ export interface components {
         PostV1PlotsImportCommitPositiveResponse: {
             data: {
                 created: number;
+                overlaysCreated: number;
+                overlaysSkipped: number;
             };
         };
         PostV1PlotsImportCommitRequestBody: {
+            format: string;
             rows: {
                 name: string;
                 localId?: string;
@@ -4279,6 +4310,20 @@ export interface components {
                 };
                 size: number;
                 additionalNotes?: string;
+            }[];
+            /** @default [] */
+            overlays: {
+                externalId: string;
+                name: string;
+                localId: string | null;
+                usage: number;
+                usageName: string | null;
+                size: number;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
             }[];
         };
         GetV1PlotsByIdPlotIdPositiveResponse: {
