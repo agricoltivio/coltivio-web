@@ -1077,6 +1077,10 @@
           "lawis": {
             "label": "LAWIS / LAWISplus",
             "instructions": "Dans le système cantonal, ouvre ‹Dokumente›, clique sur ‹Geometriedaten exportieren› et télécharge ici le fichier betriebsansicht-kul.zip."
+          },
+          "acorda": {
+            "label": "Acorda",
+            "instructions": "Dans Acorda, ouvre ‹Consultation›, clique sur ‹Export données géo›, choisis le format ‹Shape› et télécharge ici le fichier zip obtenu."
           }
         },
         "formatDetected": "Format reconnu : {{label}}",
