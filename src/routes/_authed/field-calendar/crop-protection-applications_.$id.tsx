@@ -128,8 +128,13 @@ function EditCropProtectionApplication() {
         dateTime: app.dateTime.slice(0, 16),
         method: app.method ?? "spraying",
         unit: app.unit,
-        amountPerUnit: app.amountPerUnit.toString(),
-        numberOfUnits: app.numberOfUnits.toString(),
+        // total_amount is edited as a single total, a multi-plot split may have
+        // stored it as a fractional unit count
+        amountPerUnit:
+          app.unit === "total_amount"
+            ? (Math.round((app.amountPerUnit * app.numberOfUnits + Number.EPSILON) * 100) / 100).toString()
+            : app.amountPerUnit.toString(),
+        numberOfUnits: app.unit === "total_amount" ? "1" : app.numberOfUnits.toString(),
         additionalNotes: app.additionalNotes ?? "",
       });
     }
@@ -137,6 +142,7 @@ function EditCropProtectionApplication() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
+      if (!app) throw new Error("Application not loaded");
       const response = await apiClient.PATCH(
         "/v1/cropProtectionApplications/byId/{cropProtectionApplicationId}",
         {
@@ -149,7 +155,14 @@ function EditCropProtectionApplication() {
             method: data.method || null,
             unit: data.unit,
             amountPerUnit: parseFloat(data.amountPerUnit),
-            numberOfUnits: parseFloat(data.numberOfUnits),
+            // Same as the create flow: total_amount is one unit, amount_per_hectare
+            // counts the plot's hectares
+            numberOfUnits:
+              data.unit === "total_amount"
+                ? 1
+                : data.unit === "amount_per_hectare"
+                  ? app.size / 10000
+                  : parseFloat(data.numberOfUnits),
             additionalNotes: data.additionalNotes || null,
           },
         },
@@ -214,6 +227,8 @@ function EditCropProtectionApplication() {
   const watchedProductId = watch("productId");
   const watchedMethod = watch("method");
   const watchedUnit = watch("unit");
+  const isFixedAmountUnit =
+    watchedUnit === "total_amount" || watchedUnit === "amount_per_hectare";
 
   // Same labels as the create flow, e.g. "kg / Fuder"
   const selectedProduct = products.find((product) => product.id === watchedProductId);
@@ -324,12 +339,11 @@ function EditCropProtectionApplication() {
             <Label>{t("fieldCalendar.cropProtectionApplications.method")}</Label>
             <Select
               value={watchedMethod}
-              onValueChange={(v) =>
-                setValue(
-                  "method",
-                  CROP_PROTECTION_METHODS.find((method) => method === v) ?? "",
-                )
-              }
+              onValueChange={(v) => {
+                // Radix fires onValueChange("") spuriously, ignore unknown values
+                const method = CROP_PROTECTION_METHODS.find((cropProtectionMethod) => cropProtectionMethod === v);
+                if (method) setValue("method", method);
+              }}
               disabled={!canWrite}
             >
               <SelectTrigger>
@@ -373,18 +387,21 @@ function EditCropProtectionApplication() {
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <Label>
-                {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
-                  unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
-                })}
-              </Label>
-              <Input
-                type="number"
-                min={1}
-                {...register("numberOfUnits", { required: true })}
-              />
-            </div>
+            {!isFixedAmountUnit && (
+              <div className="space-y-1">
+                <Label>
+                  {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
+                    unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
+                  })}
+                </Label>
+                <Input
+                  type="number"
+                  min={0}
+                  step="any"
+                  {...register("numberOfUnits", { required: !isFixedAmountUnit })}
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-1">

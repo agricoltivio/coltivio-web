@@ -101,8 +101,13 @@ function HarvestDetail() {
         date: harvest.date.slice(0, 10),
         cropId: harvest.cropId,
         unit: harvest.unit,
-        kilosPerUnit: harvest.kilosPerUnit.toString(),
-        numberOfUnits: harvest.numberOfUnits.toString(),
+        // total_amount is edited as a single total, a multi-plot split may have
+        // stored it as a fractional unit count
+        kilosPerUnit:
+          harvest.unit === "total_amount"
+            ? (Math.round((harvest.kilosPerUnit * harvest.numberOfUnits + Number.EPSILON) * 100) / 100).toString()
+            : harvest.kilosPerUnit.toString(),
+        numberOfUnits: harvest.unit === "total_amount" ? "1" : harvest.numberOfUnits.toString(),
         conservationMethod: harvest.conservationMethod ?? "",
         additionalNotes: harvest.additionalNotes ?? "",
       });
@@ -118,7 +123,9 @@ function HarvestDetail() {
           cropId: data.cropId,
           unit: data.unit,
           kilosPerUnit: parseFloat(data.kilosPerUnit),
-          numberOfUnits: parseFloat(data.numberOfUnits),
+          // Same as the create flow: total_amount is one unit
+          numberOfUnits:
+            data.unit === "total_amount" ? 1 : parseFloat(data.numberOfUnits),
           conservationMethod: data.conservationMethod || null,
           additionalNotes: data.additionalNotes || null,
         },
@@ -148,6 +155,7 @@ function HarvestDetail() {
 
   const watchedCropId = watch("cropId");
   const watchedUnit = watch("unit");
+  const isFixedAmountUnit = watchedUnit === "total_amount";
   const watchedConservation = watch("conservationMethod");
 
   if (!harvest) {
@@ -265,19 +273,21 @@ function HarvestDetail() {
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <Label>
-                {t("fieldCalendar.harvests.numberOfUnitsWith", {
-                  unit: t(`fieldCalendar.harvests.units.${watchedUnit}`),
-                })}
-              </Label>
-              <Input
-                type="number"
-                min={0}
-                step="any"
-                {...register("numberOfUnits", { required: true })}
-              />
-            </div>
+            {!isFixedAmountUnit && (
+              <div className="space-y-1">
+                <Label>
+                  {t("fieldCalendar.harvests.numberOfUnitsWith", {
+                    unit: t(`fieldCalendar.harvests.units.${watchedUnit}`),
+                  })}
+                </Label>
+                <Input
+                  type="number"
+                  min={0}
+                  step="any"
+                  {...register("numberOfUnits", { required: !isFixedAmountUnit })}
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-1">
@@ -294,12 +304,11 @@ function HarvestDetail() {
             <Label>{t("fieldCalendar.harvests.conservationMethod")}</Label>
             <Select
               value={watchedConservation}
-              onValueChange={(v) =>
-                setValue(
-                  "conservationMethod",
-                  CONSERVATION_METHODS.find((method) => method === v) ?? "",
-                )
-              }
+              onValueChange={(v) => {
+                // Radix fires onValueChange("") spuriously, ignore unknown values
+                const method = CONSERVATION_METHODS.find((conservationMethod) => conservationMethod === v);
+                if (method) setValue("conservationMethod", method);
+              }}
               disabled={!canWrite}
             >
               <SelectTrigger>

@@ -95,8 +95,13 @@ function FertilizerApplicationDetail() {
         fertilizerId: app.fertilizerId,
         unit: app.unit,
         method: app.method ?? "",
-        amountPerUnit: app.amountPerUnit.toString(),
-        numberOfUnits: app.numberOfUnits.toString(),
+        // total_amount is edited as a single total, a multi-plot split may have
+        // stored it as a fractional unit count
+        amountPerUnit:
+          app.unit === "total_amount"
+            ? (Math.round((app.amountPerUnit * app.numberOfUnits + Number.EPSILON) * 100) / 100).toString()
+            : app.amountPerUnit.toString(),
+        numberOfUnits: app.unit === "total_amount" ? "1" : app.numberOfUnits.toString(),
         additionalNotes: app.additionalNotes ?? "",
       });
     }
@@ -104,6 +109,7 @@ function FertilizerApplicationDetail() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
+      if (!app) throw new Error("Application not loaded");
       const response = await apiClient.PATCH(
         "/v1/fertilizerApplications/byId/{fertilizerApplicationId}",
         {
@@ -114,7 +120,14 @@ function FertilizerApplicationDetail() {
             unit: data.unit,
             method: data.method || null,
             amountPerUnit: parseFloat(data.amountPerUnit),
-            numberOfUnits: parseFloat(data.numberOfUnits),
+            // Same as the create flow: total_amount is one unit, amount_per_hectare
+            // counts the plot's hectares
+            numberOfUnits:
+              data.unit === "total_amount"
+                ? 1
+                : data.unit === "amount_per_hectare"
+                  ? app.size / 10000
+                  : parseFloat(data.numberOfUnits),
             additionalNotes: data.additionalNotes || null,
           },
         },
@@ -146,6 +159,8 @@ function FertilizerApplicationDetail() {
   const watchedFertilizerId = watch("fertilizerId");
   const watchedUnit = watch("unit");
   const watchedMethod = watch("method");
+  const isFixedAmountUnit =
+    watchedUnit === "total_amount" || watchedUnit === "amount_per_hectare";
 
   if (!app) {
     return (
@@ -280,27 +295,31 @@ function FertilizerApplicationDetail() {
             </div>
           </div>
 
-          <div className="space-y-1">
-            <Label>
-              {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
-                unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
-              })}
-            </Label>
-            <Input
-              type="number"
-              min={0}
-              step="any"
-              {...register("numberOfUnits", { required: true })}
-            />
-          </div>
+          {!isFixedAmountUnit && (
+            <div className="space-y-1">
+              <Label>
+                {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
+                  unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
+                })}
+              </Label>
+              <Input
+                type="number"
+                min={0}
+                step="any"
+                {...register("numberOfUnits", { required: !isFixedAmountUnit })}
+              />
+            </div>
+          )}
 
           <div className="space-y-1">
             <Label>{t("fieldCalendar.fertilizerApplications.method")}</Label>
             <Select
               value={watchedMethod}
-              onValueChange={(v) =>
-                setValue("method", FERTILIZER_METHODS.find((method) => method === v) ?? "")
-              }
+              onValueChange={(v) => {
+                // Radix fires onValueChange("") spuriously, ignore unknown values
+                const method = FERTILIZER_METHODS.find((fertilizerMethod) => fertilizerMethod === v);
+                if (method) setValue("method", method);
+              }}
               disabled={!canWrite}
             >
               <SelectTrigger>
