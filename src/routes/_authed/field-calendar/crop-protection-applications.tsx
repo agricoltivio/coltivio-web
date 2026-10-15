@@ -250,11 +250,11 @@ function CropProtectionApplications() {
       <DataTable
         data={data}
         columns={columns}
-        onRowClick={canWriteCropProtection ? (app) =>
+        onRowClick={(app) =>
           navigate({
-            to: "/field-calendar/crop-protection-applications/$id/edit",
+            to: "/field-calendar/crop-protection-applications/$id",
             params: { id: app.id },
-          }) : undefined
+          })
         }
         defaultSorting={[{ id: "dateTime", desc: true }]}
       />
