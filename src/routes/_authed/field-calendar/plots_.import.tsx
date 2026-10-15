@@ -63,7 +63,10 @@ type RowWithGeometry = LocalPreviewRow & { geometry: NonNullable<PreviewRow["geo
 type Step = "upload" | "preview" | "summary";
 
 // Cantonal systems with a supported export. Add an entry per system once its format is known to the API.
-const IMPORT_SYSTEMS = [{ key: "lawis", image: "/lawis_export.png" }] as const;
+const IMPORT_SYSTEMS: readonly { key: "lawis" | "acorda"; image?: string }[] = [
+  { key: "lawis", image: "/lawis_export.png" },
+  { key: "acorda" },
+];
 type ImportSystemKey = (typeof IMPORT_SYSTEMS)[number]["key"];
 
 // "Übrige Dauerwiesen" – used when the file has no usage attribute
@@ -293,11 +296,13 @@ function ImportPlots() {
             <p className="text-sm text-muted-foreground">
               {t(`fieldCalendar.plots.import.systems.${activeSystem.key}.instructions`)}
             </p>
-            <img
-              src={activeSystem.image}
-              alt={t(`fieldCalendar.plots.import.systems.${activeSystem.key}.label`)}
-              className="w-full rounded-lg border"
-            />
+            {activeSystem.image && (
+              <img
+                src={activeSystem.image}
+                alt={t(`fieldCalendar.plots.import.systems.${activeSystem.key}.label`)}
+                className="w-full rounded-lg border"
+              />
+            )}
             <p className="text-sm text-muted-foreground">{t("fieldCalendar.plots.import.onboardingFilesHint")}</p>
             <p className="text-sm text-muted-foreground">
               <Trans
