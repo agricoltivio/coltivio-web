@@ -1033,13 +1033,13 @@
         "previewTitle": "Anteprima importazione",
         "summaryTitle": "Riepilogo",
         "onboardingHeading": "Importa particelle da uno shapefile",
-        "onboardingBody": "Esporta le tue particelle dal portale agricolo cantonale (ad es. LAWIS) come shapefile e carica qui lo ZIP.",
+        "onboardingBody": "Esporta le tue superfici dal sistema cantonale (ad es. Acorda, LAWIS) come shapefile e carica qui lo ZIP.",
         "onboardingFilesHint": "Lo ZIP deve contenere esattamente un file .shp e il relativo file .dbf (.prj, .shx e .cpg sono facoltativi).",
         "file": "File ZIP",
         "preview": "Anteprima",
         "previewError": "Impossibile leggere il file.",
         "commitError": "Importazione non riuscita.",
-        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non sono selezionate per impostazione predefinita.",
+        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non possono essere importate.",
         "selectedCount": "{{selected}} di {{total}} verranno importate",
         "selectAll": "Seleziona tutto",
         "deselectAll": "Deseleziona tutto",
@@ -1047,12 +1047,9 @@
         "editRow": "Modifica particella",
         "noRows": "Nessuna particella.",
         "noGeometry": "Nessuna geometria – non importabile.",
-        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. All'importazione, l'area verrà rimossa da queste particelle.",
-        "conflictExplanation": "Questa particella si sovrappone a particelle esistenti. Se la importi, la parte sovrapposta viene ritagliata dalle particelle esistenti – come quando crei una particella manualmente.",
+        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. Le particelle sovrapposte non possono essere importate.",
         "name": "Nome",
         "summaryDesc": "Verranno importate {{count}} particelle ({{size}}).",
-        "conflictsNeedApproval": "Queste particelle si sovrappongono a particelle esistenti e devono essere confermate:",
-        "confirmConflict": "Importa «{{name}}» e ritagliala da {{plots}}",
         "total": "Totale",
         "cuttingDateHint": "Le date di sfalcio non vengono importate e possono essere impostate più tardi per ogni particella.",
         "commit_one": "Importa {{count}} particella",
@@ -1065,7 +1062,8 @@
           "conflict": "Sovrapposizione",
           "error": "Errore",
           "existing": "Esistente",
-          "skipped": "Non selezionata"
+          "skipped": "Non selezionata",
+          "overlay": "Superficie sovrapposta"
         },
         "includeInImport": "Importa",
         "completeness": {
@@ -1073,13 +1071,38 @@
           "geometries_only": "Dal file sono stati letti solo i contorni delle particelle – mancano nomi, numeri di particella e utilizzazioni. Completali dove necessario.",
           "defaultUsage": "Le utilizzazioni mancanti vengono impostate su «Altri prati permanenti»."
         },
-        "supportHint": "Problemi con l'importazione? Contatta <mail>support@coltivio.ch</mail>."
+        "supportHint": "Problemi con l'importazione? Contatta <mail>support@coltivio.ch</mail>.",
+        "systems": {
+          "heading": "Sistema cantonale",
+          "lawis": {
+            "label": "LAWIS / LAWISplus",
+            "instructions": "Nel sistema cantonale apri ‹Dokumente›, clicca su ‹Geometriedaten exportieren› e carica qui il file betriebsansicht-kul.zip."
+          }
+        },
+        "formatDetected": "Formato riconosciuto: {{label}}",
+        "overlays": {
+          "summary": "{{count}} superfici sovrapposte (alberi, strisce di campo) vengono salvate separatamente e non appaiono come campi.",
+          "alreadyPresent": "{{count}} di esse esistono già e vengono saltate.",
+          "present": "già presente"
+        },
+        "errors": {
+          "invalid_usage_code": "Codice di utilizzo non valido «{{value}}»",
+          "invalid_size": "Superficie non valida «{{value}}»",
+          "missing_geometry": "Nessuna geometria",
+          "invalid_geometry": "Geometria non valida"
+        },
+        "summaryOverlays": "Superfici sovrapposte: {{count}} verranno salvate, {{present}} già presenti."
       },
       "delete": {
         "button": "Elimina particella",
         "title": "Eliminare «{{name}}»?",
         "confirm": "La particella e tutti i dati associati, come rotazioni e voci del diario, verranno eliminati definitivamente. L'operazione non può essere annullata.",
         "error": "Impossibile eliminare la particella."
+      },
+      "importButton": "Importa",
+      "emptyState": {
+        "title": "Ancora nessun campo",
+        "body": "Importali dal sistema cantonale (ad es. Acorda, LAWIS) o disegnali sulla mappa."
       }
     },
     "cropRotations": {
