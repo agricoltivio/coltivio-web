@@ -215,6 +215,16 @@ function EditCropProtectionApplication() {
   const watchedMethod = watch("method");
   const watchedUnit = watch("unit");
 
+  // Same labels as the create flow, e.g. "kg / Fuder"
+  const selectedProduct = products.find((product) => product.id === watchedProductId);
+  const productUnitLabel = selectedProduct?.unit ?? "l";
+  const amountPerUnitLabel =
+    watchedUnit === "total_amount"
+      ? `${t("fieldCalendar.fertilizerApplications.units.total_amount")} (${productUnitLabel})`
+      : watchedUnit === "amount_per_hectare"
+        ? `${productUnitLabel} / ha`
+        : `${productUnitLabel} / ${t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`)}`;
+
   return (
     <PageContent
       title={t("fieldCalendar.cropProtectionApplications.edit")}
@@ -364,7 +374,11 @@ function EditCropProtectionApplication() {
             </div>
 
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
+              <Label>
+                {t("fieldCalendar.fertilizerApplications.numberOfUnitsWith", {
+                  unit: t(`fieldCalendar.fertilizerApplications.units.${watchedUnit}`),
+                })}
+              </Label>
               <Input
                 type="number"
                 min={1}
@@ -374,9 +388,7 @@ function EditCropProtectionApplication() {
           </div>
 
           <div className="space-y-1">
-            <Label>
-              {t("fieldCalendar.fertilizerApplications.amountPerUnit")}
-            </Label>
+            <Label>{amountPerUnitLabel}</Label>
             <Input
               type="number"
               min={0}

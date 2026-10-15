@@ -266,7 +266,11 @@ function HarvestDetail() {
             </div>
 
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.harvests.numberOfUnits")}</Label>
+              <Label>
+                {t("fieldCalendar.harvests.numberOfUnitsWith", {
+                  unit: t(`fieldCalendar.harvests.units.${watchedUnit}`),
+                })}
+              </Label>
               <Input
                 type="number"
                 min={0}
