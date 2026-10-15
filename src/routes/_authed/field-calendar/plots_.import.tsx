@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trans, useTranslation } from "react-i18next";
-import { AlertTriangle, Pencil } from "lucide-react";
+import { AlertTriangle, Check, ChevronDown, Pencil } from "lucide-react";
 import type { components } from "@/api/schema";
 import { apiClient } from "@/api/client";
 import { plotsQueryOptions } from "@/api/plots.queries";
@@ -17,8 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UsageCombobox } from "@/components/UsageCombobox";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import {
   Sheet,
@@ -39,10 +39,15 @@ export const Route = createFileRoute("/_authed/field-calendar/plots_/import")({
   component: ImportPlots,
 });
 
-type PreviewRow =
-  components["schemas"]["PostV1PlotsImportPreviewPositiveResponse"]["data"]["rows"][number];
+type Preview = components["schemas"]["PostV1PlotsImportPreviewPositiveResponse"]["data"];
+type PreviewRow = Preview["rows"][number];
+type OverlayRow = Preview["overlays"][number];
+type ImportFormat = Preview["format"];
+type Completeness = Preview["completeness"];
 
-type CommitRow = components["schemas"]["PostV1PlotsImportCommitRequestBody"]["rows"][number];
+type CommitBody = components["schemas"]["PostV1PlotsImportCommitRequestBody"];
+type CommitRow = CommitBody["rows"][number];
+type CommitOverlay = NonNullable<CommitBody["overlays"]>[number];
 
 // Extends the server preview row with UI-only fields
 type LocalPreviewRow = PreviewRow & {
@@ -57,7 +62,9 @@ type RowWithGeometry = LocalPreviewRow & { geometry: NonNullable<PreviewRow["geo
 
 type Step = "upload" | "preview" | "summary";
 
-type Completeness = components["schemas"]["PostV1PlotsImportPreviewPositiveResponse"]["data"]["completeness"];
+// Cantonal systems with a supported export. Add an entry per system once its format is known to the API.
+const IMPORT_SYSTEMS = [{ key: "lawis", image: "/lawis_export.png" }] as const;
+type ImportSystemKey = (typeof IMPORT_SYSTEMS)[number]["key"];
 
 // "Übrige Dauerwiesen" – used when the file has no usage attribute
 const DEFAULT_USAGE_CODE = 613;
@@ -86,9 +93,10 @@ function getRowStatus(row: LocalPreviewRow): ImportRowStatus {
   return "new";
 }
 
-// Rows with parse errors become importable once the user has entered a name
+// Rows with parse errors become importable once the user has entered a name.
+// Rows overlapping existing plots can never be imported.
 function isSelectable(row: LocalPreviewRow): boolean {
-  return row.geometry !== null && row.editedName.trim().length > 0;
+  return row.geometry !== null && row.overlappingPlotIds.length === 0 && row.editedName.trim().length > 0;
 }
 
 function formatHectares(squareMeters: number): string {
@@ -101,16 +109,18 @@ function ImportPlots() {
   const queryClient = useQueryClient();
 
   const [step, setStep] = useState<Step>("upload");
+  const [system, setSystem] = useState<ImportSystemKey>("lawis");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewRows, setPreviewRows] = useState<LocalPreviewRow[]>([]);
+  const [overlays, setOverlays] = useState<OverlayRow[]>([]);
+  const [format, setFormat] = useState<ImportFormat>({ name: "", label: "", geometryOnly: false });
   const [completeness, setCompleteness] = useState<Completeness>("full");
+  const [overlaysOpen, setOverlaysOpen] = useState(false);
   const [editingRowNumber, setEditingRowNumber] = useState<number | null>(null);
   // Hovered row (transient) and clicked row (sticky) both highlight on the map
   const [focusedRowNumber, setFocusedRowNumber] = useState<number | null>(null);
   const [activeRowNumber, setActiveRowNumber] = useState<number | null>(null);
   const [zoomRequest, setZoomRequest] = useState<{ rowNumber: number; nonce: number } | null>(null);
-  // Conflict rows the user explicitly confirmed in the summary step
-  const [confirmedConflictRowNumbers, setConfirmedConflictRowNumbers] = useState<Set<number>>(new Set());
 
   const existingPlotsData = useQuery(plotsQueryOptions()).data;
   // Stable reference so the map doesn't push new data on every render
@@ -132,14 +142,16 @@ function ImportPlots() {
         },
       });
       if (response.error) {
-        throw new Error(response.error.error || t("fieldCalendar.plots.import.previewError"));
+        throw new Error(t("fieldCalendar.plots.import.previewError"));
       }
       return response.data.data;
     },
-    onSuccess: ({ rows, completeness }) => {
-      setPreviewRows(rows.map(toLocalRow));
-      setCompleteness(completeness);
-      setConfirmedConflictRowNumbers(new Set());
+    onSuccess: (preview) => {
+      setPreviewRows(preview.rows.map(toLocalRow));
+      setOverlays(preview.overlays);
+      setFormat(preview.format);
+      setCompleteness(preview.completeness);
+      setOverlaysOpen(false);
       setStep("preview");
     },
   });
@@ -147,11 +159,10 @@ function ImportPlots() {
   const rowsToImport = previewRows.filter(
     (row): row is RowWithGeometry => row.selected && hasGeometry(row) && isSelectable(row),
   );
-  const conflictRowsToImport = rowsToImport.filter((row) => row.overlappingPlotIds.length > 0);
-  const allConflictsConfirmed = conflictRowsToImport.every((row) =>
-    confirmedConflictRowNumbers.has(row.rowNumber),
-  );
+  const overlaysToImport = overlays.filter((overlay) => !overlay.alreadyPresent);
+  const overlaysPresent = overlays.length - overlaysToImport.length;
   const totalImportSize = rowsToImport.reduce((sum, row) => sum + row.size, 0);
+  const nothingToImport = rowsToImport.length === 0 && overlaysToImport.length === 0;
 
   const commitMutation = useMutation({
     mutationFn: async () => {
@@ -163,9 +174,24 @@ function ImportPlots() {
         ...(row.editedLocalId.trim() !== "" && { localId: row.editedLocalId.trim() }),
         ...(row.editedUsage !== null && { usage: row.editedUsage }),
       }));
-      const response = await apiClient.POST("/v1/plots/import/commit", { body: { rows } });
+      const overlayRows: CommitOverlay[] = overlaysToImport.map((overlay) => ({
+        externalId: overlay.externalId,
+        name: overlay.name,
+        localId: overlay.localId,
+        usage: overlay.usage,
+        usageName: overlay.usageName,
+        size: overlay.size,
+        geometry: overlay.geometry,
+      }));
+      const response = await apiClient.POST("/v1/plots/import/commit", {
+        body: { format: format.name, rows, overlays: overlayRows },
+      });
       if (response.error) {
-        throw new Error(response.error.error || t("fieldCalendar.plots.import.commitError"));
+        throw new Error(t("fieldCalendar.plots.import.commitError"));
+      }
+      // Parcel numbers for plots the file did not name, same as after farm creation in the app
+      if (rows.length > 0) {
+        await apiClient.POST("/v1/plots/syncMissingLocalIds", { body: {} });
       }
       return response.data.data;
     },
@@ -201,22 +227,26 @@ function ImportPlots() {
     return row.overlappingPlotIds.map((id) => plotNameById.get(id) ?? id).join(", ");
   }
 
-  const mapRows: PlotImportMapRow[] = previewRows.filter(hasGeometry).map((row) => ({
-    rowNumber: row.rowNumber,
-    name: row.editedName,
-    status: getRowStatus(row),
-    selected: row.selected && isSelectable(row),
-    geometry: row.geometry,
-  }));
+  const mapRows: PlotImportMapRow[] = [
+    ...previewRows.filter(hasGeometry).map((row) => ({
+      rowNumber: row.rowNumber,
+      name: row.editedName,
+      status: getRowStatus(row),
+      selected: row.selected && isSelectable(row),
+      geometry: row.geometry,
+    })),
+    ...overlays.map((overlay) => ({
+      rowNumber: overlay.rowNumber,
+      name: overlay.name,
+      status: "overlay" as const,
+      selected: false,
+      geometry: overlay.geometry,
+    })),
+  ];
 
-  // Existing plots that will actually be cut by an imported row
+  // Existing plots that block a row from being imported
   const overlappedPlotIds = useMemo(
-    () =>
-      new Set(
-        previewRows
-          .filter((row) => row.selected && isSelectable(row))
-          .flatMap((row) => row.overlappingPlotIds),
-      ),
+    () => new Set(previewRows.flatMap((row) => row.overlappingPlotIds)),
     [previewRows],
   );
 
@@ -224,6 +254,7 @@ function ImportPlots() {
 
   // --- Upload step ---
   if (step === "upload") {
+    const activeSystem = IMPORT_SYSTEMS.find((candidate) => candidate.key === system) ?? IMPORT_SYSTEMS[0];
     return (
       <PageContent
         title={t("fieldCalendar.plots.import.title")}
@@ -234,9 +265,37 @@ function ImportPlots() {
           <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
             <h2 className="text-sm font-semibold">{t("fieldCalendar.plots.import.onboardingHeading")}</h2>
             <p className="text-sm text-muted-foreground">{t("fieldCalendar.plots.import.onboardingBody")}</p>
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">{t("fieldCalendar.plots.import.systems.heading")}</p>
+              <div className="flex flex-wrap gap-2">
+                {/* Styled as selectable chips, not as action buttons */}
+                {IMPORT_SYSTEMS.map((candidate) => {
+                  const active = candidate.key === system;
+                  return (
+                    <button
+                      key={candidate.key}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setSystem(candidate.key)}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
+                        active
+                          ? "border-primary bg-primary/10 font-medium text-primary"
+                          : "bg-background text-muted-foreground hover:bg-muted"
+                      }`}
+                    >
+                      {active && <Check className="size-3.5" />}
+                      {t(`fieldCalendar.plots.import.systems.${candidate.key}.label`)}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t(`fieldCalendar.plots.import.systems.${activeSystem.key}.instructions`)}
+            </p>
             <img
-              src="/lawis_export.png"
-              alt={t("fieldCalendar.plots.import.onboardingHeading")}
+              src={activeSystem.image}
+              alt={t(`fieldCalendar.plots.import.systems.${activeSystem.key}.label`)}
               className="w-full rounded-lg border"
             />
             <p className="text-sm text-muted-foreground">{t("fieldCalendar.plots.import.onboardingFilesHint")}</p>
@@ -301,7 +360,7 @@ function ImportPlots() {
           <Button
             size="sm"
             onClick={() => commitMutation.mutate()}
-            disabled={rowsToImport.length === 0 || !allConflictsConfirmed || commitMutation.isPending}
+            disabled={nothingToImport || commitMutation.isPending}
           >
             {commitMutation.isPending
               ? t("common.loading")
@@ -310,43 +369,22 @@ function ImportPlots() {
         }
       >
         <div className="flex h-[calc(100vh-180px)] min-h-[400px] max-w-3xl flex-col gap-4">
-          <p className="shrink-0 text-sm text-muted-foreground">
-            {t("fieldCalendar.plots.import.summaryDesc", {
-              count: rowsToImport.length,
-              size: formatHectares(totalImportSize),
-            })}
-          </p>
-
-          {conflictRowsToImport.length > 0 && (
-            <div className="max-h-48 shrink-0 space-y-3 overflow-y-auto rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40">
-              <div className="flex items-center gap-2 text-sm font-medium text-red-700 dark:text-red-400">
-                <AlertTriangle className="size-4" />
-                {t("fieldCalendar.plots.import.conflictsNeedApproval")}
-              </div>
-              {conflictRowsToImport.map((row) => (
-                <label key={row.rowNumber} className="flex items-start gap-3 text-sm cursor-pointer">
-                  <Checkbox
-                    className="mt-0.5"
-                    checked={confirmedConflictRowNumbers.has(row.rowNumber)}
-                    onCheckedChange={(checked) =>
-                      setConfirmedConflictRowNumbers((prev) => {
-                        const next = new Set(prev);
-                        if (checked === true) next.add(row.rowNumber);
-                        else next.delete(row.rowNumber);
-                        return next;
-                      })
-                    }
-                  />
-                  <span>
-                    {t("fieldCalendar.plots.import.confirmConflict", {
-                      name: row.editedName,
-                      plots: overlappingPlotNames(row),
-                    })}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
+          <div className="shrink-0 space-y-1 text-sm text-muted-foreground">
+            <p>
+              {t("fieldCalendar.plots.import.summaryDesc", {
+                count: rowsToImport.length,
+                size: formatHectares(totalImportSize),
+              })}
+            </p>
+            {overlays.length > 0 && (
+              <p>
+                {t("fieldCalendar.plots.import.summaryOverlays", {
+                  count: overlaysToImport.length,
+                  present: overlaysPresent,
+                })}
+              </p>
+            )}
+          </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto rounded-md border">
             <Table>
@@ -361,20 +399,9 @@ function ImportPlots() {
               <TableBody>
                 {rowsToImport.map((row) => (
                   <TableRow key={row.rowNumber}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {row.editedName}
-                        {row.overlappingPlotIds.length > 0 && (
-                          <Badge variant="outline" className="border-red-400 text-red-700">
-                            {t("fieldCalendar.plots.import.status.conflict")}
-                          </Badge>
-                        )}
-                      </div>
-                    </TableCell>
+                    <TableCell className="font-medium">{row.editedName}</TableCell>
                     <TableCell>{row.editedLocalId || "-"}</TableCell>
-                    <TableCell>
-                      {usageLabel(row)}
-                    </TableCell>
+                    <TableCell>{usageLabel(row)}</TableCell>
                     <TableCell className="text-right">{formatHectares(row.size)}</TableCell>
                   </TableRow>
                 ))}
@@ -405,21 +432,52 @@ function ImportPlots() {
       showBackButton
       backTo={() => setStep("upload")}
       actions={
-        <Button size="sm" onClick={() => setStep("summary")} disabled={rowsToImport.length === 0}>
+        <Button size="sm" onClick={() => setStep("summary")} disabled={nothingToImport}>
           {t("common.next")}
         </Button>
       }
     >
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">{t("fieldCalendar.plots.import.previewDesc")}</p>
-        {completeness !== "full" && (
+        {format.geometryOnly || completeness === "partial" ? (
           <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
             <AlertTriangle className="mt-0.5 size-4 shrink-0" />
             <span>
-              {t(`fieldCalendar.plots.import.completeness.${completeness}`)}{" "}
+              {t(`fieldCalendar.plots.import.completeness.${format.geometryOnly ? "geometries_only" : "partial"}`)}{" "}
               {t("fieldCalendar.plots.import.completeness.defaultUsage")}
             </span>
           </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            {t("fieldCalendar.plots.import.formatDetected", { label: format.label })}
+          </p>
+        )}
+        {overlays.length > 0 && (
+          <Collapsible open={overlaysOpen} onOpenChange={setOverlaysOpen} className="rounded-md border bg-muted/40 text-sm">
+            <CollapsibleTrigger className="flex w-full items-start gap-2 p-3 text-left">
+              <ChevronDown className={`mt-0.5 size-4 shrink-0 transition-transform ${overlaysOpen ? "rotate-180" : ""}`} />
+              <span>
+                {t("fieldCalendar.plots.import.overlays.summary", { count: overlays.length })}
+                {overlaysPresent > 0 && (
+                  <> {t("fieldCalendar.plots.import.overlays.alreadyPresent", { count: overlaysPresent })}</>
+                )}
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <ul className="max-h-40 space-y-0.5 overflow-y-auto border-t px-3 py-2 text-xs text-muted-foreground">
+                {overlays.map((overlay) => (
+                  <li key={overlay.rowNumber} className="flex justify-between gap-2">
+                    <span className="truncate">
+                      {overlay.name}
+                      {overlay.usageName ? ` · ${overlay.usage} – ${overlay.usageName}` : ` · ${overlay.usage}`}
+                      {overlay.alreadyPresent && ` · ${t("fieldCalendar.plots.import.overlays.present")}`}
+                    </span>
+                    <span className="shrink-0">{formatHectares(overlay.size)}</span>
+                  </li>
+                ))}
+              </ul>
+            </CollapsibleContent>
+          </Collapsible>
         )}
 
         <PlotImportMap
@@ -429,8 +487,12 @@ function ImportPlots() {
             focusedRowNumber={focusedRowNumber ?? activeRowNumber}
             zoomRequest={zoomRequest}
             onPick={(rowNumber) => {
+              // overlays are shown on the map but not editable
+              const pickedRow = previewRows.find((row) => row.rowNumber === rowNumber);
+              if (!pickedRow) return;
               setActiveRowNumber(rowNumber);
-              setEditingRowNumber(rowNumber);
+              // Overlapping rows can't be imported, so there is nothing to edit
+              if (pickedRow.overlappingPlotIds.length === 0) setEditingRowNumber(rowNumber);
               document.getElementById(`import-row-${rowNumber}`)?.scrollIntoView({ block: "nearest" });
             }}
             overlay={
@@ -457,6 +519,8 @@ function ImportPlots() {
                     const status = getRowStatus(row);
                     const selectable = isSelectable(row);
                     const skipped = !(row.selected && selectable);
+                    // Overlapping rows can't be imported: no checkbox and no edit button
+                    const overlapping = row.overlappingPlotIds.length > 0;
                     return (
                       <li
                         key={row.rowNumber}
@@ -473,19 +537,24 @@ function ImportPlots() {
                         onMouseEnter={() => setFocusedRowNumber(row.rowNumber)}
                         onMouseLeave={() => setFocusedRowNumber(null)}
                       >
-                        <Checkbox
-                          className="mt-0.5"
-                          checked={!skipped}
-                          disabled={!selectable}
-                          // Don't trigger the row's zoom-to-plot click
-                          onClick={(event) => event.stopPropagation()}
-                          onCheckedChange={(checked) => updateRow(row.rowNumber, { selected: checked === true })}
-                        />
+                        {overlapping ? (
+                          // Keeps the row content aligned with the rows that have a checkbox
+                          <span className="size-4 shrink-0" />
+                        ) : (
+                          <Checkbox
+                            className="mt-0.5"
+                            checked={!skipped}
+                            disabled={!selectable}
+                            // Don't trigger the row's zoom-to-plot click
+                            onClick={(event) => event.stopPropagation()}
+                            onCheckedChange={(checked) => updateRow(row.rowNumber, { selected: checked === true })}
+                          />
+                        )}
                         <div className={`min-w-0 flex-1 space-y-0.5 ${skipped ? "opacity-60" : ""}`}>
                           <div className="flex items-center gap-1.5">
                             <span
                               className="inline-block size-2.5 shrink-0 rounded-full"
-                              style={{ background: skipped ? SKIPPED_ROW_COLOR : IMPORT_STATUS_COLORS[status] }}
+                              style={{ background: skipped && !overlapping ? SKIPPED_ROW_COLOR : IMPORT_STATUS_COLORS[status] }}
                             />
                             <span className="truncate font-medium">
                               {row.editedName || t("fieldCalendar.plots.import.unnamed")}
@@ -502,15 +571,17 @@ function ImportPlots() {
                           </div>
                           <RowStatusNotice row={row} status={status} overlappingPlotNames={overlappingPlotNames(row)} />
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 shrink-0"
-                          onClick={() => setEditingRowNumber(row.rowNumber)}
-                          title={t("fieldCalendar.plots.import.editRow")}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
+                        {!overlapping && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 shrink-0"
+                            onClick={() => setEditingRowNumber(row.rowNumber)}
+                            title={t("fieldCalendar.plots.import.editRow")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                       </li>
                     );
                   })}
@@ -576,7 +647,9 @@ function RowStatusNotice({
     return (
       <ul className="list-inside list-disc text-xs text-amber-700 dark:text-amber-400">
         {row.parseErrors.map((error) => (
-          <li key={error}>{error}</li>
+          <li key={`${error.code}-${error.value ?? ""}`}>
+            {t(`fieldCalendar.plots.import.errors.${error.code}`, { value: error.value ?? "", defaultValue: error.code })}
+          </li>
         ))}
       </ul>
     );
@@ -645,12 +718,6 @@ function RowEditForm({
       </div>
 
       <RowStatusNotice row={row} status={status} overlappingPlotNames={overlappingPlotNames} />
-
-      {status === "conflict" && (
-        <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
-          {t("fieldCalendar.plots.import.conflictExplanation")}
-        </div>
-      )}
 
       <label className="flex items-center gap-2 text-sm">
         <Checkbox

@@ -723,11 +723,27 @@ function PlotsMap() {
       title={t("fieldCalendar.plots.title")}
       showBackButton={false}
       actions={
-        <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-          {t("fieldCalendar.plots.newPlot")}
-        </Button>
+        <>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/field-calendar/plots/import">{t("fieldCalendar.plots.importButton")}</Link>
+          </Button>
+          <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
+            {t("fieldCalendar.plots.newPlot")}
+          </Button>
+        </>
       }
     >
+      {plotsQuery.isSuccess && plots.length === 0 && mode.type === "view" && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border bg-muted/40 p-4 text-sm">
+          <div>
+            <div className="font-medium">{t("fieldCalendar.plots.emptyState.title")}</div>
+            <div className="text-muted-foreground">{t("fieldCalendar.plots.emptyState.body")}</div>
+          </div>
+          <Button asChild size="sm">
+            <Link to="/field-calendar/plots/import">{t("fieldCalendar.plots.importButton")}</Link>
+          </Button>
+        </div>
+      )}
       <div className="rounded-md border overflow-hidden relative" style={{ height: "calc(100vh - 230px)" }}>
         <Map
           ref={mapRef}

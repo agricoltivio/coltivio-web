@@ -1033,13 +1033,13 @@
         "previewTitle": "Plot import preview",
         "summaryTitle": "Summary",
         "onboardingHeading": "Import plots from a shapefile",
-        "onboardingBody": "Export your plots from the cantonal agriculture portal (e.g. LAWIS) as a shapefile and upload the ZIP here.",
+        "onboardingBody": "Export your plots from the cantonal system (e.g. Acorda, LAWIS) as a shapefile and upload the ZIP here.",
         "onboardingFilesHint": "The ZIP must contain exactly one .shp file and its .dbf file (.prj, .shx and .cpg are optional).",
         "file": "ZIP file",
         "preview": "Preview",
         "previewError": "The file could not be read.",
         "commitError": "Import failed.",
-        "previewDesc": "Review the plots on the map and in the list. Click a plot to edit it. Overlapping plots are not selected by default.",
+        "previewDesc": "Review the plots on the map and in the list. Click a plot to edit it. Overlapping plots cannot be imported.",
         "selectedCount": "{{selected}} of {{total}} will be imported",
         "selectAll": "Select all",
         "deselectAll": "Deselect all",
@@ -1047,12 +1047,9 @@
         "editRow": "Edit plot",
         "noRows": "No plots.",
         "noGeometry": "No geometry – cannot be imported.",
-        "conflictWarning": "Overlaps with: <bold>{{plots}}</bold>. On import, this area will be removed from these plots.",
-        "conflictExplanation": "This plot overlaps existing plots. If you import it, the overlapping area is cut out of the existing plots – just like creating a plot manually.",
+        "conflictWarning": "Overlaps with: <bold>{{plots}}</bold>. Overlapping plots cannot be imported.",
         "name": "Name",
         "summaryDesc": "{{count}} plots ({{size}}) will be imported.",
-        "conflictsNeedApproval": "These plots overlap existing plots and need your confirmation:",
-        "confirmConflict": "Import \"{{name}}\" and cut it out of {{plots}}",
         "total": "Total",
         "cuttingDateHint": "Cutting dates are not imported and can be set later per plot.",
         "commit_one": "Import {{count}} plot",
@@ -1065,7 +1062,8 @@
           "conflict": "Overlap",
           "error": "Error",
           "existing": "Existing",
-          "skipped": "Not selected"
+          "skipped": "Not selected",
+          "overlay": "Overlay area"
         },
         "includeInImport": "Import",
         "completeness": {
@@ -1073,13 +1071,38 @@
           "geometries_only": "Only the plot outlines could be read from the file – names, parcel numbers and usages are missing. Please fill them in where needed.",
           "defaultUsage": "Missing usages are set to \"Other permanent meadows\"."
         },
-        "supportHint": "Having trouble with the import? Contact <mail>support@coltivio.ch</mail>."
+        "supportHint": "Having trouble with the import? Contact <mail>support@coltivio.ch</mail>.",
+        "systems": {
+          "heading": "Cantonal system",
+          "lawis": {
+            "label": "LAWIS / LAWISplus",
+            "instructions": "In the cantonal system, open ‹Dokumente›, click ‹Geometriedaten exportieren› and upload the file betriebsansicht-kul.zip here."
+          }
+        },
+        "formatDetected": "Format detected: {{label}}",
+        "overlays": {
+          "summary": "{{count}} overlay areas (trees, Ackerschonstreifen) are stored separately and do not appear as plots.",
+          "alreadyPresent": "{{count}} of them already exist and are skipped.",
+          "present": "already present"
+        },
+        "errors": {
+          "invalid_usage_code": "Invalid usage code “{{value}}”",
+          "invalid_size": "Invalid area “{{value}}”",
+          "missing_geometry": "No geometry",
+          "invalid_geometry": "Invalid geometry"
+        },
+        "summaryOverlays": "Overlay areas: {{count}} will be stored, {{present}} already present."
       },
       "delete": {
         "button": "Delete plot",
         "title": "Delete \"{{name}}\"?",
         "confirm": "The plot and all related data such as crop rotations and journal entries will be permanently deleted. This cannot be undone.",
         "error": "The plot could not be deleted."
+      },
+      "importButton": "Import",
+      "emptyState": {
+        "title": "No plots yet",
+        "body": "Import them from the cantonal system (e.g. Acorda, LAWIS) or draw them on the map."
       }
     },
     "cropRotations": {
