@@ -591,7 +591,17 @@
       "monthly": "Monatlich",
       "yearly": "Jährlich"
     },
-    "deleteScheduleConfirm": "Sind Sie sicher, dass Sie diesen Zeitplan löschen möchten?"
+    "deleteScheduleConfirm": "Sind Sie sicher, dass Sie diesen Zeitplan löschen möchten?",
+    "meadow": "Weidefläche",
+    "noMeadow": "Keine Weidefläche",
+    "repeatNone": "Keine",
+    "weekdays": "Wochentage",
+    "weekdaysRequired": "Wähle mindestens einen Wochentag.",
+    "untilOptional": "Wiederholen bis",
+    "endBeforeStart": "Das Datum darf nicht vor dem Startdatum liegen.",
+    "changesApplyFrom": "Änderungen gelten ab",
+    "changesSummary": "{{added}} hinzugefügt, {{removed}} entfernt. Ab welchem Datum gilt das?",
+    "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum."
   },
   "turnoutJournal": {
     "title": "Auslaufjournal",
@@ -623,7 +633,9 @@
     "exportDialog": {
       "title": "Auslaufjournal exportieren",
       "description": "Auslaufjournal als Excel-Datei herunterladen."
-    }
+    },
+    "viewCategories": "Kategorien",
+    "viewMeadows": "Weideflächen"
   },
   "landing": {
     "nav": {
@@ -1742,6 +1754,37 @@
       "none": "Kein",
       "read": "Lesen",
       "write": "Schreiben"
+    }
+  },
+  "meadows": {
+    "newMeadow": "Neue Weidefläche",
+    "editMeadow": "Weidefläche bearbeiten",
+    "selectPlots": "Schläge auswählen",
+    "drawInstead": "Zeichnen",
+    "selectPlotsInstruction": "Schläge anklicken, die zur Weidefläche gehören",
+    "noPlotsSelected": "Keine Schläge ausgewählt",
+    "fenceLength": "Zaunlänge (ca.)",
+    "currentAnimals": "Tiere aktuell",
+    "currentHerds": "Herden aktuell",
+    "lastUsed": "Zuletzt belegt",
+    "lastUsedNow": "jetzt",
+    "usage": "Belegung",
+    "daysTitle": "Belegte Tage pro Monat",
+    "daysValue_one": "{{count}} Tag belegt",
+    "daysValue_other": "{{count}} Tage belegt",
+    "averageAnimals": "Ø {{averageAnimals}} Tiere",
+    "deleteTitle": "Weidefläche «{{name}}» löschen?",
+    "deleteConfirm": "Zugewiesene Weidezeiten verlieren die Weidefläche. Das kann nicht rückgängig gemacht werden.",
+    "errors": {
+      "selfIntersecting": "Die Fläche darf sich nicht selbst überschneiden.",
+      "overlaps": "Die Fläche überschneidet sich mit der Weidefläche «{{name}}»."
+    },
+    "layers": {
+      "title": "Ebenen",
+      "satellite": "Satellit",
+      "map": "Karte",
+      "plots": "Schläge",
+      "meadows": "Weideflächen"
     }
   }
 }

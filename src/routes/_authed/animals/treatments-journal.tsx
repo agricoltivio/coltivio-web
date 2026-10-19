@@ -50,8 +50,8 @@ function TreatmentsJournal() {
     try {
       const response = await apiClient.POST("/v1/reports/treatments/download", {
         body: {
-          fromDate: new Date(exportFromDate).toISOString(),
-          toDate: new Date(`${exportToDate}T23:59:59`).toISOString(),
+          fromDate: exportFromDate,
+          toDate: exportToDate,
           animalTypes: selectedAnimalTypes.length > 0 ? selectedAnimalTypes : undefined,
         },
       });

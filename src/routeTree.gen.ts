@@ -122,6 +122,7 @@ import { Route as AuthedFieldCalendarCropFamiliesCreateRouteImport } from './rou
 import { Route as AuthedFieldCalendarCropFamiliesFamilyIdRouteImport } from './routes/_authed/field-calendar/crop-families_.$familyId'
 import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drugs/$drugId.edit'
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
+import { Route as AuthedAnimalsMeadowsMeadowIdRouteImport } from './routes/_authed/animals/meadows_.$meadowId'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
 import { Route as AuthedAnimalsAnimalIdJournalRouteImport } from './routes/_authed/animals/$animalId_.journal'
 import { Route as AuthedAnimalsAnimalIdFamilyTreeRouteImport } from './routes/_authed/animals/$animalId_.family-tree'
@@ -782,6 +783,12 @@ const AuthedContactsContactIdEditRoute =
     path: '/$contactId/edit',
     getParentRoute: () => AuthedContactsRouteRoute,
   } as any)
+const AuthedAnimalsMeadowsMeadowIdRoute =
+  AuthedAnimalsMeadowsMeadowIdRouteImport.update({
+    id: '/animals/meadows_/$meadowId',
+    path: '/animals/meadows/$meadowId',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedAnimalsHerdsHerdIdRoute =
   AuthedAnimalsHerdsHerdIdRouteImport.update({
     id: '/animals/herds_/$herdId',
@@ -1068,6 +1075,7 @@ export interface FileRoutesByFullPath {
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
+  '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/field-calendar/crop-families/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
@@ -1208,6 +1216,7 @@ export interface FileRoutesByTo {
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
+  '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/field-calendar/crop-families/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
@@ -1358,6 +1367,7 @@ export interface FileRoutesById {
   '/_authed/animals/$animalId_/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/_authed/animals/$animalId_/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
+  '/_authed/animals/meadows_/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
   '/_authed/drugs/$drugId/edit': typeof AuthedDrugsDrugIdEditRoute
   '/_authed/field-calendar/crop-families_/$familyId': typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
@@ -1509,6 +1519,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/family-tree'
     | '/animals/$animalId/journal'
     | '/animals/herds/$herdId'
+    | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
     | '/drugs/$drugId/edit'
     | '/field-calendar/crop-families/$familyId'
@@ -1649,6 +1660,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/edit'
     | '/animals/$animalId/family-tree'
     | '/animals/herds/$herdId'
+    | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
     | '/drugs/$drugId/edit'
     | '/field-calendar/crop-families/$familyId'
@@ -1798,6 +1810,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/$animalId_/family-tree'
     | '/_authed/animals/$animalId_/journal'
     | '/_authed/animals/herds_/$herdId'
+    | '/_authed/animals/meadows_/$meadowId'
     | '/_authed/contacts/$contactId/edit'
     | '/_authed/drugs/$drugId/edit'
     | '/_authed/field-calendar/crop-families_/$familyId'
@@ -2685,6 +2698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedContactsContactIdEditRouteImport
       parentRoute: typeof AuthedContactsRouteRoute
     }
+    '/_authed/animals/meadows_/$meadowId': {
+      id: '/_authed/animals/meadows_/$meadowId'
+      path: '/animals/meadows/$meadowId'
+      fullPath: '/animals/meadows/$meadowId'
+      preLoaderRoute: typeof AuthedAnimalsMeadowsMeadowIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/animals/herds_/$herdId': {
       id: '/_authed/animals/herds_/$herdId'
       path: '/animals/herds/$herdId'
@@ -3202,6 +3222,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsAnimalIdFamilyTreeRoute: typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   AuthedAnimalsAnimalIdJournalRoute: typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
+  AuthedAnimalsMeadowsMeadowIdRoute: typeof AuthedAnimalsMeadowsMeadowIdRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
   AuthedFieldCalendarCropFamiliesFamilyIdRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdRoute
   AuthedFieldCalendarCropFamiliesCreateRoute: typeof AuthedFieldCalendarCropFamiliesCreateRoute
@@ -3297,6 +3318,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedAnimalsAnimalIdJournalRoute:
     AuthedAnimalsAnimalIdJournalRouteWithChildren,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
+  AuthedAnimalsMeadowsMeadowIdRoute: AuthedAnimalsMeadowsMeadowIdRoute,
   AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,
   AuthedFieldCalendarCropFamiliesFamilyIdRoute:
     AuthedFieldCalendarCropFamiliesFamilyIdRoute,

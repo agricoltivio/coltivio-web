@@ -211,6 +211,18 @@ export type Herd =
 // Outdoor Journal types
 export type OutdoorJournalData =
   components["schemas"]["GetV1AnimalsOutdoorJournalPositiveResponse"]["data"];
+export type OutdoorJournalMeadowEntry = NonNullable<
+  OutdoorJournalData["meadowEntries"]
+>[number];
+export type OutdoorSchedule = Herd["outdoorSchedules"][number];
+export type OutdoorScheduleInput =
+  components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorSchedulesRequestBody"];
+
+// Meadow types
+export type Meadow =
+  components["schemas"]["GetV1MeadowsPositiveResponse"]["data"]["result"][number];
+export type MeadowUsageEntry =
+  components["schemas"]["GetV1MeadowsByIdMeadowIdUsagePositiveResponse"]["data"]["result"][number];
 
 // Animal Journal types
 export type AnimalJournalEntry =

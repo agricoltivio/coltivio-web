@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
@@ -142,7 +143,7 @@ function CreateHarvest() {
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       cropId: "",
-      date: new Date().toISOString().slice(0, 10),
+      date: toLocalDateString(new Date()),
       unit: "load",
       kilosPerUnit: "",
       numberOfUnits: "1",
@@ -175,7 +176,7 @@ function CreateHarvest() {
 
       const response = await apiClient.POST("/v1/harvests/batch", {
         body: {
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           cropId: data.cropId,
           unit: data.unit,
           kilosPerUnit,

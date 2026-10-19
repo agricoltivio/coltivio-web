@@ -4,6 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { outdoorJournalQueryOptions } from "@/api/outdoorJournal.queries";
+import {
+  buildCategoryRows,
+  buildMeadowRows,
+  daysInYear,
+} from "@/lib/turnoutJournalTimeline";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +26,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export const Route = createFileRoute("/_authed/animals/turnout-journal")({
   loader: ({ context: { queryClient } }) => {
     const year = new Date().getFullYear();
-    const fromDate = new Date(year, 0, 1).toISOString();
-    const toDate = new Date(year, 11, 31, 23, 59, 59).toISOString();
-    queryClient.ensureQueryData(outdoorJournalQueryOptions(fromDate, toDate));
+    queryClient.ensureQueryData(
+      outdoorJournalQueryOptions(`${year}-01-01`, `${year}-12-31`),
+    );
   },
   component: TurnoutJournal,
 });
@@ -54,9 +59,21 @@ function getCategoryColor(category: Category): string {
   return colors[prefix] ?? "bg-gray-500";
 }
 
+function getCategoryColorForRow(rowKey: string): string {
+  const category = CATEGORIES.find((cat) => cat === rowKey);
+  return category ? getCategoryColor(category) : "bg-gray-500";
+}
+
+type JournalView = "categories" | "meadows";
+const JOURNAL_VIEWS: JournalView[] = ["categories", "meadows"];
+
+// Height of one timeline line; meadow rows have one per overlapping herd
+const LANE_HEIGHT = 32;
+
 function TurnoutJournal() {
   const { t } = useTranslation();
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [view, setView] = useState<JournalView>("categories");
 
   const [exportOpen, setExportOpen] = useState(false);
   const [exportFromDate, setExportFromDate] = useState(`${selectedYear}-01-01`);
@@ -68,8 +85,8 @@ function TurnoutJournal() {
     try {
       const response = await apiClient.POST("/v1/reports/outdoorjournal/download", {
         body: {
-          fromDate: new Date(exportFromDate).toISOString(),
-          toDate: new Date(`${exportToDate}T23:59:59`).toISOString(),
+          fromDate: exportFromDate,
+          toDate: exportToDate,
         },
       });
       if (response.error || !response.data) throw new Error("Export failed");
@@ -93,15 +110,13 @@ function TurnoutJournal() {
     }
   }
 
-  const fromDate = new Date(selectedYear, 0, 1).toISOString();
-  const toDate = new Date(selectedYear, 11, 31, 23, 59, 59).toISOString();
-
-  const journalQuery = useQuery(outdoorJournalQueryOptions(fromDate, toDate));
+  const journalQuery = useQuery(
+    outdoorJournalQueryOptions(`${selectedYear}-01-01`, `${selectedYear}-12-31`),
+  );
   const data = journalQuery.data;
 
   const yearStart = new Date(selectedYear, 0, 1);
-  const isLeapYear = new Date(selectedYear, 1, 29).getDate() === 29;
-  const totalDays = isLeapYear ? 366 : 365;
+  const totalDays = daysInYear(selectedYear);
   // 4px per day
   const dayWidth = 4;
   const timelineWidth = totalDays * dayWidth;
@@ -120,30 +135,28 @@ function TurnoutJournal() {
     };
   });
 
-  // Filter entries to only those with data
+  // Category rows (only categories with data, or all as placeholders) or one
+  // row per meadow with lanes for herds there at the same time
   const entries = data?.entries ?? [];
   const presentCategories = CATEGORIES.filter((cat) =>
     entries.some((e) => e.category === cat),
   );
-  const displayCategories = presentCategories.length > 0 ? presentCategories : CATEGORIES;
-
-  function getBarStyle(startDate: string, endDate: string) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const startDay = Math.max(
-      0,
-      Math.floor((start.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24)),
-    );
-    const endDay = Math.min(
-      totalDays,
-      Math.floor((end.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24)) + 1,
-    );
-    const widthDays = Math.max(0, endDay - startDay);
-    return {
-      left: startDay * dayWidth,
-      width: widthDays * dayWidth,
-    };
-  }
+  const rows =
+    view === "meadows"
+      ? buildMeadowRows(data?.meadowEntries ?? [], selectedYear)
+      : buildCategoryRows(
+          entries,
+          presentCategories.length > 0 ? presentCategories : CATEGORIES,
+          selectedYear,
+        );
+  const todayDay =
+    new Date().getFullYear() === selectedYear
+      ? Math.floor(
+          (new Date().getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24),
+        ) + 1
+      : new Date().getFullYear() > selectedYear
+        ? totalDays
+        : 0;
 
   return (
     <PageContent title={t("turnoutJournal.title")} showBackButton={false}>
@@ -167,6 +180,25 @@ function TurnoutJournal() {
           </Button>
         </div>
         <div className="flex items-center gap-2">
+          {/* Category or meadow rows */}
+          <div className="flex rounded-md border overflow-hidden">
+            {JOURNAL_VIEWS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setView(option)}
+                className={`px-3 py-1.5 text-sm ${
+                  view === option
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {option === "meadows"
+                  ? t("turnoutJournal.viewMeadows")
+                  : t("turnoutJournal.viewCategories")}
+              </button>
+            ))}
+          </div>
           <Button variant="outline" onClick={() => {
             setExportFromDate(`${selectedYear}-01-01`);
             setExportToDate(`${selectedYear}-12-31`);
@@ -222,15 +254,22 @@ function TurnoutJournal() {
           <div className="w-24 shrink-0 border-r bg-muted/30 z-10">
             {/* Header spacer */}
             <div className="h-8 border-b" />
-            {/* Category labels */}
-            {displayCategories.map((cat) => (
+            {/* Row labels, centered across all lanes of a row */}
+            {rows.map((row) => (
               <div
-                key={cat}
-                className="h-8 flex items-center px-2 border-b text-sm font-medium"
+                key={row.key}
+                className="flex items-center px-2 border-b text-sm font-medium"
+                style={{ height: row.laneCount * LANE_HEIGHT }}
+                title={row.label}
               >
-                {cat}
+                <span className="truncate">{row.label}</span>
               </div>
             ))}
+            {rows.length === 0 && (
+              <div className="h-8 flex items-center px-2 border-b text-sm text-muted-foreground">
+                –
+              </div>
+            )}
           </div>
 
           {/* Scrollable timeline area */}
@@ -249,49 +288,64 @@ function TurnoutJournal() {
                 ))}
               </div>
 
-              {/* Category rows */}
-              {displayCategories.map((cat) => {
-                const catEntries = entries.filter((e) => e.category === cat);
-                return (
-                  <div key={cat} className="h-8 border-b relative">
-                    {catEntries.map((entry, i) => {
-                      const bar = getBarStyle(entry.startDate, entry.endDate);
-                      if (bar.width === 0) return null;
-
-                      // How far into the bar today falls (clamped to bar bounds)
-                      const todayPx = (Math.floor(
-                        (new Date().getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24),
-                      ) + 1) * dayWidth;
-                      const splitOffset = Math.min(
-                        Math.max(todayPx - bar.left, 0),
-                        bar.width,
-                      );
-
-                      const color = getCategoryColor(cat);
-                      const title = `${cat}: ${entry.animalCount} ${t("turnoutJournal.animals")}`;
-                      return (
-                        <div
-                          key={i}
-                          className={`absolute top-1 bottom-1 rounded-sm ${color} opacity-80 flex items-center justify-center overflow-hidden`}
-                          style={{ left: bar.left, width: bar.width }}
-                          title={title}
-                        >
-                          {bar.width > 20 && (
-                            <span className="text-white text-xs font-medium">{entry.animalCount}</span>
-                          )}
-                          {/* Overlay on the future portion: whitens + dashed border */}
-                          {splitOffset < bar.width && (
-                            <div
-                              className="absolute top-0 bottom-0 bg-white/55 border-l-0 border-2 border-dashed border-white/80"
-                              style={{ left: splitOffset, right: 0 }}
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
+              {/* Rows; meadow rows grow by one lane per overlapping herd */}
+              {rows.map((row) => (
+                <div
+                  key={row.key}
+                  className="border-b relative"
+                  style={{ height: row.laneCount * LANE_HEIGHT }}
+                >
+                  {row.bars.map((bar, index) => {
+                    const left = bar.startDay * dayWidth;
+                    const width = (bar.endDay - bar.startDay) * dayWidth;
+                    // How far into the bar today falls (clamped to bar bounds)
+                    const splitOffset = Math.min(
+                      Math.max(todayDay * dayWidth - left, 0),
+                      width,
+                    );
+                    const color =
+                      view === "meadows"
+                        ? bar.scheduleType === "exercise_yard"
+                          ? "bg-amber-500"
+                          : "bg-green-600"
+                        : getCategoryColorForRow(row.key);
+                    const title =
+                      view === "meadows"
+                        ? `${bar.herdName}: ${bar.animalCount} ${t("turnoutJournal.animals")}`
+                        : `${row.label}: ${bar.animalCount} ${t("turnoutJournal.animals")}`;
+                    const label =
+                      view === "meadows"
+                        ? `${bar.herdName} (${bar.animalCount})`
+                        : String(bar.animalCount);
+                    return (
+                      <div
+                        key={index}
+                        className={`absolute rounded-sm ${color} opacity-80 flex items-center justify-center overflow-hidden`}
+                        style={{
+                          left,
+                          width,
+                          top: bar.lane * LANE_HEIGHT + 4,
+                          height: LANE_HEIGHT - 8,
+                        }}
+                        title={title}
+                      >
+                        {width > 20 && (
+                          <span className="text-white text-xs font-medium truncate px-1">
+                            {label}
+                          </span>
+                        )}
+                        {/* Overlay on the future portion: whitens + dashed border */}
+                        {splitOffset < width && (
+                          <div
+                            className="absolute top-0 bottom-0 bg-white/55 border-l-0 border-2 border-dashed border-white/80"
+                            style={{ left: splitOffset, right: 0 }}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           </div>
         </div>

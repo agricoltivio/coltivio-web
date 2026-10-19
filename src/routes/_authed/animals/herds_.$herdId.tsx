@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { herdQueryOptions } from "@/api/herds.queries";
+import { meadowsQueryOptions } from "@/api/meadows.queries";
+import { animalsQueryOptions } from "@/api/animals.queries";
+import { toLocalDateString } from "@/lib/utils";
+import type { OutdoorSchedule, OutdoorScheduleInput } from "@/api/types";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -50,31 +55,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
-type OutdoorScheduleType = "pasture" | "exercise_yard";
-
-interface OutdoorSchedule {
-  id: string;
-  herdId: string;
-  farmId: string;
-  startDate: string;
-  endDate: string | null;
-  type: OutdoorScheduleType;
-  notes: string | null;
-  recurrence: {
-    id: string;
-    frequency: "weekly" | "monthly" | "yearly";
-    interval: number;
-    byWeekday: string[] | null;
-    byMonthDay: number | null;
-    until: string | null;
-    count: number | null;
-  } | null;
-}
+type OutdoorScheduleType = OutdoorSchedule["type"];
 
 export const Route = createFileRoute("/_authed/animals/herds_/$herdId")({
-  validateSearch: z.object({ returnTo: z.string().optional() }),
+  validateSearch: z.object({
+    returnTo: z.string().optional(),
+    // Back from creating a meadow on the map: reopen the schedule dialog
+    resumeSchedule: z.coerce.boolean().optional(),
+    createdMeadowId: z.string().optional(),
+  }),
   loader: ({ params, context: { queryClient } }) => {
     queryClient.ensureQueryData(herdQueryOptions(params.herdId));
   },
@@ -82,7 +73,7 @@ export const Route = createFileRoute("/_authed/animals/herds_/$herdId")({
 });
 
 function HerdDetailPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const { herdId } = Route.useParams();
   const { returnTo } = Route.useSearch();
@@ -93,6 +84,46 @@ function HerdDetailPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [editSchedule, setEditSchedule] = useState<OutdoorSchedule | null>(null);
   const [deleteSchedule, setDeleteSchedule] = useState<OutdoorSchedule | null>(null);
+  const [editHerdOpen, setEditHerdOpen] = useState(false);
+  const [restoredScheduleValues, setRestoredScheduleValues] =
+    useState<ScheduleFormValues | null>(null);
+  const { resumeSchedule, createdMeadowId } = Route.useSearch();
+
+  // Back from the map: reopen the schedule dialog with the kept input and the
+  // new meadow selected, then clean up the URL
+  useEffect(() => {
+    if (!resumeSchedule || !herd) return;
+    const draft = takeScheduleDraft(herdId);
+    if (draft) {
+      setEditSchedule(
+        herd.outdoorSchedules.find((s) => s.id === draft.scheduleId) ?? null,
+      );
+      setRestoredScheduleValues({
+        ...draft.values,
+        meadowId: createdMeadowId ?? draft.values.meadowId,
+      });
+      setScheduleDialogOpen(true);
+    }
+    void navigate({
+      to: "/animals/herds/$herdId",
+      params: { herdId },
+      search: draft?.herdReturnTo ? { returnTo: draft.herdReturnTo } : {},
+      replace: true,
+    });
+  }, [resumeSchedule, herd]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function goCreateMeadow(values: ScheduleFormValues) {
+    storeScheduleDraft({
+      herdId,
+      scheduleId: editSchedule?.id ?? null,
+      herdReturnTo: returnTo ?? null,
+      values,
+    });
+    void navigate({
+      to: "/field-calendar/plots",
+      search: { createMeadow: true, returnTo: `/animals/herds/${herdId}` },
+    });
+  }
 
   if (herdQuery.isLoading) {
     return (
@@ -110,13 +141,52 @@ function HerdDetailPage() {
     );
   }
 
+  // Date part only, so the calendar day doesn't shift with the timezone
   function formatDate(dateString: string | null) {
     if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString();
+    const [year, month, day] = dateString.slice(0, 10).split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString(i18n.language);
+  }
+
+  function isWeekdayStay(schedule: OutdoorSchedule) {
+    return (
+      schedule.recurrence?.frequency === "weekly" &&
+      (schedule.recurrence.byWeekday?.length ?? 0) > 0
+    );
+  }
+
+  // e.g. "Wöchentlich: Mo, Di, Mi" or "Jährlich"
+  function formatRecurrence(schedule: OutdoorSchedule) {
+    if (!schedule.recurrence) return "-";
+    const frequency = t(`herds.frequencies.${schedule.recurrence.frequency}`);
+    const weekdays = schedule.recurrence.byWeekday ?? [];
+    if (!isWeekdayStay(schedule) || weekdays.length === 7) return frequency;
+    const order = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+    // 2024-01-01 is a Monday
+    const formatter = new Intl.DateTimeFormat(i18n.language, {
+      weekday: "short",
+    });
+    const names = weekdays
+      .map((weekday) => order.indexOf(weekday))
+      .sort((a, b) => a - b)
+      .map((index) => formatter.format(new Date(2024, 0, 1 + index)));
+    return `${frequency}: ${names.join(", ")}`;
   }
 
   return (
-    <PageContent title={herd.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals/herds" })}>
+    <PageContent
+      title={herd.name}
+      showBackButton
+      backTo={() => navigate({ to: returnTo ?? "/animals/herds" })}
+      actions={
+        canWriteAnimals && (
+          <Button variant="outline" onClick={() => setEditHerdOpen(true)}>
+            <Pencil className="h-4 w-4" />
+            {t("common.edit")}
+          </Button>
+        )
+      }
+    >
       <div className="space-y-6">
         {/* Outdoor schedules card */}
         <Card>
@@ -146,6 +216,7 @@ function HerdDetailPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("herds.scheduleType")}</TableHead>
+                    <TableHead>{t("herds.meadow")}</TableHead>
                     <TableHead>{t("herds.startDate")}</TableHead>
                     <TableHead>{t("herds.endDate")}</TableHead>
                     <TableHead>{t("herds.recurrence")}</TableHead>
@@ -159,13 +230,17 @@ function HerdDetailPage() {
                       <TableCell>
                         {t(`herds.scheduleTypes.${schedule.type}`)}
                       </TableCell>
-                      <TableCell>{formatDate(schedule.startDate)}</TableCell>
-                      <TableCell>{formatDate(schedule.endDate)}</TableCell>
-                      <TableCell>
-                        {schedule.recurrence
-                          ? `${schedule.recurrence.frequency} (×${schedule.recurrence.interval})`
-                          : "-"}
+                      <TableCell className="text-muted-foreground">
+                        {schedule.meadow?.name ?? "-"}
                       </TableCell>
+                      <TableCell>{formatDate(schedule.startDate)}</TableCell>
+                      <TableCell>
+                        {/* Weekday stays are single days; show when the repetition ends */}
+                        {isWeekdayStay(schedule)
+                          ? formatDate(schedule.recurrence?.until ?? null)
+                          : formatDate(schedule.endDate)}
+                      </TableCell>
+                      <TableCell>{formatRecurrence(schedule)}</TableCell>
                       <TableCell className="text-muted-foreground">
                         {schedule.notes || "-"}
                       </TableCell>
@@ -176,7 +251,7 @@ function HerdDetailPage() {
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                setEditSchedule(schedule as OutdoorSchedule);
+                                setEditSchedule(schedule);
                                 setScheduleDialogOpen(true);
                               }}
                             >
@@ -186,7 +261,7 @@ function HerdDetailPage() {
                               variant="ghost"
                               size="icon"
                               className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => setDeleteSchedule(schedule as OutdoorSchedule)}
+                              onClick={() => setDeleteSchedule(schedule)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -264,10 +339,22 @@ function HerdDetailPage() {
             if (!open) {
               setScheduleDialogOpen(false);
               setEditSchedule(null);
+              setRestoredScheduleValues(null);
             }
           }}
           herdId={herdId}
           schedule={editSchedule}
+          restoredValues={restoredScheduleValues}
+          onCreateMeadow={goCreateMeadow}
+        />
+      )}
+
+      {editHerdOpen && (
+        <EditHerdDialog
+          herdId={herdId}
+          initialName={herd.name}
+          initialAnimalIds={herd.animals.map((animal) => animal.id)}
+          onOpenChange={setEditHerdOpen}
         />
       )}
 
@@ -279,43 +366,443 @@ function HerdDetailPage() {
   );
 }
 
+// Edits name and animals. Schedules are managed in their own table and are not
+// sent, so the backend keeps them. When animals change, a second step asks since
+// when the change applies (sent as effectiveDate).
+function EditHerdDialog({
+  herdId,
+  initialName,
+  initialAnimalIds,
+  onOpenChange,
+}: {
+  herdId: string;
+  initialName: string;
+  initialAnimalIds: string[];
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const animalsQuery = useQuery(animalsQueryOptions());
+  const allAnimals = animalsQuery.data?.result ?? [];
+
+  const [name, setName] = useState(initialName);
+  const [selectedAnimalIds, setSelectedAnimalIds] =
+    useState<string[]>(initialAnimalIds);
+  const [askingEffectiveDate, setAskingEffectiveDate] = useState(false);
+  const [effectiveDate, setEffectiveDate] = useState(() =>
+    toLocalDateString(new Date()),
+  );
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const addedCount = selectedAnimalIds.filter(
+    (id) => !initialAnimalIds.includes(id),
+  ).length;
+  const removedCount = initialAnimalIds.filter(
+    (id) => !selectedAnimalIds.includes(id),
+  ).length;
+  const animalsChanged = addedCount > 0 || removedCount > 0;
+  const nameChanged = name.trim() !== initialName;
+
+  const updateMutation = useMutation({
+    mutationFn: async (body: {
+      name: string;
+      animalIds: string[];
+      effectiveDate: string | null;
+    }) => {
+      const response = await apiClient.PATCH(
+        "/v1/animals/herds/byId/{herdId}",
+        { params: { path: { herdId } }, body },
+      );
+      if (response.error) {
+        // The backend rejects a date before an animal joined its current herd
+        throw new Error(
+          response.response.status === 400
+            ? t("herds.membershipDateTooEarly")
+            : t("common.error"),
+        );
+      }
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["herds"] });
+      queryClient.invalidateQueries({ queryKey: ["outdoorJournal"] });
+      onOpenChange(false);
+    },
+    onError: (err) => {
+      setServerError(err instanceof Error ? err.message : String(err));
+    },
+  });
+
+  function save(withEffectiveDate: boolean) {
+    setServerError(null);
+    updateMutation.mutate({
+      name: name.trim(),
+      animalIds: selectedAnimalIds,
+      effectiveDate: withEffectiveDate ? effectiveDate : null,
+    });
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    // Added or removed animals: first ask since when the change applies
+    if (animalsChanged && !askingEffectiveDate) {
+      setAskingEffectiveDate(true);
+      return;
+    }
+    save(animalsChanged);
+  }
+
+  function toggleAnimal(animalId: string) {
+    setSelectedAnimalIds((prev) =>
+      prev.includes(animalId)
+        ? prev.filter((id) => id !== animalId)
+        : [...prev, animalId],
+    );
+  }
+
+  return (
+    <Dialog open={true} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-xl">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>
+              {askingEffectiveDate
+                ? t("herds.changesApplyFrom")
+                : t("herds.editHerd")}
+            </DialogTitle>
+          </DialogHeader>
+          {askingEffectiveDate ? (
+            <div className="py-4 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                {t("herds.changesSummary", {
+                  added: addedCount,
+                  removed: removedCount,
+                })}
+              </p>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="herdEffectiveDate">
+                    {t("herds.changesApplyFrom")} *
+                  </FieldLabel>
+                  <Input
+                    id="herdEffectiveDate"
+                    type="date"
+                    value={effectiveDate}
+                    onChange={(e) => setEffectiveDate(e.target.value)}
+                    required
+                  />
+                </Field>
+              </FieldGroup>
+              {serverError && (
+                <p className="text-sm text-destructive">{serverError}</p>
+              )}
+            </div>
+          ) : (
+            <div className="py-4 space-y-6">
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="herdName">{t("herds.name")} *</FieldLabel>
+                  <Input
+                    id="herdName"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </Field>
+              </FieldGroup>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel>{t("herds.animals")}</FieldLabel>
+                  <div className="border rounded-md p-3 space-y-2 max-h-72 overflow-y-auto">
+                    {allAnimals.map((animal) => (
+                      <div key={animal.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`edit-herd-animal-${animal.id}`}
+                          checked={selectedAnimalIds.includes(animal.id)}
+                          onCheckedChange={() => toggleAnimal(animal.id)}
+                        />
+                        <Label
+                          htmlFor={`edit-herd-animal-${animal.id}`}
+                          className="font-normal cursor-pointer"
+                        >
+                          {animal.name}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </Field>
+              </FieldGroup>
+              {serverError && (
+                <p className="text-sm text-destructive">{serverError}</p>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                askingEffectiveDate
+                  ? setAskingEffectiveDate(false)
+                  : onOpenChange(false)
+              }
+            >
+              {askingEffectiveDate ? t("common.back") : t("common.cancel")}
+            </Button>
+            <Button
+              type="submit"
+              disabled={
+                !name.trim() ||
+                (!animalsChanged && !nameChanged) ||
+                (askingEffectiveDate && !effectiveDate) ||
+                updateMutation.isPending
+              }
+            >
+              {updateMutation.isPending ? t("common.loading") : t("common.save")}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// "monthly" is no longer offered, but existing monthly schedules stay editable
+type RepeatMode = "none" | "weekly" | "monthly" | "yearly";
+type Weekday = "MO" | "TU" | "WE" | "TH" | "FR" | "SA" | "SU";
+const ALL_WEEKDAYS: Weekday[] = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+// getDay() index (0 = Sunday) for each weekday code
+const WEEKDAY_JS_INDEX: Record<Weekday, number> = {
+  SU: 0,
+  MO: 1,
+  TU: 2,
+  WE: 3,
+  TH: 4,
+  FR: 5,
+  SA: 6,
+};
+const NO_MEADOW = "__none__";
+
+function isWeekday(value: string): value is Weekday {
+  return ALL_WEEKDAYS.some((weekday) => weekday === value);
+}
+
+// Unsaved schedule dialog input, kept while the user creates a meadow on the map
+type ScheduleFormValues = {
+  scheduleType: OutdoorScheduleType;
+  meadowId: string | null;
+  repeat: RepeatMode;
+  weekdays: Weekday[];
+  startDate: string;
+  endDate: string;
+  untilDate: string;
+  notes: string;
+};
+type ScheduleDraft = {
+  herdId: string;
+  scheduleId: string | null;
+  herdReturnTo: string | null;
+  values: ScheduleFormValues;
+};
+const SCHEDULE_DRAFT_STORAGE_KEY = "herd-schedule-draft";
+
+function storeScheduleDraft(draft: ScheduleDraft) {
+  try {
+    sessionStorage.setItem(SCHEDULE_DRAFT_STORAGE_KEY, JSON.stringify(draft));
+  } catch {
+    // Without storage the dialog just opens empty again
+  }
+}
+
+// Reads and removes the stored draft; only valid for the given herd
+function takeScheduleDraft(herdId: string): ScheduleDraft | null {
+  try {
+    const raw = sessionStorage.getItem(SCHEDULE_DRAFT_STORAGE_KEY);
+    sessionStorage.removeItem(SCHEDULE_DRAFT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      "herdId" in parsed &&
+      parsed.herdId === herdId &&
+      "values" in parsed &&
+      typeof parsed.values === "object" &&
+      parsed.values !== null
+    ) {
+      const values = parsed.values;
+      const entries = Object.entries(values);
+      const text = (key: string): string => {
+        const value: unknown = entries.find(([entryKey]) => entryKey === key)?.[1];
+        return typeof value === "string" ? value : "";
+      };
+      const repeatText = text("repeat");
+      const typeText = text("scheduleType");
+      const weekdayList =
+        "weekdays" in values && Array.isArray(values.weekdays)
+          ? values.weekdays.filter(
+              (weekday): weekday is Weekday =>
+                typeof weekday === "string" && isWeekday(weekday),
+            )
+          : ALL_WEEKDAYS;
+      return {
+        herdId,
+        scheduleId:
+          "scheduleId" in parsed && typeof parsed.scheduleId === "string"
+            ? parsed.scheduleId
+            : null,
+        herdReturnTo:
+          "herdReturnTo" in parsed && typeof parsed.herdReturnTo === "string"
+            ? parsed.herdReturnTo
+            : null,
+        values: {
+          scheduleType: typeText === "exercise_yard" ? "exercise_yard" : "pasture",
+          meadowId: text("meadowId") || null,
+          repeat:
+            repeatText === "weekly" ||
+            repeatText === "monthly" ||
+            repeatText === "yearly"
+              ? repeatText
+              : "none",
+          weekdays: weekdayList,
+          startDate: text("startDate"),
+          endDate: text("endDate"),
+          untilDate: text("untilDate"),
+          notes: text("notes"),
+        },
+      };
+    }
+  } catch {
+    // Invalid or unavailable storage — start fresh
+  }
+  return null;
+}
+
 function ScheduleFormDialog({
   open,
   onOpenChange,
   herdId,
   schedule,
+  restoredValues,
+  onCreateMeadow,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   herdId: string;
   schedule: OutdoorSchedule | null;
+  // Input restored after creating a meadow on the map
+  restoredValues: ScheduleFormValues | null;
+  onCreateMeadow: (values: ScheduleFormValues) => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
+  const meadowsQuery = useQuery(meadowsQueryOptions());
+  const initialRecurrence = schedule?.recurrence ?? null;
 
-  type ScheduleBody = {
-    type: OutdoorScheduleType;
-    startDate: string;
-    endDate?: string | null;
-    notes?: string | null;
-    recurrence?: {
-      frequency: "weekly" | "monthly" | "yearly";
-      interval: number;
-      until?: string | null;
-    } | null;
-  };
+  const [scheduleType, setScheduleType] = useState<OutdoorScheduleType>(
+    restoredValues?.scheduleType ?? schedule?.type ?? "pasture",
+  );
+  const [meadowId, setMeadowId] = useState<string | null>(
+    restoredValues ? restoredValues.meadowId : (schedule?.meadowId ?? null),
+  );
+  const [repeat, setRepeat] = useState<RepeatMode>(
+    restoredValues?.repeat ?? initialRecurrence?.frequency ?? "none",
+  );
+  // Weekly schedules saved without weekdays repeat on the start date's weekday
+  const [weekdays, setWeekdays] = useState<Weekday[]>(() => {
+    if (restoredValues) return restoredValues.weekdays;
+    const saved = (initialRecurrence?.byWeekday ?? []).filter(isWeekday);
+    if (saved.length > 0) return saved;
+    if (initialRecurrence?.frequency === "weekly" && schedule) {
+      const startWeekday = new Date(schedule.startDate).getDay();
+      return ALL_WEEKDAYS.filter(
+        (weekday) => WEEKDAY_JS_INDEX[weekday] === startWeekday,
+      );
+    }
+    return ALL_WEEKDAYS;
+  });
+  // Date inputs work with "YYYY-MM-DD", which is also what the API gets
+  const [startDate, setStartDate] = useState(
+    restoredValues?.startDate ??
+      (schedule?.startDate ? schedule.startDate.slice(0, 10) : ""),
+  );
+  const [endDate, setEndDate] = useState(
+    restoredValues?.endDate ??
+      (schedule?.endDate && initialRecurrence?.frequency !== "weekly"
+        ? schedule.endDate.slice(0, 10)
+        : ""),
+  );
+  const [untilDate, setUntilDate] = useState(
+    restoredValues?.untilDate ??
+      (initialRecurrence?.until ? initialRecurrence.until.slice(0, 10) : ""),
+  );
+  const [notes, setNotes] = useState(
+    restoredValues?.notes ?? schedule?.notes ?? "",
+  );
 
-  const [scheduleType, setScheduleType] = useState<OutdoorScheduleType>(schedule?.type ?? "pasture");
-  const [startDate, setStartDate] = useState(schedule?.startDate ? schedule.startDate.split("T")[0] : "");
-  const [endDate, setEndDate] = useState(schedule?.endDate ? schedule.endDate.split("T")[0] : "");
-  const [notes, setNotes] = useState(schedule?.notes ?? "");
-  const [hasRecurrence, setHasRecurrence] = useState(!!schedule?.recurrence);
-  const [recurrenceFrequency, setRecurrenceFrequency] = useState<"weekly" | "monthly" | "yearly">(schedule?.recurrence?.frequency ?? "weekly");
-  const [recurrenceInterval, setRecurrenceInterval] = useState(schedule?.recurrence ? String(schedule.recurrence.interval) : "1");
-  const [recurrenceUntil, setRecurrenceUntil] = useState(schedule?.recurrence?.until ? schedule.recurrence.until.split("T")[0] : "");
+  // Localized weekday initials — 2024-01-01 is a Monday
+  const weekdayFormatter = new Intl.DateTimeFormat(i18n.language, {
+    weekday: "narrow",
+  });
+  const weekdayLongFormatter = new Intl.DateTimeFormat(i18n.language, {
+    weekday: "long",
+  });
+
+  // Same-format strings compare by date
+  const endBeforeStart = endDate !== "" && startDate !== "" && endDate < startDate;
+  const untilBeforeStart =
+    untilDate !== "" && startDate !== "" && untilDate < startDate;
+  const endMissing = (repeat === "yearly" || repeat === "monthly") && endDate === "";
+  const weekdaysMissing = repeat === "weekly" && weekdays.length === 0;
+  const isValid =
+    startDate !== "" &&
+    !endBeforeStart &&
+    !untilBeforeStart &&
+    !endMissing &&
+    !weekdaysMissing;
+
+  function buildBody(): OutdoorScheduleInput {
+    const until = untilDate || null;
+    // Keep the interval of an edited schedule, the form doesn't change it
+    const interval = initialRecurrence?.interval ?? 1;
+    if (repeat === "weekly") {
+      // Each selected weekday is a one-day stay, repeated every week
+      return {
+        type: scheduleType,
+        meadowId,
+        startDate,
+        endDate: startDate,
+        notes: notes || null,
+        recurrence: {
+          frequency: "weekly",
+          interval,
+          byWeekday: ALL_WEEKDAYS.filter((weekday) =>
+            weekdays.includes(weekday),
+          ),
+          until,
+        },
+      };
+    }
+    return {
+      type: scheduleType,
+      meadowId,
+      startDate,
+      endDate: endDate || null,
+      notes: notes || null,
+      recurrence:
+        repeat === "none"
+          ? null
+          : {
+              frequency: repeat,
+              interval,
+              byMonthDay: initialRecurrence?.byMonthDay ?? null,
+              until,
+            },
+    };
+  }
 
   const createMutation = useMutation({
-    mutationFn: async (body: ScheduleBody) => {
+    mutationFn: async (body: OutdoorScheduleInput) => {
       const response = await apiClient.POST(
         "/v1/animals/herds/byId/{herdId}/outdoorSchedules",
         {
@@ -328,12 +815,14 @@ function ScheduleFormDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["herds"] });
+      queryClient.invalidateQueries({ queryKey: ["outdoorJournal"] });
+      queryClient.invalidateQueries({ queryKey: ["meadows"] });
       onOpenChange(false);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (body: ScheduleBody) => {
+    mutationFn: async (body: OutdoorScheduleInput) => {
       if (!schedule) return;
       const response = await apiClient.PATCH(
         "/v1/animals/herds/outdoorSchedules/byId/{outdoorScheduleId}",
@@ -347,25 +836,16 @@ function ScheduleFormDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["herds"] });
+      queryClient.invalidateQueries({ queryKey: ["outdoorJournal"] });
+      queryClient.invalidateQueries({ queryKey: ["meadows"] });
       onOpenChange(false);
     },
   });
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const body: ScheduleBody = {
-      type: scheduleType,
-      startDate: new Date(startDate).toISOString(),
-      endDate: endDate ? new Date(endDate).toISOString() : null,
-      notes: notes || null,
-      recurrence: hasRecurrence
-        ? {
-            frequency: recurrenceFrequency,
-            interval: Number(recurrenceInterval),
-            until: recurrenceUntil ? new Date(recurrenceUntil).toISOString() : null,
-          }
-        : null,
-    };
+    if (!isValid) return;
+    const body = buildBody();
     if (schedule) {
       updateMutation.mutate(body);
     } else {
@@ -374,6 +854,9 @@ function ScheduleFormDialog({
   }
 
   const isPending = createMutation.isPending || updateMutation.isPending;
+  const meadows = (meadowsQuery.data ?? [])
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -385,27 +868,174 @@ function ScheduleFormDialog({
             </DialogTitle>
           </DialogHeader>
           <div className="py-4 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="scheduleType">
+                    {t("herds.scheduleType")} *
+                  </FieldLabel>
+                  <Select
+                    value={scheduleType}
+                    onValueChange={(value) => {
+                      if (value === "pasture" || value === "exercise_yard") {
+                        setScheduleType(value);
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="scheduleType">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pasture">
+                        {t("herds.scheduleTypes.pasture")}
+                      </SelectItem>
+                      <SelectItem value="exercise_yard">
+                        {t("herds.scheduleTypes.exercise_yard")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </FieldGroup>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="scheduleMeadow">
+                    {t("herds.meadow")}
+                  </FieldLabel>
+                  <div className="flex gap-2">
+                    <Select
+                      value={meadowId ?? NO_MEADOW}
+                      onValueChange={(value) =>
+                        setMeadowId(value === NO_MEADOW ? null : value)
+                      }
+                    >
+                      <SelectTrigger id="scheduleMeadow" className="flex-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NO_MEADOW}>
+                          {t("herds.noMeadow")}
+                        </SelectItem>
+                        {meadows.map((meadow) => (
+                          <SelectItem key={meadow.id} value={meadow.id}>
+                            {meadow.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {/* Goes to the map to create a meadow; the input is kept and
+                        the new meadow is selected when coming back */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label={t("meadows.newMeadow")}
+                      title={t("meadows.newMeadow")}
+                      onClick={() =>
+                        onCreateMeadow({
+                          scheduleType,
+                          meadowId,
+                          repeat,
+                          weekdays,
+                          startDate,
+                          endDate,
+                          untilDate,
+                          notes,
+                        })
+                      }
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </Field>
+              </FieldGroup>
+            </div>
+
+            {/* Repeat — decides which date fields follow */}
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="scheduleType">{t("herds.scheduleType")} *</FieldLabel>
+                <FieldLabel htmlFor="scheduleRepeat">
+                  {t("herds.recurrence")}
+                </FieldLabel>
                 <Select
-                  value={scheduleType}
-                  onValueChange={(val) => setScheduleType(val as OutdoorScheduleType)}
+                  value={repeat}
+                  onValueChange={(value) => {
+                    if (
+                      value === "none" ||
+                      value === "weekly" ||
+                      value === "monthly" ||
+                      value === "yearly"
+                    ) {
+                      setRepeat(value);
+                    }
+                  }}
                 >
-                  <SelectTrigger id="scheduleType">
+                  <SelectTrigger id="scheduleRepeat">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pasture">{t("herds.scheduleTypes.pasture")}</SelectItem>
-                    <SelectItem value="exercise_yard">{t("herds.scheduleTypes.exercise_yard")}</SelectItem>
+                    <SelectItem value="none">{t("herds.repeatNone")}</SelectItem>
+                    <SelectItem value="weekly">
+                      {t("herds.frequencies.weekly")}
+                    </SelectItem>
+                    {initialRecurrence?.frequency === "monthly" && (
+                      <SelectItem value="monthly">
+                        {t("herds.frequencies.monthly")}
+                      </SelectItem>
+                    )}
+                    <SelectItem value="yearly">
+                      {t("herds.frequencies.yearly")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </Field>
             </FieldGroup>
+
+            {/* Weekly: the herd is out on the selected weekdays of every week */}
+            {repeat === "weekly" && (
+              <div className="space-y-2">
+                <Label>{t("herds.weekdays")}</Label>
+                <div className="flex gap-1.5">
+                  {ALL_WEEKDAYS.map((weekday, index) => {
+                    const isSelected = weekdays.includes(weekday);
+                    const day = new Date(2024, 0, 1 + index);
+                    return (
+                      <button
+                        key={weekday}
+                        type="button"
+                        aria-pressed={isSelected}
+                        aria-label={weekdayLongFormatter.format(day)}
+                        onClick={() =>
+                          setWeekdays((previous) =>
+                            isSelected
+                              ? previous.filter((d) => d !== weekday)
+                              : [...previous, weekday],
+                          )
+                        }
+                        className={`h-9 w-9 rounded-md border text-sm font-semibold transition-colors ${
+                          isSelected
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-background text-muted-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {weekdayFormatter.format(day)}
+                      </button>
+                    );
+                  })}
+                </div>
+                {weekdaysMissing && (
+                  <p className="text-sm text-destructive">
+                    {t("herds.weekdaysRequired")}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="scheduleStartDate">{t("herds.startDate")} *</FieldLabel>
+                  <FieldLabel htmlFor="scheduleStartDate">
+                    {t("herds.startDate")} *
+                  </FieldLabel>
                   <Input
                     id="scheduleStartDate"
                     type="date"
@@ -415,18 +1045,54 @@ function ScheduleFormDialog({
                   />
                 </Field>
               </FieldGroup>
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="scheduleEndDate">{t("herds.endDate")}</FieldLabel>
-                  <Input
-                    id="scheduleEndDate"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </Field>
-              </FieldGroup>
+              {/* End: the stay itself (none) or the yearly season; weekly stays are single days */}
+              {repeat !== "weekly" && (
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="scheduleEndDate">
+                      {t("herds.endDate")}
+                      {repeat === "none" ? "" : " *"}
+                    </FieldLabel>
+                    <Input
+                      id="scheduleEndDate"
+                      type="date"
+                      min={startDate || undefined}
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      required={repeat !== "none"}
+                    />
+                    {endBeforeStart && (
+                      <p className="text-sm text-destructive">
+                        {t("herds.endBeforeStart")}
+                      </p>
+                    )}
+                  </Field>
+                </FieldGroup>
+              )}
+              {/* Until: when the repetition stops */}
+              {repeat !== "none" && (
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="scheduleUntil">
+                      {t("herds.untilOptional")}
+                    </FieldLabel>
+                    <Input
+                      id="scheduleUntil"
+                      type="date"
+                      min={startDate || undefined}
+                      value={untilDate}
+                      onChange={(e) => setUntilDate(e.target.value)}
+                    />
+                    {untilBeforeStart && (
+                      <p className="text-sm text-destructive">
+                        {t("herds.endBeforeStart")}
+                      </p>
+                    )}
+                  </Field>
+                </FieldGroup>
+              )}
             </div>
+
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="scheduleNotes">{t("herds.notes")}</FieldLabel>
@@ -437,67 +1103,16 @@ function ScheduleFormDialog({
                 />
               </Field>
             </FieldGroup>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="hasRecurrence"
-                checked={hasRecurrence}
-                onCheckedChange={(checked) => setHasRecurrence(checked === true)}
-              />
-              <Label htmlFor="hasRecurrence">{t("herds.recurring")}</Label>
-            </div>
-            {hasRecurrence && (
-              <div className="grid grid-cols-3 gap-3 pl-6">
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="recurrenceFrequency">{t("herds.frequency")}</FieldLabel>
-                    <Select
-                      value={recurrenceFrequency}
-                      onValueChange={(val) =>
-                        setRecurrenceFrequency(val as "weekly" | "monthly" | "yearly")
-                      }
-                    >
-                      <SelectTrigger id="recurrenceFrequency">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="weekly">{t("herds.frequencies.weekly")}</SelectItem>
-                        <SelectItem value="monthly">{t("herds.frequencies.monthly")}</SelectItem>
-                        <SelectItem value="yearly">{t("herds.frequencies.yearly")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                </FieldGroup>
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="recurrenceInterval">{t("herds.interval")}</FieldLabel>
-                    <Input
-                      id="recurrenceInterval"
-                      type="number"
-                      min="1"
-                      value={recurrenceInterval}
-                      onChange={(e) => setRecurrenceInterval(e.target.value)}
-                    />
-                  </Field>
-                </FieldGroup>
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="recurrenceUntil">{t("herds.until")}</FieldLabel>
-                    <Input
-                      id="recurrenceUntil"
-                      type="date"
-                      value={recurrenceUntil}
-                      onChange={(e) => setRecurrenceUntil(e.target.value)}
-                    />
-                  </Field>
-                </FieldGroup>
-              </div>
-            )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               {t("common.cancel")}
             </Button>
-            <Button type="submit" disabled={!startDate || isPending}>
+            <Button type="submit" disabled={!isValid || isPending}>
               {isPending ? t("common.loading") : t("common.save")}
             </Button>
           </DialogFooter>

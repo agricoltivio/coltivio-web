@@ -591,7 +591,17 @@
       "monthly": "Mensile",
       "yearly": "Annuale"
     },
-    "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?"
+    "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?",
+    "meadow": "Area di pascolo",
+    "noMeadow": "Nessuna area di pascolo",
+    "repeatNone": "Nessuna",
+    "weekdays": "Giorni della settimana",
+    "weekdaysRequired": "Seleziona almeno un giorno della settimana.",
+    "untilOptional": "Ripeti fino al",
+    "endBeforeStart": "La data non può precedere la data di inizio.",
+    "changesApplyFrom": "Le modifiche valgono dal",
+    "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
+    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva."
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",
@@ -623,7 +633,9 @@
     "exportDialog": {
       "title": "Esporta diario di uscita",
       "description": "Scarica il diario di uscita come file Excel."
-    }
+    },
+    "viewCategories": "Categorie",
+    "viewMeadows": "Aree di pascolo"
   },
   "landing": {
     "nav": {
@@ -1742,6 +1754,37 @@
       "none": "Nessuno",
       "read": "Lettura",
       "write": "Scrittura"
+    }
+  },
+  "meadows": {
+    "newMeadow": "Nuova area di pascolo",
+    "editMeadow": "Modifica area di pascolo",
+    "selectPlots": "Seleziona particelle",
+    "drawInstead": "Disegna",
+    "selectPlotsInstruction": "Clicca sulle particelle che fanno parte dell'area di pascolo",
+    "noPlotsSelected": "Nessuna particella selezionata",
+    "fenceLength": "Lunghezza recinzione (ca.)",
+    "currentAnimals": "Animali attuali",
+    "currentHerds": "Mandrie attuali",
+    "lastUsed": "Ultimo utilizzo",
+    "lastUsedNow": "ora",
+    "usage": "Utilizzo",
+    "daysTitle": "Giorni occupati al mese",
+    "daysValue_one": "{{count}} giorno occupato",
+    "daysValue_other": "{{count}} giorni occupati",
+    "averageAnimals": "Ø {{averageAnimals}} animali",
+    "deleteTitle": "Eliminare l'area di pascolo «{{name}}»?",
+    "deleteConfirm": "I periodi all'aperto assegnati perdono l'area di pascolo. Questa azione non può essere annullata.",
+    "errors": {
+      "selfIntersecting": "La superficie non deve intersecarsi con se stessa.",
+      "overlaps": "La superficie si sovrappone all'area di pascolo «{{name}}»."
+    },
+    "layers": {
+      "title": "Livelli",
+      "satellite": "Satellite",
+      "map": "Carta",
+      "plots": "Particelle",
+      "meadows": "Aree di pascolo"
     }
   }
 }

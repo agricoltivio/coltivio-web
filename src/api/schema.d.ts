@@ -516,6 +516,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/meadows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Meadows"];
+        put?: never;
+        post: operations["PostV1Meadows"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Meadows"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/meadows/byId/{meadowId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MeadowsByIdMeadowId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1MeadowsByIdMeadowId"];
+        options?: never;
+        head: operations["HeadV1MeadowsByIdMeadowId"];
+        patch: operations["PatchV1MeadowsByIdMeadowId"];
+        trace?: never;
+    };
+    "/v1/meadows/byId/{meadowId}/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1MeadowsByIdMeadowIdUsage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1MeadowsByIdMeadowIdUsage"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots": {
         parameters: {
             query?: never;
@@ -4086,6 +4134,138 @@ export interface components {
         DeleteV1MePushTokensPositiveResponse: {
             data: Record<string, never>;
         };
+        GetV1MeadowsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    size: number;
+                    additionalNotes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                }[];
+                count: number;
+            };
+        };
+        PostV1MeadowsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+            };
+        };
+        PostV1MeadowsRequestBody: {
+            name: string;
+            geometry: {
+                /** @constant */
+                type: "MultiPolygon";
+                coordinates: number[][][][];
+            };
+            additionalNotes?: string | null;
+        };
+        GetV1MeadowsByIdMeadowIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+            };
+        };
+        PatchV1MeadowsByIdMeadowIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+            };
+        };
+        PatchV1MeadowsByIdMeadowIdRequestBody: {
+            name?: string;
+            geometry?: {
+                /** @constant */
+                type: "MultiPolygon";
+                coordinates: number[][][][];
+            };
+            additionalNotes?: string | null;
+        };
+        DeleteV1MeadowsByIdMeadowIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        /**
+         * Format: date-time
+         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+         */
+        GetV1MeadowsByIdMeadowIdUsageParameterFromDate: string;
+        GetV1MeadowsByIdMeadowIdUsagePositiveResponse: {
+            data: {
+                result: {
+                    meadowId: string;
+                    meadowName: string;
+                    meadowSize: number;
+                    herdId: string;
+                    herdName: string;
+                    /** @enum {string} */
+                    type: "pasture" | "exercise_yard";
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalCountsByType: {
+                        [key: string]: number;
+                    };
+                }[];
+            };
+        };
         GetV1PlotsPositiveResponse: {
             data: {
                 result: {
@@ -4469,11 +4649,6 @@ export interface components {
             size?: number;
             additionalNotes?: string;
         };
-        /**
-         * Format: date-time
-         * @description YYYY-MM-DDTHH:mm:ss.sssZ
-         */
-        GetV1PlotsByIdPlotIdCropRotationsParameterFromDate: string;
         GetV1PlotsByIdPlotIdCropRotationsPositiveResponse: {
             data: {
                 result: {
@@ -7881,6 +8056,11 @@ export interface components {
             /** @enum {string|null} */
             deathReason?: "died" | "slaughtered" | null;
             herdId?: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            herdEffectiveDate?: string | null;
         };
         DeleteV1AnimalsParameterAnimalIds: string[];
         DeleteV1AnimalsPositiveResponse: {
@@ -8364,6 +8544,11 @@ export interface components {
             /** @enum {string|null} */
             deathReason?: "died" | "slaughtered" | null;
             herdId?: string | null;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            herdEffectiveDate?: string | null;
         };
         DeleteV1AnimalsByIdAnimalIdPositiveResponse: {
             data: Record<string, never>;
@@ -8722,6 +8907,29 @@ export interface components {
                     deathReason: "died" | "slaughtered" | null;
                     herdId: string | null;
                 }[];
+                meadowEntries?: {
+                    meadowId: string;
+                    meadowName: string;
+                    meadowSize: number;
+                    herdId: string;
+                    herdName: string;
+                    /** @enum {string} */
+                    type: "pasture" | "exercise_yard";
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    animalCount: number;
+                    animalCountsByType: {
+                        [key: string]: number;
+                    };
+                }[];
             };
         };
         GetV1AnimalsHerdsPositiveResponse: {
@@ -8767,6 +8975,12 @@ export interface components {
                         id: string;
                         farmId: string;
                         herdId: string;
+                        meadowId: string | null;
+                        meadow?: {
+                            id: string;
+                            name: string;
+                            size: number;
+                        } | null;
                         /**
                          * Format: date-time
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -8819,6 +9033,7 @@ export interface components {
                 /** @enum {string} */
                 type: "pasture" | "exercise_yard";
                 notes?: string | null;
+                meadowId?: string | null;
                 recurrence?: {
                     /** @enum {string} */
                     frequency: "weekly" | "monthly" | "yearly";
@@ -8829,6 +9044,11 @@ export interface components {
                     count?: number | null;
                 } | null;
             }[];
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            effectiveDate?: string | null;
         };
         GetV1AnimalsHerdsByIdHerdIdPositiveResponse: {
             data: {
@@ -8872,6 +9092,12 @@ export interface components {
                     id: string;
                     farmId: string;
                     herdId: string;
+                    meadowId: string | null;
+                    meadow?: {
+                        id: string;
+                        name: string;
+                        size: number;
+                    } | null;
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -8922,6 +9148,7 @@ export interface components {
                 /** @enum {string} */
                 type: "pasture" | "exercise_yard";
                 notes?: string | null;
+                meadowId?: string | null;
                 recurrence?: {
                     /** @enum {string} */
                     frequency: "weekly" | "monthly" | "yearly";
@@ -8932,6 +9159,11 @@ export interface components {
                     count?: number | null;
                 } | null;
             }[];
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            effectiveDate?: string | null;
         };
         DeleteV1AnimalsHerdsByIdHerdIdPositiveResponse: {
             data: Record<string, never>;
@@ -8942,6 +9174,12 @@ export interface components {
                     id: string;
                     farmId: string;
                     herdId: string;
+                    meadowId: string | null;
+                    meadow?: {
+                        id: string;
+                        name: string;
+                        size: number;
+                    } | null;
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -8974,6 +9212,12 @@ export interface components {
                 id: string;
                 farmId: string;
                 herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -9013,6 +9257,7 @@ export interface components {
             /** @enum {string} */
             type: "pasture" | "exercise_yard";
             notes?: string | null;
+            meadowId?: string | null;
             recurrence?: {
                 /** @enum {string} */
                 frequency: "weekly" | "monthly" | "yearly";
@@ -9028,6 +9273,12 @@ export interface components {
                 id: string;
                 farmId: string;
                 herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -9058,6 +9309,12 @@ export interface components {
                 id: string;
                 farmId: string;
                 herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -9097,6 +9354,7 @@ export interface components {
             /** @enum {string} */
             type?: "pasture" | "exercise_yard";
             notes?: string | null;
+            meadowId?: string | null;
             recurrence?: {
                 /** @enum {string} */
                 frequency: "weekly" | "monthly" | "yearly";
@@ -14677,6 +14935,293 @@ export interface operations {
             };
         };
     };
+    GetV1Meadows: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/meadows Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MeadowsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/meadows Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Meadows: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/meadows Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1MeadowsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/meadows Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1MeadowsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/meadows Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Meadows: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/meadows Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/meadows Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1MeadowsByIdMeadowId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/meadows/byId/:meadowId Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/meadows/byId/:meadowId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MeadowsByIdMeadowIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/meadows/byId/:meadowId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1MeadowsByIdMeadowId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/meadows/byId/:meadowId Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/meadows/byId/:meadowId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1MeadowsByIdMeadowIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/meadows/byId/:meadowId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MeadowsByIdMeadowId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/meadows/byId/:meadowId Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/meadows/byId/:meadowId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/meadows/byId/:meadowId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1MeadowsByIdMeadowId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/meadows/byId/:meadowId Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/meadows/byId/:meadowId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1MeadowsByIdMeadowIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/meadows/byId/:meadowId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1MeadowsByIdMeadowIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/meadows/byId/:meadowId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1MeadowsByIdMeadowIdUsage: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description GET /v1/meadows/byId/:meadowId/usage Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/meadows/byId/:meadowId/usage Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1MeadowsByIdMeadowIdUsagePositiveResponse"];
+                };
+            };
+            /** @description GET /v1/meadows/byId/:meadowId/usage Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1MeadowsByIdMeadowIdUsage: {
+        parameters: {
+            query: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description HEAD /v1/meadows/byId/:meadowId/usage Parameter */
+                meadowId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/meadows/byId/:meadowId/usage Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/meadows/byId/:meadowId/usage Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1Plots: {
         parameters: {
             query?: never;
@@ -14966,9 +15511,9 @@ export interface operations {
         parameters: {
             query: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path: {
@@ -15003,9 +15548,9 @@ export interface operations {
         parameters: {
             query: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path: {
@@ -16718,9 +17263,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -16786,9 +17331,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -17304,9 +17849,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -17372,9 +17917,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -17836,9 +18381,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description GET /v1/cropRotations Parameter */
                 expand?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description GET /v1/cropRotations Parameter */
@@ -17908,9 +18453,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description HEAD /v1/cropRotations Parameter */
                 expand?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description HEAD /v1/cropRotations Parameter */
@@ -18052,9 +18597,9 @@ export interface operations {
                 /** @description GET /v1/cropRotations/plots Parameter */
                 withRecurrences?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -18094,9 +18639,9 @@ export interface operations {
                 /** @description HEAD /v1/cropRotations/plots Parameter */
                 withRecurrences?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -18561,9 +19106,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -18595,9 +19140,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -19113,9 +19658,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -19181,9 +19726,9 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate?: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -21056,9 +21601,9 @@ export interface operations {
         parameters: {
             query: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;
@@ -21090,9 +21635,9 @@ export interface operations {
         parameters: {
             query: {
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                fromDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                fromDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
                 /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
-                toDate: components["schemas"]["GetV1PlotsByIdPlotIdCropRotationsParameterFromDate"];
+                toDate: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
             };
             header?: never;
             path?: never;

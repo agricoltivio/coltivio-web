@@ -83,7 +83,7 @@ function TillageDetail() {
         body: {
           action: data.action,
           customAction: data.action === "custom" ? data.customAction : null,
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           additionalNotes: data.additionalNotes || null,
         },
       });

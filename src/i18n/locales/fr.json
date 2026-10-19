@@ -591,7 +591,17 @@
       "monthly": "Mensuel",
       "yearly": "Annuel"
     },
-    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?"
+    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?",
+    "meadow": "Pâture",
+    "noMeadow": "Aucune pâture",
+    "repeatNone": "Aucune",
+    "weekdays": "Jours de la semaine",
+    "weekdaysRequired": "Sélectionne au moins un jour de la semaine.",
+    "untilOptional": "Répéter jusqu'au",
+    "endBeforeStart": "La date ne peut pas précéder la date de début.",
+    "changesApplyFrom": "Les changements s'appliquent dès le",
+    "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
+    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure."
   },
   "turnoutJournal": {
     "title": "Journal de pâturage",
@@ -623,7 +633,9 @@
     "exportDialog": {
       "title": "Exporter le journal de sorties",
       "description": "Télécharger le journal de sorties en tant que fichier Excel."
-    }
+    },
+    "viewCategories": "Catégories",
+    "viewMeadows": "Pâtures"
   },
   "landing": {
     "nav": {
@@ -1742,6 +1754,37 @@
       "none": "Aucun",
       "read": "Lire",
       "write": "Écrire"
+    }
+  },
+  "meadows": {
+    "newMeadow": "Nouvelle pâture",
+    "editMeadow": "Modifier la pâture",
+    "selectPlots": "Sélectionner des parcelles",
+    "drawInstead": "Dessiner",
+    "selectPlotsInstruction": "Clique sur les parcelles qui font partie de la pâture",
+    "noPlotsSelected": "Aucune parcelle sélectionnée",
+    "fenceLength": "Longueur de clôture (env.)",
+    "currentAnimals": "Animaux actuels",
+    "currentHerds": "Troupeaux actuels",
+    "lastUsed": "Dernière occupation",
+    "lastUsedNow": "maintenant",
+    "usage": "Occupation",
+    "daysTitle": "Jours occupés par mois",
+    "daysValue_one": "{{count}} jour occupé",
+    "daysValue_other": "{{count}} jours occupés",
+    "averageAnimals": "Ø {{averageAnimals}} animaux",
+    "deleteTitle": "Supprimer la pâture « {{name}} » ?",
+    "deleteConfirm": "Les périodes en plein air attribuées perdent la pâture. Cette action est irréversible.",
+    "errors": {
+      "selfIntersecting": "La surface ne doit pas se croiser elle-même.",
+      "overlaps": "La surface chevauche la pâture « {{name}} »."
+    },
+    "layers": {
+      "title": "Calques",
+      "satellite": "Satellite",
+      "map": "Carte",
+      "plots": "Parcelles",
+      "meadows": "Pâtures"
     }
   }
 }

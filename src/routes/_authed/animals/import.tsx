@@ -143,11 +143,11 @@ function ImportAnimals() {
           name: row.editedName!,
           sex: row.editedSex!,
           dateOfBirth: row.editedDateOfBirth
-            ? new Date(row.editedDateOfBirth).toISOString()
+            ? row.editedDateOfBirth
             : row.dateOfBirth!,
           usage: row.editedUsage!,
           dateOfDeath: row.editedDateOfDeath
-            ? new Date(row.editedDateOfDeath).toISOString()
+            ? row.editedDateOfDeath
             : row.dateOfDeath ?? undefined,
           deathReason: row.editedDateOfDeath || row.dateOfDeath ? row.editedDeathReason : undefined,
           motherEarTagNumber: row.editedMotherEarTagNumber ?? undefined,

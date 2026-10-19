@@ -33,8 +33,8 @@ function formDataToApiBody(data: SponsorshipFormData) {
     contactId: data.contactId,
     animalId: data.animalId,
     sponsorshipProgramId: data.sponsorshipProgramId,
-    startDate: new Date(data.startDate).toISOString(),
-    endDate: data.endDate ? new Date(data.endDate).toISOString() : undefined,
+    startDate: data.startDate,
+    endDate: data.endDate ? data.endDate : undefined,
     notes: data.notes || undefined,
     preferredCommunication: data.preferredCommunication || undefined,
   };

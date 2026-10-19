@@ -115,7 +115,7 @@ function FertilizerApplicationDetail() {
         {
           params: { path: { fertilizerApplicationId } },
           body: {
-            date: new Date(data.date).toISOString(),
+            date: data.date,
             fertilizerId: data.fertilizerId,
             unit: data.unit,
             method: data.method || null,

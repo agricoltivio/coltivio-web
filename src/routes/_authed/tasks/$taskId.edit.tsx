@@ -21,20 +21,20 @@ function buildApiBody(data: TaskFormData) {
     description: data.description || undefined,
     labels: data.labels,
     assigneeId: data.assigneeId || null,
-    dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null,
+    dueDate: data.dueDate ? data.dueDate : null,
     recurrence: data.recurrence.enabled
       ? {
           frequency: data.recurrence.frequency,
           interval: data.recurrence.interval,
           until: data.recurrence.until
-            ? new Date(data.recurrence.until).toISOString()
+            ? data.recurrence.until
             : undefined,
         }
       : null,
     checklistItems: data.checklistItems.map((ci) => ({
       id: ci.id,
       name: ci.name,
-      dueDate: ci.dueDate ? new Date(ci.dueDate).toISOString() : undefined,
+      dueDate: ci.dueDate ? ci.dueDate : undefined,
     })),
   };
 }

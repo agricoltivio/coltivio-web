@@ -119,7 +119,7 @@ function HarvestDetail() {
       const response = await apiClient.PATCH("/v1/harvests/byId/{harvestId}", {
         params: { path: { harvestId } },
         body: {
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           cropId: data.cropId,
           unit: data.unit,
           kilosPerUnit: parseFloat(data.kilosPerUnit),
