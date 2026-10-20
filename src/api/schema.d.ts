@@ -3934,6 +3934,7 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                isForumModerator: boolean;
             };
         };
         PostV1FarmInvitesAcceptRequestBody: {
@@ -3958,6 +3959,7 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                isForumModerator: boolean;
             };
         };
         PatchV1FarmMembersByIdUserIdRoleRequestBody: {
@@ -4000,6 +4002,7 @@ export interface components {
                     /** @enum {string|null} */
                     farmRole: "owner" | "member" | null;
                     isWikiModerator: boolean;
+                    isForumModerator: boolean;
                 }[];
                 count: number;
             };
@@ -4014,6 +4017,7 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                isForumModerator: boolean;
             };
         };
         PatchV1MePositiveResponse: {
@@ -4026,6 +4030,7 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                isForumModerator: boolean;
                 taskPushNotifications: boolean;
             };
         };
@@ -4044,6 +4049,7 @@ export interface components {
                 /** @enum {string|null} */
                 farmRole: "owner" | "member" | null;
                 isWikiModerator: boolean;
+                isForumModerator: boolean;
                 farmPermissions: {
                     /** @enum {string} */
                     feature: "animals" | "field_calendar" | "commerce" | "tasks";

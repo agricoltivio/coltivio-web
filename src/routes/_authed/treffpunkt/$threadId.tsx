@@ -141,7 +141,7 @@ function ThreadDetail() {
   const replyEditorRef = useRef<MDXEditorMethods>(null);
 
   const isOwner = me?.id === thread?.createdBy;
-  const isWikiModerator = me?.isWikiModerator ?? false;
+  const isForumModerator = me?.isForumModerator ?? false;
 
   // ── Thread mutations ───────────────────────────────────────────────
   const updateThreadMutation = useMutation({
@@ -348,7 +348,7 @@ function ThreadDetail() {
                 : t("treffpunkt.subscribe")}
             </Button>
           )}
-          {isOwner && (
+          {(isOwner || isForumModerator) && (
             <Button
               variant="outline"
               size="sm"
@@ -379,7 +379,7 @@ function ThreadDetail() {
             {t("treffpunkt.pinned")}
           </Badge>
         )}
-        {isWikiModerator && (
+        {isForumModerator && (
           <Button
             variant="ghost"
             size="sm"
