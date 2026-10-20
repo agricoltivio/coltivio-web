@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -23,6 +22,7 @@ import {
   InsertTable,
   InsertCodeBlock,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import {
   myChangeRequestsQueryOptions,
@@ -192,7 +192,7 @@ function EditChangeRequestDraft() {
                     control={control}
                     render={({ field }) => (
                       <div className="border rounded-md overflow-hidden">
-                        <MDXEditor
+                        <MarkdownEditor
                           key={locale}
                           readOnly={!isEditable}
                           markdown={field.value}

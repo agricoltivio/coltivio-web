@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { X, ImageUp, Loader2 } from "lucide-react";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -27,6 +26,7 @@ import {
   usePublisher,
   insertImage$,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -320,7 +320,7 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
                   control={control}
                   render={({ field }) => (
                     <div className="border rounded-md overflow-hidden">
-                      <MDXEditor
+                      <MarkdownEditor
                         key={`${locale}-${entry?.id ?? "new"}`}
                         markdown={field.value}
                         onChange={field.onChange}

@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import {
-  MDXEditor,
   type MDXEditorMethods,
   headingsPlugin,
   listsPlugin,
@@ -22,6 +21,7 @@ import {
   InsertTable,
   InsertCodeBlock,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { Pin, MoreHorizontal, Bell, BellOff } from "lucide-react";
 import { apiClient } from "@/api/client";
@@ -434,7 +434,7 @@ function ThreadDetail() {
             {editingThread ? (
               <div className="space-y-2">
                 <div className="overflow-hidden rounded-md border">
-                  <MDXEditor
+                  <MarkdownEditor
                     key={`edit-thread-${threadId}`}
                     markdown={editThreadBody}
                     onChange={setEditThreadBody}
@@ -461,7 +461,7 @@ function ThreadDetail() {
             ) : (
               // MDXEditor only reads `markdown` on mount, so key by content to
               // force a remount when the body changes after an edit.
-              <MDXEditor
+              <MarkdownEditor
                 key={`thread-body:${thread.body}`}
                 readOnly
                 markdown={thread.body}
@@ -521,7 +521,7 @@ function ThreadDetail() {
                 {isEditingThis ? (
                   <div className="space-y-2">
                     <div className="overflow-hidden rounded-md border">
-                      <MDXEditor
+                      <MarkdownEditor
                         key={`edit-reply-${reply.id}`}
                         markdown={editReplyBody}
                         onChange={setEditReplyBody}
@@ -551,7 +551,7 @@ function ThreadDetail() {
                     </div>
                   </div>
                 ) : (
-                  <MDXEditor
+                  <MarkdownEditor
                     key={`reply-body:${reply.id}:${reply.body}`}
                     readOnly
                     markdown={reply.body}
@@ -575,7 +575,7 @@ function ThreadDetail() {
             onFocus={() => setReplyFocused(true)}
           >
             <div className="overflow-hidden rounded-md border">
-              <MDXEditor
+              <MarkdownEditor
                 ref={replyEditorRef}
                 markdown={replyBody}
                 onChange={setReplyBody}
