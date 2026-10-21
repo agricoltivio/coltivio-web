@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Archive, Home, Layers, List, Trash2, X } from "lucide-react";
+import { Archive, ChevronDown, Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -31,6 +31,7 @@ import {
 } from "@/lib/meadowGeometry";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { z } from "zod";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -1134,21 +1135,35 @@ function PlotsMap() {
 
   return (
     <PageContent
-      title={t("fieldCalendar.plots.title")}
+      title={t("fieldCalendar.plots.pageTitle")}
       showBackButton={false}
       actions={
         <>
           <Button asChild size="sm" variant="outline">
             <Link to="/field-calendar/plots/import">{t("fieldCalendar.plots.importButton")}</Link>
           </Button>
-          {canWriteMeadows && (
-            <Button size="sm" variant="outline" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "meadow" }); }}>
-              {t("meadows.newMeadow")}
+          {canWriteMeadows ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" disabled={mode.type !== "view"}>
+                  {t("fieldCalendar.plots.newArea")}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
+                  {t("fieldCalendar.plots.newAreaPlot")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "meadow" }); }}>
+                  {t("fieldCalendar.plots.newAreaMeadow")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button size="sm" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
+              {t("fieldCalendar.plots.newPlot")}
             </Button>
           )}
-          <Button size="sm" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
-            {t("fieldCalendar.plots.newPlot")}
-          </Button>
         </>
       }
     >
@@ -1350,8 +1365,11 @@ function PlotsMap() {
           </div>
         )}
 
-        {/* Layer toggle + color mode toggle */}
+        {/* Plot list, layer toggle + color mode toggle */}
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+          <Button variant="outline" size="icon" onClick={() => setListOpen(true)}>
+            <List className="h-4 w-4" />
+          </Button>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="icon" aria-label={t("meadows.layers.title")}>
@@ -1403,13 +1421,6 @@ function PlotsMap() {
           {mode.type === "view" && visibleLayers.plots && (
             <PlotColorModeToggle value={plotColorMode} onChange={setPlotColorMode} />
           )}
-        </div>
-
-        {/* Plot list button */}
-        <div className="absolute bottom-6 left-2 z-10">
-          <Button variant="outline" size="icon" onClick={() => setListOpen(true)}>
-            <List className="h-4 w-4" />
-          </Button>
         </div>
 
         {/* Mode toolbar — bottom-center */}
@@ -1599,9 +1610,9 @@ function PlotsMap() {
 
       {/* Searchable plot list */}
       <Sheet open={listOpen} onOpenChange={setListOpen}>
-        <SheetContent side="left" className="w-80 flex flex-col gap-0 p-0">
+        <SheetContent side="right" className="w-80 flex flex-col gap-0 p-0">
           <SheetHeader className="p-4 pb-2">
-            <SheetTitle className="sr-only">{t("fieldCalendar.plots.title")}</SheetTitle>
+            <SheetTitle className="sr-only">{t("fieldCalendar.plots.pageTitle")}</SheetTitle>
             <Input placeholder={t("common.search")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="mt-2" autoFocus />
             <label className="flex items-center gap-2 pt-2 text-sm">
               <Switch checked={showArchived} onCheckedChange={setShowArchived} />

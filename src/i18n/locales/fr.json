@@ -86,6 +86,7 @@
     "sponsorships": "Parrainages",
     "payments": "Paiements",
     "plots": "Champs",
+    "map": "Carte",
     "cropRotations": "Rotations culturales",
     "tillages": "Travaux du sol",
     "fertilizerApplications": "Fertilisation",
@@ -791,6 +792,7 @@
     },
     "plots": {
       "title": "Champs",
+      "pageTitle": "Surfaces",
       "plot": "Champ",
       "selectPlot": "Sélectionner un champ",
       "openMap": "Ouvrir la carte",
@@ -802,6 +804,9 @@
       "additionalNotes": "Notes",
       "viewDetails": "Voir les détails",
       "newPlot": "Nouveau champ",
+      "newArea": "Nouvelle surface",
+      "newAreaPlot": "Champ",
+      "newAreaMeadow": "Pâture",
       "enterMerge": "Fusionner",
       "enterSplit": "Diviser",
       "colorMode": {

@@ -86,6 +86,7 @@
     "sponsorships": "Patenschaften",
     "payments": "Zahlungen",
     "plots": "Schläge",
+    "map": "Karte",
     "cropRotations": "Fruchtfolge",
     "tillages": "Bodenbearbeitung",
     "fertilizerApplications": "Düngung",
@@ -791,6 +792,7 @@
     },
     "plots": {
       "title": "Schläge",
+      "pageTitle": "Flächen",
       "plot": "Schlag",
       "selectPlot": "Schlag auswählen",
       "openMap": "Karte öffnen",
@@ -802,6 +804,9 @@
       "additionalNotes": "Notizen",
       "viewDetails": "Details anzeigen",
       "newPlot": "Neuer Schlag",
+      "newArea": "Neue Fläche",
+      "newAreaPlot": "Schlag",
+      "newAreaMeadow": "Weide",
       "enterMerge": "Zusammenführen",
       "enterSplit": "Teilen",
       "colorMode": {

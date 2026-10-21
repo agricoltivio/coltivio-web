@@ -86,6 +86,7 @@
     "sponsorships": "Sponsorizzazioni",
     "payments": "Pagamenti",
     "plots": "Campi",
+    "map": "Mappa",
     "cropRotations": "Rotazioni colturali",
     "tillages": "Lavorazioni del terreno",
     "fertilizerApplications": "Concimazione",
@@ -791,6 +792,7 @@
     },
     "plots": {
       "title": "Campi",
+      "pageTitle": "Superfici",
       "plot": "Campo",
       "selectPlot": "Seleziona campo",
       "openMap": "Apri mappa",
@@ -802,6 +804,9 @@
       "additionalNotes": "Note",
       "viewDetails": "Visualizza dettagli",
       "newPlot": "Nuovo campo",
+      "newArea": "Nuova superficie",
+      "newAreaPlot": "Campo",
+      "newAreaMeadow": "Pascolo",
       "enterMerge": "Unire",
       "enterSplit": "Dividere",
       "colorMode": {

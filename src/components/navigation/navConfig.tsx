@@ -129,7 +129,7 @@ export const SECTIONS: readonly NavSection[] = [
       { key: "analysis", labelKey: "nav.fieldGroups.analysis" },
     ],
     items: [
-      { labelKey: "nav.plots", to: "/field-calendar/plots", groupKey: "areas" },
+      { labelKey: "nav.map", to: "/field-calendar/plots", groupKey: "areas" },
       { labelKey: "nav.crops", to: "/field-calendar/crops", groupKey: "crops" },
       { labelKey: "nav.cropFamilies", to: "/field-calendar/crop-families", groupKey: "crops" },
       { labelKey: "nav.cropRotations", to: "/field-calendar/crop-rotations", groupKey: "crops" },

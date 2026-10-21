@@ -86,6 +86,7 @@
     "sponsorships": "Sponsorships",
     "payments": "Payments",
     "plots": "Plots",
+    "map": "Map",
     "cropRotations": "Crop Rotations",
     "tillages": "Tillages",
     "fertilizerApplications": "Fertilization",
@@ -791,6 +792,7 @@
     },
     "plots": {
       "title": "Plots",
+      "pageTitle": "Areas",
       "plot": "Plot",
       "selectPlot": "Select plot",
       "openMap": "Open map",
@@ -802,6 +804,9 @@
       "additionalNotes": "Notes",
       "viewDetails": "View details",
       "newPlot": "New plot",
+      "newArea": "New area",
+      "newAreaPlot": "Plot",
+      "newAreaMeadow": "Meadow",
       "enterMerge": "Merge",
       "enterSplit": "Split",
       "colorMode": {
