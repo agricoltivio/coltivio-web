@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -336,12 +337,12 @@ function PlanDraftCropRotations() {
         plotId,
         rotations: rotations.map((r) => ({
           cropId: r.cropId,
-          fromDate: r.fromDate.toISOString(),
-          toDate: r.toDate.toISOString(),
+          fromDate: toLocalDateString(r.fromDate),
+          toDate: toLocalDateString(r.toDate),
           ...(r.recurrence && {
             recurrenceInterval: r.recurrence.interval,
             ...(r.recurrence.until && {
-              recurrenceUntil: r.recurrence.until.toISOString(),
+              recurrenceUntil: toLocalDateString(r.recurrence.until),
             }),
           }),
         })),
@@ -755,7 +756,7 @@ function RotationDialog({
         setUntilDate("");
       }
     } else {
-      const today = new Date().toISOString().split("T")[0];
+      const today = toLocalDateString(new Date());
       setCropId("");
       setFromDate(today);
       setToDate(today);

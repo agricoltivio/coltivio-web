@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -58,12 +59,12 @@ function formDataToApiBody(data: AnimalFormData) {
     name: data.name,
     type: data.type,
     sex: data.sex,
-    dateOfBirth: new Date(data.dateOfBirth || new Date()).toISOString(),
+    dateOfBirth: data.dateOfBirth || toLocalDateString(new Date()),
     earTagId: data.earTagId || undefined,
     motherId: data.motherId || undefined,
     fatherId: data.fatherId || undefined,
     dateOfDeath: data.dateOfDeath
-      ? new Date(data.dateOfDeath).toISOString()
+      ? data.dateOfDeath
       : null,
     deathReason: data.deathReason || null,
     registered: data.registered,

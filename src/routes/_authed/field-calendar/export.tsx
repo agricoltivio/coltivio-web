@@ -55,8 +55,8 @@ function FieldCalendarExport() {
     try {
       const response = await apiClient.POST("/v1/reports/fieldcalendar/download", {
         body: {
-          fromDate: new Date(fromDate).toISOString(),
-          toDate: new Date(`${toDate}T23:59:59`).toISOString(),
+          fromDate: fromDate,
+          toDate: toDate,
           generateCropRotations: sections.has("cropRotations"),
           generateTillages: sections.has("tillages"),
           generateFertilizerApplications: sections.has("fertilizerApplications"),

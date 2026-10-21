@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -59,7 +60,7 @@ export function JournalEntryForm({
         }
       : {
           title: "",
-          date: new Date().toISOString().split("T")[0],
+          date: toLocalDateString(new Date()),
           content: "",
         },
   });

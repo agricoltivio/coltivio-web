@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -94,8 +95,8 @@ export function TreatmentForm({
       : {
           animalIds: initialDefaults?.animalIds || [],
           drugId: null,
-          startDate: new Date().toISOString().split("T")[0],
-          endDate: new Date().toISOString().split("T")[0],
+          startDate: toLocalDateString(new Date()),
+          endDate: toLocalDateString(new Date()),
           name: "",
           notes: null,
           milkUsableDate: null,
@@ -158,17 +159,17 @@ export function TreatmentForm({
     if (drugTreatment.milkWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
-      setValue("milkUsableDate", d.toISOString().split("T")[0]);
+      setValue("milkUsableDate", toLocalDateString(d));
     }
     if (drugTreatment.meatWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
-      setValue("meatUsableDate", d.toISOString().split("T")[0]);
+      setValue("meatUsableDate", toLocalDateString(d));
     }
     if (drugTreatment.organsWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
-      setValue("organsUsableDate", d.toISOString().split("T")[0]);
+      setValue("organsUsableDate", toLocalDateString(d));
     }
   }, [watchedDrugId, dirtyFields.drugId, watchedAnimalIds, watchedEndDate, drugs, animals, setValue]);
 
@@ -193,17 +194,17 @@ export function TreatmentForm({
     if (drugTreatment.milkWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
-      setValue("milkUsableDate", d.toISOString().split("T")[0]);
+      setValue("milkUsableDate", toLocalDateString(d));
     }
     if (drugTreatment.meatWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
-      setValue("meatUsableDate", d.toISOString().split("T")[0]);
+      setValue("meatUsableDate", toLocalDateString(d));
     }
     if (drugTreatment.organsWaitingDays > 0) {
       const d = new Date(endDate);
       d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
-      setValue("organsUsableDate", d.toISOString().split("T")[0]);
+      setValue("organsUsableDate", toLocalDateString(d));
     }
   }, [watchedEndDate, watchedDrugId, watchedAnimalIds, dirtyFields.drugId, drugs, animals, setValue]);
 

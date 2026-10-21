@@ -19,13 +19,13 @@ function buildApiBody(data: TaskFormData) {
     description: data.description || undefined,
     labels: data.labels,
     assigneeId: data.assigneeId || undefined,
-    dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : undefined,
+    dueDate: data.dueDate ? data.dueDate : undefined,
     recurrence: data.recurrence.enabled
       ? {
           frequency: data.recurrence.frequency,
           interval: data.recurrence.interval,
           until: data.recurrence.until
-            ? new Date(data.recurrence.until).toISOString()
+            ? data.recurrence.until
             : undefined,
         }
       : undefined,
@@ -35,7 +35,7 @@ function buildApiBody(data: TaskFormData) {
         ? data.checklistItems.map((ci) => ({
             name: ci.name,
             dueDate: ci.dueDate
-              ? new Date(ci.dueDate).toISOString()
+              ? ci.dueDate
               : undefined,
           }))
         : undefined,

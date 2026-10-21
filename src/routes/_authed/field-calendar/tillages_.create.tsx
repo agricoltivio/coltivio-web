@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -69,7 +70,7 @@ function CreateTillage() {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       action: "plowing",
       customAction: "",
-      date: new Date().toISOString().slice(0, 10),
+      date: toLocalDateString(new Date()),
       additionalNotes: "",
     },
   });
@@ -85,7 +86,7 @@ function CreateTillage() {
         body: {
           action: data.action,
           customAction: data.action === "custom" ? data.customAction : undefined,
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           additionalNotes: data.additionalNotes || undefined,
           plots: selectedPlots.map((plot) => ({
             plotId: plot.id,

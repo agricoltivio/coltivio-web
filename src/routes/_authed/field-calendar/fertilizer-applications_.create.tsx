@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
@@ -137,7 +138,7 @@ function CreateFertilizerApplication() {
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       fertilizerId: "",
-      date: new Date().toISOString().slice(0, 10),
+      date: toLocalDateString(new Date()),
       unit: "load",
       method: "spread",
       amountPerUnit: "",
@@ -163,7 +164,7 @@ function CreateFertilizerApplication() {
 
       const response = await apiClient.POST("/v1/fertilizerApplications", {
         body: {
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           fertilizerId: data.fertilizerId,
           unit: data.unit,
           method: data.method || undefined,

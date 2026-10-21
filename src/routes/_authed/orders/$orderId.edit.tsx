@@ -43,7 +43,7 @@ function EditOrder() {
         params: { path: { orderId } },
         body: {
           shippingDate: data.shippingDate
-            ? new Date(data.shippingDate).toISOString()
+            ? data.shippingDate
             : undefined,
           notes: data.notes || undefined,
         },

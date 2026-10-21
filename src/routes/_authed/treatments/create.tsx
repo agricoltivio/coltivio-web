@@ -29,18 +29,18 @@ function formDataToApiBody(data: TreatmentFormData) {
   return {
     animalIds: data.animalIds,
     drugId: data.drugId,
-    startDate: new Date(data.startDate).toISOString(),
-    endDate: new Date(data.endDate).toISOString(),
+    startDate: data.startDate,
+    endDate: data.endDate,
     name: data.name,
     notes: data.notes || undefined,
     milkUsableDate: data.milkUsableDate
-      ? new Date(data.milkUsableDate).toISOString()
+      ? data.milkUsableDate
       : null,
     meatUsableDate: data.meatUsableDate
-      ? new Date(data.meatUsableDate).toISOString()
+      ? data.meatUsableDate
       : null,
     organsUsableDate: data.organsUsableDate
-      ? new Date(data.organsUsableDate).toISOString()
+      ? data.organsUsableDate
       : null,
     isAntibiotic: data.isAntibiotic,
     criticalAntibiotic: data.criticalAntibiotic,

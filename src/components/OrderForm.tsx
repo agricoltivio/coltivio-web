@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { TrashIcon } from "lucide-react";
@@ -56,7 +57,7 @@ export function OrderForm({
   const { register, handleSubmit, control, setValue } = useForm<OrderFormData>({
     defaultValues: {
       contactId: defaultValues?.contactId || "",
-      orderDate: defaultValues?.orderDate || new Date().toISOString().split("T")[0],
+      orderDate: defaultValues?.orderDate || toLocalDateString(new Date()),
       shippingDate: defaultValues?.shippingDate || null,
       notes: defaultValues?.notes || null,
       confirmed: false,

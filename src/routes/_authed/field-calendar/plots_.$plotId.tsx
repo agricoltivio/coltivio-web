@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import { plotQueryOptions } from "@/api/plots.queries";
+import { plotQueryOptions, useUpdatePlotMutation } from "@/api/plots.queries";
+import { ArchivedNotice } from "@/components/ArchivedNotice";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import {
   BookOpen,
@@ -30,6 +32,8 @@ function PlotDetail() {
   const navigate = useNavigate();
   const plotQuery = useQuery(plotQueryOptions(plotId));
   const plot = plotQuery.data;
+  const { canWrite: canRestore } = useFeatureAccess("field_calendar");
+  const restoreMutation = useUpdatePlotMutation();
 
   if (!plot) {
     return (
@@ -68,6 +72,17 @@ function PlotDetail() {
 
   return (
     <PageContent title={plot.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/field-calendar/plots" })}>
+      {plot.archivedAt && (
+        <ArchivedNotice
+          kind="plot"
+          name={plot.name}
+          archivedAt={plot.archivedAt}
+          onRestore={() => restoreMutation.mutate({ plotId, body: { archived: false } })}
+          isRestoring={restoreMutation.isPending}
+          restoreFailed={restoreMutation.isError}
+          canRestore={canRestore}
+        />
+      )}
       {/* Plot info */}
       <div className="rounded-md border p-4 mb-6 space-y-2">
         <div className="flex justify-between text-sm">

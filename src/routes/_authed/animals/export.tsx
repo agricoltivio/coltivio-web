@@ -27,8 +27,8 @@ function AnimalsExport() {
     try {
       const response = await apiClient.POST("/v1/reports/animals/download", {
         body: {
-          fromDate: new Date(fromDate).toISOString(),
-          toDate: new Date(`${toDate}T23:59:59`).toISOString(),
+          fromDate: fromDate,
+          toDate: toDate,
           generateTreatments: treatments,
           generateOutdoorJournal: outdoorJournal,
         },

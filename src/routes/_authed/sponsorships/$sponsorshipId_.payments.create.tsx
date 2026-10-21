@@ -29,7 +29,7 @@ function CreateSponsorshipPayment() {
         {
           params: { path: { sponsorshipId } },
           body: {
-            date: new Date(data.date).toISOString(),
+            date: data.date,
             amount: data.amount,
             currency: data.currency,
             method: data.method,

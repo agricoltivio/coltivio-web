@@ -33,7 +33,7 @@ function FarmJournalCreatePage() {
       const response = await apiClient.POST("/v1/farm/journal", {
         body: {
           title: data.title,
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           content: data.content || undefined,
         },
       });

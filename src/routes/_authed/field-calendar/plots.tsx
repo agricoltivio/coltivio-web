@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Home, Layers, List, Trash2, X } from "lucide-react";
+import { Archive, ChevronDown, Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -19,7 +19,20 @@ import {
   useUpdatePlotMutation,
 } from "@/api/plots.queries";
 import type { MergePlotsBody, SplitPlotBody } from "@/api/plots.queries";
-import type { Plot } from "@/api/types";
+import type { Meadow, Plot } from "@/api/types";
+import {
+  meadowsQueryOptions,
+  useUpdateMeadowMutation,
+} from "@/api/meadows.queries";
+import {
+  findMeadowGeometryError,
+  mergePlotsIntoMeadowGeometry,
+  type MeadowGeometryError,
+} from "@/lib/meadowGeometry";
+import { Switch } from "@/components/ui/switch";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { z } from "zod";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -46,6 +59,19 @@ import {
   type PlotColorMode,
 } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { ArchivedAreaPanel } from "@/components/ArchivedAreaPanel";
+import { MeadowDetailPanel, MeadowFormDialog } from "@/components/MeadowMapPanels";
+import {
+  addArchivedAreaLabelLayer,
+  addArchivedAreaLayers,
+  ARCHIVED_AREA_FILL_LAYER_ID,
+  ARCHIVED_AREA_LABELS_SOURCE_ID,
+  ARCHIVED_AREA_LAYER_IDS,
+  ARCHIVED_AREAS_SOURCE_ID,
+  buildArchivedAreaLabelsGeojson,
+  buildArchivedAreasGeojson,
+} from "@/lib/archivedAreasLayer";
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
@@ -69,10 +95,31 @@ type SplitMode = {
   splitPolygons: GeoJSON.MultiPolygon[];
 };
 type MergeMode = { type: "merge"; primaryPlotId: string; selectedPlotIds: string[] };
-type CreateMode = { type: "create"; drawnVertices: [number, number][]; closed: boolean };
+// What the create/edit modes work on
+type ShapeTarget = "plot" | "meadow";
+type CreateMode = {
+  type: "create";
+  target: ShapeTarget;
+  drawnVertices: [number, number][];
+  closed: boolean;
+};
+// Meadow from existing plots: tapped plots are merged into one meadow geometry
+type MeadowPlotsMode = { type: "meadowPlots"; selectedPlotIds: string[] };
 // EditMode stores the exterior ring of each polygon in the MultiPolygon as mutable vertex arrays.
-type EditMode = { type: "edit"; plotId: string; rings: number[][][]; geometryChanged: boolean };
-type MapMode = ViewMode | SplitMode | MergeMode | CreateMode | EditMode;
+type EditMode = {
+  type: "edit";
+  target: ShapeTarget;
+  targetId: string;
+  rings: number[][][];
+  geometryChanged: boolean;
+};
+type MapMode =
+  | ViewMode
+  | SplitMode
+  | MergeMode
+  | CreateMode
+  | MeadowPlotsMode
+  | EditMode;
 
 type MapAction =
   | { type: "SELECT_PLOT"; plotId: string | null }
@@ -84,8 +131,11 @@ type MapAction =
   | { type: "UNDO_VERTEX" }
   | { type: "CLOSE_POLYGON" } // closes the polygon in split-polygon or create mode
   | { type: "SET_SPLIT_POLYGONS"; polygons: GeoJSON.MultiPolygon[] }
-  | { type: "ENTER_CREATE" }
-  | { type: "ENTER_EDIT"; plotId: string; rings: number[][][] }
+  | { type: "ENTER_CREATE"; target: ShapeTarget }
+  // Meadow creation: switch between drawing and picking existing plots
+  | { type: "SET_MEADOW_SOURCE"; source: "draw" | "plots" }
+  | { type: "TOGGLE_MEADOW_PLOT"; plotId: string }
+  | { type: "ENTER_EDIT"; target: ShapeTarget; targetId: string; rings: number[][][] }
   | { type: "MOVE_EDIT_VERTEX"; ringIndex: number; vertexIndex: number; lngLat: [number, number] }
   | { type: "MOVE_POLYGON_VERTEX"; index: number; lngLat: [number, number] }
   | { type: "EXIT_MODE" };
@@ -146,9 +196,27 @@ function mapReducer(state: MapMode, action: MapAction): MapMode {
       // Reset drawing state so the user can immediately draw another cut
       return { ...state, splitPolygons: action.polygons, drawnVertices: [], polygonClosed: false };
     case "ENTER_CREATE":
-      return { type: "create", drawnVertices: [], closed: false };
+      return { type: "create", target: action.target, drawnVertices: [], closed: false };
+    case "SET_MEADOW_SOURCE":
+      return action.source === "plots"
+        ? { type: "meadowPlots", selectedPlotIds: [] }
+        : { type: "create", target: "meadow", drawnVertices: [], closed: false };
+    case "TOGGLE_MEADOW_PLOT":
+      if (state.type !== "meadowPlots") return state;
+      return {
+        ...state,
+        selectedPlotIds: state.selectedPlotIds.includes(action.plotId)
+          ? state.selectedPlotIds.filter((id) => id !== action.plotId)
+          : [...state.selectedPlotIds, action.plotId],
+      };
     case "ENTER_EDIT":
-      return { type: "edit", plotId: action.plotId, rings: action.rings, geometryChanged: false };
+      return {
+        type: "edit",
+        target: action.target,
+        targetId: action.targetId,
+        rings: action.rings,
+        geometryChanged: false,
+      };
     case "MOVE_EDIT_VERTEX": {
       if (state.type !== "edit") return state;
       const newRings = state.rings.map((ring, rIdx) => {
@@ -172,7 +240,7 @@ function mapReducer(state: MapMode, action: MapAction): MapMode {
       const returnTo =
         state.type === "split" ? state.plotId
         : state.type === "merge" ? state.primaryPlotId
-        : state.type === "edit" ? state.plotId
+        : state.type === "edit" && state.target === "plot" ? state.targetId
         : null;
       return { type: "view", selectedPlotId: returnTo };
     }
@@ -323,7 +391,76 @@ function extractSubPolygonByPoint(
   return null;
 }
 
+// Layers shown (and clickable) on the map, remembered in the browser.
+// archived: archived plots and meadows, drawn greyed out and read-only
+type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean };
+type SelectedArchivedArea = { kind: "plot" | "meadow"; id: string };
+const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
+const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false };
+
+function readVisibleLayers(): VisibleLayers {
+  try {
+    const raw = localStorage.getItem(VISIBLE_LAYERS_STORAGE_KEY);
+    if (!raw) return DEFAULT_VISIBLE_LAYERS;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      "plots" in parsed &&
+      "meadows" in parsed &&
+      typeof parsed.plots === "boolean" &&
+      typeof parsed.meadows === "boolean"
+    ) {
+      // archived is missing in choices stored before it existed, read as off
+      const archived = "archived" in parsed && parsed.archived === true;
+      return { plots: parsed.plots, meadows: parsed.meadows, archived };
+    }
+  } catch {
+    // Storage unavailable or invalid — fall back to the default
+  }
+  return DEFAULT_VISIBLE_LAYERS;
+}
+
+function storeVisibleLayers(layers: VisibleLayers) {
+  try {
+    localStorage.setItem(VISIBLE_LAYERS_STORAGE_KEY, JSON.stringify(layers));
+  } catch {
+    // Not persisted, the map still works with the current choice
+  }
+}
+
+// Tileable diagonal white stripes for the meadow fill, same look as the app
+const MEADOW_PATTERN_ID = "meadow-stripes";
+function createMeadowStripePattern(): ImageData | null {
+  const size = 16;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+  const image = context.createImageData(size, size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const offset = (y * size + x) * 4;
+      image.data[offset] = 255;
+      image.data[offset + 1] = 255;
+      image.data[offset + 2] = 255;
+      image.data[offset + 3] = (x + y) % 8 < 3 ? 190 : 0;
+    }
+  }
+  return image;
+}
+
+// Search params: ?createMeadow=1 opens the map directly in meadow creation
+// ?returnToHerdId=…: opened from that herd's schedule; after saving (or cancelling) the
+// meadow creation, go back there and hand over the new meadow's id
+const plotsSearchSchema = z.object({
+  createMeadow: z.coerce.boolean().optional(),
+  returnToHerdId: z.string().optional(),
+});
+
 export const Route = createFileRoute("/_authed/field-calendar/plots")({
+  validateSearch: plotsSearchSchema,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(plotsQueryOptions());
     queryClient.ensureQueryData(farmQueryOptions());
@@ -332,6 +469,7 @@ export const Route = createFileRoute("/_authed/field-calendar/plots")({
 });
 
 type BaseLayer = "satellite" | "pixelkarte";
+const BASE_LAYERS: BaseLayer[] = ["satellite", "pixelkarte"];
 
 function PlotsMap() {
   const { t, i18n } = useTranslation();
@@ -340,9 +478,52 @@ function PlotsMap() {
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const hasCentered = useRef(false);
-  const [mode, dispatch] = useReducer(mapReducer, { type: "view", selectedPlotId: null });
+  const { createMeadow, returnToHerdId } = Route.useSearch();
+  const navigate = useNavigate();
+  // Kept after the search params are cleared below
+  const [meadowReturnToHerdId] = useState(returnToHerdId);
+  // Only read on load: drop it from the URL so a reload doesn't restart meadow creation
+  useEffect(() => {
+    if (createMeadow) {
+      void navigate({ to: "/field-calendar/plots", search: {}, replace: true });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const [mode, dispatch] = useReducer(
+    mapReducer,
+    createMeadow
+      ? { type: "create", target: "meadow", drawnVertices: [], closed: false }
+      : { type: "view", selectedPlotId: null },
+  );
+  // Meadows belong to the animals feature (the API requires its permission)
+  const { canRead: canReadMeadows, canWrite: canWriteMeadows } = useFeatureAccess("animals");
+  const [storedVisibleLayers, setVisibleLayersState] = useState<VisibleLayers>(() =>
+    createMeadow ? { ...readVisibleLayers(), meadows: true } : readVisibleLayers(),
+  );
+  // Without animals access the meadow layer stays off, whatever was stored
+  const visibleLayers: VisibleLayers = canReadMeadows
+    ? storedVisibleLayers
+    : { ...storedVisibleLayers, meadows: false };
+  const [selectedMeadowId, setSelectedMeadowId] = useState<string | null>(null);
+  const [createMeadowFormOpen, setCreateMeadowFormOpen] = useState(false);
+  const [newMeadowGeometry, setNewMeadowGeometry] =
+    useState<GeoJSON.MultiPolygon | null>(null);
+  const [editMeadowMetaOpen, setEditMeadowMetaOpen] = useState(false);
+  const updateMeadowMutation = useUpdateMeadowMutation();
+  const meadowsQuery = useQuery({ ...meadowsQueryOptions(), enabled: canReadMeadows });
+  const meadows = meadowsQuery.data ?? [];
+
+  // Hiding a layer also clears its selection
+  function setVisibleLayers(next: VisibleLayers) {
+    if (!next.plots) dispatch({ type: "SELECT_PLOT", plotId: null });
+    if (!next.meadows) setSelectedMeadowId(null);
+    if (!next.archived) setSelectedArchivedArea(null);
+    setVisibleLayersState(next);
+    storeVisibleLayers(next);
+  }
   const [listOpen, setListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Archived plots and meadows aren't on the map; the list can show them on request
+  const [showArchived, setShowArchived] = useState(false);
   const [mergeFormOpen, setMergeFormOpen] = useState(false);
   const [splitFormOpen, setSplitFormOpen] = useState(false);
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -357,6 +538,32 @@ function PlotsMap() {
   const farm = farmQuery.data;
   const plots = plotsQuery.data?.result ?? [];
 
+  // Archived plots and meadows, fetched while the list shows them or the archived layer is on
+  const archivedNeeded = showArchived || visibleLayers.archived;
+  const archivedPlotsQuery = useQuery({ ...plotsQueryOptions(true), enabled: archivedNeeded });
+  const archivedMeadowsQuery = useQuery({
+    ...meadowsQueryOptions(true),
+    enabled: archivedNeeded && canReadMeadows,
+  });
+  const allArchivedPlots = useMemo(
+    () => (archivedPlotsQuery.data?.result ?? []).filter((plot) => plot.archivedAt !== null && plot.size > 0),
+    [archivedPlotsQuery.data],
+  );
+  const allArchivedMeadows = useMemo(
+    () => (archivedMeadowsQuery.data ?? []).filter((meadow) => meadow.archivedAt !== null),
+    [archivedMeadowsQuery.data],
+  );
+  // Archived areas aren't part of the map modes; selecting one opens a read-only panel
+  const [selectedArchivedArea, setSelectedArchivedArea] = useState<SelectedArchivedArea | null>(null);
+  const selectedArchivedPlot =
+    selectedArchivedArea?.kind === "plot"
+      ? allArchivedPlots.find((plot) => plot.id === selectedArchivedArea.id) ?? null
+      : null;
+  const selectedArchivedMeadow =
+    selectedArchivedArea?.kind === "meadow"
+      ? allArchivedMeadows.find((meadow) => meadow.id === selectedArchivedArea.id) ?? null
+      : null;
+
   const selectedPlotId = mode.type === "view" ? mode.selectedPlotId : null;
   const selectedPlot = useMemo(
     () => (selectedPlotId ? plots.find((p) => p.id === selectedPlotId) ?? null : null),
@@ -365,9 +572,81 @@ function PlotsMap() {
 
   const mappablePlots = useMemo(() => plots.filter((p) => p.size > 0), [plots]);
 
+  const selectedMeadow = useMemo(
+    () =>
+      mode.type === "view" && selectedMeadowId
+        ? meadows.find((m) => m.id === selectedMeadowId) ?? null
+        : null,
+    [mode.type, selectedMeadowId, meadows],
+  );
+  const editingMeadowId =
+    mode.type === "edit" && mode.target === "meadow" ? mode.targetId : null;
+  // Meadow modes always show meadows, so new ones aren't drawn over existing ones
+  const meadowsVisible =
+    visibleLayers.meadows ||
+    mode.type === "meadowPlots" ||
+    (mode.type === "create" && mode.target === "meadow") ||
+    editingMeadowId !== null;
+  const plotsVisible = visibleLayers.plots || mode.type !== "view";
+
+  const meadowsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
+    type: "FeatureCollection",
+    features: meadows
+      .filter((meadow) => meadow.id !== editingMeadowId)
+      .map((meadow) => ({
+        type: "Feature",
+        properties: { id: meadow.id, selected: meadow.id === selectedMeadowId ? 1 : 0 },
+        geometry: meadow.geometry,
+      })),
+  }), [meadows, editingMeadowId, selectedMeadowId]);
+
+  // Archived areas of the visible kinds; only in view mode, where they're read-only
+  const archivedVisible = visibleLayers.archived && mode.type === "view";
+  const archivedAreas = useMemo(
+    () => [
+      ...(visibleLayers.plots ? allArchivedPlots.map((plot) => ({ kind: "plot" as const, area: plot })) : []),
+      ...(visibleLayers.meadows ? allArchivedMeadows.map((meadow) => ({ kind: "meadow" as const, area: meadow })) : []),
+    ],
+    [visibleLayers.plots, visibleLayers.meadows, allArchivedPlots, allArchivedMeadows],
+  );
+  const archivedGeojson = useMemo(
+    () => buildArchivedAreasGeojson(archivedAreas, selectedArchivedArea?.id ?? null),
+    [archivedAreas, selectedArchivedArea],
+  );
+  const archivedLabelsGeojson = useMemo(() => buildArchivedAreaLabelsGeojson(archivedAreas), [archivedAreas]);
+
+  const meadowsLabelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
+    type: "FeatureCollection",
+    features: meadows
+      .filter((meadow) => meadow.id !== editingMeadowId)
+      .map((meadow) => ({
+        type: "Feature",
+        properties: { name: meadow.name },
+        geometry: turf.centerOfMass(turf.multiPolygon(meadow.geometry.coordinates)).geometry,
+      })),
+  }), [meadows, editingMeadowId]);
+
+  // Merged preview of the plots picked for a new meadow — exactly what will be saved
+  const meadowPlotsGeometry = useMemo(() => {
+    if (mode.type !== "meadowPlots" || mode.selectedPlotIds.length === 0) return null;
+    return mergePlotsIntoMeadowGeometry(
+      mappablePlots.filter((plot) => mode.selectedPlotIds.includes(plot.id)),
+    );
+  }, [mode, mappablePlots]);
+  const meadowPreviewGeojson = useMemo<GeoJSON.FeatureCollection>(() =>
+    meadowPlotsGeometry
+      ? { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: meadowPlotsGeometry }] }
+      : EMPTY_GEOJSON,
+  [meadowPlotsGeometry]);
+
   // The plot currently being worked on in split/edit mode
   const activePlot = useMemo(() => {
-    const plotId = mode.type === "split" ? mode.plotId : mode.type === "edit" ? mode.plotId : null;
+    const plotId =
+      mode.type === "split"
+        ? mode.plotId
+        : mode.type === "edit" && mode.target === "plot"
+          ? mode.targetId
+          : null;
     return plotId ? plots.find((p) => p.id === plotId) ?? null : null;
   }, [mode, plots]);
 
@@ -494,6 +773,12 @@ function PlotsMap() {
     };
   }, [mode]);
 
+  // Only one area is selected at a time: selecting an active plot or meadow (map, list)
+  // or leaving view mode closes the archived panel
+  useEffect(() => {
+    if (selectedPlotId || selectedMeadowId || mode.type !== "view") setSelectedArchivedArea(null);
+  }, [selectedPlotId, selectedMeadowId, mode.type]);
+
   // Fly to selected plot
   useEffect(() => {
     if (!selectedPlotId || !mapRef.current) return;
@@ -519,6 +804,9 @@ function PlotsMap() {
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite", layout: { visibility: activeLayerRef.current === "satellite" ? "visible" : "none" } });
     map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
     map.addLayer({ id: "pixelkarte-layer", type: "raster", source: "pixelkarte", layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" } });
+
+    // Archived plots and meadows, below the active layers
+    addArchivedAreaLayers(map);
 
     map.addSource("plots", { type: "geojson", data: geojsonRef.current, attribution: attribution.cantons });
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
@@ -564,10 +852,24 @@ function PlotsMap() {
     map.addLayer({ id: "edit-rings-line", type: "line", source: "edit-rings", paint: { "line-color": "#3b82f6", "line-width": 2 } });
     map.addLayer({ id: "edit-rings-fill", type: "fill", source: "edit-rings", paint: { "fill-color": "#3b82f6", "fill-opacity": 0.2 } });
 
+    // Meadows: striped fill + outline, above plots
+    const stripes = createMeadowStripePattern();
+    if (stripes && !map.hasImage(MEADOW_PATTERN_ID)) map.addImage(MEADOW_PATTERN_ID, stripes);
+    map.addSource("meadows", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addSource("meadows-labels", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addLayer({ id: "meadows-fill", type: "fill", source: "meadows", paint: { "fill-pattern": MEADOW_PATTERN_ID } });
+    map.addLayer({ id: "meadows-line", type: "line", source: "meadows", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#82d59d"], "line-width": ["case", ["==", ["get", "selected"], 1], 4, 2.5] } });
+    // Merged preview while picking plots for a new meadow
+    map.addSource("meadow-preview", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addLayer({ id: "meadow-preview-fill", type: "fill", source: "meadow-preview", paint: { "fill-color": "#4ade80", "fill-opacity": 0.45 } });
+    map.addLayer({ id: "meadow-preview-line", type: "line", source: "meadow-preview", paint: { "line-color": "#facc15", "line-width": 3 } });
+
     // Labels always on top
     map.addLayer({ id: "plots-label", type: "symbol", source: "plots-labels", layout: { "text-field": ["get", "name"], "text-size": 13 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2, "text-opacity": ["step", ["zoom"], 0, 14, 1] } });
     map.addSource("split-polygons-labels", { type: "geojson", data: EMPTY_GEOJSON });
     map.addLayer({ id: "split-polygons-label", type: "symbol", source: "split-polygons-labels", layout: { "text-field": ["get", "label"], "text-size": 12 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2 } });
+    addArchivedAreaLabelLayer(map);
+    map.addLayer({ id: "meadows-label", type: "symbol", source: "meadows-labels", layout: { "text-field": ["get", "name"], "text-size": 14 }, paint: { "text-color": "#ffffff", "text-halo-color": "#2a5159", "text-halo-width": 2 } });
 
     setMapReady(true);
   };
@@ -596,7 +898,13 @@ function PlotsMap() {
     push("create-drawing", createDrawingGeojson);
     push("create-polygon", createPolygonGeojson);
     push("edit-rings", editRingsGeojson);
+    push("meadows", meadowsGeojson);
+    push("meadows-labels", meadowsLabelsGeojson);
+    push("meadow-preview", meadowPreviewGeojson);
+    push(ARCHIVED_AREAS_SOURCE_ID, archivedGeojson);
+    push(ARCHIVED_AREA_LABELS_SOURCE_ID, archivedLabelsGeojson);
   }, [
+    meadowsGeojson, meadowsLabelsGeojson, meadowPreviewGeojson, archivedGeojson, archivedLabelsGeojson,
     mapReady, geojson, labelsGeojson, splitTargetGeojson, mergeSelectedGeojson,
     splitDrawingGeojson, splitPolygonPreviewGeojson, splitPolygonsGeojson, splitPolygonsLabelsGeojson,
     createDrawingGeojson, createPolygonGeojson, editRingsGeojson,
@@ -608,6 +916,18 @@ function PlotsMap() {
     map.setLayoutProperty("satellite-layer", "visibility", activeLayer === "satellite" ? "visible" : "none");
     map.setLayoutProperty("pixelkarte-layer", "visibility", activeLayer === "pixelkarte" ? "visible" : "none");
   }, [mapReady, activeLayer]);
+
+  // Layer visibility follows the layer choice (and meadow modes)
+  useEffect(() => {
+    if (!mapReady || !mapRef.current) return;
+    const map = mapRef.current.getMap();
+    const setVisible = (layerId: string, visible: boolean) => {
+      if (map.getLayer(layerId)) map.setLayoutProperty(layerId, "visibility", visible ? "visible" : "none");
+    };
+    for (const layerId of ["plots-fill", "plots-line", "plots-label"]) setVisible(layerId, plotsVisible);
+    for (const layerId of ["meadows-fill", "meadows-line", "meadows-label"]) setVisible(layerId, meadowsVisible);
+    for (const layerId of ARCHIVED_AREA_LAYER_IDS) setVisible(layerId, archivedVisible);
+  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible]);
 
   // Crosshair for drawing modes
   useEffect(() => {
@@ -622,6 +942,35 @@ function PlotsMap() {
     if (!searchQuery.trim()) return plots;
     return fuse.search(searchQuery).map((r) => r.item);
   }, [fuse, searchQuery, plots]);
+  const meadowFuse = useMemo(() => new Fuse(meadows, { keys: ["name"], threshold: 0.4 }), [meadows]);
+  const filteredMeadows = useMemo<Meadow[]>(() => {
+    if (!searchQuery.trim()) return [...meadows].sort((a, b) => a.name.localeCompare(b.name));
+    return meadowFuse.search(searchQuery).map((r) => r.item);
+  }, [meadowFuse, searchQuery, meadows]);
+
+  const archivedPlots = useMemo(() => {
+    const searchText = searchQuery.trim().toLowerCase();
+    return allArchivedPlots
+      .filter((plot) => !searchText || plot.name.toLowerCase().includes(searchText))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allArchivedPlots, searchQuery]);
+  const archivedMeadows = useMemo(() => {
+    const searchText = searchQuery.trim().toLowerCase();
+    return allArchivedMeadows
+      .filter((meadow) => !searchText || meadow.name.toLowerCase().includes(searchText))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allArchivedMeadows, searchQuery]);
+
+  // From the list: show the archived layer, select the area and fly to it
+  function selectArchivedAreaAndFly(area: SelectedArchivedArea, geometry: GeoJSON.MultiPolygon) {
+    if (!visibleLayers.archived) setVisibleLayers({ ...visibleLayers, archived: true });
+    dispatch({ type: "SELECT_PLOT", plotId: null });
+    setSelectedMeadowId(null);
+    setSelectedArchivedArea(area);
+    setListOpen(false);
+    const [lng, lat] = turf.centerOfMass(turf.multiPolygon(geometry.coordinates)).geometry.coordinates;
+    mapRef.current?.flyTo({ center: [lng, lat], duration: 800 });
+  }
 
   function selectPlotAndFly(plotId: string) {
     dispatch({ type: "SELECT_PLOT", plotId });
@@ -678,31 +1027,97 @@ function PlotsMap() {
 
   function handleSaveShape() {
     if (mode.type !== "edit" || !mode.geometryChanged) return;
+    const closeRing = (ring: number[][]) => {
+      const closed = [...ring];
+      if (closed.length > 0) {
+        const [fx, fy] = closed[0];
+        const [lx, ly] = closed[closed.length - 1];
+        if (fx !== lx || fy !== ly) closed.push([fx, fy]);
+      }
+      return closed;
+    };
+
+    if (mode.target === "meadow") {
+      const meadow = meadows.find((m) => m.id === mode.targetId);
+      if (!meadow) return;
+      // Holes can't be edited; keep them from the saved meadow
+      const geometry: GeoJSON.MultiPolygon = {
+        type: "MultiPolygon",
+        coordinates: mode.rings.map((ring, partIndex) => [
+          closeRing(ring),
+          ...(meadow.geometry.coordinates[partIndex]?.slice(1) ?? []),
+        ]),
+      };
+      const error = findMeadowGeometryError(
+        geometry,
+        meadows.filter((m) => m.id !== meadow.id),
+      );
+      if (error) {
+        setToolError(meadowGeometryErrorText(error));
+        return;
+      }
+      updateMeadowMutation.mutate(
+        { meadowId: meadow.id, body: { geometry } },
+        { onSuccess: () => dispatch({ type: "EXIT_MODE" }) },
+      );
+      return;
+    }
+
     const newGeometry: GeoJSON.MultiPolygon = {
       type: "MultiPolygon",
-      coordinates: mode.rings.map((ring) => {
-        const closed = [...ring];
-        if (closed.length > 0) {
-          const [fx, fy] = closed[0];
-          const [lx, ly] = closed[closed.length - 1];
-          if (fx !== lx || fy !== ly) closed.push([fx, fy]);
-        }
-        return [closed];
-      }),
+      coordinates: mode.rings.map((ring) => [closeRing(ring)]),
     };
     const size = Math.round(turf.area(newGeometry));
     updateMutation.mutate(
-      { plotId: mode.plotId, body: { geometry: newGeometry, size } },
+      { plotId: mode.targetId, body: { geometry: newGeometry, size } },
       { onSuccess: () => dispatch({ type: "EXIT_MODE" }) },
     );
   }
 
+  // Cancelling meadow creation started from a herd schedule goes back there
+  function exitMeadowCreation() {
+    setToolError(null);
+    if (meadowReturnToHerdId) {
+      void navigate({
+        to: "/animals/herds/$herdId",
+        params: { herdId: meadowReturnToHerdId },
+        search: { resumeSchedule: true },
+      });
+      return;
+    }
+    dispatch({ type: "EXIT_MODE" });
+  }
+
+  function meadowGeometryErrorText(error: MeadowGeometryError) {
+    return error.kind === "self_intersecting"
+      ? t("meadows.errors.selfIntersecting")
+      : t("meadows.errors.overlaps", { name: error.meadowName });
+  }
+
+  // Validates a new meadow geometry and opens the name dialog
+  function continueWithMeadowGeometry(geometry: GeoJSON.MultiPolygon) {
+    const error = findMeadowGeometryError(geometry, meadows);
+    if (error) {
+      setToolError(meadowGeometryErrorText(error));
+      return;
+    }
+    setToolError(null);
+    setNewMeadowGeometry(geometry);
+    setCreateMeadowFormOpen(true);
+  }
+
   // The interactive layers vary by mode so clicks are routed correctly.
-  const interactiveLayerIds = useMemo(() => {
-    if (mode.type === "split" || mode.type === "create" || mode.type === "edit") return [] as string[];
+  // In view mode every visible layer is clickable; meadows lie above plots.
+  const interactiveLayerIds = useMemo((): string[] => {
+    if (mode.type === "split" || mode.type === "create" || mode.type === "edit") return [];
     if (mode.type === "merge") return ["plots-fill", "merge-selected-fill"];
-    return ["plots-fill"];
-  }, [mode.type]);
+    if (mode.type === "meadowPlots") return ["plots-fill"];
+    return [
+      ...(visibleLayers.plots ? ["plots-fill"] : []),
+      ...(visibleLayers.meadows ? ["meadows-fill"] : []),
+      ...(visibleLayers.archived ? [ARCHIVED_AREA_FILL_LAYER_ID] : []),
+    ];
+  }, [mode.type, visibleLayers]);
 
   // Is the split-target plot a MultiPolygon with 2+ sub-polygons (extract is only useful then)?
   const targetIsMultiPolygon = useMemo(() => {
@@ -720,16 +1135,35 @@ function PlotsMap() {
 
   return (
     <PageContent
-      title={t("fieldCalendar.plots.title")}
+      title={t("fieldCalendar.plots.pageTitle")}
       showBackButton={false}
       actions={
         <>
           <Button asChild size="sm" variant="outline">
             <Link to="/field-calendar/plots/import">{t("fieldCalendar.plots.importButton")}</Link>
           </Button>
-          <Button size="sm" disabled={mode.type === "create"} onClick={() => dispatch({ type: "ENTER_CREATE" })}>
-            {t("fieldCalendar.plots.newPlot")}
-          </Button>
+          {canWriteMeadows ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" disabled={mode.type !== "view"}>
+                  {t("fieldCalendar.plots.newArea")}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
+                  {t("fieldCalendar.plots.newAreaPlot")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "meadow" }); }}>
+                  {t("fieldCalendar.plots.newAreaMeadow")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button size="sm" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
+              {t("fieldCalendar.plots.newPlot")}
+            </Button>
+          )}
         </>
       }
     >
@@ -810,13 +1244,47 @@ function PlotsMap() {
 
             const features = e.features ?? [];
             const hit = features.find((f) => f.layer?.id === "plots-fill" || f.layer?.id === "merge-selected-fill");
+            const meadowHit = features.find((f) => f.layer?.id === "meadows-fill");
+            const archivedHit = features.find((f) => f.layer?.id === ARCHIVED_AREA_FILL_LAYER_ID);
+            if (mode.type === "view") setSelectedArchivedArea(null);
+
+            if (mode.type === "meadowPlots") {
+              const plotId = hit?.properties?.id;
+              if (typeof plotId === "string") dispatch({ type: "TOGGLE_MEADOW_PLOT", plotId });
+              return;
+            }
+
+            // View mode: a meadow is above plots, so a click inside it selects it
+            if (mode.type === "view" && meadowHit) {
+              const meadowId = meadowHit.properties?.id;
+              if (typeof meadowId === "string") {
+                dispatch({ type: "SELECT_PLOT", plotId: null });
+                setSelectedMeadowId(selectedMeadowId === meadowId ? null : meadowId);
+              }
+              return;
+            }
 
             if (mode.type === "merge") {
               if (hit) dispatch({ type: "TOGGLE_MERGE_PLOT", plotId: hit.properties?.id as string });
               return;
             }
 
+            // View mode: archived areas lie below the active layers, so they're only hit when nothing else is
+            if (mode.type === "view" && !hit && archivedHit) {
+              const archivedId = archivedHit.properties?.id;
+              const kind = archivedHit.properties?.kind;
+              setSelectedMeadowId(null);
+              dispatch({ type: "SELECT_PLOT", plotId: null });
+              if (typeof archivedId === "string" && (kind === "plot" || kind === "meadow")) {
+                setSelectedArchivedArea(
+                  selectedArchivedArea?.id === archivedId ? null : { kind, id: archivedId },
+                );
+              }
+              return;
+            }
+
             // View mode
+            setSelectedMeadowId(null);
             if (hit) {
               const plotId = hit.properties?.id as string;
               dispatch({ type: "SELECT_PLOT", plotId: selectedPlotId === plotId ? null : plotId });
@@ -873,7 +1341,7 @@ function PlotsMap() {
         </Map>
 
         {/* Drawing instruction — top center */}
-        {((mode.type === "split" && !mode.polygonClosed) || (mode.type === "create" && !mode.closed)) && (
+        {((mode.type === "split" && !mode.polygonClosed) || (mode.type === "create" && !mode.closed) || mode.type === "meadowPlots") && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
             <span className="text-xs bg-background/90 backdrop-blur-sm text-muted-foreground rounded-md px-3 py-1.5 border shadow-sm">
               {mode.type === "split" && mode.tool === "line" && (
@@ -892,25 +1360,67 @@ function PlotsMap() {
                   ? t("fieldCalendar.plots.create.toolbar")
                   : t("fieldCalendar.plots.create.toolbarReady", { count: mode.drawnVertices.length })
               )}
+              {mode.type === "meadowPlots" && t("meadows.selectPlotsInstruction")}
             </span>
           </div>
         )}
 
-        {/* Layer toggle + color mode toggle */}
+        {/* Plot list, layer toggle + color mode toggle */}
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
-          <Button variant="outline" size="icon" onClick={() => setActiveLayer((p) => p === "satellite" ? "pixelkarte" : "satellite")}>
-            <Layers className="h-4 w-4" />
-          </Button>
-          {mode.type === "view" && (
-            <PlotColorModeToggle value={plotColorMode} onChange={setPlotColorMode} />
-          )}
-        </div>
-
-        {/* Plot list button */}
-        <div className="absolute bottom-6 left-2 z-10">
           <Button variant="outline" size="icon" onClick={() => setListOpen(true)}>
             <List className="h-4 w-4" />
           </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="icon" aria-label={t("meadows.layers.title")}>
+                <Layers className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-56 space-y-3">
+              <div className="text-sm font-medium">{t("meadows.layers.title")}</div>
+              <div className="flex rounded-md border overflow-hidden">
+                {BASE_LAYERS.map((layer) => (
+                  <button
+                    key={layer}
+                    type="button"
+                    onClick={() => setActiveLayer(layer)}
+                    className={`flex-1 px-2 py-1 text-xs ${activeLayer === layer ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:bg-muted"}`}
+                  >
+                    {layer === "satellite" ? t("meadows.layers.satellite") : t("meadows.layers.map")}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="layer-plots">{t("meadows.layers.plots")}</Label>
+                <Switch
+                  id="layer-plots"
+                  checked={visibleLayers.plots}
+                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, plots: checked })}
+                />
+              </div>
+              {canReadMeadows && (
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="layer-meadows">{t("meadows.layers.meadows")}</Label>
+                  <Switch
+                    id="layer-meadows"
+                    checked={visibleLayers.meadows}
+                    onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, meadows: checked })}
+                  />
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <Label htmlFor="layer-archived">{t("archive.layer")}</Label>
+                <Switch
+                  id="layer-archived"
+                  checked={visibleLayers.archived}
+                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, archived: checked })}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+          {mode.type === "view" && visibleLayers.plots && (
+            <PlotColorModeToggle value={plotColorMode} onChange={setPlotColorMode} />
+          )}
         </div>
 
         {/* Mode toolbar — bottom-center */}
@@ -984,7 +1494,7 @@ function PlotsMap() {
           {/* Create mode */}
           {mode.type === "create" && (
             <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
-              <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
+              <Button variant="ghost" size="sm" onClick={() => mode.target === "meadow" ? exitMeadowCreation() : dispatch({ type: "EXIT_MODE" })}>
                 {t("common.cancel")}
               </Button>
               {mode.drawnVertices.length > 0 && (
@@ -992,14 +1502,51 @@ function PlotsMap() {
                   {t("common.back")}
                 </Button>
               )}
+              {mode.target === "meadow" && mode.drawnVertices.length === 0 && (
+                <Button variant="outline" size="sm" onClick={() => dispatch({ type: "SET_MEADOW_SOURCE", source: "plots" })}>
+                  {t("meadows.selectPlots")}
+                </Button>
+              )}
               {mode.closed && (
                 <>
                   {createArea > 0 && <span className="text-sm text-muted-foreground px-1">{(createArea / 100).toFixed(2)} a</span>}
-                  <Button size="sm" onClick={() => setCreateFormOpen(true)}>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (mode.target === "meadow") {
+                        const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
+                        continueWithMeadowGeometry({ type: "MultiPolygon", coordinates: [[ring]] });
+                      } else {
+                        setCreateFormOpen(true);
+                      }
+                    }}
+                  >
                     {t("fieldCalendar.plots.create.confirm")}
                   </Button>
                 </>
               )}
+            </div>
+          )}
+
+          {/* Meadow from existing plots */}
+          {mode.type === "meadowPlots" && (
+            <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
+              <Button variant="ghost" size="sm" onClick={exitMeadowCreation}>
+                {t("common.cancel")}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => dispatch({ type: "SET_MEADOW_SOURCE", source: "draw" })}>
+                {t("meadows.drawInstead")}
+              </Button>
+              <span className="text-sm text-muted-foreground px-1">
+                {meadowPlotsGeometry ? `${(turf.area(meadowPlotsGeometry) / 100).toFixed(2)} a` : t("meadows.noPlotsSelected")}
+              </span>
+              <Button
+                size="sm"
+                disabled={!meadowPlotsGeometry}
+                onClick={() => meadowPlotsGeometry && continueWithMeadowGeometry(meadowPlotsGeometry)}
+              >
+                {t("fieldCalendar.plots.create.confirm")}
+              </Button>
             </div>
           )}
 
@@ -1010,7 +1557,7 @@ function PlotsMap() {
                 {t("common.cancel")}
               </Button>
               <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.edit.dragInstruction")}</span>
-              <Button size="sm" disabled={!mode.geometryChanged || updateMutation.isPending} onClick={handleSaveShape}>
+              <Button size="sm" disabled={!mode.geometryChanged || updateMutation.isPending || updateMeadowMutation.isPending} onClick={handleSaveShape}>
                 {t("fieldCalendar.plots.edit.saveShape")}
               </Button>
             </div>
@@ -1018,7 +1565,38 @@ function PlotsMap() {
         </div>
 
         {/* Right-side detail panel */}
-        <div className={`absolute top-0 right-0 h-full w-72 bg-background/95 backdrop-blur-sm border-l shadow-lg z-10 transition-transform duration-300 flex flex-col ${selectedPlot ? "translate-x-0" : "translate-x-full"}`}>
+        <div className={`absolute top-0 right-0 h-full w-72 bg-background/95 backdrop-blur-sm border-l shadow-lg z-10 transition-transform duration-300 flex flex-col ${selectedPlot || selectedMeadow || selectedArchivedPlot || selectedArchivedMeadow ? "translate-x-0" : "translate-x-full"}`}>
+          {selectedArchivedPlot && (
+            <ArchivedAreaPanel
+              kind="plot"
+              area={selectedArchivedPlot}
+              onClose={() => setSelectedArchivedArea(null)}
+            />
+          )}
+          {selectedArchivedMeadow && (
+            <ArchivedAreaPanel
+              kind="meadow"
+              area={selectedArchivedMeadow}
+              onClose={() => setSelectedArchivedArea(null)}
+            />
+          )}
+          {selectedMeadow && (
+            <MeadowDetailPanel
+              meadow={selectedMeadow}
+              canEdit={canWriteMeadows}
+              onClose={() => setSelectedMeadowId(null)}
+              onEditMeta={() => setEditMeadowMetaOpen(true)}
+              onEditShape={() => {
+                setSelectedMeadowId(null);
+                dispatch({
+                  type: "ENTER_EDIT",
+                  target: "meadow",
+                  targetId: selectedMeadow.id,
+                  rings: selectedMeadow.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
+                });
+              }}
+            />
+          )}
           {selectedPlot && (
             <PlotDetailPanel
               plot={selectedPlot}
@@ -1032,13 +1610,20 @@ function PlotsMap() {
 
       {/* Searchable plot list */}
       <Sheet open={listOpen} onOpenChange={setListOpen}>
-        <SheetContent side="left" className="w-80 flex flex-col gap-0 p-0">
+        <SheetContent side="right" className="w-80 flex flex-col gap-0 p-0">
           <SheetHeader className="p-4 pb-2">
-            <SheetTitle>{t("fieldCalendar.plots.title")}</SheetTitle>
+            <SheetTitle className="sr-only">{t("fieldCalendar.plots.pageTitle")}</SheetTitle>
             <Input placeholder={t("common.search")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="mt-2" autoFocus />
+            <label className="flex items-center gap-2 pt-2 text-sm">
+              <Switch checked={showArchived} onCheckedChange={setShowArchived} />
+              {t("archive.showArchived")}
+            </label>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-1">
-            {filteredPlots.map((plot) => (
+            {visibleLayers.plots && visibleLayers.meadows && (
+              <div className="px-3 pt-2 text-xs font-semibold text-muted-foreground uppercase">{t("meadows.layers.plots")}</div>
+            )}
+            {visibleLayers.plots && filteredPlots.map((plot) => (
               <button key={plot.id} className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors" onClick={() => selectPlotAndFly(plot.id)}>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: plotIdToColor(plot.id) }} />
@@ -1050,6 +1635,63 @@ function PlotsMap() {
                 </div>
               </button>
             ))}
+            {visibleLayers.meadows && (
+              <>
+                {visibleLayers.plots && (
+                  <div className="px-3 pt-4 text-xs font-semibold text-muted-foreground uppercase">{t("meadows.layers.meadows")}</div>
+                )}
+                {filteredMeadows.map((meadow) => (
+                  <button
+                    key={meadow.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                    onClick={() => {
+                      dispatch({ type: "SELECT_PLOT", plotId: null });
+                      setSelectedMeadowId(meadow.id);
+                      setListOpen(false);
+                      const [lng, lat] = turf.centerOfMass(turf.multiPolygon(meadow.geometry.coordinates)).geometry.coordinates;
+                      mapRef.current?.flyTo({ center: [lng, lat], duration: 800 });
+                    }}
+                  >
+                    <div className="font-medium text-sm truncate">{meadow.name}</div>
+                    <div className="text-xs text-muted-foreground">{(meadow.size / 100).toFixed(2)} a</div>
+                  </button>
+                ))}
+              </>
+            )}
+            {/* Archived: shown on the map's archived layer when picked */}
+            {showArchived && (
+              <>
+                <div className="px-3 pt-4 text-xs font-semibold text-muted-foreground uppercase">{t("archive.archived")}</div>
+                {visibleLayers.plots && archivedPlots.map((plot) => (
+                  <button
+                    key={plot.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-60"
+                    onClick={() => selectArchivedAreaAndFly({ kind: "plot", id: plot.id }, plot.geometry)}
+                  >
+                    <div className="font-medium text-sm truncate">{plot.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("meadows.layers.plots")} · {(plot.size / 100).toFixed(2)} a
+                    </div>
+                  </button>
+                ))}
+                {visibleLayers.meadows && archivedMeadows.map((meadow) => (
+                  <button
+                    key={meadow.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-60"
+                    onClick={() => selectArchivedAreaAndFly({ kind: "meadow", id: meadow.id }, meadow.geometry)}
+                  >
+                    <div className="font-medium text-sm truncate">{meadow.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("meadows.layers.meadows")} · {(meadow.size / 100).toFixed(2)} a
+                    </div>
+                  </button>
+                ))}
+                {(visibleLayers.plots ? archivedPlots.length : 0) +
+                  (visibleLayers.meadows ? archivedMeadows.length : 0) === 0 && (
+                  <div className="px-3 py-2 text-xs text-muted-foreground">{t("common.noResults")}</div>
+                )}
+              </>
+            )}
           </div>
         </SheetContent>
       </Sheet>
@@ -1085,6 +1727,43 @@ function PlotsMap() {
         />
       )}
 
+      {createMeadowFormOpen && newMeadowGeometry && (
+        <MeadowFormDialog
+          meadow={null}
+          geometry={newMeadowGeometry}
+          onClose={() => setCreateMeadowFormOpen(false)}
+          onSuccess={(meadowId) => {
+            if (meadowReturnToHerdId) {
+              // Back to the herd schedule, which selects the new meadow
+              void navigate({
+                to: "/animals/herds/$herdId",
+                params: { herdId: meadowReturnToHerdId },
+                search: { resumeSchedule: true, createdMeadowId: meadowId },
+              });
+              return;
+            }
+            setCreateMeadowFormOpen(false);
+            setNewMeadowGeometry(null);
+            dispatch({ type: "EXIT_MODE" });
+            setVisibleLayers({ ...visibleLayers, meadows: true });
+            setSelectedMeadowId(meadowId);
+          }}
+        />
+      )}
+
+      {editMeadowMetaOpen && selectedMeadow && (
+        <MeadowFormDialog
+          meadow={selectedMeadow}
+          geometry={null}
+          onClose={() => setEditMeadowMetaOpen(false)}
+          onSuccess={() => setEditMeadowMetaOpen(false)}
+          onDeleted={() => {
+            setEditMeadowMetaOpen(false);
+            setSelectedMeadowId(null);
+          }}
+        />
+      )}
+
       {selectedPlot && (
         <EditMetadataDialog
           open={editMetaOpen}
@@ -1110,6 +1789,12 @@ function PlotDetailPanel({
 }) {
   const { t } = useTranslation();
   const deleteMutation = useDeletePlotMutation();
+  // Archiving keeps all entries and is reversible; the plot leaves the map either way
+  const archiveMutation = useUpdatePlotMutation();
+  const archivePlot = () =>
+    archiveMutation.mutate({ plotId: plot.id, body: { archived: true } }, { onSuccess: onClose });
+  // Archiving always asks first, also when picked in the delete dialog
+  const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
@@ -1176,7 +1861,8 @@ function PlotDetailPanel({
             onClick={() =>
               dispatch({
                 type: "ENTER_EDIT",
-                plotId: plot.id,
+                target: "plot",
+                targetId: plot.id,
                 rings: plot.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
               })
             }
@@ -1189,6 +1875,24 @@ function PlotDetailPanel({
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => dispatch({ type: "ENTER_SPLIT", plotId: plot.id })}>
             {t("fieldCalendar.plots.enterSplit")}
           </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => setArchiveConfirmOpen(true)}>
+            <Archive className="h-4 w-4" />
+            {t("archive.archive")}
+          </Button>
+          <AlertDialog open={archiveConfirmOpen} onOpenChange={setArchiveConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("archive.plotConfirmTitle", { name: plot.name })}</AlertDialogTitle>
+                <AlertDialogDescription>{t("archive.plotInfo")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={archivePlot} disabled={archiveMutation.isPending}>
+                  {t("archive.archive")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm" className="w-full justify-start text-destructive hover:text-destructive">
@@ -1199,10 +1903,20 @@ function PlotDetailPanel({
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>{t("fieldCalendar.plots.delete.title", { name: plot.name })}</AlertDialogTitle>
-                <AlertDialogDescription>{t("fieldCalendar.plots.delete.confirm")}</AlertDialogDescription>
+                <AlertDialogDescription>
+                  {t("fieldCalendar.plots.delete.confirm")} {t("archive.plotDeleteHint")}
+                </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                {/* The safe alternative, offered right where data would be lost */}
+                <AlertDialogAction
+                  onClick={() => setArchiveConfirmOpen(true)}
+                  disabled={archiveMutation.isPending || deleteMutation.isPending}
+                  className="bg-background text-foreground border hover:bg-accent"
+                >
+                  {t("archive.archive")}
+                </AlertDialogAction>
                 <AlertDialogAction
                   onClick={() => deleteMutation.mutate(plot.id, { onSuccess: onClose })}
                   disabled={deleteMutation.isPending}
@@ -1215,6 +1929,9 @@ function PlotDetailPanel({
           </AlertDialog>
           {deleteMutation.isError && (
             <p className="text-xs text-destructive">{t("fieldCalendar.plots.delete.error")}</p>
+          )}
+          {archiveMutation.isError && (
+            <p className="text-xs text-destructive">{t("common.error")}</p>
           )}
         </div>
 
@@ -1418,7 +2135,7 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
         size: Math.round(area),
         localId: localId.trim() || undefined,
         usage: usage ? Number(usage) : undefined,
-        cuttingDate: cuttingDate ? new Date(cuttingDate).toISOString() : null,
+        cuttingDate: cuttingDate ? cuttingDate : null,
         additionalNotes: notes.trim() || undefined,
       },
       { onSuccess },
@@ -1480,7 +2197,7 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
           name: name.trim(),
           localId: localId.trim() || undefined,
           usage: usage ? Number(usage) : undefined,
-          cuttingDate: cuttingDate ? new Date(cuttingDate).toISOString() : null,
+          cuttingDate: cuttingDate ? cuttingDate : null,
           additionalNotes: notes.trim() || undefined,
         },
       },

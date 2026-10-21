@@ -1,3 +1,4 @@
+import { toLocalDateString } from "@/lib/utils";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS, type PaymentMethod, type ScopedPayment } from "@/api/types";
@@ -44,7 +45,7 @@ export function ScopedPaymentForm({
           notes: payment.notes,
         }
       : {
-          date: new Date().toISOString().split("T")[0],
+          date: toLocalDateString(new Date()),
           amount: 0,
           currency: "CHF",
           method: "bank_transfer",

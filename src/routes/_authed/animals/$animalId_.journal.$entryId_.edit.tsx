@@ -38,7 +38,7 @@ function AnimalJournalEditPage() {
           params: { path: { entryId } },
           body: {
             title: data.title,
-            date: new Date(data.date).toISOString(),
+            date: data.date,
             content: data.content || undefined,
           },
         },

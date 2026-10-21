@@ -86,6 +86,7 @@
     "sponsorships": "Parrainages",
     "payments": "Paiements",
     "plots": "Champs",
+    "map": "Carte",
     "cropRotations": "Rotations culturales",
     "tillages": "Travaux du sol",
     "fertilizerApplications": "Fertilisation",
@@ -581,17 +582,23 @@
     "startDate": "Du",
     "endDate": "Au",
     "notes": "Notes",
-    "recurring": "Récurrent",
     "recurrence": "Récurrence",
-    "frequency": "Fréquence",
-    "interval": "Intervalle",
-    "until": "Jusqu'à",
     "frequencies": {
       "weekly": "Hebdomadaire",
       "monthly": "Mensuel",
       "yearly": "Annuel"
     },
-    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?"
+    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?",
+    "meadow": "Pâture",
+    "noMeadow": "Aucune pâture",
+    "repeatNone": "Aucune",
+    "weekdays": "Jours de la semaine",
+    "weekdaysRequired": "Sélectionne au moins un jour de la semaine.",
+    "untilOptional": "Répéter jusqu'au",
+    "endBeforeStart": "La date ne peut pas précéder la date de début.",
+    "changesApplyFrom": "Les changements s'appliquent dès le",
+    "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
+    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure."
   },
   "turnoutJournal": {
     "title": "Journal de pâturage",
@@ -623,7 +630,9 @@
     "exportDialog": {
       "title": "Exporter le journal de sorties",
       "description": "Télécharger le journal de sorties en tant que fichier Excel."
-    }
+    },
+    "viewCategories": "Catégories",
+    "viewMeadows": "Pâtures"
   },
   "landing": {
     "nav": {
@@ -783,6 +792,7 @@
     },
     "plots": {
       "title": "Champs",
+      "pageTitle": "Surfaces",
       "plot": "Champ",
       "selectPlot": "Sélectionner un champ",
       "openMap": "Ouvrir la carte",
@@ -794,6 +804,9 @@
       "additionalNotes": "Notes",
       "viewDetails": "Voir les détails",
       "newPlot": "Nouveau champ",
+      "newArea": "Nouvelle surface",
+      "newAreaPlot": "Champ",
+      "newAreaMeadow": "Pâture",
       "enterMerge": "Fusionner",
       "enterSplit": "Diviser",
       "colorMode": {
@@ -1743,5 +1756,57 @@
       "read": "Lire",
       "write": "Écrire"
     }
+  },
+  "meadows": {
+    "newMeadow": "Nouvelle pâture",
+    "editMeadow": "Modifier la pâture",
+    "selectPlots": "Sélectionner des parcelles",
+    "drawInstead": "Dessiner",
+    "selectPlotsInstruction": "Clique sur les parcelles qui font partie de la pâture",
+    "noPlotsSelected": "Aucune parcelle sélectionnée",
+    "fenceLength": "Longueur de clôture (env.)",
+    "currentAnimals": "Animaux actuels",
+    "currentHerds": "Troupeaux actuels",
+    "lastUsed": "Dernière occupation",
+    "lastUsedNow": "maintenant",
+    "usage": "Occupation",
+    "daysTitle": "Jours occupés par mois",
+    "daysValue_one": "{{count}} jour occupé",
+    "daysValue_other": "{{count}} jours occupés",
+    "averageAnimals": "Ø {{averageAnimals}} animaux",
+    "deleteTitle": "Supprimer la pâture « {{name}} » ?",
+    "deleteConfirm": "La pâture et toutes les données associées seront définitivement supprimées. Cette action est irréversible.",
+    "errors": {
+      "selfIntersecting": "La surface ne doit pas se croiser elle-même.",
+      "overlaps": "La surface chevauche la pâture « {{name}} »."
+    },
+    "layers": {
+      "title": "Calques",
+      "satellite": "Satellite",
+      "map": "Carte",
+      "plots": "Parcelles",
+      "meadows": "Pâtures"
+    }
+  },
+  "archive": {
+    "archive": "Archiver",
+    "restore": "Restaurer",
+    "archived": "Archivés",
+    "showArchived": "Afficher les archives",
+    "archivedSince": "Dans les archives depuis le {{date}}",
+    "archivedInfo": "N'est plus affiché sur la carte ni lors de nouvelles saisies. Toutes les données sont conservées.",
+    "plotConfirmTitle": "Archiver « {{name}} » ?",
+    "plotInfo": "Les parcelles archivées ne sont plus affichées sur la carte ni lors de nouvelles saisies. Toutes les saisies existantes sont conservées et tu peux restaurer la parcelle à tout moment.",
+    "plotDeleteHint": "Si tu n'exploites plus cette parcelle, tu peux aussi simplement l'archiver pour conserver toutes ses saisies.",
+    "meadowConfirmTitle": "Archiver la pâture « {{name}} » ?",
+    "meadowInfo": "Les pâtures archivées ne sont plus affichées sur la carte ni lors de nouvelles périodes en plein air. Toutes les données sont conservées et tu peux restaurer la pâture à tout moment.",
+    "meadowDeleteHint": "Si tu n'utilises plus cette pâture, tu peux aussi simplement l'archiver pour conserver toutes ses données.",
+    "layer": "Archivés",
+    "plotRestoreTitle": "Restaurer « {{name}} » ?",
+    "plotRestoreWarning": "La parcelle réapparaît sur la carte et lors des nouvelles saisies. Si de nouvelles parcelles ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
+    "meadowRestoreTitle": "Restaurer la pâture « {{name}} » ?",
+    "meadowRestoreWarning": "La pâture réapparaît sur la carte et lors des nouvelles périodes en plein air. Si de nouvelles pâtures ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
+    "meadowActiveSchedulesTitle": "Archivage impossible",
+    "meadowActiveSchedules": "La pâture a encore des périodes en plein air en cours ou prévues ({{herds}}). Termine ou supprime ces périodes avant d'archiver la pâture."
   }
 }

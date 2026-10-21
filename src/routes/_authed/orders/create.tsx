@@ -25,9 +25,9 @@ export const Route = createFileRoute("/_authed/orders/create")({
 function formDataToApiBody(data: OrderFormData) {
   return {
     contactId: data.contactId,
-    orderDate: new Date(data.orderDate).toISOString(),
+    orderDate: data.orderDate,
     shippingDate: data.shippingDate
-      ? new Date(data.shippingDate).toISOString()
+      ? data.shippingDate
       : undefined,
     notes: data.notes || undefined,
     status: data.confirmed ? ("confirmed" as const) : undefined,

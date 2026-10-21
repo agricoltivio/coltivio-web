@@ -44,7 +44,7 @@ function PlotJournalCreatePage() {
         params: { path: { plotId } },
         body: {
           title: data.title,
-          date: new Date(data.date).toISOString(),
+          date: data.date,
           content: data.content || undefined,
         },
       });

@@ -105,7 +105,7 @@ function Animals() {
       if (batchFields.usage.enabled) batchData.usage = batchFields.usage.value;
       if (batchFields.registered.enabled) batchData.registered = batchFields.registered.value;
       if (batchFields.dateOfDeath.enabled && batchFields.dateOfDeath.value) {
-        batchData.dateOfDeath = new Date(batchFields.dateOfDeath.value).toISOString();
+        batchData.dateOfDeath = batchFields.dateOfDeath.value;
       }
       if (batchFields.deathReason.enabled) batchData.deathReason = batchFields.deathReason.value;
 

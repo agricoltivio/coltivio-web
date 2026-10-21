@@ -86,6 +86,7 @@
     "sponsorships": "Sponsorizzazioni",
     "payments": "Pagamenti",
     "plots": "Campi",
+    "map": "Mappa",
     "cropRotations": "Rotazioni colturali",
     "tillages": "Lavorazioni del terreno",
     "fertilizerApplications": "Concimazione",
@@ -581,17 +582,23 @@
     "startDate": "Dal",
     "endDate": "Al",
     "notes": "Note",
-    "recurring": "Ricorrente",
     "recurrence": "Ricorrenza",
-    "frequency": "Frequenza",
-    "interval": "Intervallo",
-    "until": "Fino a",
     "frequencies": {
       "weekly": "Settimanale",
       "monthly": "Mensile",
       "yearly": "Annuale"
     },
-    "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?"
+    "deleteScheduleConfirm": "Sei sicuro di voler eliminare questo piano?",
+    "meadow": "Area di pascolo",
+    "noMeadow": "Nessuna area di pascolo",
+    "repeatNone": "Nessuna",
+    "weekdays": "Giorni della settimana",
+    "weekdaysRequired": "Seleziona almeno un giorno della settimana.",
+    "untilOptional": "Ripeti fino al",
+    "endBeforeStart": "La data non può precedere la data di inizio.",
+    "changesApplyFrom": "Le modifiche valgono dal",
+    "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
+    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva."
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",
@@ -623,7 +630,9 @@
     "exportDialog": {
       "title": "Esporta diario di uscita",
       "description": "Scarica il diario di uscita come file Excel."
-    }
+    },
+    "viewCategories": "Categorie",
+    "viewMeadows": "Aree di pascolo"
   },
   "landing": {
     "nav": {
@@ -783,6 +792,7 @@
     },
     "plots": {
       "title": "Campi",
+      "pageTitle": "Superfici",
       "plot": "Campo",
       "selectPlot": "Seleziona campo",
       "openMap": "Apri mappa",
@@ -794,6 +804,9 @@
       "additionalNotes": "Note",
       "viewDetails": "Visualizza dettagli",
       "newPlot": "Nuovo campo",
+      "newArea": "Nuova superficie",
+      "newAreaPlot": "Campo",
+      "newAreaMeadow": "Pascolo",
       "enterMerge": "Unire",
       "enterSplit": "Dividere",
       "colorMode": {
@@ -1743,5 +1756,57 @@
       "read": "Lettura",
       "write": "Scrittura"
     }
+  },
+  "meadows": {
+    "newMeadow": "Nuova area di pascolo",
+    "editMeadow": "Modifica area di pascolo",
+    "selectPlots": "Seleziona particelle",
+    "drawInstead": "Disegna",
+    "selectPlotsInstruction": "Clicca sulle particelle che fanno parte dell'area di pascolo",
+    "noPlotsSelected": "Nessuna particella selezionata",
+    "fenceLength": "Lunghezza recinzione (ca.)",
+    "currentAnimals": "Animali attuali",
+    "currentHerds": "Mandrie attuali",
+    "lastUsed": "Ultimo utilizzo",
+    "lastUsedNow": "ora",
+    "usage": "Utilizzo",
+    "daysTitle": "Giorni occupati al mese",
+    "daysValue_one": "{{count}} giorno occupato",
+    "daysValue_other": "{{count}} giorni occupati",
+    "averageAnimals": "Ø {{averageAnimals}} animali",
+    "deleteTitle": "Eliminare l'area di pascolo «{{name}}»?",
+    "deleteConfirm": "L'area di pascolo e tutti i dati associati verranno eliminati definitivamente. Questa azione non può essere annullata.",
+    "errors": {
+      "selfIntersecting": "La superficie non deve intersecarsi con se stessa.",
+      "overlaps": "La superficie si sovrappone all'area di pascolo «{{name}}»."
+    },
+    "layers": {
+      "title": "Livelli",
+      "satellite": "Satellite",
+      "map": "Carta",
+      "plots": "Particelle",
+      "meadows": "Aree di pascolo"
+    }
+  },
+  "archive": {
+    "archive": "Archivia",
+    "restore": "Ripristina",
+    "archived": "Archiviati",
+    "showArchived": "Mostra archiviati",
+    "archivedSince": "In archivio dal {{date}}",
+    "archivedInfo": "Non più visibile sulla mappa né per le nuove registrazioni. Tutti i dati vengono mantenuti.",
+    "plotConfirmTitle": "Archiviare «{{name}}»?",
+    "plotInfo": "Le particelle archiviate non vengono più mostrate sulla mappa né per le nuove registrazioni. Tutte le registrazioni esistenti vengono mantenute e puoi ripristinare la particella in qualsiasi momento.",
+    "plotDeleteHint": "Se non coltivi più questa particella, puoi anche semplicemente archiviarla: così tutte le registrazioni vengono mantenute.",
+    "meadowConfirmTitle": "Archiviare l'area di pascolo «{{name}}»?",
+    "meadowInfo": "Le aree di pascolo archiviate non vengono più mostrate sulla mappa né per i nuovi periodi all'aperto. Tutti i dati vengono mantenuti e puoi ripristinare l'area di pascolo in qualsiasi momento.",
+    "meadowDeleteHint": "Se non usi più quest'area di pascolo, puoi anche semplicemente archiviarla: così tutti i dati vengono mantenuti.",
+    "layer": "Archiviati",
+    "plotRestoreTitle": "Ripristinare «{{name}}»?",
+    "plotRestoreWarning": "La particella riappare sulla mappa e nelle nuove registrazioni. Se dall'archiviazione sono state registrate nuove particelle su questa superficie, possono sovrapporsi.",
+    "meadowRestoreTitle": "Ripristinare l'area di pascolo «{{name}}»?",
+    "meadowRestoreWarning": "L'area di pascolo riappare sulla mappa e nei nuovi periodi all'aperto. Se dall'archiviazione sono state registrate nuove aree di pascolo su questa superficie, possono sovrapporsi.",
+    "meadowActiveSchedulesTitle": "Archiviazione non possibile",
+    "meadowActiveSchedules": "L'area di pascolo ha ancora periodi all'aperto in corso o pianificati ({{herds}}). Termina o rimuovi questi periodi prima di archiviare l'area di pascolo."
   }
 }
