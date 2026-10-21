@@ -37,13 +37,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Pencil, Trash2 } from "lucide-react";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";

@@ -22,19 +22,13 @@ import type { MergePlotsBody, SplitPlotBody } from "@/api/plots.queries";
 import type { Meadow, Plot } from "@/api/types";
 import {
   meadowsQueryOptions,
-  meadowUsageQueryOptions,
-  useCreateMeadowMutation,
-  useDeleteMeadowMutation,
   useUpdateMeadowMutation,
 } from "@/api/meadows.queries";
 import {
   findMeadowGeometryError,
-  meadowFenceLengthMeters,
   mergePlotsIntoMeadowGeometry,
   type MeadowGeometryError,
 } from "@/lib/meadowGeometry";
-import { getCurrentAndLastStays, getHerdsWithActiveSchedules, todayLocalDateString } from "@/lib/meadowUsage";
-import { herdsQueryOptions } from "@/api/herds.queries";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { z } from "zod";
@@ -64,7 +58,19 @@ import {
   type PlotColorMode,
 } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
-import { ArchivedNotice } from "@/components/ArchivedNotice";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { ArchivedAreaPanel } from "@/components/ArchivedAreaPanel";
+import { MeadowDetailPanel, MeadowFormDialog } from "@/components/MeadowMapPanels";
+import {
+  addArchivedAreaLabelLayer,
+  addArchivedAreaLayers,
+  ARCHIVED_AREA_FILL_LAYER_ID,
+  ARCHIVED_AREA_LABELS_SOURCE_ID,
+  ARCHIVED_AREA_LAYER_IDS,
+  ARCHIVED_AREAS_SOURCE_ID,
+  buildArchivedAreaLabelsGeojson,
+  buildArchivedAreasGeojson,
+} from "@/lib/archivedAreasLayer";
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
@@ -445,11 +451,11 @@ function createMeadowStripePattern(): ImageData | null {
 }
 
 // Search params: ?createMeadow=1 opens the map directly in meadow creation
-// ?returnTo=…: opened from a herd schedule; after saving (or cancelling) the meadow
-// creation, go back there and hand over the new meadow's id
+// ?returnToHerdId=…: opened from that herd's schedule; after saving (or cancelling) the
+// meadow creation, go back there and hand over the new meadow's id
 const plotsSearchSchema = z.object({
   createMeadow: z.coerce.boolean().optional(),
-  returnTo: z.string().optional(),
+  returnToHerdId: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_authed/field-calendar/plots")({
@@ -471,10 +477,10 @@ function PlotsMap() {
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const hasCentered = useRef(false);
-  const { createMeadow, returnTo } = Route.useSearch();
+  const { createMeadow, returnToHerdId } = Route.useSearch();
   const navigate = useNavigate();
   // Kept after the search params are cleared below
-  const [meadowReturnTo] = useState(returnTo);
+  const [meadowReturnToHerdId] = useState(returnToHerdId);
   // Only read on load: drop it from the URL so a reload doesn't restart meadow creation
   useEffect(() => {
     if (createMeadow) {
@@ -487,16 +493,22 @@ function PlotsMap() {
       ? { type: "create", target: "meadow", drawnVertices: [], closed: false }
       : { type: "view", selectedPlotId: null },
   );
-  const [visibleLayers, setVisibleLayersState] = useState<VisibleLayers>(() =>
+  // Meadows belong to the animals feature (the API requires its permission)
+  const { canRead: canReadMeadows, canWrite: canWriteMeadows } = useFeatureAccess("animals");
+  const [storedVisibleLayers, setVisibleLayersState] = useState<VisibleLayers>(() =>
     createMeadow ? { ...readVisibleLayers(), meadows: true } : readVisibleLayers(),
   );
+  // Without animals access the meadow layer stays off, whatever was stored
+  const visibleLayers: VisibleLayers = canReadMeadows
+    ? storedVisibleLayers
+    : { ...storedVisibleLayers, meadows: false };
   const [selectedMeadowId, setSelectedMeadowId] = useState<string | null>(null);
   const [createMeadowFormOpen, setCreateMeadowFormOpen] = useState(false);
   const [newMeadowGeometry, setNewMeadowGeometry] =
     useState<GeoJSON.MultiPolygon | null>(null);
   const [editMeadowMetaOpen, setEditMeadowMetaOpen] = useState(false);
   const updateMeadowMutation = useUpdateMeadowMutation();
-  const meadowsQuery = useQuery(meadowsQueryOptions());
+  const meadowsQuery = useQuery({ ...meadowsQueryOptions(), enabled: canReadMeadows });
   const meadows = meadowsQuery.data ?? [];
 
   // Hiding a layer also clears its selection
@@ -528,7 +540,10 @@ function PlotsMap() {
   // Archived plots and meadows, fetched while the list shows them or the archived layer is on
   const archivedNeeded = showArchived || visibleLayers.archived;
   const archivedPlotsQuery = useQuery({ ...plotsQueryOptions(true), enabled: archivedNeeded });
-  const archivedMeadowsQuery = useQuery({ ...meadowsQueryOptions(true), enabled: archivedNeeded });
+  const archivedMeadowsQuery = useQuery({
+    ...meadowsQueryOptions(true),
+    enabled: archivedNeeded && canReadMeadows,
+  });
   const allArchivedPlots = useMemo(
     () => (archivedPlotsQuery.data?.result ?? []).filter((plot) => plot.archivedAt !== null && plot.size > 0),
     [archivedPlotsQuery.data],
@@ -593,22 +608,11 @@ function PlotsMap() {
     ],
     [visibleLayers.plots, visibleLayers.meadows, allArchivedPlots, allArchivedMeadows],
   );
-  const archivedGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
-    type: "FeatureCollection",
-    features: archivedAreas.map(({ kind, area }) => ({
-      type: "Feature",
-      properties: { id: area.id, kind, selected: area.id === selectedArchivedArea?.id ? 1 : 0 },
-      geometry: area.geometry,
-    })),
-  }), [archivedAreas, selectedArchivedArea]);
-  const archivedLabelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
-    type: "FeatureCollection",
-    features: archivedAreas.map(({ area }) => ({
-      type: "Feature",
-      properties: { name: area.name },
-      geometry: turf.centerOfMass(turf.multiPolygon(area.geometry.coordinates)).geometry,
-    })),
-  }), [archivedAreas]);
+  const archivedGeojson = useMemo(
+    () => buildArchivedAreasGeojson(archivedAreas, selectedArchivedArea?.id ?? null),
+    [archivedAreas, selectedArchivedArea],
+  );
+  const archivedLabelsGeojson = useMemo(() => buildArchivedAreaLabelsGeojson(archivedAreas), [archivedAreas]);
 
   const meadowsLabelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
     type: "FeatureCollection",
@@ -800,13 +804,8 @@ function PlotsMap() {
     map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
     map.addLayer({ id: "pixelkarte-layer", type: "raster", source: "pixelkarte", layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" } });
 
-    // Archived plots and meadows, below the active layers: grey veil with a dashed outline
-    // on a dark casing, same look as the app
-    map.addSource("archived-areas", { type: "geojson", data: EMPTY_GEOJSON });
-    map.addSource("archived-areas-labels", { type: "geojson", data: EMPTY_GEOJSON });
-    map.addLayer({ id: "archived-areas-fill", type: "fill", source: "archived-areas", paint: { "fill-color": "#999999", "fill-opacity": 0.45 } });
-    map.addLayer({ id: "archived-areas-casing", type: "line", source: "archived-areas", paint: { "line-color": "#111111", "line-opacity": 0.35, "line-width": ["case", ["==", ["get", "selected"], 1], 4.5, 2.5] } });
-    map.addLayer({ id: "archived-areas-line", type: "line", source: "archived-areas", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#ffffff"], "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1.5], "line-dasharray": [2, 1.5] } });
+    // Archived plots and meadows, below the active layers
+    addArchivedAreaLayers(map);
 
     map.addSource("plots", { type: "geojson", data: geojsonRef.current, attribution: attribution.cantons });
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
@@ -868,7 +867,7 @@ function PlotsMap() {
     map.addLayer({ id: "plots-label", type: "symbol", source: "plots-labels", layout: { "text-field": ["get", "name"], "text-size": 13 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2, "text-opacity": ["step", ["zoom"], 0, 14, 1] } });
     map.addSource("split-polygons-labels", { type: "geojson", data: EMPTY_GEOJSON });
     map.addLayer({ id: "split-polygons-label", type: "symbol", source: "split-polygons-labels", layout: { "text-field": ["get", "label"], "text-size": 12 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2 } });
-    map.addLayer({ id: "archived-areas-label", type: "symbol", source: "archived-areas-labels", layout: { "text-field": ["get", "name"], "text-size": 13 }, paint: { "text-color": "#ffffff", "text-halo-color": "#111111", "text-halo-width": 2 } });
+    addArchivedAreaLabelLayer(map);
     map.addLayer({ id: "meadows-label", type: "symbol", source: "meadows-labels", layout: { "text-field": ["get", "name"], "text-size": 14 }, paint: { "text-color": "#ffffff", "text-halo-color": "#2a5159", "text-halo-width": 2 } });
 
     setMapReady(true);
@@ -901,8 +900,8 @@ function PlotsMap() {
     push("meadows", meadowsGeojson);
     push("meadows-labels", meadowsLabelsGeojson);
     push("meadow-preview", meadowPreviewGeojson);
-    push("archived-areas", archivedGeojson);
-    push("archived-areas-labels", archivedLabelsGeojson);
+    push(ARCHIVED_AREAS_SOURCE_ID, archivedGeojson);
+    push(ARCHIVED_AREA_LABELS_SOURCE_ID, archivedLabelsGeojson);
   }, [
     meadowsGeojson, meadowsLabelsGeojson, meadowPreviewGeojson, archivedGeojson, archivedLabelsGeojson,
     mapReady, geojson, labelsGeojson, splitTargetGeojson, mergeSelectedGeojson,
@@ -926,9 +925,7 @@ function PlotsMap() {
     };
     for (const layerId of ["plots-fill", "plots-line", "plots-label"]) setVisible(layerId, plotsVisible);
     for (const layerId of ["meadows-fill", "meadows-line", "meadows-label"]) setVisible(layerId, meadowsVisible);
-    for (const layerId of ["archived-areas-fill", "archived-areas-casing", "archived-areas-line", "archived-areas-label"]) {
-      setVisible(layerId, archivedVisible);
-    }
+    for (const layerId of ARCHIVED_AREA_LAYER_IDS) setVisible(layerId, archivedVisible);
   }, [mapReady, plotsVisible, meadowsVisible, archivedVisible]);
 
   // Crosshair for drawing modes
@@ -1079,8 +1076,12 @@ function PlotsMap() {
   // Cancelling meadow creation started from a herd schedule goes back there
   function exitMeadowCreation() {
     setToolError(null);
-    if (meadowReturnTo) {
-      void navigate({ to: meadowReturnTo, search: { resumeSchedule: true } });
+    if (meadowReturnToHerdId) {
+      void navigate({
+        to: "/animals/herds/$herdId",
+        params: { herdId: meadowReturnToHerdId },
+        search: { resumeSchedule: true },
+      });
       return;
     }
     dispatch({ type: "EXIT_MODE" });
@@ -1113,7 +1114,7 @@ function PlotsMap() {
     return [
       ...(visibleLayers.plots ? ["plots-fill"] : []),
       ...(visibleLayers.meadows ? ["meadows-fill"] : []),
-      ...(visibleLayers.archived ? ["archived-areas-fill"] : []),
+      ...(visibleLayers.archived ? [ARCHIVED_AREA_FILL_LAYER_ID] : []),
     ];
   }, [mode.type, visibleLayers]);
 
@@ -1140,9 +1141,11 @@ function PlotsMap() {
           <Button asChild size="sm" variant="outline">
             <Link to="/field-calendar/plots/import">{t("fieldCalendar.plots.importButton")}</Link>
           </Button>
-          <Button size="sm" variant="outline" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "meadow" }); }}>
-            {t("meadows.newMeadow")}
-          </Button>
+          {canWriteMeadows && (
+            <Button size="sm" variant="outline" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "meadow" }); }}>
+              {t("meadows.newMeadow")}
+            </Button>
+          )}
           <Button size="sm" disabled={mode.type !== "view"} onClick={() => { setSelectedMeadowId(null); dispatch({ type: "ENTER_CREATE", target: "plot" }); }}>
             {t("fieldCalendar.plots.newPlot")}
           </Button>
@@ -1227,7 +1230,7 @@ function PlotsMap() {
             const features = e.features ?? [];
             const hit = features.find((f) => f.layer?.id === "plots-fill" || f.layer?.id === "merge-selected-fill");
             const meadowHit = features.find((f) => f.layer?.id === "meadows-fill");
-            const archivedHit = features.find((f) => f.layer?.id === "archived-areas-fill");
+            const archivedHit = features.find((f) => f.layer?.id === ARCHIVED_AREA_FILL_LAYER_ID);
             if (mode.type === "view") setSelectedArchivedArea(null);
 
             if (mode.type === "meadowPlots") {
@@ -1377,14 +1380,16 @@ function PlotsMap() {
                   onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, plots: checked })}
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="layer-meadows">{t("meadows.layers.meadows")}</Label>
-                <Switch
-                  id="layer-meadows"
-                  checked={visibleLayers.meadows}
-                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, meadows: checked })}
-                />
-              </div>
+              {canReadMeadows && (
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="layer-meadows">{t("meadows.layers.meadows")}</Label>
+                  <Switch
+                    id="layer-meadows"
+                    checked={visibleLayers.meadows}
+                    onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, meadows: checked })}
+                  />
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <Label htmlFor="layer-archived">{t("archive.layer")}</Label>
                 <Switch
@@ -1567,6 +1572,7 @@ function PlotsMap() {
           {selectedMeadow && (
             <MeadowDetailPanel
               meadow={selectedMeadow}
+              canEdit={canWriteMeadows}
               onClose={() => setSelectedMeadowId(null)}
               onEditMeta={() => setEditMeadowMetaOpen(true)}
               onEditShape={() => {
@@ -1716,10 +1722,11 @@ function PlotsMap() {
           geometry={newMeadowGeometry}
           onClose={() => setCreateMeadowFormOpen(false)}
           onSuccess={(meadowId) => {
-            if (meadowReturnTo) {
+            if (meadowReturnToHerdId) {
               // Back to the herd schedule, which selects the new meadow
               void navigate({
-                to: meadowReturnTo,
+                to: "/animals/herds/$herdId",
+                params: { herdId: meadowReturnToHerdId },
                 search: { resumeSchedule: true, createdMeadowId: meadowId },
               });
               return;
@@ -1755,73 +1762,6 @@ function PlotsMap() {
         />
       )}
     </PageContent>
-  );
-}
-
-// Read-only panel for an archived plot or meadow on the map: restore it or open its details
-function ArchivedAreaPanel({
-  kind,
-  area,
-  onClose,
-}: {
-  kind: "plot" | "meadow";
-  area: Plot | Meadow;
-  onClose: () => void;
-}) {
-  const { t } = useTranslation();
-  const restorePlotMutation = useUpdatePlotMutation();
-  const restoreMeadowMutation = useUpdateMeadowMutation();
-  const restoreMutation = kind === "plot" ? restorePlotMutation : restoreMeadowMutation;
-
-  function restore() {
-    // Restored, it's an active plot or meadow again and leaves the archived layer
-    if (kind === "plot") {
-      restorePlotMutation.mutate({ plotId: area.id, body: { archived: false } }, { onSuccess: onClose });
-      return;
-    }
-    restoreMeadowMutation.mutate({ meadowId: area.id, body: { archived: false } }, { onSuccess: onClose });
-  }
-
-  return (
-    <>
-      <div className="flex items-center justify-between p-4 border-b">
-        <h2 className="font-semibold text-base truncate pr-2">{area.name}</h2>
-        <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
-            <div>{(area.size / 100).toFixed(2)} a</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">{kind === "plot" ? t("meadows.layers.plots") : t("meadows.layers.meadows")}</div>
-            <div>{t("archive.archived")}</div>
-          </div>
-        </div>
-        {area.archivedAt && (
-          <ArchivedNotice
-            kind={kind}
-            name={area.name}
-            archivedAt={area.archivedAt}
-            onRestore={restore}
-            isRestoring={restoreMutation.isPending}
-            restoreFailed={restoreMutation.isError}
-          />
-        )}
-        {kind === "plot" ? (
-          <Link to="/field-calendar/plots/$plotId" params={{ plotId: area.id }} className="block w-full">
-            <Button className="w-full" size="sm">{t("fieldCalendar.plots.viewDetails")}</Button>
-          </Link>
-        ) : (
-          <Link to="/animals/meadows/$meadowId" params={{ meadowId: area.id }} className="block w-full">
-            <Button className="w-full" size="sm">{t("meadows.usage")}</Button>
-          </Link>
-        )}
-      </div>
-    </>
   );
 }
 
@@ -2274,312 +2214,5 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function MeadowDetailPanel({
-  meadow,
-  onClose,
-  onEditMeta,
-  onEditShape,
-}: {
-  meadow: Meadow;
-  onClose: () => void;
-  onEditMeta: () => void;
-  onEditShape: () => void;
-}) {
-  const { t, i18n } = useTranslation();
-  const usageQuery = useQuery(meadowUsageQueryOptions(meadow.id));
-  // Archiving keeps all data and is reversible; the meadow leaves the map
-  const archiveMutation = useUpdateMeadowMutation();
-  const { currentStays, lastEndDate } = getCurrentAndLastStays(
-    usageQuery.data ?? [],
-    new Date(),
-  );
-  const currentAnimalCount = currentStays.reduce(
-    (sum, stay) => sum + stay.animalCount,
-    0,
-  );
-  const currentHerdNames = [...new Set(currentStays.map((stay) => stay.herdName))];
-  const formatDatePart = (isoDate: string) => {
-    const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
-    return new Date(year, month - 1, day).toLocaleDateString(i18n.language);
-  };
-
-  return (
-    <>
-      <div className="flex items-center justify-between p-4 border-b">
-        <h2 className="font-semibold text-base truncate pr-2">{meadow.name}</h2>
-        <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
-            <div>{(meadow.size / 100).toFixed(2)} a</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">{t("meadows.fenceLength")}</div>
-            <div>~{Math.round(meadowFenceLengthMeters(meadow.geometry))} m</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">{t("meadows.currentAnimals")}</div>
-            <div>{currentAnimalCount}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">{t("meadows.lastUsed")}</div>
-            {/* Occupied right now: "now" instead of the last finished stay */}
-            <div>
-              {currentStays.length > 0
-                ? t("meadows.lastUsedNow")
-                : lastEndDate
-                  ? formatDatePart(lastEndDate)
-                  : "–"}
-            </div>
-          </div>
-        </div>
-        {currentHerdNames.length > 0 && (
-          <div>
-            <div className="text-xs text-muted-foreground">{t("meadows.currentHerds")}</div>
-            <div>{currentHerdNames.join(", ")}</div>
-          </div>
-        )}
-        {meadow.additionalNotes && (
-          <div>
-            <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.additionalNotes")}</div>
-            <div className="text-xs whitespace-pre-wrap">{meadow.additionalNotes}</div>
-          </div>
-        )}
-
-        <div className="border-t pt-3 flex flex-col gap-2">
-          <Button variant="outline" size="sm" className="w-full justify-start" onClick={onEditMeta}>
-            {t("common.edit")}
-          </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start" onClick={onEditShape}>
-            {t("fieldCalendar.plots.edit.editShape")}
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full justify-start">
-                <Archive className="h-4 w-4" />
-                {t("archive.archive")}
-              </Button>
-            </AlertDialogTrigger>
-            <MeadowArchiveDialogContent
-              meadow={meadow}
-              onArchive={() =>
-                archiveMutation.mutate(
-                  { meadowId: meadow.id, body: { archived: true } },
-                  { onSuccess: onClose },
-                )
-              }
-              isArchiving={archiveMutation.isPending}
-            />
-          </AlertDialog>
-          {archiveMutation.isError && (
-            <p className="text-xs text-destructive">{t("common.error")}</p>
-          )}
-        </div>
-
-        <Link to="/animals/meadows/$meadowId" params={{ meadowId: meadow.id }} className="block w-full">
-          <Button className="w-full" size="sm">{t("meadows.usage")}</Button>
-        </Link>
-      </div>
-    </>
-  );
-}
-
-// Confirmation for archiving a meadow. Not allowed while a herd is (or will be) on it:
-// then it only says which herds still have schedules there.
-function MeadowArchiveDialogContent({
-  meadow,
-  onArchive,
-  isArchiving,
-}: {
-  meadow: Meadow;
-  onArchive: () => void;
-  isArchiving: boolean;
-}) {
-  const { t } = useTranslation();
-  const herdsQuery = useQuery(herdsQueryOptions());
-  const herdNames = getHerdsWithActiveSchedules(
-    herdsQuery.data?.result ?? [],
-    meadow.id,
-    todayLocalDateString(),
-  );
-
-  if (herdNames.length > 0) {
-    return (
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t("archive.meadowActiveSchedulesTitle")}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("archive.meadowActiveSchedules", { herds: herdNames.join(", ") })}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{t("common.close")}</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
-
-  return (
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
-        <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-        {/* Herds still loading: wait, so an active schedule can't slip through */}
-        <AlertDialogAction onClick={onArchive} disabled={isArchiving || !herdsQuery.data}>
-          {t("archive.archive")}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  );
-}
-
-// Create (with a geometry) or edit name and notes of a meadow; editing also offers delete
-function MeadowFormDialog({
-  meadow,
-  geometry,
-  onClose,
-  onSuccess,
-  onDeleted,
-}: {
-  meadow: Meadow | null;
-  geometry: GeoJSON.MultiPolygon | null;
-  onClose: () => void;
-  onSuccess: (meadowId: string) => void;
-  onDeleted?: () => void;
-}) {
-  const { t } = useTranslation();
-  const createMutation = useCreateMeadowMutation();
-  const updateMutation = useUpdateMeadowMutation();
-  const deleteMutation = useDeleteMeadowMutation();
-  const archiveMutation = useUpdateMeadowMutation();
-  const [name, setName] = useState(meadow?.name ?? "");
-  const [notes, setNotes] = useState(meadow?.additionalNotes ?? "");
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  // Archiving from the delete dialog asks first, as everywhere else
-  const [confirmArchive, setConfirmArchive] = useState(false);
-  const area = geometry ? turf.area(geometry) : (meadow?.size ?? 0);
-  const isPending =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending ||
-    archiveMutation.isPending;
-
-  function handleSubmit() {
-    const additionalNotes = notes.trim() || null;
-    if (meadow) {
-      updateMutation.mutate(
-        { meadowId: meadow.id, body: { name: name.trim(), additionalNotes } },
-        { onSuccess: () => onSuccess(meadow.id) },
-      );
-      return;
-    }
-    if (!geometry) return;
-    createMutation.mutate(
-      { name: name.trim(), additionalNotes, geometry },
-      { onSuccess: (created) => onSuccess(created.id) },
-    );
-  }
-
-  return (
-    <>
-      <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{meadow ? t("meadows.editMeadow") : t("meadows.newMeadow")}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-1.5">
-              <Label>{t("common.name")}</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
-              <div className="font-medium">{(area / 100).toFixed(2)} a</div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>{t("fieldCalendar.plots.additionalNotes")}</Label>
-              <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </div>
-            {(createMutation.isError ||
-              updateMutation.isError ||
-              deleteMutation.isError ||
-              archiveMutation.isError) && (
-              <p className="text-sm text-destructive">{t("common.error")}</p>
-            )}
-          </div>
-          <DialogFooter>
-            {meadow && onDeleted && (
-              <Button
-                variant="outline"
-                className="mr-auto text-destructive hover:text-destructive"
-                onClick={() => setConfirmDelete(true)}
-                disabled={isPending}
-              >
-                <Trash2 className="h-4 w-4" />
-                {t("common.delete")}
-              </Button>
-            )}
-            <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
-            <Button onClick={handleSubmit} disabled={!name.trim() || isPending}>{t("common.save")}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {meadow && onDeleted && (
-        <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("meadows.deleteTitle", { name: meadow.name })}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("meadows.deleteConfirm")} {t("archive.meadowDeleteHint")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              {/* The safe alternative, offered right where data would be lost */}
-              <AlertDialogAction
-                onClick={() => setConfirmArchive(true)}
-                disabled={isPending}
-                className="bg-background text-foreground border hover:bg-accent"
-              >
-                {t("archive.archive")}
-              </AlertDialogAction>
-              <AlertDialogAction
-                onClick={() => deleteMutation.mutate(meadow.id, { onSuccess: onDeleted })}
-                disabled={deleteMutation.isPending}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {meadow && onDeleted && (
-        <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
-          <MeadowArchiveDialogContent
-            meadow={meadow}
-            onArchive={() =>
-              archiveMutation.mutate(
-                { meadowId: meadow.id, body: { archived: true } },
-                { onSuccess: onDeleted },
-              )
-            }
-            isArchiving={isPending}
-          />
-        </AlertDialog>
-      )}
-    </>
   );
 }

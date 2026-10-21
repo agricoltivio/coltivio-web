@@ -726,11 +726,7 @@
     "startDate": "From",
     "endDate": "To",
     "notes": "Notes",
-    "recurring": "Recurring",
     "recurrence": "Recurrence",
-    "frequency": "Frequency",
-    "interval": "Interval",
-    "until": "Until",
     "frequencies": {
       "weekly": "Weekly",
       "monthly": "Monthly",

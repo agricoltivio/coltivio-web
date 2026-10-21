@@ -581,11 +581,7 @@
     "startDate": "Von",
     "endDate": "Bis",
     "notes": "Notizen",
-    "recurring": "Wiederkehrend",
     "recurrence": "Wiederholung",
-    "frequency": "Häufigkeit",
-    "interval": "Intervall",
-    "until": "Bis zu",
     "frequencies": {
       "weekly": "Wöchentlich",
       "monthly": "Monatlich",

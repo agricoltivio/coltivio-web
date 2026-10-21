@@ -2,10 +2,9 @@ import type {
   OutdoorJournalData,
   OutdoorJournalMeadowEntry,
 } from "@/api/types";
+import { MS_PER_DAY, toDayNumber } from "@/lib/utils";
 
 type CategoryEntry = OutdoorJournalData["entries"][number];
-
-const MS_PER_DAY = 86_400_000;
 
 export type TimelineBar = {
   // Day within the year, inclusive start (0 = 1 January) and exclusive end
@@ -25,13 +24,6 @@ export type TimelineRow = {
   bars: TimelineBar[];
   laneCount: number;
 };
-
-// Day number from the date part only ("2025-05-16…"), so the calendar day the
-// backend means is used regardless of the browser timezone
-function toDayNumber(isoDate: string): number {
-  const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
-  return Date.UTC(year, month - 1, day) / MS_PER_DAY;
-}
 
 export function daysInYear(year: number): number {
   return (Date.UTC(year + 1, 0, 1) - Date.UTC(year, 0, 1)) / MS_PER_DAY;

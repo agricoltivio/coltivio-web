@@ -581,11 +581,7 @@
     "startDate": "Dal",
     "endDate": "Al",
     "notes": "Note",
-    "recurring": "Ricorrente",
     "recurrence": "Ricorrenza",
-    "frequency": "Frequenza",
-    "interval": "Intervallo",
-    "until": "Fino a",
     "frequencies": {
       "weekly": "Settimanale",
       "monthly": "Mensile",

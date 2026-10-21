@@ -13,3 +13,24 @@ export function toLocalDateString(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+export const MS_PER_DAY = 86_400_000;
+
+// Date-only API values ("2025-05-16" or "2025-05-16T00:00:00.000Z") mean a calendar day.
+// These read the date part only, so the day doesn't shift with the browser timezone.
+
+// Local midnight of that calendar day
+export function parseDateOnly(isoDate: string): Date {
+  const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// Days since 1970-01-01 for that calendar day, for day arithmetic
+export function toDayNumber(isoDate: string): number {
+  const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
+  return Date.UTC(year, month - 1, day) / MS_PER_DAY;
+}
+
+export function formatDateOnly(isoDate: string, locale: string): string {
+  return parseDateOnly(isoDate).toLocaleDateString(locale);
+}

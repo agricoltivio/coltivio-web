@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { plotQueryOptions, useUpdatePlotMutation } from "@/api/plots.queries";
 import { ArchivedNotice } from "@/components/ArchivedNotice";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { PageContent } from "@/components/PageContent";
 import {
   BookOpen,
@@ -31,6 +32,7 @@ function PlotDetail() {
   const navigate = useNavigate();
   const plotQuery = useQuery(plotQueryOptions(plotId));
   const plot = plotQuery.data;
+  const { canWrite: canRestore } = useFeatureAccess("field_calendar");
   const restoreMutation = useUpdatePlotMutation();
 
   if (!plot) {
@@ -78,6 +80,7 @@ function PlotDetail() {
           onRestore={() => restoreMutation.mutate({ plotId, body: { archived: false } })}
           isRestoring={restoreMutation.isPending}
           restoreFailed={restoreMutation.isError}
+          canRestore={canRestore}
         />
       )}
       {/* Plot info */}

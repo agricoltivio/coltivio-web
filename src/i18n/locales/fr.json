@@ -581,11 +581,7 @@
     "startDate": "Du",
     "endDate": "Au",
     "notes": "Notes",
-    "recurring": "Récurrent",
     "recurrence": "Récurrence",
-    "frequency": "Fréquence",
-    "interval": "Intervalle",
-    "until": "Jusqu'à",
     "frequencies": {
       "weekly": "Hebdomadaire",
       "monthly": "Mensuel",

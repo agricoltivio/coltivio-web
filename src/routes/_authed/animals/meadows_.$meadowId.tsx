@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import ReactECharts from "echarts-for-react";
@@ -11,8 +11,10 @@ import {
   useUpdateMeadowMutation,
 } from "@/api/meadows.queries";
 import { ArchivedNotice } from "@/components/ArchivedNotice";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import type { OutdoorSchedule } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
+import { formatDateOnly } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -54,12 +56,14 @@ const WEEKDAY_ORDER = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 function MeadowUsagePage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const { meadowId } = Route.useParams();
   const meadowQuery = useQuery(meadowQueryOptions(meadowId));
   const usageQuery = useQuery(meadowUsageQueryOptions(meadowId));
   const herdsQuery = useQuery(herdsQueryOptions());
   const meadow = meadowQuery.data;
   const usage = usageQuery.data ?? [];
+  const { canWrite: canRestore } = useFeatureAccess("animals");
   const restoreMutation = useUpdateMeadowMutation();
 
   const currentYear = new Date().getFullYear();
@@ -152,9 +156,7 @@ function MeadowUsagePage() {
   };
 
   function formatDatePart(isoDate: string | null | undefined) {
-    if (!isoDate) return "–";
-    const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
-    return new Date(year, month - 1, day).toLocaleDateString(i18n.language);
+    return isoDate ? formatDateOnly(isoDate, i18n.language) : "–";
   }
 
   // e.g. "Weide: 01.05.2025 – 30.09.2025 · Wöchentlich: Mo, Di"
@@ -201,7 +203,13 @@ function MeadowUsagePage() {
     <PageContent
       title={meadow.name}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/plots" })}
+      // Back to wherever it was opened from (map panel, herd, archived list); the map
+      // when opened directly
+      backTo={() =>
+        router.history.length > 1
+          ? router.history.back()
+          : void navigate({ to: "/field-calendar/plots" })
+      }
     >
       <div className="space-y-6">
         {meadow.archivedAt && (
@@ -217,6 +225,7 @@ function MeadowUsagePage() {
             }
             isRestoring={restoreMutation.isPending}
             restoreFailed={restoreMutation.isError}
+          canRestore={canRestore}
           />
         )}
         <p className="text-sm text-muted-foreground">

@@ -23,6 +23,7 @@ export function ArchivedNotice({
   onRestore,
   isRestoring,
   restoreFailed,
+  canRestore,
 }: {
   kind: "plot" | "meadow";
   name: string;
@@ -30,6 +31,8 @@ export function ArchivedNotice({
   onRestore: () => void;
   isRestoring: boolean;
   restoreFailed: boolean;
+  // Restoring needs write access to the area's feature
+  canRestore: boolean;
 }) {
   const { t, i18n } = useTranslation();
 
@@ -43,31 +46,33 @@ export function ArchivedNotice({
       </AlertTitle>
       <AlertDescription>
         <p>{t("archive.archivedInfo")}</p>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" disabled={isRestoring}>
-              {isRestoring ? t("common.loading") : t("archive.restore")}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {kind === "plot"
-                  ? t("archive.plotRestoreTitle", { name })
-                  : t("archive.meadowRestoreTitle", { name })}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {kind === "plot"
-                  ? t("archive.plotRestoreWarning")
-                  : t("archive.meadowRestoreWarning")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              <AlertDialogAction onClick={onRestore}>{t("archive.restore")}</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {canRestore && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" disabled={isRestoring}>
+                {isRestoring ? t("common.loading") : t("archive.restore")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {kind === "plot"
+                    ? t("archive.plotRestoreTitle", { name })
+                    : t("archive.meadowRestoreTitle", { name })}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {kind === "plot"
+                    ? t("archive.plotRestoreWarning")
+                    : t("archive.meadowRestoreWarning")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={onRestore}>{t("archive.restore")}</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         {restoreFailed && <p className="text-destructive">{t("common.error")}</p>}
       </AlertDescription>
     </Alert>

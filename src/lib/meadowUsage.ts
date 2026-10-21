@@ -1,6 +1,5 @@
 import type { MeadowUsageEntry } from "@/api/types";
-
-const MS_PER_DAY = 86_400_000;
+import { MS_PER_DAY, toDayNumber } from "@/lib/utils";
 
 export type MeadowMonthlyUsage = {
   // Distinct days with any herd on the meadow, per month (index 0 = January)
@@ -8,13 +7,6 @@ export type MeadowMonthlyUsage = {
   // Animal-days per animal type per month: days on the meadow × animals of that type
   animalDaysByType: Record<string, number[]>;
 };
-
-// Day number from the date part only ("2025-05-16…"), so the calendar day the
-// backend means is used regardless of the browser timezone
-function toDayNumber(isoDate: string): number {
-  const [year, month, day] = isoDate.slice(0, 10).split("-").map(Number);
-  return Date.UTC(year, month - 1, day) / MS_PER_DAY;
-}
 
 function monthOfDayNumber(dayNumber: number): number {
   return new Date(dayNumber * MS_PER_DAY).getUTCMonth();
@@ -118,12 +110,4 @@ export function getHerdsWithActiveSchedules(
       }),
     )
     .map((herd) => herd.name);
-}
-
-// Local calendar date as "YYYY-MM-DD"
-export function todayLocalDateString(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${month}-${day}`;
 }
