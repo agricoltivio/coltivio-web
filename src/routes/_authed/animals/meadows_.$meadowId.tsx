@@ -8,7 +8,9 @@ import { herdsQueryOptions } from "@/api/herds.queries";
 import {
   meadowQueryOptions,
   meadowUsageQueryOptions,
+  useUpdateMeadowMutation,
 } from "@/api/meadows.queries";
+import { ArchivedNotice } from "@/components/ArchivedNotice";
 import type { OutdoorSchedule } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,6 +60,7 @@ function MeadowUsagePage() {
   const herdsQuery = useQuery(herdsQueryOptions());
   const meadow = meadowQuery.data;
   const usage = usageQuery.data ?? [];
+  const restoreMutation = useUpdateMeadowMutation();
 
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -201,6 +204,21 @@ function MeadowUsagePage() {
       backTo={() => navigate({ to: "/field-calendar/plots" })}
     >
       <div className="space-y-6">
+        {meadow.archivedAt && (
+          <ArchivedNotice
+            kind="meadow"
+            name={meadow.name}
+            archivedAt={meadow.archivedAt}
+            onRestore={() =>
+              restoreMutation.mutate({
+                meadowId,
+                body: { archived: false },
+              })
+            }
+            isRestoring={restoreMutation.isPending}
+            restoreFailed={restoreMutation.isError}
+          />
+        )}
         <p className="text-sm text-muted-foreground">
           {(meadow.size / 100).toFixed(2)} a
         </p>

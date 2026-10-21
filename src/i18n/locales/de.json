@@ -1774,7 +1774,7 @@
     "daysValue_other": "{{count}} Tage belegt",
     "averageAnimals": "Ø {{averageAnimals}} Tiere",
     "deleteTitle": "Weidefläche «{{name}}» löschen?",
-    "deleteConfirm": "Zugewiesene Weidezeiten verlieren die Weidefläche. Das kann nicht rückgängig gemacht werden.",
+    "deleteConfirm": "Die Weidefläche wird mit allen zugehörigen Daten endgültig gelöscht. Das kann nicht rückgängig gemacht werden.",
     "errors": {
       "selfIntersecting": "Die Fläche darf sich nicht selbst überschneiden.",
       "overlaps": "Die Fläche überschneidet sich mit der Weidefläche «{{name}}»."
@@ -1786,5 +1786,24 @@
       "plots": "Schläge",
       "meadows": "Weideflächen"
     }
+  },
+  "archive": {
+    "archive": "Archivieren",
+    "restore": "Wiederherstellen",
+    "archived": "Archiviert",
+    "showArchived": "Archivierte anzeigen",
+    "archivedSince": "Archiviert seit {{date}}",
+    "archivedInfo": "Nicht mehr auf der Karte und bei neuen Einträgen sichtbar. Alle Daten bleiben erhalten.",
+    "plotConfirmTitle": "«{{name}}» archivieren?",
+    "plotInfo": "Archivierte Schläge werden nicht mehr auf der Karte und bei neuen Einträgen angezeigt. Alle bisherigen Einträge bleiben erhalten und du kannst den Schlag jederzeit wiederherstellen.",
+    "plotDeleteHint": "Bewirtschaftest du den Schlag nicht mehr, kannst du ihn auch einfach archivieren – so bleiben alle Einträge erhalten.",
+    "meadowConfirmTitle": "Weidefläche «{{name}}» archivieren?",
+    "meadowInfo": "Archivierte Weideflächen werden nicht mehr auf der Karte und bei neuen Weidezeiten angezeigt. Alle Daten bleiben erhalten und du kannst die Weidefläche jederzeit wiederherstellen.",
+    "meadowDeleteHint": "Nutzt du die Weidefläche nicht mehr, kannst du sie auch einfach archivieren – so bleiben alle Daten erhalten.",
+    "layer": "Archivierte",
+    "plotRestoreTitle": "«{{name}}» wiederherstellen?",
+    "plotRestoreWarning": "Der Schlag erscheint wieder auf der Karte und bei neuen Einträgen. Wurden seit dem Archivieren neue Schläge auf dieser Fläche erfasst, können sie sich mit ihm überschneiden.",
+    "meadowRestoreTitle": "Weidefläche «{{name}}» wiederherstellen?",
+    "meadowRestoreWarning": "Die Weidefläche erscheint wieder auf der Karte und bei neuen Weidezeiten. Wurden seit dem Archivieren neue Weideflächen auf dieser Fläche erfasst, können sie sich mit ihr überschneiden."
   }
 }

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Home, Layers, List, Trash2, X } from "lucide-react";
+import { Archive, Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -63,6 +63,7 @@ import {
   type PlotColorMode,
 } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { ArchivedNotice } from "@/components/ArchivedNotice";
 
 const EMPTY_MAP_STYLE: maplibregl.StyleSpecification = { version: 8, sources: {}, layers: [] };
 const VIEWPORT_STORAGE_KEY = "plots-map-viewport";
@@ -382,10 +383,12 @@ function extractSubPolygonByPoint(
   return null;
 }
 
-// Layers shown (and clickable) on the map, remembered in the browser
-type VisibleLayers = { plots: boolean; meadows: boolean };
+// Layers shown (and clickable) on the map, remembered in the browser.
+// archived: archived plots and meadows, drawn greyed out and read-only
+type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean };
+type SelectedArchivedArea = { kind: "plot" | "meadow"; id: string };
 const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
-const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false };
+const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false };
 
 function readVisibleLayers(): VisibleLayers {
   try {
@@ -400,7 +403,9 @@ function readVisibleLayers(): VisibleLayers {
       typeof parsed.plots === "boolean" &&
       typeof parsed.meadows === "boolean"
     ) {
-      return { plots: parsed.plots, meadows: parsed.meadows };
+      // archived is missing in choices stored before it existed, read as off
+      const archived = "archived" in parsed && parsed.archived === true;
+      return { plots: parsed.plots, meadows: parsed.meadows, archived };
     }
   } catch {
     // Storage unavailable or invalid — fall back to the default
@@ -497,11 +502,14 @@ function PlotsMap() {
   function setVisibleLayers(next: VisibleLayers) {
     if (!next.plots) dispatch({ type: "SELECT_PLOT", plotId: null });
     if (!next.meadows) setSelectedMeadowId(null);
+    if (!next.archived) setSelectedArchivedArea(null);
     setVisibleLayersState(next);
     storeVisibleLayers(next);
   }
   const [listOpen, setListOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Archived plots and meadows aren't on the map; the list can show them on request
+  const [showArchived, setShowArchived] = useState(false);
   const [mergeFormOpen, setMergeFormOpen] = useState(false);
   const [splitFormOpen, setSplitFormOpen] = useState(false);
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -515,6 +523,29 @@ function PlotsMap() {
   const plotsQuery = useQuery(plotsQueryOptions());
   const farm = farmQuery.data;
   const plots = plotsQuery.data?.result ?? [];
+
+  // Archived plots and meadows, fetched while the list shows them or the archived layer is on
+  const archivedNeeded = showArchived || visibleLayers.archived;
+  const archivedPlotsQuery = useQuery({ ...plotsQueryOptions(true), enabled: archivedNeeded });
+  const archivedMeadowsQuery = useQuery({ ...meadowsQueryOptions(true), enabled: archivedNeeded });
+  const allArchivedPlots = useMemo(
+    () => (archivedPlotsQuery.data?.result ?? []).filter((plot) => plot.archivedAt !== null && plot.size > 0),
+    [archivedPlotsQuery.data],
+  );
+  const allArchivedMeadows = useMemo(
+    () => (archivedMeadowsQuery.data ?? []).filter((meadow) => meadow.archivedAt !== null),
+    [archivedMeadowsQuery.data],
+  );
+  // Archived areas aren't part of the map modes; selecting one opens a read-only panel
+  const [selectedArchivedArea, setSelectedArchivedArea] = useState<SelectedArchivedArea | null>(null);
+  const selectedArchivedPlot =
+    selectedArchivedArea?.kind === "plot"
+      ? allArchivedPlots.find((plot) => plot.id === selectedArchivedArea.id) ?? null
+      : null;
+  const selectedArchivedMeadow =
+    selectedArchivedArea?.kind === "meadow"
+      ? allArchivedMeadows.find((meadow) => meadow.id === selectedArchivedArea.id) ?? null
+      : null;
 
   const selectedPlotId = mode.type === "view" ? mode.selectedPlotId : null;
   const selectedPlot = useMemo(
@@ -551,6 +582,32 @@ function PlotsMap() {
         geometry: meadow.geometry,
       })),
   }), [meadows, editingMeadowId, selectedMeadowId]);
+
+  // Archived areas of the visible kinds; only in view mode, where they're read-only
+  const archivedVisible = visibleLayers.archived && mode.type === "view";
+  const archivedAreas = useMemo(
+    () => [
+      ...(visibleLayers.plots ? allArchivedPlots.map((plot) => ({ kind: "plot" as const, area: plot })) : []),
+      ...(visibleLayers.meadows ? allArchivedMeadows.map((meadow) => ({ kind: "meadow" as const, area: meadow })) : []),
+    ],
+    [visibleLayers.plots, visibleLayers.meadows, allArchivedPlots, allArchivedMeadows],
+  );
+  const archivedGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
+    type: "FeatureCollection",
+    features: archivedAreas.map(({ kind, area }) => ({
+      type: "Feature",
+      properties: { id: area.id, kind, selected: area.id === selectedArchivedArea?.id ? 1 : 0 },
+      geometry: area.geometry,
+    })),
+  }), [archivedAreas, selectedArchivedArea]);
+  const archivedLabelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
+    type: "FeatureCollection",
+    features: archivedAreas.map(({ area }) => ({
+      type: "Feature",
+      properties: { name: area.name },
+      geometry: turf.centerOfMass(turf.multiPolygon(area.geometry.coordinates)).geometry,
+    })),
+  }), [archivedAreas]);
 
   const meadowsLabelsGeojson = useMemo<GeoJSON.FeatureCollection>(() => ({
     type: "FeatureCollection",
@@ -710,6 +767,12 @@ function PlotsMap() {
     };
   }, [mode]);
 
+  // Only one area is selected at a time: selecting an active plot or meadow (map, list)
+  // or leaving view mode closes the archived panel
+  useEffect(() => {
+    if (selectedPlotId || selectedMeadowId || mode.type !== "view") setSelectedArchivedArea(null);
+  }, [selectedPlotId, selectedMeadowId, mode.type]);
+
   // Fly to selected plot
   useEffect(() => {
     if (!selectedPlotId || !mapRef.current) return;
@@ -735,6 +798,14 @@ function PlotsMap() {
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite", layout: { visibility: activeLayerRef.current === "satellite" ? "visible" : "none" } });
     map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
     map.addLayer({ id: "pixelkarte-layer", type: "raster", source: "pixelkarte", layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" } });
+
+    // Archived plots and meadows, below the active layers: grey veil with a dashed outline
+    // on a dark casing, same look as the app
+    map.addSource("archived-areas", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addSource("archived-areas-labels", { type: "geojson", data: EMPTY_GEOJSON });
+    map.addLayer({ id: "archived-areas-fill", type: "fill", source: "archived-areas", paint: { "fill-color": "#999999", "fill-opacity": 0.45 } });
+    map.addLayer({ id: "archived-areas-casing", type: "line", source: "archived-areas", paint: { "line-color": "#111111", "line-opacity": 0.35, "line-width": ["case", ["==", ["get", "selected"], 1], 4.5, 2.5] } });
+    map.addLayer({ id: "archived-areas-line", type: "line", source: "archived-areas", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#ffffff"], "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1.5], "line-dasharray": [2, 1.5] } });
 
     map.addSource("plots", { type: "geojson", data: geojsonRef.current, attribution: attribution.cantons });
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
@@ -796,6 +867,7 @@ function PlotsMap() {
     map.addLayer({ id: "plots-label", type: "symbol", source: "plots-labels", layout: { "text-field": ["get", "name"], "text-size": 13 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2, "text-opacity": ["step", ["zoom"], 0, 14, 1] } });
     map.addSource("split-polygons-labels", { type: "geojson", data: EMPTY_GEOJSON });
     map.addLayer({ id: "split-polygons-label", type: "symbol", source: "split-polygons-labels", layout: { "text-field": ["get", "label"], "text-size": 12 }, paint: { "text-color": "#ffffff", "text-halo-color": "#000000", "text-halo-width": 2 } });
+    map.addLayer({ id: "archived-areas-label", type: "symbol", source: "archived-areas-labels", layout: { "text-field": ["get", "name"], "text-size": 13 }, paint: { "text-color": "#ffffff", "text-halo-color": "#111111", "text-halo-width": 2 } });
     map.addLayer({ id: "meadows-label", type: "symbol", source: "meadows-labels", layout: { "text-field": ["get", "name"], "text-size": 14 }, paint: { "text-color": "#ffffff", "text-halo-color": "#2a5159", "text-halo-width": 2 } });
 
     setMapReady(true);
@@ -828,8 +900,10 @@ function PlotsMap() {
     push("meadows", meadowsGeojson);
     push("meadows-labels", meadowsLabelsGeojson);
     push("meadow-preview", meadowPreviewGeojson);
+    push("archived-areas", archivedGeojson);
+    push("archived-areas-labels", archivedLabelsGeojson);
   }, [
-    meadowsGeojson, meadowsLabelsGeojson, meadowPreviewGeojson,
+    meadowsGeojson, meadowsLabelsGeojson, meadowPreviewGeojson, archivedGeojson, archivedLabelsGeojson,
     mapReady, geojson, labelsGeojson, splitTargetGeojson, mergeSelectedGeojson,
     splitDrawingGeojson, splitPolygonPreviewGeojson, splitPolygonsGeojson, splitPolygonsLabelsGeojson,
     createDrawingGeojson, createPolygonGeojson, editRingsGeojson,
@@ -851,7 +925,10 @@ function PlotsMap() {
     };
     for (const layerId of ["plots-fill", "plots-line", "plots-label"]) setVisible(layerId, plotsVisible);
     for (const layerId of ["meadows-fill", "meadows-line", "meadows-label"]) setVisible(layerId, meadowsVisible);
-  }, [mapReady, plotsVisible, meadowsVisible]);
+    for (const layerId of ["archived-areas-fill", "archived-areas-casing", "archived-areas-line", "archived-areas-label"]) {
+      setVisible(layerId, archivedVisible);
+    }
+  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible]);
 
   // Crosshair for drawing modes
   useEffect(() => {
@@ -871,6 +948,30 @@ function PlotsMap() {
     if (!searchQuery.trim()) return [...meadows].sort((a, b) => a.name.localeCompare(b.name));
     return meadowFuse.search(searchQuery).map((r) => r.item);
   }, [meadowFuse, searchQuery, meadows]);
+
+  const archivedPlots = useMemo(() => {
+    const searchText = searchQuery.trim().toLowerCase();
+    return allArchivedPlots
+      .filter((plot) => !searchText || plot.name.toLowerCase().includes(searchText))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allArchivedPlots, searchQuery]);
+  const archivedMeadows = useMemo(() => {
+    const searchText = searchQuery.trim().toLowerCase();
+    return allArchivedMeadows
+      .filter((meadow) => !searchText || meadow.name.toLowerCase().includes(searchText))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [allArchivedMeadows, searchQuery]);
+
+  // From the list: show the archived layer, select the area and fly to it
+  function selectArchivedAreaAndFly(area: SelectedArchivedArea, geometry: GeoJSON.MultiPolygon) {
+    if (!visibleLayers.archived) setVisibleLayers({ ...visibleLayers, archived: true });
+    dispatch({ type: "SELECT_PLOT", plotId: null });
+    setSelectedMeadowId(null);
+    setSelectedArchivedArea(area);
+    setListOpen(false);
+    const [lng, lat] = turf.centerOfMass(turf.multiPolygon(geometry.coordinates)).geometry.coordinates;
+    mapRef.current?.flyTo({ center: [lng, lat], duration: 800 });
+  }
 
   function selectPlotAndFly(plotId: string) {
     dispatch({ type: "SELECT_PLOT", plotId });
@@ -1011,6 +1112,7 @@ function PlotsMap() {
     return [
       ...(visibleLayers.plots ? ["plots-fill"] : []),
       ...(visibleLayers.meadows ? ["meadows-fill"] : []),
+      ...(visibleLayers.archived ? ["archived-areas-fill"] : []),
     ];
   }, [mode.type, visibleLayers]);
 
@@ -1124,6 +1226,8 @@ function PlotsMap() {
             const features = e.features ?? [];
             const hit = features.find((f) => f.layer?.id === "plots-fill" || f.layer?.id === "merge-selected-fill");
             const meadowHit = features.find((f) => f.layer?.id === "meadows-fill");
+            const archivedHit = features.find((f) => f.layer?.id === "archived-areas-fill");
+            if (mode.type === "view") setSelectedArchivedArea(null);
 
             if (mode.type === "meadowPlots") {
               const plotId = hit?.properties?.id;
@@ -1143,6 +1247,20 @@ function PlotsMap() {
 
             if (mode.type === "merge") {
               if (hit) dispatch({ type: "TOGGLE_MERGE_PLOT", plotId: hit.properties?.id as string });
+              return;
+            }
+
+            // View mode: archived areas lie below the active layers, so they're only hit when nothing else is
+            if (mode.type === "view" && !hit && archivedHit) {
+              const archivedId = archivedHit.properties?.id;
+              const kind = archivedHit.properties?.kind;
+              setSelectedMeadowId(null);
+              dispatch({ type: "SELECT_PLOT", plotId: null });
+              if (typeof archivedId === "string" && (kind === "plot" || kind === "meadow")) {
+                setSelectedArchivedArea(
+                  selectedArchivedArea?.id === archivedId ? null : { kind, id: archivedId },
+                );
+              }
               return;
             }
 
@@ -1264,6 +1382,14 @@ function PlotsMap() {
                   id="layer-meadows"
                   checked={visibleLayers.meadows}
                   onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, meadows: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="layer-archived">{t("archive.layer")}</Label>
+                <Switch
+                  id="layer-archived"
+                  checked={visibleLayers.archived}
+                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, archived: checked })}
                 />
               </div>
             </PopoverContent>
@@ -1422,7 +1548,21 @@ function PlotsMap() {
         </div>
 
         {/* Right-side detail panel */}
-        <div className={`absolute top-0 right-0 h-full w-72 bg-background/95 backdrop-blur-sm border-l shadow-lg z-10 transition-transform duration-300 flex flex-col ${selectedPlot || selectedMeadow ? "translate-x-0" : "translate-x-full"}`}>
+        <div className={`absolute top-0 right-0 h-full w-72 bg-background/95 backdrop-blur-sm border-l shadow-lg z-10 transition-transform duration-300 flex flex-col ${selectedPlot || selectedMeadow || selectedArchivedPlot || selectedArchivedMeadow ? "translate-x-0" : "translate-x-full"}`}>
+          {selectedArchivedPlot && (
+            <ArchivedAreaPanel
+              kind="plot"
+              area={selectedArchivedPlot}
+              onClose={() => setSelectedArchivedArea(null)}
+            />
+          )}
+          {selectedArchivedMeadow && (
+            <ArchivedAreaPanel
+              kind="meadow"
+              area={selectedArchivedMeadow}
+              onClose={() => setSelectedArchivedArea(null)}
+            />
+          )}
           {selectedMeadow && (
             <MeadowDetailPanel
               meadow={selectedMeadow}
@@ -1456,6 +1596,10 @@ function PlotsMap() {
           <SheetHeader className="p-4 pb-2">
             <SheetTitle className="sr-only">{t("fieldCalendar.plots.title")}</SheetTitle>
             <Input placeholder={t("common.search")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="mt-2" autoFocus />
+            <label className="flex items-center gap-2 pt-2 text-sm">
+              <Switch checked={showArchived} onCheckedChange={setShowArchived} />
+              {t("archive.showArchived")}
+            </label>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-1">
             {visibleLayers.plots && visibleLayers.meadows && (
@@ -1494,6 +1638,40 @@ function PlotsMap() {
                     <div className="text-xs text-muted-foreground">{(meadow.size / 100).toFixed(2)} a</div>
                   </button>
                 ))}
+              </>
+            )}
+            {/* Archived: shown on the map's archived layer when picked */}
+            {showArchived && (
+              <>
+                <div className="px-3 pt-4 text-xs font-semibold text-muted-foreground uppercase">{t("archive.archived")}</div>
+                {visibleLayers.plots && archivedPlots.map((plot) => (
+                  <button
+                    key={plot.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-60"
+                    onClick={() => selectArchivedAreaAndFly({ kind: "plot", id: plot.id }, plot.geometry)}
+                  >
+                    <div className="font-medium text-sm truncate">{plot.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("meadows.layers.plots")} · {(plot.size / 100).toFixed(2)} a
+                    </div>
+                  </button>
+                ))}
+                {visibleLayers.meadows && archivedMeadows.map((meadow) => (
+                  <button
+                    key={meadow.id}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-60"
+                    onClick={() => selectArchivedAreaAndFly({ kind: "meadow", id: meadow.id }, meadow.geometry)}
+                  >
+                    <div className="font-medium text-sm truncate">{meadow.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {t("meadows.layers.meadows")} · {(meadow.size / 100).toFixed(2)} a
+                    </div>
+                  </button>
+                ))}
+                {(visibleLayers.plots ? archivedPlots.length : 0) +
+                  (visibleLayers.meadows ? archivedMeadows.length : 0) === 0 && (
+                  <div className="px-3 py-2 text-xs text-muted-foreground">{t("common.noResults")}</div>
+                )}
               </>
             )}
           </div>
@@ -1579,6 +1757,73 @@ function PlotsMap() {
   );
 }
 
+// Read-only panel for an archived plot or meadow on the map: restore it or open its details
+function ArchivedAreaPanel({
+  kind,
+  area,
+  onClose,
+}: {
+  kind: "plot" | "meadow";
+  area: Plot | Meadow;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const restorePlotMutation = useUpdatePlotMutation();
+  const restoreMeadowMutation = useUpdateMeadowMutation();
+  const restoreMutation = kind === "plot" ? restorePlotMutation : restoreMeadowMutation;
+
+  function restore() {
+    // Restored, it's an active plot or meadow again and leaves the archived layer
+    if (kind === "plot") {
+      restorePlotMutation.mutate({ plotId: area.id, body: { archived: false } }, { onSuccess: onClose });
+      return;
+    }
+    restoreMeadowMutation.mutate({ meadowId: area.id, body: { archived: false } }, { onSuccess: onClose });
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between p-4 border-b">
+        <h2 className="font-semibold text-base truncate pr-2">{area.name}</h2>
+        <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
+            <div>{(area.size / 100).toFixed(2)} a</div>
+          </div>
+          <div>
+            <div className="text-xs text-muted-foreground">{kind === "plot" ? t("meadows.layers.plots") : t("meadows.layers.meadows")}</div>
+            <div>{t("archive.archived")}</div>
+          </div>
+        </div>
+        {area.archivedAt && (
+          <ArchivedNotice
+            kind={kind}
+            name={area.name}
+            archivedAt={area.archivedAt}
+            onRestore={restore}
+            isRestoring={restoreMutation.isPending}
+            restoreFailed={restoreMutation.isError}
+          />
+        )}
+        {kind === "plot" ? (
+          <Link to="/field-calendar/plots/$plotId" params={{ plotId: area.id }} className="block w-full">
+            <Button className="w-full" size="sm">{t("fieldCalendar.plots.viewDetails")}</Button>
+          </Link>
+        ) : (
+          <Link to="/animals/meadows/$meadowId" params={{ meadowId: area.id }} className="block w-full">
+            <Button className="w-full" size="sm">{t("meadows.usage")}</Button>
+          </Link>
+        )}
+      </div>
+    </>
+  );
+}
+
 function PlotDetailPanel({
   plot,
   onClose,
@@ -1592,6 +1837,12 @@ function PlotDetailPanel({
 }) {
   const { t } = useTranslation();
   const deleteMutation = useDeletePlotMutation();
+  // Archiving keeps all entries and is reversible; the plot leaves the map either way
+  const archiveMutation = useUpdatePlotMutation();
+  const archivePlot = () =>
+    archiveMutation.mutate({ plotId: plot.id, body: { archived: true } }, { onSuccess: onClose });
+  // Archiving always asks first, also when picked in the delete dialog
+  const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   const searchNavLinks = [
     { label: t("fieldCalendar.harvests.title"), to: "/field-calendar/harvests" as const },
@@ -1672,6 +1923,24 @@ function PlotDetailPanel({
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => dispatch({ type: "ENTER_SPLIT", plotId: plot.id })}>
             {t("fieldCalendar.plots.enterSplit")}
           </Button>
+          <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => setArchiveConfirmOpen(true)}>
+            <Archive className="h-4 w-4" />
+            {t("archive.archive")}
+          </Button>
+          <AlertDialog open={archiveConfirmOpen} onOpenChange={setArchiveConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("archive.plotConfirmTitle", { name: plot.name })}</AlertDialogTitle>
+                <AlertDialogDescription>{t("archive.plotInfo")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={archivePlot} disabled={archiveMutation.isPending}>
+                  {t("archive.archive")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm" className="w-full justify-start text-destructive hover:text-destructive">
@@ -1682,10 +1951,20 @@ function PlotDetailPanel({
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>{t("fieldCalendar.plots.delete.title", { name: plot.name })}</AlertDialogTitle>
-                <AlertDialogDescription>{t("fieldCalendar.plots.delete.confirm")}</AlertDialogDescription>
+                <AlertDialogDescription>
+                  {t("fieldCalendar.plots.delete.confirm")} {t("archive.plotDeleteHint")}
+                </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                {/* The safe alternative, offered right where data would be lost */}
+                <AlertDialogAction
+                  onClick={() => setArchiveConfirmOpen(true)}
+                  disabled={archiveMutation.isPending || deleteMutation.isPending}
+                  className="bg-background text-foreground border hover:bg-accent"
+                >
+                  {t("archive.archive")}
+                </AlertDialogAction>
                 <AlertDialogAction
                   onClick={() => deleteMutation.mutate(plot.id, { onSuccess: onClose })}
                   disabled={deleteMutation.isPending}
@@ -1698,6 +1977,9 @@ function PlotDetailPanel({
           </AlertDialog>
           {deleteMutation.isError && (
             <p className="text-xs text-destructive">{t("fieldCalendar.plots.delete.error")}</p>
+          )}
+          {archiveMutation.isError && (
+            <p className="text-xs text-destructive">{t("common.error")}</p>
           )}
         </div>
 
@@ -2007,6 +2289,8 @@ function MeadowDetailPanel({
 }) {
   const { t, i18n } = useTranslation();
   const usageQuery = useQuery(meadowUsageQueryOptions(meadow.id));
+  // Archiving keeps all data and is reversible; the meadow leaves the map
+  const archiveMutation = useUpdateMeadowMutation();
   const { currentStays, lastEndDate } = getCurrentAndLastStays(
     usageQuery.data ?? [],
     new Date(),
@@ -2075,6 +2359,37 @@ function MeadowDetailPanel({
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={onEditShape}>
             {t("fieldCalendar.plots.edit.editShape")}
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <Archive className="h-4 w-4" />
+                {t("archive.archive")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
+                <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() =>
+                    archiveMutation.mutate(
+                      { meadowId: meadow.id, body: { archived: true } },
+                      { onSuccess: onClose },
+                    )
+                  }
+                  disabled={archiveMutation.isPending}
+                >
+                  {t("archive.archive")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          {archiveMutation.isError && (
+            <p className="text-xs text-destructive">{t("common.error")}</p>
+          )}
         </div>
 
         <Link to="/animals/meadows/$meadowId" params={{ meadowId: meadow.id }} className="block w-full">
@@ -2103,12 +2418,18 @@ function MeadowFormDialog({
   const createMutation = useCreateMeadowMutation();
   const updateMutation = useUpdateMeadowMutation();
   const deleteMutation = useDeleteMeadowMutation();
+  const archiveMutation = useUpdateMeadowMutation();
   const [name, setName] = useState(meadow?.name ?? "");
   const [notes, setNotes] = useState(meadow?.additionalNotes ?? "");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // Archiving from the delete dialog asks first, as everywhere else
+  const [confirmArchive, setConfirmArchive] = useState(false);
   const area = geometry ? turf.area(geometry) : (meadow?.size ?? 0);
   const isPending =
-    createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending ||
+    archiveMutation.isPending;
 
   function handleSubmit() {
     const additionalNotes = notes.trim() || null;
@@ -2146,7 +2467,10 @@ function MeadowFormDialog({
               <Label>{t("fieldCalendar.plots.additionalNotes")}</Label>
               <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
             </div>
-            {(createMutation.isError || updateMutation.isError || deleteMutation.isError) && (
+            {(createMutation.isError ||
+              updateMutation.isError ||
+              deleteMutation.isError ||
+              archiveMutation.isError) && (
               <p className="text-sm text-destructive">{t("common.error")}</p>
             )}
           </div>
@@ -2173,16 +2497,51 @@ function MeadowFormDialog({
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>{t("meadows.deleteTitle", { name: meadow.name })}</AlertDialogTitle>
-              <AlertDialogDescription>{t("meadows.deleteConfirm")}</AlertDialogDescription>
+              <AlertDialogDescription>
+                {t("meadows.deleteConfirm")} {t("archive.meadowDeleteHint")}
+              </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+              {/* The safe alternative, offered right where data would be lost */}
+              <AlertDialogAction
+                onClick={() => setConfirmArchive(true)}
+                disabled={isPending}
+                className="bg-background text-foreground border hover:bg-accent"
+              >
+                {t("archive.archive")}
+              </AlertDialogAction>
               <AlertDialogAction
                 onClick={() => deleteMutation.mutate(meadow.id, { onSuccess: onDeleted })}
                 disabled={deleteMutation.isPending}
                 className="bg-destructive text-white hover:bg-destructive/90"
               >
                 {t("common.delete")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {meadow && onDeleted && (
+        <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
+              <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() =>
+                  archiveMutation.mutate(
+                    { meadowId: meadow.id, body: { archived: true } },
+                    { onSuccess: onDeleted },
+                  )
+                }
+                disabled={isPending}
+              >
+                {t("archive.archive")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

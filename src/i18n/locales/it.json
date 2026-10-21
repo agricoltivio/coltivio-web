@@ -1774,7 +1774,7 @@
     "daysValue_other": "{{count}} giorni occupati",
     "averageAnimals": "Ø {{averageAnimals}} animali",
     "deleteTitle": "Eliminare l'area di pascolo «{{name}}»?",
-    "deleteConfirm": "I periodi all'aperto assegnati perdono l'area di pascolo. Questa azione non può essere annullata.",
+    "deleteConfirm": "L'area di pascolo e tutti i dati associati verranno eliminati definitivamente. Questa azione non può essere annullata.",
     "errors": {
       "selfIntersecting": "La superficie non deve intersecarsi con se stessa.",
       "overlaps": "La superficie si sovrappone all'area di pascolo «{{name}}»."
@@ -1786,5 +1786,24 @@
       "plots": "Particelle",
       "meadows": "Aree di pascolo"
     }
+  },
+  "archive": {
+    "archive": "Archivia",
+    "restore": "Ripristina",
+    "archived": "Archiviati",
+    "showArchived": "Mostra archiviati",
+    "archivedSince": "In archivio dal {{date}}",
+    "archivedInfo": "Non più visibile sulla mappa né per le nuove registrazioni. Tutti i dati vengono mantenuti.",
+    "plotConfirmTitle": "Archiviare «{{name}}»?",
+    "plotInfo": "Le particelle archiviate non vengono più mostrate sulla mappa né per le nuove registrazioni. Tutte le registrazioni esistenti vengono mantenute e puoi ripristinare la particella in qualsiasi momento.",
+    "plotDeleteHint": "Se non coltivi più questa particella, puoi anche semplicemente archiviarla: così tutte le registrazioni vengono mantenute.",
+    "meadowConfirmTitle": "Archiviare l'area di pascolo «{{name}}»?",
+    "meadowInfo": "Le aree di pascolo archiviate non vengono più mostrate sulla mappa né per i nuovi periodi all'aperto. Tutti i dati vengono mantenuti e puoi ripristinare l'area di pascolo in qualsiasi momento.",
+    "meadowDeleteHint": "Se non usi più quest'area di pascolo, puoi anche semplicemente archiviarla: così tutti i dati vengono mantenuti.",
+    "layer": "Archiviati",
+    "plotRestoreTitle": "Ripristinare «{{name}}»?",
+    "plotRestoreWarning": "La particella riappare sulla mappa e nelle nuove registrazioni. Se dall'archiviazione sono state registrate nuove particelle su questa superficie, possono sovrapporsi.",
+    "meadowRestoreTitle": "Ripristinare l'area di pascolo «{{name}}»?",
+    "meadowRestoreWarning": "L'area di pascolo riappare sulla mappa e nei nuovi periodi all'aperto. Se dall'archiviazione sono state registrate nuove aree di pascolo su questa superficie, possono sovrapporsi."
   }
 }

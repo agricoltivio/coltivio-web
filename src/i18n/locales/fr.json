@@ -1774,7 +1774,7 @@
     "daysValue_other": "{{count}} jours occupés",
     "averageAnimals": "Ø {{averageAnimals}} animaux",
     "deleteTitle": "Supprimer la pâture « {{name}} » ?",
-    "deleteConfirm": "Les périodes en plein air attribuées perdent la pâture. Cette action est irréversible.",
+    "deleteConfirm": "La pâture et toutes les données associées seront définitivement supprimées. Cette action est irréversible.",
     "errors": {
       "selfIntersecting": "La surface ne doit pas se croiser elle-même.",
       "overlaps": "La surface chevauche la pâture « {{name}} »."
@@ -1786,5 +1786,24 @@
       "plots": "Parcelles",
       "meadows": "Pâtures"
     }
+  },
+  "archive": {
+    "archive": "Archiver",
+    "restore": "Restaurer",
+    "archived": "Archivés",
+    "showArchived": "Afficher les archives",
+    "archivedSince": "Dans les archives depuis le {{date}}",
+    "archivedInfo": "N'est plus affiché sur la carte ni lors de nouvelles saisies. Toutes les données sont conservées.",
+    "plotConfirmTitle": "Archiver « {{name}} » ?",
+    "plotInfo": "Les parcelles archivées ne sont plus affichées sur la carte ni lors de nouvelles saisies. Toutes les saisies existantes sont conservées et tu peux restaurer la parcelle à tout moment.",
+    "plotDeleteHint": "Si tu n'exploites plus cette parcelle, tu peux aussi simplement l'archiver pour conserver toutes ses saisies.",
+    "meadowConfirmTitle": "Archiver la pâture « {{name}} » ?",
+    "meadowInfo": "Les pâtures archivées ne sont plus affichées sur la carte ni lors de nouvelles périodes en plein air. Toutes les données sont conservées et tu peux restaurer la pâture à tout moment.",
+    "meadowDeleteHint": "Si tu n'utilises plus cette pâture, tu peux aussi simplement l'archiver pour conserver toutes ses données.",
+    "layer": "Archivés",
+    "plotRestoreTitle": "Restaurer « {{name}} » ?",
+    "plotRestoreWarning": "La parcelle réapparaît sur la carte et lors des nouvelles saisies. Si de nouvelles parcelles ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
+    "meadowRestoreTitle": "Restaurer la pâture « {{name}} » ?",
+    "meadowRestoreWarning": "La pâture réapparaît sur la carte et lors des nouvelles périodes en plein air. Si de nouvelles pâtures ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher."
   }
 }

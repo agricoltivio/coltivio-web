@@ -414,9 +414,10 @@ function EditHerdDialog({
         { params: { path: { herdId } }, body },
       );
       if (response.error) {
-        // The backend rejects a date before an animal joined its current herd
+        // The backend rejects a date before an animal joined its current herd.
+        // Only possible when an effective date was sent; other 400s are generic.
         throw new Error(
-          response.response.status === 400
+          response.response.status === 400 && body.effectiveDate !== null
             ? t("herds.membershipDateTooEarly")
             : t("common.error"),
         );
@@ -426,6 +427,8 @@ function EditHerdDialog({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["herds"] });
       queryClient.invalidateQueries({ queryKey: ["outdoorJournal"] });
+      // Meadow usage includes the herd's animal count
+      queryClient.invalidateQueries({ queryKey: ["meadows"] });
       onOpenChange(false);
     },
     onError: (err) => {
@@ -696,7 +699,8 @@ function ScheduleFormDialog({
 }) {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
-  const meadowsQuery = useQuery(meadowsQueryOptions());
+  // Archived included so an existing schedule on an archived meadow keeps it selectable
+  const meadowsQuery = useQuery(meadowsQueryOptions(true));
   const initialRecurrence = schedule?.recurrence ?? null;
 
   const [scheduleType, setScheduleType] = useState<OutdoorScheduleType>(
@@ -855,7 +859,10 @@ function ScheduleFormDialog({
 
   const isPending = createMutation.isPending || updateMutation.isPending;
   const meadows = (meadowsQuery.data ?? [])
-    .slice()
+    // Archived meadows only when this schedule already uses one
+    .filter(
+      (meadow) => meadow.archivedAt === null || meadow.id === schedule?.meadowId,
+    )
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -1104,6 +1111,9 @@ function ScheduleFormDialog({
               </Field>
             </FieldGroup>
           </div>
+          {(createMutation.isError || updateMutation.isError) && (
+            <p className="text-sm text-destructive">{t("common.error")}</p>
+          )}
           <DialogFooter>
             <Button
               type="button"
@@ -1142,12 +1152,21 @@ function DeleteScheduleDialog({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["herds"] });
+      queryClient.invalidateQueries({ queryKey: ["outdoorJournal"] });
+      queryClient.invalidateQueries({ queryKey: ["meadows"] });
       onOpenChange(false);
     },
   });
 
   return (
-    <AlertDialog open={!!schedule} onOpenChange={onOpenChange}>
+    <AlertDialog
+      open={!!schedule}
+      onOpenChange={(open) => {
+        // Stays mounted between schedules; don't carry an old error over
+        if (!open) deleteMutation.reset();
+        onOpenChange(open);
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{t("common.confirm")}</AlertDialogTitle>
@@ -1155,10 +1174,17 @@ function DeleteScheduleDialog({
             {t("herds.deleteScheduleConfirm")}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {deleteMutation.isError && (
+          <p className="text-sm text-destructive">{t("common.error")}</p>
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => schedule && deleteMutation.mutate(schedule.id)}
+            onClick={(event) => {
+              // Stay open until deleted, so a failure can be shown
+              event.preventDefault();
+              if (schedule) deleteMutation.mutate(schedule.id);
+            }}
             disabled={deleteMutation.isPending}
             className="bg-destructive hover:bg-destructive/90"
           >

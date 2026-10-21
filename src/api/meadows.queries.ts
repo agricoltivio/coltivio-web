@@ -5,11 +5,14 @@ import {
 } from "@tanstack/react-query";
 import { apiClient } from "./client";
 
-export const meadowsQueryOptions = () => {
+// Archived meadows are left out unless includeArchived is set
+export const meadowsQueryOptions = (includeArchived: boolean = false) => {
   return queryOptions({
-    queryKey: ["meadows"],
+    queryKey: includeArchived ? ["meadows", "includingArchived"] : ["meadows"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/meadows");
+      const response = await apiClient.GET("/v1/meadows", {
+        params: { query: { includeArchived: includeArchived ? "true" : "false" } },
+      });
       if (response.error) {
         throw new Error("Failed to fetch meadows");
       }
@@ -100,6 +103,7 @@ export function useUpdateMeadowMutation() {
         name?: string;
         geometry?: MeadowGeometry;
         additionalNotes?: string | null;
+        archived?: boolean;
       };
     }) => {
       const response = await apiClient.PATCH("/v1/meadows/byId/{meadowId}", {

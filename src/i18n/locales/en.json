@@ -1774,7 +1774,7 @@
     "daysValue_other": "{{count}} days on the meadow",
     "averageAnimals": "avg {{averageAnimals}} animals",
     "deleteTitle": "Delete meadow \"{{name}}\"?",
-    "deleteConfirm": "Assigned outdoor schedules lose the meadow. This can't be undone.",
+    "deleteConfirm": "The meadow and all related data will be permanently deleted. This can't be undone.",
     "errors": {
       "selfIntersecting": "The area must not intersect itself.",
       "overlaps": "The area overlaps with the meadow \"{{name}}\"."
@@ -1786,5 +1786,24 @@
       "plots": "Plots",
       "meadows": "Meadows"
     }
+  },
+  "archive": {
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "Archived",
+    "showArchived": "Show archived",
+    "archivedSince": "Archived since {{date}}",
+    "archivedInfo": "No longer shown on the map or when adding new entries. All data is kept.",
+    "plotConfirmTitle": "Archive \"{{name}}\"?",
+    "plotInfo": "Archived plots are no longer shown on the map or when adding new entries. All existing entries are kept and you can restore the plot at any time.",
+    "plotDeleteHint": "If you no longer farm this plot, you can also just archive it to keep all its entries.",
+    "meadowConfirmTitle": "Archive meadow \"{{name}}\"?",
+    "meadowInfo": "Archived meadows are no longer shown on the map or when adding new outdoor schedules. All data is kept and you can restore the meadow at any time.",
+    "meadowDeleteHint": "If you no longer use this meadow, you can also just archive it to keep all its data.",
+    "layer": "Archived",
+    "plotRestoreTitle": "Restore \"{{name}}\"?",
+    "plotRestoreWarning": "The plot will show up again on the map and when adding entries. If new plots were added on this area since it was archived, they may overlap with it.",
+    "meadowRestoreTitle": "Restore meadow \"{{name}}\"?",
+    "meadowRestoreWarning": "The meadow will show up again on the map and when adding outdoor schedules. If new meadows were added on this area since it was archived, they may overlap with it."
   }
 }

@@ -4134,6 +4134,8 @@ export interface components {
         DeleteV1MePushTokensPositiveResponse: {
             data: Record<string, never>;
         };
+        /** @enum {string} */
+        GetV1MeadowsParameterIncludeArchived: "true" | "false";
         GetV1MeadowsPositiveResponse: {
             data: {
                 result: {
@@ -4147,6 +4149,11 @@ export interface components {
                     };
                     size: number;
                     additionalNotes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    archivedAt: string | null;
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -4168,6 +4175,11 @@ export interface components {
                 };
                 size: number;
                 additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                archivedAt: string | null;
                 /**
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -4200,6 +4212,11 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
+                archivedAt: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
                 createdAt: string;
             };
         };
@@ -4219,6 +4236,11 @@ export interface components {
                  * Format: date-time
                  * @description YYYY-MM-DDTHH:mm:ss.sssZ
                  */
+                archivedAt: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
                 createdAt: string;
             };
         };
@@ -4230,6 +4252,7 @@ export interface components {
                 coordinates: number[][][][];
             };
             additionalNotes?: string | null;
+            archived?: boolean;
         };
         DeleteV1MeadowsByIdMeadowIdPositiveResponse: {
             data: Record<string, never>;
@@ -4286,6 +4309,11 @@ export interface components {
                     };
                     size: number;
                     additionalNotes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    archivedAt: string | null;
                     currentCropRotation: {
                         id: string;
                         farmId: string;
@@ -4349,6 +4377,11 @@ export interface components {
                 };
                 size: number;
                 additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                archivedAt: string | null;
                 currentCropRotation: {
                     id: string;
                     farmId: string;
@@ -4525,6 +4558,11 @@ export interface components {
                 };
                 size: number;
                 additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                archivedAt: string | null;
                 currentCropRotation: {
                     id: string;
                     farmId: string;
@@ -4589,6 +4627,11 @@ export interface components {
                 };
                 size: number;
                 additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                archivedAt: string | null;
                 currentCropRotation: {
                     id: string;
                     farmId: string;
@@ -4648,6 +4691,7 @@ export interface components {
             };
             size?: number;
             additionalNotes?: string;
+            archived?: boolean;
         };
         GetV1PlotsByIdPlotIdCropRotationsPositiveResponse: {
             data: {
@@ -4946,6 +4990,11 @@ export interface components {
                     };
                     size: number;
                     additionalNotes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    archivedAt: string | null;
                     currentCropRotation: {
                         id: string;
                         farmId: string;
@@ -5201,6 +5250,11 @@ export interface components {
                 };
                 size: number;
                 additionalNotes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                archivedAt: string | null;
                 currentCropRotation: {
                     id: string;
                     farmId: string;
@@ -14937,7 +14991,10 @@ export interface operations {
     };
     GetV1Meadows: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description GET /v1/meadows Parameter */
+                includeArchived?: components["schemas"]["GetV1MeadowsParameterIncludeArchived"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -15000,7 +15057,10 @@ export interface operations {
     };
     HeadV1Meadows: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description HEAD /v1/meadows Parameter */
+                includeArchived?: components["schemas"]["GetV1MeadowsParameterIncludeArchived"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -15224,7 +15284,10 @@ export interface operations {
     };
     GetV1Plots: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description GET /v1/plots Parameter */
+                includeArchived?: components["schemas"]["GetV1MeadowsParameterIncludeArchived"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -15287,7 +15350,10 @@ export interface operations {
     };
     HeadV1Plots: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description HEAD /v1/plots Parameter */
+                includeArchived?: components["schemas"]["GetV1MeadowsParameterIncludeArchived"];
+            };
             header?: never;
             path?: never;
             cookie?: never;

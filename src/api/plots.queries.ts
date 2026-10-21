@@ -17,11 +17,14 @@ export type MergePlotsBody =
   | { strategy: "keep_reference"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string }
   | { strategy: "delete_and_migrate"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string };
 
-export const plotsQueryOptions = () => {
+// Archived plots are left out unless includeArchived is set
+export const plotsQueryOptions = (includeArchived: boolean = false) => {
   return queryOptions({
-    queryKey: ["plots"],
+    queryKey: includeArchived ? ["plots", "includingArchived"] : ["plots"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/plots");
+      const response = await apiClient.GET("/v1/plots", {
+        params: { query: { includeArchived: includeArchived ? "true" : "false" } },
+      });
       if (response.error) {
         throw new Error("Failed to fetch plots");
       }
@@ -98,6 +101,7 @@ export function useUpdatePlotMutation() {
         usage?: number;
         cuttingDate?: string | null;
         additionalNotes?: string;
+        archived?: boolean;
       };
     }) => {
       const response = await apiClient.PATCH("/v1/plots/byId/{plotId}", {
