@@ -5,7 +5,7 @@ import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { herdQueryOptions } from "@/api/herds.queries";
+import { earliestHerdChangeDatesQueryOptions, herdQueryOptions } from "@/api/herds.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { formatDateOnly, toLocalDateString } from "@/lib/utils";
 import type { OutdoorSchedule } from "@/api/types";
@@ -387,6 +387,25 @@ function EditHerdDialog({
   const animalsChanged = addedCount > 0 || removedCount > 0;
   const nameChanged = name.trim() !== initialName;
 
+  // Added and removed animals: the change can't take effect before any of them joined
+  // their current herd, so the date picker starts at the latest of those days
+  const changedAnimalIds = [
+    ...selectedAnimalIds.filter((id) => !initialAnimalIds.includes(id)),
+    ...initialAnimalIds.filter((id) => !selectedAnimalIds.includes(id)),
+  ];
+  const earliestDatesQuery = useQuery({
+    ...earliestHerdChangeDatesQueryOptions(changedAnimalIds),
+    enabled: askingEffectiveDate && changedAnimalIds.length > 0,
+  });
+  const minEffectiveDate =
+    (earliestDatesQuery.data ?? [])
+      .map((entry) => entry.earliestDate?.slice(0, 10) ?? null)
+      .filter((date): date is string => date !== null)
+      .sort()
+      .at(-1) ?? null;
+  const effectiveDateTooEarly =
+    minEffectiveDate !== null && effectiveDate < minEffectiveDate;
+
   const updateMutation = useMutation({
     mutationFn: async (body: {
       name: string;
@@ -397,15 +416,8 @@ function EditHerdDialog({
         "/v1/animals/herds/byId/{herdId}",
         { params: { path: { herdId } }, body },
       );
-      if (response.error) {
-        // The backend rejects a date before an animal joined its current herd.
-        // Only possible when an effective date was sent; other 400s are generic.
-        throw new Error(
-          response.response.status === 400 && body.effectiveDate !== null
-            ? t("herds.membershipDateTooEarly")
-            : t("common.error"),
-        );
-      }
+      // Too early dates are prevented in the dialog, so any failure is unexpected
+      if (response.error) throw new Error(t("common.error"));
       return response.data.data;
     },
     onSuccess: () => {
@@ -475,9 +487,17 @@ function EditHerdDialog({
                     id="herdEffectiveDate"
                     type="date"
                     value={effectiveDate}
+                    min={minEffectiveDate ?? undefined}
                     onChange={(e) => setEffectiveDate(e.target.value)}
+                    disabled={earliestDatesQuery.isLoading}
                     required
                   />
+                  {effectiveDateTooEarly && (
+                    <p className="text-sm text-destructive">{t("herds.membershipDateTooEarly")}</p>
+                  )}
+                  {earliestDatesQuery.isError && (
+                    <p className="text-sm text-destructive">{t("common.error")}</p>
+                  )}
                 </Field>
               </FieldGroup>
               {serverError && (
@@ -541,7 +561,11 @@ function EditHerdDialog({
               disabled={
                 !name.trim() ||
                 (!animalsChanged && !nameChanged) ||
-                (askingEffectiveDate && !effectiveDate) ||
+                (askingEffectiveDate &&
+                  (!effectiveDate ||
+                    effectiveDateTooEarly ||
+                    earliestDatesQuery.isLoading ||
+                    earliestDatesQuery.isError)) ||
                 updateMutation.isPending
               }
             >

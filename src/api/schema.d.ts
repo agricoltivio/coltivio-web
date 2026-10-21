@@ -2004,6 +2004,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/herds/earliestChangeDates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsHerdsEarliestChangeDates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsHerdsEarliestChangeDates"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/herds/byId/{herdId}": {
         parameters: {
             query?: never;
@@ -9103,6 +9119,20 @@ export interface components {
              * @description YYYY-MM-DDTHH:mm:ss.sssZ
              */
             effectiveDate?: string | null;
+        };
+        /** Format: array (preprocessed) */
+        GetV1AnimalsHerdsEarliestChangeDatesParameterAnimalIds: unknown;
+        GetV1AnimalsHerdsEarliestChangeDatesPositiveResponse: {
+            data: {
+                result: {
+                    animalId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    earliestDate: string | null;
+                }[];
+            };
         };
         GetV1AnimalsHerdsByIdHerdIdPositiveResponse: {
             data: {
@@ -21807,6 +21837,66 @@ export interface operations {
                 content?: never;
             };
             /** @description HEAD /v1/animals/herds Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalsHerdsEarliestChangeDates: {
+        parameters: {
+            query: {
+                /** @description GET /v1/animals/herds/earliestChangeDates Parameter */
+                animalIds: components["schemas"]["GetV1AnimalsHerdsEarliestChangeDatesParameterAnimalIds"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/herds/earliestChangeDates Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsHerdsEarliestChangeDatesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/herds/earliestChangeDates Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsHerdsEarliestChangeDates: {
+        parameters: {
+            query: {
+                /** @description HEAD /v1/animals/herds/earliestChangeDates Parameter */
+                animalIds: components["schemas"]["GetV1AnimalsHerdsEarliestChangeDatesParameterAnimalIds"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/herds/earliestChangeDates Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/herds/earliestChangeDates Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

@@ -46,3 +46,21 @@ export const herdOutdoorSchedulesQueryOptions = (herdId: string) => {
     },
   });
 };
+
+// First day a herd change can take effect for each of these animals (null: no herd history).
+// Edits with an earlier effective date are rejected by the API.
+export const earliestHerdChangeDatesQueryOptions = (animalIds: string[]) => {
+  const sortedAnimalIds = [...animalIds].sort();
+  return queryOptions({
+    queryKey: ["herds", "earliestChangeDates", sortedAnimalIds],
+    queryFn: async () => {
+      const response = await apiClient.GET("/v1/animals/herds/earliestChangeDates", {
+        params: { query: { animalIds: sortedAnimalIds } },
+      });
+      if (response.error) {
+        throw new Error("Failed to fetch earliest herd change dates");
+      }
+      return response.data.data.result;
+    },
+  });
+};
