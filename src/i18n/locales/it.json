@@ -1804,6 +1804,8 @@
     "plotRestoreTitle": "Ripristinare «{{name}}»?",
     "plotRestoreWarning": "La particella riappare sulla mappa e nelle nuove registrazioni. Se dall'archiviazione sono state registrate nuove particelle su questa superficie, possono sovrapporsi.",
     "meadowRestoreTitle": "Ripristinare l'area di pascolo «{{name}}»?",
-    "meadowRestoreWarning": "L'area di pascolo riappare sulla mappa e nei nuovi periodi all'aperto. Se dall'archiviazione sono state registrate nuove aree di pascolo su questa superficie, possono sovrapporsi."
+    "meadowRestoreWarning": "L'area di pascolo riappare sulla mappa e nei nuovi periodi all'aperto. Se dall'archiviazione sono state registrate nuove aree di pascolo su questa superficie, possono sovrapporsi.",
+    "meadowActiveSchedulesTitle": "Archiviazione non possibile",
+    "meadowActiveSchedules": "L'area di pascolo ha ancora periodi all'aperto in corso o pianificati ({{herds}}). Termina o rimuovi questi periodi prima di archiviare l'area di pascolo."
   }
 }

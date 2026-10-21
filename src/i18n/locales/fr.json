@@ -1804,6 +1804,8 @@
     "plotRestoreTitle": "Restaurer « {{name}} » ?",
     "plotRestoreWarning": "La parcelle réapparaît sur la carte et lors des nouvelles saisies. Si de nouvelles parcelles ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
     "meadowRestoreTitle": "Restaurer la pâture « {{name}} » ?",
-    "meadowRestoreWarning": "La pâture réapparaît sur la carte et lors des nouvelles périodes en plein air. Si de nouvelles pâtures ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher."
+    "meadowRestoreWarning": "La pâture réapparaît sur la carte et lors des nouvelles périodes en plein air. Si de nouvelles pâtures ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
+    "meadowActiveSchedulesTitle": "Archivage impossible",
+    "meadowActiveSchedules": "La pâture a encore des périodes en plein air en cours ou prévues ({{herds}}). Termine ou supprime ces périodes avant d'archiver la pâture."
   }
 }

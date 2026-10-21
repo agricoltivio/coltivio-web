@@ -1804,6 +1804,8 @@
     "plotRestoreTitle": "«{{name}}» wiederherstellen?",
     "plotRestoreWarning": "Der Schlag erscheint wieder auf der Karte und bei neuen Einträgen. Wurden seit dem Archivieren neue Schläge auf dieser Fläche erfasst, können sie sich mit ihm überschneiden.",
     "meadowRestoreTitle": "Weidefläche «{{name}}» wiederherstellen?",
-    "meadowRestoreWarning": "Die Weidefläche erscheint wieder auf der Karte und bei neuen Weidezeiten. Wurden seit dem Archivieren neue Weideflächen auf dieser Fläche erfasst, können sie sich mit ihr überschneiden."
+    "meadowRestoreWarning": "Die Weidefläche erscheint wieder auf der Karte und bei neuen Weidezeiten. Wurden seit dem Archivieren neue Weideflächen auf dieser Fläche erfasst, können sie sich mit ihr überschneiden.",
+    "meadowActiveSchedulesTitle": "Archivieren nicht möglich",
+    "meadowActiveSchedules": "Die Weidefläche hat noch laufende oder geplante Weidezeiten ({{herds}}). Beende oder entferne diese Weidezeiten, bevor du die Weidefläche archivierst."
   }
 }

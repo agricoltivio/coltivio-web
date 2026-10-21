@@ -33,7 +33,8 @@ import {
   mergePlotsIntoMeadowGeometry,
   type MeadowGeometryError,
 } from "@/lib/meadowGeometry";
-import { getCurrentAndLastStays } from "@/lib/meadowUsage";
+import { getCurrentAndLastStays, getHerdsWithActiveSchedules, todayLocalDateString } from "@/lib/meadowUsage";
+import { herdsQueryOptions } from "@/api/herds.queries";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { z } from "zod";
@@ -2366,26 +2367,16 @@ function MeadowDetailPanel({
                 {t("archive.archive")}
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
-                <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() =>
-                    archiveMutation.mutate(
-                      { meadowId: meadow.id, body: { archived: true } },
-                      { onSuccess: onClose },
-                    )
-                  }
-                  disabled={archiveMutation.isPending}
-                >
-                  {t("archive.archive")}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
+            <MeadowArchiveDialogContent
+              meadow={meadow}
+              onArchive={() =>
+                archiveMutation.mutate(
+                  { meadowId: meadow.id, body: { archived: true } },
+                  { onSuccess: onClose },
+                )
+              }
+              isArchiving={archiveMutation.isPending}
+            />
           </AlertDialog>
           {archiveMutation.isError && (
             <p className="text-xs text-destructive">{t("common.error")}</p>
@@ -2397,6 +2388,58 @@ function MeadowDetailPanel({
         </Link>
       </div>
     </>
+  );
+}
+
+// Confirmation for archiving a meadow. Not allowed while a herd is (or will be) on it:
+// then it only says which herds still have schedules there.
+function MeadowArchiveDialogContent({
+  meadow,
+  onArchive,
+  isArchiving,
+}: {
+  meadow: Meadow;
+  onArchive: () => void;
+  isArchiving: boolean;
+}) {
+  const { t } = useTranslation();
+  const herdsQuery = useQuery(herdsQueryOptions());
+  const herdNames = getHerdsWithActiveSchedules(
+    herdsQuery.data?.result ?? [],
+    meadow.id,
+    todayLocalDateString(),
+  );
+
+  if (herdNames.length > 0) {
+    return (
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("archive.meadowActiveSchedulesTitle")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("archive.meadowActiveSchedules", { herds: herdNames.join(", ") })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("common.close")}</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    );
+  }
+
+  return (
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
+        <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+        {/* Herds still loading: wait, so an active schedule can't slip through */}
+        <AlertDialogAction onClick={onArchive} disabled={isArchiving || !herdsQuery.data}>
+          {t("archive.archive")}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
   );
 }
 
@@ -2525,26 +2568,16 @@ function MeadowFormDialog({
 
       {meadow && onDeleted && (
         <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("archive.meadowConfirmTitle", { name: meadow.name })}</AlertDialogTitle>
-              <AlertDialogDescription>{t("archive.meadowInfo")}</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() =>
-                  archiveMutation.mutate(
-                    { meadowId: meadow.id, body: { archived: true } },
-                    { onSuccess: onDeleted },
-                  )
-                }
-                disabled={isPending}
-              >
-                {t("archive.archive")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
+          <MeadowArchiveDialogContent
+            meadow={meadow}
+            onArchive={() =>
+              archiveMutation.mutate(
+                { meadowId: meadow.id, body: { archived: true } },
+                { onSuccess: onDeleted },
+              )
+            }
+            isArchiving={isPending}
+          />
         </AlertDialog>
       )}
     </>

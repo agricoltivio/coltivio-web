@@ -1804,6 +1804,8 @@
     "plotRestoreTitle": "Restore \"{{name}}\"?",
     "plotRestoreWarning": "The plot will show up again on the map and when adding entries. If new plots were added on this area since it was archived, they may overlap with it.",
     "meadowRestoreTitle": "Restore meadow \"{{name}}\"?",
-    "meadowRestoreWarning": "The meadow will show up again on the map and when adding outdoor schedules. If new meadows were added on this area since it was archived, they may overlap with it."
+    "meadowRestoreWarning": "The meadow will show up again on the map and when adding outdoor schedules. If new meadows were added on this area since it was archived, they may overlap with it.",
+    "meadowActiveSchedulesTitle": "Can't archive yet",
+    "meadowActiveSchedules": "The meadow still has ongoing or planned outdoor schedules ({{herds}}). End or remove these schedules before archiving the meadow."
   }
 }
