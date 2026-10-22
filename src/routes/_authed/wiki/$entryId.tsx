@@ -3,7 +3,6 @@ import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -13,6 +12,7 @@ import {
   codeBlockPlugin,
   imagePlugin,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { wikiEntryByIdQueryOptions } from "@/api/wiki.queries";
 import { PageContent } from "@/components/PageContent";
@@ -85,7 +85,7 @@ function WikiDetail() {
       </div>
 
       {translation && (
-        <MDXEditor
+        <MarkdownEditor
           readOnly
           markdown={translation.body}
           plugins={[

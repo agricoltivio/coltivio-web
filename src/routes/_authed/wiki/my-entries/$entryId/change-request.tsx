@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { wikiEntryByIdQueryOptions } from "@/api/wiki.queries";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -24,6 +23,7 @@ import {
   InsertTable,
   InsertCodeBlock,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
@@ -115,7 +115,7 @@ function ChangeRequestForm() {
                     control={control}
                     render={({ field }) => (
                       <div className="border rounded-md overflow-hidden">
-                        <MDXEditor
+                        <MarkdownEditor
                           key={locale}
                           markdown={field.value}
                           onChange={field.onChange}

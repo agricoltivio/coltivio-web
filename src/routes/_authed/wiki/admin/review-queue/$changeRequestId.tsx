@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -13,6 +12,7 @@ import {
   codeBlockPlugin,
   imagePlugin,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { changeRequestByIdQueryOptions, changeRequestNotesQueryOptions } from "@/api/wiki.queries";
 import { apiClient } from "@/api/client";
@@ -139,7 +139,7 @@ function ReviewDetail() {
               <TabsContent key={tr.locale} value={tr.locale} className="mt-4">
                 <p className="text-xs font-medium text-muted-foreground uppercase mb-2">{tr.title}</p>
                 <div className="border rounded-md p-2 bg-green-50 dark:bg-green-950/20">
-                  <MDXEditor
+                  <MarkdownEditor
                     readOnly
                     markdown={tr.body}
                     plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(), linkPlugin(), tablePlugin(), codeBlockPlugin({ defaultCodeBlockLanguage: "" }), imagePlugin()]}
@@ -156,7 +156,7 @@ function ReviewDetail() {
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase mb-2">Current</p>
                   <div className="border rounded-md p-2 bg-muted/30">
-                    <MDXEditor
+                    <MarkdownEditor
                       readOnly
                       markdown={currentBody}
                       plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(), linkPlugin(), tablePlugin(), codeBlockPlugin({ defaultCodeBlockLanguage: "" }), imagePlugin()]}
@@ -166,7 +166,7 @@ function ReviewDetail() {
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase mb-2">Proposed — {tr.title}</p>
                   <div className="border rounded-md p-2 bg-green-50 dark:bg-green-950/20">
-                    <MDXEditor
+                    <MarkdownEditor
                       readOnly
                       markdown={tr.body}
                       plugins={[headingsPlugin(), listsPlugin(), quotePlugin(), thematicBreakPlugin(), linkPlugin(), tablePlugin(), codeBlockPlugin({ defaultCodeBlockLanguage: "" }), imagePlugin()]}

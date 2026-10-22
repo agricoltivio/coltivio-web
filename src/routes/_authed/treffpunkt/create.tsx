@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
@@ -22,6 +21,7 @@ import {
   InsertTable,
   InsertCodeBlock,
 } from "@mdxeditor/editor";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { apiClient } from "@/api/client";
 import type { ForumThreadType } from "@/api/types";
@@ -125,7 +125,7 @@ function CreateThread() {
         <Field>
           <FieldLabel>{t("treffpunkt.body")}</FieldLabel>
           <div className="border rounded-md overflow-hidden">
-            <MDXEditor
+            <MarkdownEditor
               markdown={bodyMarkdown}
               onChange={setBodyMarkdown}
               plugins={[
