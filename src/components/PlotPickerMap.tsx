@@ -5,7 +5,7 @@ import Map, {
   NavigationControl,
   type MapRef,
 } from "react-map-gl/maplibre";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
 import * as turf from "@turf/turf";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Home, Layers } from "lucide-react";
