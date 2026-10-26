@@ -4,7 +4,7 @@ import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
 import { Archive, ChevronDown, ChevronRight, Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import Map, { AttributionControl, Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";

@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type maplibregl from "maplibre-gl";
+import type * as maplibregl from "maplibre-gl";
 import type { Meadow, Plot } from "@/api/types";
 
 // Archived plots and meadows on the plots map: a grey veil with a dashed outline on a
