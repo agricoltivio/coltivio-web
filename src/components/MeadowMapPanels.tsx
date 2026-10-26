@@ -41,7 +41,7 @@ export function MeadowDetailPanel({
   onEditShape,
 }: {
   meadow: Meadow;
-  // Edit, reshape and archive need write access to animals
+  // Edit, reshape, archive and delete need write access to animals
   canEdit: boolean;
   onClose: () => void;
   onEditMeta: () => void;
@@ -51,6 +51,8 @@ export function MeadowDetailPanel({
   const usageQuery = useQuery(meadowUsageQueryOptions(meadow.id));
   // Archiving keeps all data and is reversible; the meadow leaves the map
   const archiveMutation = useUpdateMeadowMutation();
+  const deleteMutation = useDeleteMeadowMutation();
+  const [confirmArchive, setConfirmArchive] = useState(false);
   const { currentStays, lastEndDate } = getCurrentAndLastStays(
     usageQuery.data ?? [],
     new Date(),
@@ -116,13 +118,11 @@ export function MeadowDetailPanel({
             <Button variant="outline" size="sm" className="w-full justify-start" onClick={onEditShape}>
               {t("fieldCalendar.plots.edit.editShape")}
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  <Archive className="h-4 w-4" />
-                  {t("archive.archive")}
-                </Button>
-              </AlertDialogTrigger>
+            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => setConfirmArchive(true)}>
+              <Archive className="h-4 w-4" />
+              {t("archive.archive")}
+            </Button>
+            <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
               <MeadowArchiveDialogContent
                 meadow={meadow}
                 onArchive={() =>
@@ -134,7 +134,41 @@ export function MeadowDetailPanel({
                 isArchiving={archiveMutation.isPending}
               />
             </AlertDialog>
-            {archiveMutation.isError && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="w-full justify-start text-destructive hover:text-destructive">
+                  <Trash2 className="h-4 w-4" />
+                  {t("common.delete")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("meadows.deleteTitle", { name: meadow.name })}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("meadows.deleteConfirm")} {t("archive.meadowDeleteHint")}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                  {/* The safe alternative, offered right where data would be lost */}
+                  <AlertDialogAction
+                    onClick={() => setConfirmArchive(true)}
+                    disabled={archiveMutation.isPending || deleteMutation.isPending}
+                    className="bg-background text-foreground border hover:bg-accent"
+                  >
+                    {t("archive.archive")}
+                  </AlertDialogAction>
+                  <AlertDialogAction
+                    onClick={() => deleteMutation.mutate(meadow.id, { onSuccess: onClose })}
+                    disabled={deleteMutation.isPending}
+                    className="bg-destructive text-white hover:bg-destructive/90"
+                  >
+                    {t("common.delete")}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            {(archiveMutation.isError || deleteMutation.isError) && (
               <p className="text-xs text-destructive">{t("common.error")}</p>
             )}
           </div>
@@ -200,36 +234,25 @@ function MeadowArchiveDialogContent({
   );
 }
 
-// Create (with a geometry) or edit name and notes of a meadow; editing also offers delete
+// Create (with a geometry) or edit name and notes of a meadow
 export function MeadowFormDialog({
   meadow,
   geometry,
   onClose,
   onSuccess,
-  onDeleted,
 }: {
   meadow: Meadow | null;
   geometry: GeoJSON.MultiPolygon | null;
   onClose: () => void;
   onSuccess: (meadowId: string) => void;
-  onDeleted?: () => void;
 }) {
   const { t } = useTranslation();
   const createMutation = useCreateMeadowMutation();
   const updateMutation = useUpdateMeadowMutation();
-  const deleteMutation = useDeleteMeadowMutation();
-  const archiveMutation = useUpdateMeadowMutation();
   const [name, setName] = useState(meadow?.name ?? "");
   const [notes, setNotes] = useState(meadow?.additionalNotes ?? "");
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  // Archiving from the delete dialog asks first, as everywhere else
-  const [confirmArchive, setConfirmArchive] = useState(false);
   const area = geometry ? turf.area(geometry) : (meadow?.size ?? 0);
-  const isPending =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending ||
-    archiveMutation.isPending;
+  const isPending = createMutation.isPending || updateMutation.isPending;
 
   function handleSubmit() {
     const additionalNotes = notes.trim() || null;
@@ -248,95 +271,33 @@ export function MeadowFormDialog({
   }
 
   return (
-    <>
-      <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{meadow ? t("meadows.editMeadow") : t("meadows.newMeadow")}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-1.5">
-              <Label>{t("common.name")}</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
-              <div className="font-medium">{(area / 100).toFixed(2)} a</div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>{t("fieldCalendar.plots.additionalNotes")}</Label>
-              <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </div>
-            {(createMutation.isError ||
-              updateMutation.isError ||
-              deleteMutation.isError ||
-              archiveMutation.isError) && (
-              <p className="text-sm text-destructive">{t("common.error")}</p>
-            )}
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>{meadow ? t("meadows.editMeadow") : t("meadows.newMeadow")}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="space-y-1.5">
+            <Label>{t("common.name")}</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </div>
-          <DialogFooter>
-            {meadow && onDeleted && (
-              <Button
-                variant="outline"
-                className="mr-auto text-destructive hover:text-destructive"
-                onClick={() => setConfirmDelete(true)}
-                disabled={isPending}
-              >
-                <Trash2 className="h-4 w-4" />
-                {t("common.delete")}
-              </Button>
-            )}
-            <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
-            <Button onClick={handleSubmit} disabled={!name.trim() || isPending}>{t("common.save")}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {meadow && onDeleted && (
-        <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("meadows.deleteTitle", { name: meadow.name })}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("meadows.deleteConfirm")} {t("archive.meadowDeleteHint")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-              {/* The safe alternative, offered right where data would be lost */}
-              <AlertDialogAction
-                onClick={() => setConfirmArchive(true)}
-                disabled={isPending}
-                className="bg-background text-foreground border hover:bg-accent"
-              >
-                {t("archive.archive")}
-              </AlertDialogAction>
-              <AlertDialogAction
-                onClick={() => deleteMutation.mutate(meadow.id, { onSuccess: onDeleted })}
-                disabled={deleteMutation.isPending}
-                className="bg-destructive text-white hover:bg-destructive/90"
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {meadow && onDeleted && (
-        <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
-          <MeadowArchiveDialogContent
-            meadow={meadow}
-            onArchive={() =>
-              archiveMutation.mutate(
-                { meadowId: meadow.id, body: { archived: true } },
-                { onSuccess: onDeleted },
-              )
-            }
-            isArchiving={isPending}
-          />
-        </AlertDialog>
-      )}
-    </>
+          <div>
+            <div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div>
+            <div className="font-medium">{(area / 100).toFixed(2)} a</div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t("fieldCalendar.plots.additionalNotes")}</Label>
+            <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          {(createMutation.isError || updateMutation.isError) && (
+            <p className="text-sm text-destructive">{t("common.error")}</p>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button onClick={handleSubmit} disabled={!name.trim() || isPending}>{t("common.save")}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
