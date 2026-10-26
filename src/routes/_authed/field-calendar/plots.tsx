@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as turf from "@turf/turf";
 import Fuse from "fuse.js";
-import { Archive, ChevronDown, Home, Layers, List, Trash2, X } from "lucide-react";
+import { Archive, ChevronDown, ChevronRight, Home, Layers, List, Trash2, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
-import Map, { AttributionControl, Marker, NavigationControl } from "react-map-gl/maplibre";
+import Map, { AttributionControl, Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
@@ -395,6 +395,9 @@ function extractSubPolygonByPoint(
 // archived: archived plots and meadows, drawn greyed out and read-only
 type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean };
 type SelectedArchivedArea = { kind: "plot" | "meadow"; id: string };
+// A click that hits several active areas (e.g. a meadow over plots) lets the user pick one
+type AreaChoiceOption = { kind: "plot" | "meadow"; id: string; name: string; size: number };
+type AreaChoice = { lngLat: [number, number]; options: AreaChoiceOption[] };
 const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
 const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false };
 
@@ -555,6 +558,7 @@ function PlotsMap() {
   );
   // Archived areas aren't part of the map modes; selecting one opens a read-only panel
   const [selectedArchivedArea, setSelectedArchivedArea] = useState<SelectedArchivedArea | null>(null);
+  const [areaChoice, setAreaChoice] = useState<AreaChoice | null>(null);
   const selectedArchivedPlot =
     selectedArchivedArea?.kind === "plot"
       ? allArchivedPlots.find((plot) => plot.id === selectedArchivedArea.id) ?? null
@@ -1246,7 +1250,31 @@ function PlotsMap() {
             const hit = features.find((f) => f.layer?.id === "plots-fill" || f.layer?.id === "merge-selected-fill");
             const meadowHit = features.find((f) => f.layer?.id === "meadows-fill");
             const archivedHit = features.find((f) => f.layer?.id === ARCHIVED_AREA_FILL_LAYER_ID);
-            if (mode.type === "view") setSelectedArchivedArea(null);
+            if (mode.type === "view") {
+              setSelectedArchivedArea(null);
+              setAreaChoice(null);
+              // Several active areas under the click: ask which one instead of guessing
+              const hitIds = new Set<string>();
+              const options: AreaChoiceOption[] = [];
+              for (const feature of features) {
+                const featureId = feature.properties?.id;
+                if (typeof featureId !== "string" || hitIds.has(featureId)) continue;
+                if (feature.layer?.id === "meadows-fill") {
+                  const meadow = meadows.find((m) => m.id === featureId);
+                  if (meadow) options.push({ kind: "meadow", id: meadow.id, name: meadow.name, size: meadow.size });
+                } else if (feature.layer?.id === "plots-fill") {
+                  const plot = plots.find((p) => p.id === featureId);
+                  if (plot) options.push({ kind: "plot", id: plot.id, name: plot.name, size: plot.size });
+                }
+                hitIds.add(featureId);
+              }
+              if (options.length > 1) {
+                setSelectedMeadowId(null);
+                dispatch({ type: "SELECT_PLOT", plotId: null });
+                setAreaChoice({ lngLat: [e.lngLat.lng, e.lngLat.lat], options });
+                return;
+              }
+            }
 
             if (mode.type === "meadowPlots") {
               const plotId = hit?.properties?.id;
@@ -1301,6 +1329,46 @@ function PlotsMap() {
                 <Home className="h-4 w-4 text-gray-700" />
               </div>
             </Marker>
+          )}
+
+          {mode.type === "view" && areaChoice && (
+            <Popup
+              longitude={areaChoice.lngLat[0]}
+              latitude={areaChoice.lngLat[1]}
+              closeOnClick={false}
+              closeButton={false}
+              onClose={() => setAreaChoice(null)}
+              maxWidth="260px"
+            >
+              <div className="text-gray-900">
+                <div className="flex flex-col divide-y divide-gray-200 overflow-hidden rounded-md border border-gray-200">
+                  {areaChoice.options.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className="flex items-center gap-3 bg-white px-2.5 py-2 text-left text-sm transition-colors hover:bg-gray-50 cursor-pointer"
+                      onClick={() => {
+                        setAreaChoice(null);
+                        if (option.kind === "meadow") {
+                          setSelectedMeadowId(option.id);
+                        } else {
+                          dispatch({ type: "SELECT_PLOT", plotId: option.id });
+                        }
+                      }}
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate font-medium">{option.name}</span>
+                        <span className="block text-xs text-gray-500">
+                          {option.kind === "meadow" ? t("fieldCalendar.plots.newAreaMeadow") : t("fieldCalendar.plots.newAreaPlot")}
+                        </span>
+                      </span>
+                      <span className="ml-auto shrink-0 text-xs text-gray-500">{(option.size / 100).toFixed(2)} a</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-gray-400" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Popup>
           )}
 
           {/* Draggable vertex markers for edit mode */}
@@ -1757,10 +1825,6 @@ function PlotsMap() {
           geometry={null}
           onClose={() => setEditMeadowMetaOpen(false)}
           onSuccess={() => setEditMeadowMetaOpen(false)}
-          onDeleted={() => {
-            setEditMeadowMetaOpen(false);
-            setSelectedMeadowId(null);
-          }}
         />
       )}
 
