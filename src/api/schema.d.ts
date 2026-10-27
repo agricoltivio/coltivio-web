@@ -1908,6 +1908,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/byId/{animalId}/parasiteHistory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdParasiteHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdParasiteHistory"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/journal/byId/{entryId}": {
         parameters: {
             query?: never;
@@ -2052,6 +2068,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/herds/byId/{herdId}/parasiteOverview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsHerdsByIdHerdIdParasiteOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsHerdsByIdHerdIdParasiteOverview"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/herds/outdoorSchedules/byId/{outdoorScheduleId}": {
         parameters: {
             query?: never;
@@ -2162,6 +2194,38 @@ export interface paths {
         options?: never;
         head: operations["HeadV1DrugsByIdDrugIdInUse"];
         patch?: never;
+        trace?: never;
+    };
+    "/v1/parasiteChecks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1ParasiteChecks"];
+        put?: never;
+        post: operations["PostV1ParasiteChecks"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1ParasiteChecks"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/parasiteChecks/byId/{checkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1ParasiteChecksByIdCheckId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1ParasiteChecksByIdCheckId"];
+        options?: never;
+        head: operations["HeadV1ParasiteChecksByIdCheckId"];
+        patch: operations["PatchV1ParasiteChecksByIdCheckId"];
         trace?: never;
     };
     "/v1/treatments": {
@@ -3502,7 +3566,6 @@ export interface components {
                 count: number;
             };
         };
-        GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer: number;
         GetV1LayersPlotsFarmsFederalFarmIdBboxPositiveResponse: {
             data: {
                 result: {
@@ -8830,6 +8893,52 @@ export interface components {
             date: string;
             content?: string;
         };
+        GetV1AnimalsByIdAnimalIdParasiteHistoryPositiveResponse: {
+            data: {
+                checks: {
+                    checkId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    famachaScore: number | null;
+                }[];
+                fecResults: {
+                    checkId: string;
+                    sampleId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    pooled: boolean;
+                    poolSize: number;
+                    results: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        countPerGram: number;
+                    }[];
+                }[];
+                treatments: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    drugName: string | null;
+                }[];
+            };
+        };
         GetV1AnimalsJournalByIdEntryIdPositiveResponse: {
             data: {
                 id: string;
@@ -9358,6 +9467,145 @@ export interface components {
                 count?: number | null;
             } | null;
         };
+        GetV1AnimalsHerdsByIdHerdIdParasiteOverviewPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    herdId: string | null;
+                    labName: string | null;
+                    notes: string | null;
+                    previousCheckId: string | null;
+                    treatmentId: string | null;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                    herd: {
+                        id: string;
+                        name: string;
+                    } | null;
+                    treatment: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                    } | null;
+                    animals: {
+                        animalId: string;
+                        name: string;
+                        earTagNumber: string | null;
+                        famachaScore: number | null;
+                    }[];
+                    fecSamples: {
+                        id: string;
+                        label: string | null;
+                        pooled: boolean;
+                        animalIds: string[];
+                        results: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            countPerGram: number;
+                        }[];
+                    }[];
+                    followUpTasks: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dueDate: string | null;
+                        /** @enum {string} */
+                        status: "todo" | "done";
+                    }[];
+                    summary: {
+                        animalCount: number;
+                        famachaAverage: number | null;
+                        famachaDistribution: {
+                            score: number;
+                            count: number;
+                        }[];
+                        fecByParasite: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            sampleCount: number;
+                            minCountPerGram: number;
+                            avgCountPerGram: number;
+                            maxCountPerGram: number;
+                        }[];
+                    };
+                    comparisonToPrevious: {
+                        previousCheckId: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        previousDate: string;
+                        famachaAverageChange: number | null;
+                        fecReduction: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            beforeAvgCountPerGram: number;
+                            afterAvgCountPerGram: number;
+                            afterSampleCount: number;
+                            reductionPercent: number | null;
+                        }[];
+                    } | null;
+                    rechecks: {
+                        id: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        date: string;
+                        /** @enum {string} */
+                        method: "famacha" | "fecal_egg_count";
+                        treatment: {
+                            id: string;
+                            name: string;
+                            /**
+                             * Format: date-time
+                             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                             */
+                            startDate: string;
+                        } | null;
+                        animals: {
+                            animalId: string;
+                            famachaScore: number | null;
+                        }[];
+                        famachaAverage: number | null;
+                        famachaAverageChange: number | null;
+                        fecReduction: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            beforeAvgCountPerGram: number;
+                            afterAvgCountPerGram: number;
+                            afterSampleCount: number;
+                            reductionPercent: number | null;
+                        }[];
+                    }[];
+                }[];
+                count: number;
+            };
+        };
         GetV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleIdPositiveResponse: {
             data: {
                 id: string;
@@ -9680,6 +9928,619 @@ export interface components {
             data: {
                 inUse: boolean;
             };
+        };
+        GetV1ParasiteChecksPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    herdId: string | null;
+                    labName: string | null;
+                    notes: string | null;
+                    previousCheckId: string | null;
+                    treatmentId: string | null;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    updatedAt: string;
+                    herd: {
+                        id: string;
+                        name: string;
+                    } | null;
+                    treatment: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                    } | null;
+                    animals: {
+                        animalId: string;
+                        name: string;
+                        earTagNumber: string | null;
+                        famachaScore: number | null;
+                    }[];
+                    fecSamples: {
+                        id: string;
+                        label: string | null;
+                        pooled: boolean;
+                        animalIds: string[];
+                        results: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            countPerGram: number;
+                        }[];
+                    }[];
+                    followUpTasks: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        dueDate: string | null;
+                        /** @enum {string} */
+                        status: "todo" | "done";
+                    }[];
+                    summary: {
+                        animalCount: number;
+                        famachaAverage: number | null;
+                        famachaDistribution: {
+                            score: number;
+                            count: number;
+                        }[];
+                        fecByParasite: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            sampleCount: number;
+                            minCountPerGram: number;
+                            avgCountPerGram: number;
+                            maxCountPerGram: number;
+                        }[];
+                    };
+                    comparisonToPrevious: {
+                        previousCheckId: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        previousDate: string;
+                        famachaAverageChange: number | null;
+                        fecReduction: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            beforeAvgCountPerGram: number;
+                            afterAvgCountPerGram: number;
+                            afterSampleCount: number;
+                            reductionPercent: number | null;
+                        }[];
+                    } | null;
+                    rechecks: {
+                        id: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        date: string;
+                        /** @enum {string} */
+                        method: "famacha" | "fecal_egg_count";
+                        treatment: {
+                            id: string;
+                            name: string;
+                            /**
+                             * Format: date-time
+                             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                             */
+                            startDate: string;
+                        } | null;
+                        animals: {
+                            animalId: string;
+                            famachaScore: number | null;
+                        }[];
+                        famachaAverage: number | null;
+                        famachaAverageChange: number | null;
+                        fecReduction: {
+                            /** @enum {string} */
+                            parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                            beforeAvgCountPerGram: number;
+                            afterAvgCountPerGram: number;
+                            afterSampleCount: number;
+                            reductionPercent: number | null;
+                        }[];
+                    }[];
+                }[];
+                count: number;
+            };
+        };
+        PostV1ParasiteChecksPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                /** @enum {string} */
+                method: "famacha" | "fecal_egg_count";
+                herdId: string | null;
+                labName: string | null;
+                notes: string | null;
+                previousCheckId: string | null;
+                treatmentId: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                herd: {
+                    id: string;
+                    name: string;
+                } | null;
+                treatment: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                } | null;
+                animals: {
+                    animalId: string;
+                    name: string;
+                    earTagNumber: string | null;
+                    famachaScore: number | null;
+                }[];
+                fecSamples: {
+                    id: string;
+                    label: string | null;
+                    pooled: boolean;
+                    animalIds: string[];
+                    results: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        countPerGram: number;
+                    }[];
+                }[];
+                followUpTasks: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dueDate: string | null;
+                    /** @enum {string} */
+                    status: "todo" | "done";
+                }[];
+                summary: {
+                    animalCount: number;
+                    famachaAverage: number | null;
+                    famachaDistribution: {
+                        score: number;
+                        count: number;
+                    }[];
+                    fecByParasite: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        sampleCount: number;
+                        minCountPerGram: number;
+                        avgCountPerGram: number;
+                        maxCountPerGram: number;
+                    }[];
+                };
+                comparisonToPrevious: {
+                    previousCheckId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    previousDate: string;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                } | null;
+                rechecks: {
+                    id: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    treatment: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                    } | null;
+                    animals: {
+                        animalId: string;
+                        famachaScore: number | null;
+                    }[];
+                    famachaAverage: number | null;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                }[];
+            };
+        };
+        PostV1ParasiteChecksRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            /** @enum {string} */
+            method: "famacha" | "fecal_egg_count";
+            herdId?: string | null;
+            animals?: {
+                animalId: string;
+                famachaScore?: number | null;
+            }[];
+            fecSamples?: {
+                label?: string | null;
+                animalIds: string[];
+                results: {
+                    /** @enum {string} */
+                    parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                    countPerGram: number;
+                }[];
+            }[];
+            labName?: string | null;
+            notes?: string | null;
+            previousCheckId?: string | null;
+            treatmentId?: string | null;
+            followUp?: {
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                dueDate: string;
+                name?: string;
+                assigneeId?: string;
+            };
+        };
+        GetV1ParasiteChecksByIdCheckIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                /** @enum {string} */
+                method: "famacha" | "fecal_egg_count";
+                herdId: string | null;
+                labName: string | null;
+                notes: string | null;
+                previousCheckId: string | null;
+                treatmentId: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                herd: {
+                    id: string;
+                    name: string;
+                } | null;
+                treatment: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                } | null;
+                animals: {
+                    animalId: string;
+                    name: string;
+                    earTagNumber: string | null;
+                    famachaScore: number | null;
+                }[];
+                fecSamples: {
+                    id: string;
+                    label: string | null;
+                    pooled: boolean;
+                    animalIds: string[];
+                    results: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        countPerGram: number;
+                    }[];
+                }[];
+                followUpTasks: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dueDate: string | null;
+                    /** @enum {string} */
+                    status: "todo" | "done";
+                }[];
+                summary: {
+                    animalCount: number;
+                    famachaAverage: number | null;
+                    famachaDistribution: {
+                        score: number;
+                        count: number;
+                    }[];
+                    fecByParasite: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        sampleCount: number;
+                        minCountPerGram: number;
+                        avgCountPerGram: number;
+                        maxCountPerGram: number;
+                    }[];
+                };
+                comparisonToPrevious: {
+                    previousCheckId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    previousDate: string;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                } | null;
+                rechecks: {
+                    id: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    treatment: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                    } | null;
+                    animals: {
+                        animalId: string;
+                        famachaScore: number | null;
+                    }[];
+                    famachaAverage: number | null;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                }[];
+            };
+        };
+        PatchV1ParasiteChecksByIdCheckIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                /** @enum {string} */
+                method: "famacha" | "fecal_egg_count";
+                herdId: string | null;
+                labName: string | null;
+                notes: string | null;
+                previousCheckId: string | null;
+                treatmentId: string | null;
+                createdBy: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                updatedAt: string;
+                herd: {
+                    id: string;
+                    name: string;
+                } | null;
+                treatment: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                } | null;
+                animals: {
+                    animalId: string;
+                    name: string;
+                    earTagNumber: string | null;
+                    famachaScore: number | null;
+                }[];
+                fecSamples: {
+                    id: string;
+                    label: string | null;
+                    pooled: boolean;
+                    animalIds: string[];
+                    results: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        countPerGram: number;
+                    }[];
+                }[];
+                followUpTasks: {
+                    id: string;
+                    name: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    dueDate: string | null;
+                    /** @enum {string} */
+                    status: "todo" | "done";
+                }[];
+                summary: {
+                    animalCount: number;
+                    famachaAverage: number | null;
+                    famachaDistribution: {
+                        score: number;
+                        count: number;
+                    }[];
+                    fecByParasite: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        sampleCount: number;
+                        minCountPerGram: number;
+                        avgCountPerGram: number;
+                        maxCountPerGram: number;
+                    }[];
+                };
+                comparisonToPrevious: {
+                    previousCheckId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    previousDate: string;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                } | null;
+                rechecks: {
+                    id: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    /** @enum {string} */
+                    method: "famacha" | "fecal_egg_count";
+                    treatment: {
+                        id: string;
+                        name: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                    } | null;
+                    animals: {
+                        animalId: string;
+                        famachaScore: number | null;
+                    }[];
+                    famachaAverage: number | null;
+                    famachaAverageChange: number | null;
+                    fecReduction: {
+                        /** @enum {string} */
+                        parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                        beforeAvgCountPerGram: number;
+                        afterAvgCountPerGram: number;
+                        afterSampleCount: number;
+                        reductionPercent: number | null;
+                    }[];
+                }[];
+            };
+        };
+        PatchV1ParasiteChecksByIdCheckIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            /** @enum {string} */
+            method?: "famacha" | "fecal_egg_count";
+            herdId?: string | null;
+            animals?: {
+                animalId: string;
+                famachaScore?: number | null;
+            }[];
+            fecSamples?: {
+                label?: string | null;
+                animalIds: string[];
+                results: {
+                    /** @enum {string} */
+                    parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
+                    countPerGram: number;
+                }[];
+            }[];
+            labName?: string | null;
+            notes?: string | null;
+            previousCheckId?: string | null;
+            treatmentId?: string | null;
+        };
+        DeleteV1ParasiteChecksByIdCheckIdPositiveResponse: {
+            data: Record<string, never>;
         };
         GetV1TreatmentsPositiveResponse: {
             data: {
@@ -12490,7 +13351,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     /** @enum {string} */
-                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd";
+                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd" | "parasite_check";
                     linkedId: string;
                     displayName: string | null;
                 }[];
@@ -12524,7 +13385,7 @@ export interface components {
             /** @default [] */
             links: {
                 /** @enum {string} */
-                linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd";
+                linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd" | "parasite_check";
                 linkedId: string;
             }[];
             checklistItems?: {
@@ -12581,7 +13442,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     /** @enum {string} */
-                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd";
+                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd" | "parasite_check";
                     linkedId: string;
                     displayName: string | null;
                 }[];
@@ -12630,7 +13491,7 @@ export interface components {
                     id: string;
                     taskId: string;
                     /** @enum {string} */
-                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd";
+                    linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd" | "parasite_check";
                     linkedId: string;
                     displayName: string | null;
                 }[];
@@ -12663,7 +13524,7 @@ export interface components {
             } | null;
             links?: {
                 /** @enum {string} */
-                linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd";
+                linkType: "animal" | "plot" | "contact" | "order" | "wiki_entry" | "treatment" | "herd" | "parasite_check";
                 linkedId: string;
             }[];
             checklistItems?: {
@@ -13307,7 +14168,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description GET /v1/layers/plots/farms/:federalFarmId/bbox Parameter */
-                buffer?: components["schemas"]["GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer"];
+                buffer?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path: {
@@ -13342,7 +14203,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description HEAD /v1/layers/plots/farms/:federalFarmId/bbox Parameter */
-                buffer?: components["schemas"]["GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer"];
+                buffer?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path: {
@@ -21470,6 +22331,76 @@ export interface operations {
             };
         };
     };
+    GetV1AnimalsByIdAnimalIdParasiteHistory: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/parasiteHistory Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/parasiteHistory Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdParasiteHistoryPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/parasiteHistory Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdParasiteHistory: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/parasiteHistory Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/parasiteHistory Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/parasiteHistory Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1AnimalsJournalByIdEntryId: {
         parameters: {
             query?: never;
@@ -22137,6 +23068,76 @@ export interface operations {
             };
         };
     };
+    GetV1AnimalsHerdsByIdHerdIdParasiteOverview: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/herds/byId/:herdId/parasiteOverview Parameter */
+                herdId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/herds/byId/:herdId/parasiteOverview Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsHerdsByIdHerdIdParasiteOverviewPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/herds/byId/:herdId/parasiteOverview Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsHerdsByIdHerdIdParasiteOverview: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/herds/byId/:herdId/parasiteOverview Parameter */
+                herdId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/herds/byId/:herdId/parasiteOverview Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/herds/byId/:herdId/parasiteOverview Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleId: {
         parameters: {
             query?: never;
@@ -22716,6 +23717,241 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    GetV1ParasiteChecks: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description GET /v1/parasiteChecks Parameter */
+                herdId?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description GET /v1/parasiteChecks Parameter */
+                animalId?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/parasiteChecks Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1ParasiteChecksPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/parasiteChecks Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ParasiteChecks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/parasiteChecks Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1ParasiteChecksRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/parasiteChecks Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ParasiteChecksPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/parasiteChecks Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1ParasiteChecks: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description HEAD /v1/parasiteChecks Parameter */
+                herdId?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+                /** @description HEAD /v1/parasiteChecks Parameter */
+                animalId?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/parasiteChecks Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/parasiteChecks Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1ParasiteChecksByIdCheckId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/parasiteChecks/byId/:checkId Parameter */
+                checkId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/parasiteChecks/byId/:checkId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1ParasiteChecksByIdCheckIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/parasiteChecks/byId/:checkId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1ParasiteChecksByIdCheckId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/parasiteChecks/byId/:checkId Parameter */
+                checkId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/parasiteChecks/byId/:checkId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1ParasiteChecksByIdCheckIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/parasiteChecks/byId/:checkId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1ParasiteChecksByIdCheckId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/parasiteChecks/byId/:checkId Parameter */
+                checkId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/parasiteChecks/byId/:checkId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/parasiteChecks/byId/:checkId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1ParasiteChecksByIdCheckId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/parasiteChecks/byId/:checkId Parameter */
+                checkId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/parasiteChecks/byId/:checkId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1ParasiteChecksByIdCheckIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/parasiteChecks/byId/:checkId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1ParasiteChecksByIdCheckIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/parasiteChecks/byId/:checkId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };

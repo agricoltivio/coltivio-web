@@ -313,3 +313,32 @@ export type MembershipStatus =
 
 export type MembershipPayment =
   components["schemas"]["GetV1MembershipPaymentsPositiveResponse"]["data"]["result"][number];
+
+// Parasite control types
+export type ParasiteCheck =
+  components["schemas"]["GetV1ParasiteChecksPositiveResponse"]["data"]["result"][number];
+
+export type ParasiteCheckMethod = ParasiteCheck["method"];
+
+export type ParasiteType =
+  ParasiteCheck["fecSamples"][number]["results"][number]["parasiteType"];
+
+export type ParasiteCheckCreateInput =
+  components["schemas"]["PostV1ParasiteChecksRequestBody"];
+
+export type AnimalParasiteHistory =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdParasiteHistoryPositiveResponse"]["data"];
+
+export const PARASITE_TYPES: ParasiteType[] = [
+  "strongyles",
+  "haemonchus",
+  "nematodirus",
+  "trichuris",
+  "strongyloides",
+  "moniezia",
+  "coccidia",
+  "liver_fluke",
+  "small_liver_fluke",
+  "lungworm",
+  "other",
+];

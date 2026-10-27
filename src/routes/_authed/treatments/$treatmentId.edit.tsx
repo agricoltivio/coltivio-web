@@ -74,6 +74,8 @@ function EditTreatment() {
     onSuccess: () => {
       navigate({ to: "/treatments/$treatmentId", params: { treatmentId } });
       queryClient.invalidateQueries({ queryKey: ["treatments"] });
+      // Parasite checks show their linked treatment
+      queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["animals"] });
     },
   });

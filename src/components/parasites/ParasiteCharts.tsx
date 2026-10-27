@@ -1,0 +1,310 @@
+import ReactECharts from "echarts-for-react";
+import type { EChartsOption } from "echarts";
+import { useTranslation } from "react-i18next";
+import type { ParasiteType } from "@/api/types";
+import { cn, parseDateOnly } from "@/lib/utils";
+
+// FAMACHA card colors: 1 = red mucosa (healthy) … 5 = white (severely anaemic)
+export const FAMACHA_COLORS: Record<number, string> = {
+  1: "#B71C1C",
+  2: "#E53935",
+  3: "#F06292",
+  4: "#F8BBD0",
+  5: "#FDF2F5",
+};
+
+export const FAMACHA_TEXT_COLORS: Record<number, string> = {
+  1: "#FFFFFF",
+  2: "#FFFFFF",
+  3: "#FFFFFF",
+  4: "#5D4037",
+  5: "#5D4037",
+};
+
+const LINE_COLOR = "#0f766e";
+const TREATMENT_COLOR = "#f59e0b";
+// Initially visible values; older ones are reachable with the zoom slider
+const VISIBLE_POINTS = 10;
+
+// Labs count oocysts for coccidia and larvae for lungworms, eggs for all others
+export function parasiteCountUnitKey(parasiteType: ParasiteType) {
+  if (parasiteType === "coccidia") return "parasiteChecks.countUnits.opg";
+  if (parasiteType === "lungworm") return "parasiteChecks.countUnits.lpg";
+  return "parasiteChecks.countUnits.epg";
+}
+
+// Animals are shown by name, the ear tag only when they have no name
+export function animalDisplayName(
+  name: string,
+  earTagNumber: string | null | undefined,
+): string {
+  return name.trim() || earTagNumber || "–";
+}
+
+export function FamachaBadge({ score }: { score: number }) {
+  return (
+    <span
+      className="inline-flex size-6 items-center justify-center rounded-full border text-xs font-bold"
+      style={{
+        backgroundColor: FAMACHA_COLORS[score],
+        color: FAMACHA_TEXT_COLORS[score],
+      }}
+    >
+      {score}
+    </span>
+  );
+}
+
+// Buttons for FAMACHA 1–5 in the colors of the FAMACHA card
+export function FamachaScoreButtons({
+  value,
+  onChange,
+}: {
+  value: number | null;
+  onChange: (score: number | null) => void;
+}) {
+  return (
+    <div className="flex gap-1.5">
+      {[1, 2, 3, 4, 5].map((score) => {
+        const selected = value === score;
+        return (
+          <button
+            key={score}
+            type="button"
+            // Clicking the selected score again clears it
+            onClick={() => onChange(selected ? null : score)}
+            className={cn(
+              "size-8 rounded-full border text-sm font-bold transition-opacity",
+              selected && "ring-2 ring-primary ring-offset-1",
+              value !== null && !selected && "opacity-35",
+            )}
+            style={{
+              backgroundColor: FAMACHA_COLORS[score],
+              color: FAMACHA_TEXT_COLORS[score],
+            }}
+          >
+            {score}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+export type TimelinePoint = { date: string; value: number };
+
+function toTimestamp(date: string) {
+  return parseDateOnly(date).getTime();
+}
+
+// Value over time with dashed treatment markers. Shows the latest values,
+// older ones are reachable via the zoom slider.
+export function TimelineChart({
+  points,
+  treatmentDates = [],
+  seriesName,
+  unitLabel,
+  famachaScale = false,
+  height = 240,
+}: {
+  points: TimelinePoint[];
+  treatmentDates?: string[];
+  seriesName: string;
+  unitLabel?: string;
+  // FAMACHA: fixed 1–5 axis with 1 (healthy) on top
+  famachaScale?: boolean;
+  height?: number;
+}) {
+  const { t, i18n } = useTranslation();
+  const sortedPoints = [...points].sort(
+    (a, b) => toTimestamp(a.date) - toTimestamp(b.date),
+  );
+  const timestamps = sortedPoints.map((point) => toTimestamp(point.date));
+  const minTime = Math.min(...timestamps);
+  const maxTime = Math.max(...timestamps);
+  const isZoomed = sortedPoints.length > VISIBLE_POINTS;
+
+  // Only treatments within the data range, an old unrelated one would stretch the axis
+  const visibleTreatmentTimes = treatmentDates
+    .map(toTimestamp)
+    .filter((time) => time >= minTime && time <= maxTime);
+
+  const option: EChartsOption = {
+    tooltip: {
+      trigger: "axis",
+      valueFormatter: (value) =>
+        typeof value === "number"
+          ? `${Math.round(value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`
+          : String(value),
+    },
+    grid: { left: 45, right: 16, top: 16, bottom: isZoomed ? 56 : 30 },
+    xAxis: {
+      type: "time",
+      axisLabel: {
+        fontSize: 10,
+        formatter: (value: number) =>
+          new Date(value).toLocaleDateString(i18n.language, {
+            month: "short",
+            year: "2-digit",
+          }),
+      },
+    },
+    yAxis: famachaScale
+      ? { type: "value", min: 1, max: 5, interval: 1, inverse: true }
+      : { type: "value", min: 0, axisLabel: { fontSize: 10 } },
+    dataZoom: isZoomed
+      ? [
+          {
+            type: "slider",
+            height: 18,
+            bottom: 8,
+            startValue: timestamps[timestamps.length - VISIBLE_POINTS],
+            endValue: maxTime,
+          },
+          { type: "inside" },
+        ]
+      : [],
+    series: [
+      {
+        name: seriesName,
+        type: "line",
+        data: sortedPoints.map((point) => [
+          toTimestamp(point.date),
+          point.value,
+        ]),
+        lineStyle: { color: LINE_COLOR, width: 2 },
+        itemStyle: { color: LINE_COLOR },
+        symbolSize: 7,
+        markLine: {
+          symbol: "none",
+          silent: true,
+          label: { show: false },
+          lineStyle: { color: TREATMENT_COLOR, type: "dashed", width: 1.5 },
+          data: visibleTreatmentTimes.map((time) => ({ xAxis: time })),
+        },
+      },
+    ],
+  };
+
+  return (
+    <div>
+      <ReactECharts option={option} style={{ height, width: "100%" }} notMerge />
+      <ChartLegend
+        items={[
+          { color: LINE_COLOR, label: seriesName },
+          ...(visibleTreatmentTimes.length > 0
+            ? [{ color: TREATMENT_COLOR, label: t("parasiteChecks.treatment") }]
+            : []),
+        ]}
+      />
+    </div>
+  );
+}
+
+export type FamachaChartCheck = {
+  id: string;
+  date: string;
+  animals: { famachaScore: number | null }[];
+};
+
+// One horizontal bar per FAMACHA check (newest on top), split into the scores
+// with the number of animals in each segment
+export function FamachaDistributionChart({
+  checks,
+  height = 240,
+}: {
+  checks: FamachaChartCheck[];
+  height?: number;
+}) {
+  const { i18n } = useTranslation();
+  const sortedChecks = [...checks]
+    .filter((check) =>
+      check.animals.some((checkAnimal) => checkAnimal.famachaScore !== null),
+    )
+    .sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date));
+  const isZoomed = sortedChecks.length > VISIBLE_POINTS;
+
+  const option: EChartsOption = {
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    grid: { left: 70, right: isZoomed ? 40 : 16, top: 8, bottom: 24 },
+    xAxis: { type: "value", minInterval: 1, axisLabel: { fontSize: 10 } },
+    yAxis: {
+      type: "category",
+      // Newest check first, shown on top
+      inverse: true,
+      data: sortedChecks.map((check) =>
+        parseDateOnly(check.date).toLocaleDateString(i18n.language),
+      ),
+      axisLabel: { fontSize: 10 },
+    },
+    dataZoom: isZoomed
+      ? [
+          {
+            type: "slider",
+            yAxisIndex: 0,
+            width: 14,
+            right: 8,
+            startValue: 0,
+            endValue: VISIBLE_POINTS - 1,
+          },
+          { type: "inside", yAxisIndex: 0 },
+        ]
+      : [],
+    series: [1, 2, 3, 4, 5].map((score) => ({
+      name: `FAMACHA ${score}`,
+      type: "bar" as const,
+      stack: "scores",
+      barMaxWidth: 22,
+      data: sortedChecks.map((check) => {
+        const count = check.animals.filter(
+          (checkAnimal) => checkAnimal.famachaScore === score,
+        ).length;
+        // Empty segments stay hidden
+        return count > 0 ? count : null;
+      }),
+      itemStyle: {
+        color: FAMACHA_COLORS[score],
+        borderColor: "#d1d5db",
+        borderWidth: 1,
+      },
+      label: {
+        show: true,
+        color: FAMACHA_TEXT_COLORS[score],
+        fontSize: 11,
+        fontWeight: "bold" as const,
+      },
+    })),
+  };
+
+  return (
+    <div>
+      <ReactECharts option={option} style={{ height, width: "100%" }} notMerge />
+      <ChartLegend
+        items={[1, 2, 3, 4, 5].map((score) => ({
+          color: FAMACHA_COLORS[score],
+          label: String(score),
+        }))}
+      />
+    </div>
+  );
+}
+
+function ChartLegend({
+  items,
+}: {
+  items: { color: string; label: string }[];
+}) {
+  return (
+    <div className="mt-1 flex flex-wrap gap-3">
+      {items.map((item) => (
+        <div key={item.label} className="flex items-center gap-1.5">
+          <span
+            className="size-2.5 rounded-full border"
+            style={{ backgroundColor: item.color }}
+          />
+          <span className="text-xs text-muted-foreground">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}

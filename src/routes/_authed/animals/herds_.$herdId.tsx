@@ -163,12 +163,25 @@ function HerdDetailPage() {
       showBackButton
       backTo={() => navigate({ to: returnTo ?? "/animals/herds" })}
       actions={
-        canWriteAnimals && (
-          <Button variant="outline" onClick={() => setEditHerdOpen(true)}>
-            <Pencil className="h-4 w-4" />
-            {t("common.edit")}
+        <>
+          <Button
+            variant="outline"
+            onClick={() =>
+              navigate({
+                to: "/animals/herds/$herdId/parasite-overview",
+                params: { herdId },
+              })
+            }
+          >
+            {t("parasiteChecks.title")}
           </Button>
-        )
+          {canWriteAnimals && (
+            <Button variant="outline" onClick={() => setEditHerdOpen(true)}>
+              <Pencil className="h-4 w-4" />
+              {t("common.edit")}
+            </Button>
+          )}
+        </>
       }
     >
       <div className="space-y-6">

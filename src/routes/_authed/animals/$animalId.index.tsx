@@ -141,6 +141,11 @@ function AnimalDetailPage() {
               {t("animals.familyTree")}
             </Link>
           </Button>
+          <Button variant="outline" asChild>
+            <Link to="/animals/$animalId/parasite-history" params={{ animalId }}>
+              {t("parasiteChecks.parasiteHistory")}
+            </Link>
+          </Button>
           {canWriteAnimals && (
             <Button variant="outline" asChild>
               <Link to="/animals/$animalId/edit" params={{ animalId }}>

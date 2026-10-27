@@ -54,6 +54,8 @@ function TreatmentDetailPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["treatments"] });
+      // Parasite checks show their linked treatment
+      queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["animals"] });
       navigate({ to: "/animals/treatments-journal" });
     },
