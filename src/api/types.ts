@@ -248,7 +248,9 @@ export type WikiEntryVisibility = WikiEntry["visibility"];
 
 export type MyWikiEntry =
   components["schemas"]["GetV1WikiMyEntriesPositiveResponse"]["data"]["result"][number];
-export type MyWikiEntryActiveChangeRequest = NonNullable<MyWikiEntry["activeChangeRequest"]>;
+export type MyWikiEntryActiveChangeRequest = NonNullable<
+  MyWikiEntry["activeChangeRequest"]
+>;
 
 export type WikiChangeRequest =
   components["schemas"]["GetV1WikiMyChangeRequestsPositiveResponse"]["data"]["result"][number];
@@ -323,6 +325,18 @@ export type ParasiteCheckMethod = ParasiteCheck["method"];
 export type ParasiteType =
   ParasiteCheck["fecSamples"][number]["results"][number]["parasiteType"];
 
+export type ParasiteResult =
+  ParasiteCheck["fecSamples"][number]["results"][number];
+
+export type ParasiteResultGrade = NonNullable<ParasiteResult["grade"]>;
+
+export const PARASITE_RESULT_GRADES: ParasiteResultGrade[] = [
+  "negative",
+  "low",
+  "medium",
+  "high",
+];
+
 export type ParasiteCheckCreateInput =
   components["schemas"]["PostV1ParasiteChecksRequestBody"];
 
@@ -334,6 +348,7 @@ export const PARASITE_TYPES: ParasiteType[] = [
   "haemonchus",
   "nematodirus",
   "trichuris",
+  "capillaria",
   "strongyloides",
   "moniezia",
   "coccidia",

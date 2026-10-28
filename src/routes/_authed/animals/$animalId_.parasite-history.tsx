@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { animalQueryOptions } from "@/api/animals.queries";
 import { animalParasiteHistoryQueryOptions } from "@/api/parasiteChecks.queries";
-import { PARASITE_TYPES } from "@/api/types";
+import { PARASITE_RESULT_GRADES, PARASITE_TYPES } from "@/api/types";
 import { formatDateOnly, parseDateOnly } from "@/lib/utils";
 import { PageContent } from "@/components/PageContent";
 import { ChartCarouselCard } from "@/components/parasites/ChartCarouselCard";
@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
   animalDisplayName,
   FamachaBadge,
+  formatResultValue,
   parasiteCountUnitKey,
   TimelineChart,
 } from "@/components/parasites/ParasiteCharts";
@@ -51,17 +52,31 @@ function AnimalParasiteHistoryPage() {
     (treatment) => treatment.startDate,
   );
 
-  // One chart per parasite type this animal has results for, then FAMACHA
+  // One chart per parasite type this animal has results for, then FAMACHA.
+  // Counts and grades can't share an axis: a parasite with any counts gets a
+  // count chart, one with only grades a grade chart (– / + / ++ / +++).
   const fecCharts = PARASITE_TYPES.flatMap((parasiteType) => {
-    const points = (history?.fecResults ?? []).flatMap((fecResult) => {
+    const results = (history?.fecResults ?? []).flatMap((fecResult) => {
       const result = fecResult.results.find(
         (entry) => entry.parasiteType === parasiteType,
       );
-      return result
-        ? [{ date: fecResult.date, value: result.countPerGram }]
-        : [];
+      return result ? [{ date: fecResult.date, result }] : [];
     });
-    return points.length > 0 ? [{ parasiteType, points }] : [];
+    const countPoints = results.flatMap(({ date, result }) =>
+      result.countPerGram !== null
+        ? [{ date, value: result.countPerGram }]
+        : [],
+    );
+    if (countPoints.length > 0)
+      return [{ parasiteType, points: countPoints, graded: false }];
+    const gradePoints = results.flatMap(({ date, result }) =>
+      result.grade !== null
+        ? [{ date, value: PARASITE_RESULT_GRADES.indexOf(result.grade) }]
+        : [],
+    );
+    return gradePoints.length > 0
+      ? [{ parasiteType, points: gradePoints, graded: true }]
+      : [];
   });
   const famachaPoints = (history?.checks ?? []).flatMap((entry) =>
     entry.famachaScore === null
@@ -95,7 +110,7 @@ function AnimalParasiteHistoryPage() {
           title: fecResult.results
             .map(
               (result) =>
-                `${t(`parasiteChecks.parasiteTypes.${result.parasiteType}`)} ${Math.round(result.countPerGram)} ${t(parasiteCountUnitKey(result.parasiteType))}`,
+                `${t(`parasiteChecks.parasiteTypes.${result.parasiteType}`)} ${formatResultValue(result, t)}`,
             )
             .join(" · "),
           subtitle: fecResult.pooled
@@ -172,9 +187,9 @@ function AnimalParasiteHistoryPage() {
             )}
             {fecCharts.length > 0 && (
               <ChartCarouselCard
-                pages={fecCharts.map(({ parasiteType, points }) => ({
+                pages={fecCharts.map(({ parasiteType, points, graded }) => ({
                   key: parasiteType,
-                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${t(parasiteCountUnitKey(parasiteType))})`,
+                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${graded ? t("parasiteChecks.grade") : t(parasiteCountUnitKey(parasiteType))})`,
                   content: (
                     <TimelineChart
                       points={points}
@@ -182,7 +197,12 @@ function AnimalParasiteHistoryPage() {
                       seriesName={t(
                         `parasiteChecks.parasiteTypes.${parasiteType}`,
                       )}
-                      unitLabel={t(parasiteCountUnitKey(parasiteType))}
+                      unitLabel={
+                        graded
+                          ? undefined
+                          : t(parasiteCountUnitKey(parasiteType))
+                      }
+                      gradeScale={graded}
                     />
                   ),
                 }))}

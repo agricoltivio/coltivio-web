@@ -1,5 +1,6 @@
 import { parasiteChecksQueryOptions } from "@/api/parasiteChecks.queries";
 import {
+  PARASITE_RESULT_GRADES,
   PARASITE_TYPES,
   type AnimalType,
   type ParasiteCheck,
@@ -15,16 +16,20 @@ import {
 } from "@/components/parasites/ParasiteCharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { formatDateOnly } from "@/lib/utils";
+import { cn, formatDateOnly } from "@/lib/utils";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ColumnDef } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { z } from "zod";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authed/animals/parasite-checks")({
+  // Selected animal type, so e.g. saving a cow check returns to the cows
+  validateSearch: z.object({
+    animalType: z.string().optional(),
+  }),
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(parasiteChecksQueryOptions());
   },
@@ -40,6 +45,24 @@ function fecCoverage(check: ParasiteCheck, parasiteType: ParasiteType) {
     .reduce((sum, sample) => sum + sample.animalIds.length, 0);
 }
 
+// Average grade (index in PARASITE_RESULT_GRADES) over the graded samples of a
+// check, each sample weighted by the number of animals it covers. Lies between
+// the steps, e.g. 1.5 = between + and ++.
+function averageGradeIndex(check: ParasiteCheck, parasiteType: ParasiteType) {
+  let weightedSum = 0;
+  let animalCount = 0;
+  for (const sample of check.fecSamples) {
+    const result = sample.results.find(
+      (entry) => entry.parasiteType === parasiteType,
+    );
+    if (!result?.grade) continue;
+    weightedSum +=
+      PARASITE_RESULT_GRADES.indexOf(result.grade) * sample.animalIds.length;
+    animalCount += sample.animalIds.length;
+  }
+  return animalCount > 0 ? weightedSum / animalCount : null;
+}
+
 function ParasiteChecksPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -48,28 +71,23 @@ function ParasiteChecksPage() {
   const allChecks = useMemo(() => checksQuery.data ?? [], [checksQuery.data]);
 
   // A check only contains one animal type; offer the types that have checks,
-  // the most common one first
+  // sorted alphabetically so the tabs don't move when checks are added
   const animalTypes = useMemo(() => {
-    const countsByType = new Map<AnimalType, number>();
+    const types = new Set<AnimalType>();
     for (const check of allChecks) {
-      if (check.animalType) {
-        countsByType.set(
-          check.animalType,
-          (countsByType.get(check.animalType) ?? 0) + 1,
-        );
-      }
+      if (check.animalType) types.add(check.animalType);
     }
-    return [...countsByType.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(([animalType]) => animalType);
-  }, [allChecks]);
-  const [selectedAnimalType, setSelectedAnimalType] = useState<
-    AnimalType | undefined
-  >();
+    return [...types].sort((a, b) =>
+      t(`animals.typesPlural.${a}`).localeCompare(
+        t(`animals.typesPlural.${b}`),
+      ),
+    );
+  }, [allChecks, t]);
+  const { animalType: animalTypeParam } = Route.useSearch();
+  // Unknown or missing types fall back to the first tab
   const animalType =
-    selectedAnimalType && animalTypes.includes(selectedAnimalType)
-      ? selectedAnimalType
-      : animalTypes[0];
+    animalTypes.find((typeOption) => typeOption === animalTypeParam) ??
+    animalTypes[0];
 
   // Charts include re-checks; every value shows how many animals it is based on
   // Checks whose animals were all deleted have no type; they stay listed so they
@@ -80,8 +98,10 @@ function ParasiteChecksPage() {
   const treatmentDates = typeChecks.flatMap((check) =>
     check.treatment ? [check.treatment.startDate] : [],
   );
+  // Counts and grades can't share an axis: a parasite with any counts gets the
+  // average count chart, one with only grades the average grade per check
   const fecCharts = PARASITE_TYPES.flatMap((parasiteType) => {
-    const points = typeChecks.flatMap((check) => {
+    const countPoints = typeChecks.flatMap((check) => {
       const entry = check.summary.fecByParasite.find(
         (fecEntry) => fecEntry.parasiteType === parasiteType,
       );
@@ -95,7 +115,23 @@ function ParasiteChecksPage() {
           ]
         : [];
     });
-    return points.length > 0 ? [{ parasiteType, points }] : [];
+    if (countPoints.length > 0)
+      return [{ parasiteType, points: countPoints, graded: false }];
+    const gradePoints = typeChecks.flatMap((check) => {
+      const averageGrade = averageGradeIndex(check, parasiteType);
+      return averageGrade !== null
+        ? [
+            {
+              date: check.date,
+              value: averageGrade,
+              coverage: fecCoverage(check, parasiteType),
+            },
+          ]
+        : [];
+    });
+    return gradePoints.length > 0
+      ? [{ parasiteType, points: gradePoints, graded: true }]
+      : [];
   });
   const famachaChecks = typeChecks.filter(
     (check) => check.method === "famacha",
@@ -152,27 +188,30 @@ function ParasiteChecksPage() {
     >
       <div className="space-y-6">
         {/* Charts and list are always for one animal type */}
-        {animalTypes.length > 0 && (
-          <div className="flex items-center gap-3">
-            <Label htmlFor="animalType">{t("parasiteChecks.animalType")}</Label>
-            <select
-              id="animalType"
-              className="rounded-md border bg-background px-3 py-2 text-sm"
-              value={animalType}
-              onChange={(event) =>
-                setSelectedAnimalType(
-                  animalTypes.find(
-                    (typeOption) => typeOption === event.target.value,
-                  ),
-                )
-              }
-            >
-              {animalTypes.map((typeOption) => (
-                <option key={typeOption} value={typeOption}>
-                  {t(`animals.typesPlural.${typeOption}`)}
-                </option>
-              ))}
-            </select>
+        {/* Hidden when there is nothing to choose */}
+        {animalTypes.length > 1 && (
+          <div className="inline-flex rounded-lg border p-1">
+            {animalTypes.map((typeOption) => (
+              <button
+                key={typeOption}
+                type="button"
+                onClick={() =>
+                  navigate({
+                    to: "/animals/parasite-checks",
+                    search: { animalType: typeOption },
+                    replace: true,
+                  })
+                }
+                className={cn(
+                  "rounded-md px-4 py-1.5 text-sm font-medium",
+                  animalType === typeOption
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                {t(`animals.typesPlural.${typeOption}`)}
+              </button>
+            ))}
           </div>
         )}
 
@@ -200,15 +239,27 @@ function ParasiteChecksPage() {
               )}
               {fecCharts.length > 0 && (
                 <ChartCarouselCard
-                  pages={fecCharts.map(({ parasiteType, points }) => ({
+                  pages={fecCharts.map(({ parasiteType, points, graded }) => ({
                     key: parasiteType,
-                    title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
+                    title: graded
+                      ? `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${t("parasiteChecks.grade")})`
+                      : `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
                     content: (
                       <TimelineChart
                         points={points}
                         treatmentDates={treatmentDates}
-                        seriesName={t("parasiteChecks.averagePerCheck")}
-                        unitLabel={t(parasiteCountUnitKey(parasiteType))}
+                        seriesName={
+                          graded
+                            ? t("parasiteChecks.averageGradePerCheck")
+                            : t("parasiteChecks.averagePerCheck")
+                        }
+                        unitLabel={
+                          graded
+                            ? undefined
+                            : t(parasiteCountUnitKey(parasiteType))
+                        }
+                        gradeScale={graded}
+                        averageValues
                       />
                     ),
                   }))}

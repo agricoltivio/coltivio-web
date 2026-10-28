@@ -1827,6 +1827,7 @@
       "individual": "Échantillons individuels"
     },
     "labName": "Laboratoire",
+    "labNameOptional": "Laboratoire (facultatif)",
     "sampleLabel": "Désignation (facultatif)",
     "individualInfo": "Un résultat par animal. Tous les animaux ne doivent pas être saisis.",
     "parasiteTypes": {
@@ -1834,6 +1835,7 @@
       "haemonchus": "Ver rouge",
       "nematodirus": "Nematodirus",
       "trichuris": "Trichures",
+      "capillaria": "Capillaire",
       "strongyloides": "Strongyloïdes",
       "moniezia": "Ténias",
       "coccidia": "Coccidies",
@@ -1881,13 +1883,39 @@
     "duplicateParasiteType": "Chaque parasite ne peut apparaître qu'une fois par échantillon",
     "name": "Nom",
     "nameOptional": "Nom (facultatif)",
-    "selectFromHerd": "Animaux du troupeau",
     "mixedAnimalTypes": "Un contrôle ne peut contenir que des animaux d'une seule espèce.",
     "averagePerCheck": "Ø par contrôle",
+    "averageGradePerCheck": "Ø degré par contrôle",
     "chartCountsInfo": "Chiffres des graphiques = nombre d'animaux contrôlés",
     "animalType": "Espèce",
     "changePercent": "variation (%)",
     "changeToBase": "Variation par rapport au contrôle initial",
-    "allBaseAnimalsDead": "Tous les animaux du contrôle initial sont morts ou n'existent plus."
+    "allBaseAnimalsDead": "Tous les animaux du contrôle initial sont morts ou n'existent plus.",
+    "grade": "Degré",
+    "grades": {
+      "negative": "–",
+      "low": "+ faible",
+      "medium": "++ moyen",
+      "high": "+++ fort"
+    },
+    "gradesShort": {
+      "negative": "–",
+      "low": "+",
+      "medium": "++",
+      "high": "+++"
+    },
+    "resultKind": "Type de résultat"
+  },
+  "animalPicker": {
+    "title": "Sélectionner des animaux",
+    "change": "Modifier la sélection",
+    "selectedCount_one": "{{count}} animal sélectionné",
+    "selectedCount_other": "{{count}} animaux sélectionnés",
+    "more": "+{{count}} autres",
+    "searchPlaceholder": "Rechercher nom ou marque auriculaire",
+    "selectedOnly": "Sélectionnés uniquement",
+    "selectAll": "Tout sélectionner ({{count}})",
+    "confirm": "Appliquer ({{count}})",
+    "herd": "Troupeau"
   }
 }

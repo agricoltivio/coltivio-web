@@ -1827,6 +1827,7 @@
       "individual": "Einzelproben"
     },
     "labName": "Labor",
+    "labNameOptional": "Labor (optional)",
     "sampleLabel": "Probenbezeichnung (optional)",
     "individualInfo": "Pro Tier ein Ergebnis. Nicht jedes Tier muss erfasst werden.",
     "parasiteTypes": {
@@ -1834,6 +1835,7 @@
       "haemonchus": "Roter Magenwurm",
       "nematodirus": "Nematodirus",
       "trichuris": "Peitschenwurm",
+      "capillaria": "Haarwurm",
       "strongyloides": "Zwergfadenwurm",
       "moniezia": "Bandwurm",
       "coccidia": "Kokzidien",
@@ -1881,13 +1883,39 @@
     "duplicateParasiteType": "Jeder Parasit darf pro Probe nur einmal vorkommen",
     "name": "Name",
     "nameOptional": "Name (optional)",
-    "selectFromHerd": "Tiere aus Herde",
     "mixedAnimalTypes": "Eine Kontrolle kann nur Tiere einer Tierart enthalten.",
     "averagePerCheck": "Ø pro Kontrolle",
+    "averageGradePerCheck": "Ø Stufe pro Kontrolle",
     "chartCountsInfo": "Zahlen in den Diagrammen = Anzahl geprüfter Tiere",
     "animalType": "Tierart",
     "changePercent": "Veränderung (%)",
     "changeToBase": "Veränderung zur Ausgangskontrolle",
-    "allBaseAnimalsDead": "Alle Tiere der Ausgangskontrolle sind verstorben oder nicht mehr vorhanden."
+    "allBaseAnimalsDead": "Alle Tiere der Ausgangskontrolle sind verstorben oder nicht mehr vorhanden.",
+    "grade": "Stufe",
+    "grades": {
+      "negative": "–",
+      "low": "+ gering",
+      "medium": "++ mittel",
+      "high": "+++ stark"
+    },
+    "gradesShort": {
+      "negative": "–",
+      "low": "+",
+      "medium": "++",
+      "high": "+++"
+    },
+    "resultKind": "Art des Resultats"
+  },
+  "animalPicker": {
+    "title": "Tiere auswählen",
+    "change": "Auswahl ändern",
+    "selectedCount_one": "{{count}} Tier ausgewählt",
+    "selectedCount_other": "{{count}} Tiere ausgewählt",
+    "more": "+{{count}} weitere",
+    "searchPlaceholder": "Name oder Ohrmarke suchen",
+    "selectedOnly": "Nur ausgewählte",
+    "selectAll": "Alle auswählen ({{count}})",
+    "confirm": "Übernehmen ({{count}})",
+    "herd": "Herde"
   }
 }

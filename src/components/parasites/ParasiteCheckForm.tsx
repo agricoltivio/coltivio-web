@@ -19,15 +19,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
+import { SelectAnimalsField } from "@/components/SelectAnimalsDialog";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { animalDisplayName, FamachaScoreButtons } from "./ParasiteCharts";
 import {
   filledResults,
   hasDuplicateParasiteType,
   newResultRows,
-  nextResultKey,
+  toResultDrafts,
   ParasiteResultsEditor,
   type ParasiteResultDraft,
 } from "./ParasiteResultsEditor";
@@ -46,16 +46,6 @@ function addDays(isoDate: string, days: number) {
   const date = parseDateOnly(isoDate);
   date.setDate(date.getDate() + days);
   return toLocalDateString(date);
-}
-
-function toResultRows(
-  results: { parasiteType: ParasiteType; countPerGram: number }[],
-): ParasiteResultDraft[] {
-  return results.map((result) => ({
-    key: nextResultKey(),
-    parasiteType: result.parasiteType,
-    countPerGram: String(result.countPerGram),
-  }));
 }
 
 export function ParasiteCheckForm({
@@ -90,8 +80,6 @@ export function ParasiteCheckForm({
   const [date, setDate] = useState(
     check ? check.date.slice(0, 10) : toLocalDateString(new Date()),
   );
-  // Only used to preselect a herd's animals, not stored with the check
-  const [herdId, setHerdId] = useState("");
   const [animalIds, setAnimalIds] = useState<string[]>(
     check?.animals.map((checkAnimal) => checkAnimal.animalId) ?? [],
   );
@@ -128,7 +116,7 @@ export function ParasiteCheckForm({
   const [pooledResults, setPooledResults] = useState<ParasiteResultDraft[]>(
     () =>
       existingPooledSample
-        ? toResultRows(existingPooledSample.results)
+        ? toResultDrafts(existingPooledSample.results)
         : newResultRows(),
   );
   // Keyed by animal, so an animal has one sample; animals without entry show an empty row
@@ -138,7 +126,7 @@ export function ParasiteCheckForm({
     Object.fromEntries(
       (check?.fecSamples ?? [])
         .filter((sample) => !sample.pooled)
-        .map((sample) => [sample.animalIds[0], toResultRows(sample.results)]),
+        .map((sample) => [sample.animalIds[0], toResultDrafts(sample.results)]),
     ),
   );
   // Stable empty rows for animals that have no results yet
@@ -203,35 +191,10 @@ export function ParasiteCheckForm({
   // A base check with re-checks keeps its animals (method is fixed when editing anyway)
   const isLockedBaseCheck = (check?.rechecks.length ?? 0) > 0;
 
-  function handleHerdChange(newHerdId: string) {
-    setHerdId(newHerdId);
-    if (!newHerdId) return;
-    // Prefill with the herd's living animals, can be adjusted afterwards
-    setAnimalIds(
-      animals
-        .filter((animal) => animal.herdId === newHerdId && !animal.dateOfDeath)
-        .map((animal) => animal.id),
-    );
-  }
-
   function animalLabel(animalId: string) {
     const animal = animalsById.get(animalId);
     return animal ? animalDisplayName(animal.name, animal.earTag?.number) : "…";
   }
-
-  // Once animals are selected, only animals of the same type can be added
-  const selectedAnimalType = animalIds
-    .map((animalId) => animalsById.get(animalId)?.type)
-    .find((type) => type !== undefined);
-  const animalOptions = animals
-    .filter((animal) => !animal.dateOfDeath || animalIds.includes(animal.id))
-    .filter(
-      (animal) => !selectedAnimalType || animal.type === selectedAnimalType,
-    )
-    .map((animal) => ({
-      value: animal.id,
-      label: `${animalDisplayName(animal.name, animal.earTag?.number)} (${t(`animals.types.${animal.type}`)})`,
-    }));
 
   // Re-checks always point to an earlier base check, never to another re-check
   const previousCheckOptions = checks.filter(
@@ -369,27 +332,6 @@ export function ParasiteCheckForm({
             onChange={(event) => setDate(event.target.value)}
           />
         </Field>
-        {/* Preselects the herd's living animals; only for new selections */}
-        {!baseCheck && !isLockedBaseCheck && (
-          <Field className="max-w-64">
-            <FieldLabel htmlFor="herdId">
-              {t("parasiteChecks.selectFromHerd")}
-            </FieldLabel>
-            <select
-              id="herdId"
-              className={selectClass}
-              value={herdId}
-              onChange={(event) => handleHerdChange(event.target.value)}
-            >
-              <option value="">-</option>
-              {herds.map((herd) => (
-                <option key={herd.id} value={herd.id}>
-                  {herd.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-        )}
         {canBeRecheck && (
           <Field className="max-w-72">
             <FieldLabel htmlFor="previousCheckId">
@@ -426,13 +368,13 @@ export function ParasiteCheckForm({
       ) : (
         <Field>
           <FieldLabel>{t("parasiteChecks.animals")} *</FieldLabel>
-          <MultiSelect
-            options={animalOptions}
+          <SelectAnimalsField
+            animals={animals}
+            herds={herds}
             value={animalIds}
             onValueChange={setAnimalIds}
+            singleAnimalType
             placeholder={t("parasiteChecks.selectAnimals")}
-            searchPlaceholder={t("common.search")}
-            emptyText={t("common.noResults")}
           />
         </Field>
       )}
@@ -508,7 +450,7 @@ export function ParasiteCheckForm({
             </div>
             <Field className="max-w-64">
               <FieldLabel htmlFor="labName">
-                {t("parasiteChecks.labName")}
+                {t("parasiteChecks.labNameOptional")}
               </FieldLabel>
               <Input
                 id="labName"
@@ -546,7 +488,8 @@ export function ParasiteCheckForm({
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            // One animal per line, same width as the pooled editor
+            <div className="max-w-xl space-y-4">
               {animalIds.map((animalId) => (
                 <div key={animalId}>
                   <p className="mb-2 text-sm font-medium">

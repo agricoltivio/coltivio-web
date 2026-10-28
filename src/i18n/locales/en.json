@@ -1827,6 +1827,7 @@
       "individual": "Individual samples"
     },
     "labName": "Lab",
+    "labNameOptional": "Lab (optional)",
     "sampleLabel": "Sample label (optional)",
     "individualInfo": "One result per animal. Not every animal needs a result.",
     "parasiteTypes": {
@@ -1834,6 +1835,7 @@
       "haemonchus": "Barber's pole worm",
       "nematodirus": "Nematodirus",
       "trichuris": "Whipworms",
+      "capillaria": "Hairworm",
       "strongyloides": "Threadworms",
       "moniezia": "Tapeworms",
       "coccidia": "Coccidia",
@@ -1881,13 +1883,39 @@
     "duplicateParasiteType": "Each parasite may only appear once per sample",
     "name": "Name",
     "nameOptional": "Name (optional)",
-    "selectFromHerd": "Animals from herd",
     "mixedAnimalTypes": "A check can only contain animals of one animal type.",
     "averagePerCheck": "Ø per check",
+    "averageGradePerCheck": "Ø grade per check",
     "chartCountsInfo": "Numbers in the charts = number of animals checked",
     "animalType": "Animal type",
     "changePercent": "change (%)",
     "changeToBase": "Change to base check",
-    "allBaseAnimalsDead": "All animals of the base check have died or no longer exist."
+    "allBaseAnimalsDead": "All animals of the base check have died or no longer exist.",
+    "grade": "Grade",
+    "grades": {
+      "negative": "–",
+      "low": "+ low",
+      "medium": "++ medium",
+      "high": "+++ high"
+    },
+    "gradesShort": {
+      "negative": "–",
+      "low": "+",
+      "medium": "++",
+      "high": "+++"
+    },
+    "resultKind": "Result type"
+  },
+  "animalPicker": {
+    "title": "Select animals",
+    "change": "Change selection",
+    "selectedCount_one": "{{count}} animal selected",
+    "selectedCount_other": "{{count}} animals selected",
+    "more": "+{{count}} more",
+    "searchPlaceholder": "Search name or ear tag",
+    "selectedOnly": "Selected only",
+    "selectAll": "Select all ({{count}})",
+    "confirm": "Apply ({{count}})",
+    "herd": "Herd"
   }
 }

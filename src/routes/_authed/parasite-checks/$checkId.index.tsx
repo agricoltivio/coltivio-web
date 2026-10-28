@@ -40,6 +40,7 @@ import {
   FamachaBadge,
   FamachaDistributionChart,
   formatCountChange,
+  formatResultValue,
   parasiteCountUnitKey,
   TimelineChart,
 } from "@/components/parasites/ParasiteCharts";
@@ -96,7 +97,10 @@ function ParasiteCheckDetailPage() {
         queryKey: ["parasiteChecks", "byId", checkId],
       });
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
-      navigate({ to: "/animals/parasite-checks" });
+      navigate({
+        to: "/animals/parasite-checks",
+        search: { animalType: checkQuery.data?.animalType ?? undefined },
+      });
     },
   });
 
@@ -355,7 +359,8 @@ function ParasiteCheckDetailPage() {
                         })
                       : t("parasiteChecks.resultsStatusNone")}
                 </p>
-                {check.summary.fecByParasite.length > 0 && (
+                {(check.summary.fecByParasite.length > 0 ||
+                  check.summary.gradesByParasite.length > 0) && (
                   <Table>
                     <TableBody>
                       {check.summary.fecByParasite.map((entry) => (
@@ -370,6 +375,21 @@ function ParasiteCheckDetailPage() {
                               ? `Ø ${Math.round(entry.avgCountPerGram)} (${Math.round(entry.minCountPerGram)}–${Math.round(entry.maxCountPerGram)})`
                               : Math.round(entry.avgCountPerGram)}{" "}
                             {t(parasiteCountUnitKey(entry.parasiteType))}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {/* Graded results (+/++/+++), highest grade per parasite */}
+                      {check.summary.gradesByParasite.map((entry) => (
+                        <TableRow key={`grade-${entry.parasiteType}`}>
+                          <TableCell>
+                            {t(
+                              `parasiteChecks.parasiteTypes.${entry.parasiteType}`,
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {t(
+                              `parasiteChecks.gradesShort.${entry.highestGrade}`,
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -531,7 +551,7 @@ function ParasiteCheckDetailPage() {
                       )
                         .map(
                           (result) =>
-                            `${t(`parasiteChecks.parasiteTypes.${result.parasiteType}`)} ${Math.round(result.countPerGram)} ${t(parasiteCountUnitKey(result.parasiteType))}`,
+                            `${t(`parasiteChecks.parasiteTypes.${result.parasiteType}`)} ${formatResultValue(result, t)}`,
                         )
                         .join(" · ")}
                     </TableCell>

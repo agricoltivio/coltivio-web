@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -29,7 +29,6 @@ export const Route = createFileRoute("/_authed/parasite-checks/create")({
 function CreateParasiteCheckPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { previousCheckId } = Route.useSearch();
 
@@ -54,18 +53,20 @@ function CreateParasiteCheckPage() {
     onSuccess: (createdCheck) => {
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      // A re-check returns to its base check (replacing the form in the history),
-      // a base check to where it was started
+      // A re-check returns to its base check, a base check to the overview of
+      // its animal type (both replacing the form in the history)
       if (createdCheck.previousCheckId) {
         navigate({
           to: "/parasite-checks/$checkId",
           params: { checkId: createdCheck.previousCheckId },
           replace: true,
         });
-      } else if (router.history.length > 1) {
-        router.history.back();
       } else {
-        navigate({ to: "/animals/parasite-checks", replace: true });
+        navigate({
+          to: "/animals/parasite-checks",
+          search: { animalType: createdCheck.animalType ?? undefined },
+          replace: true,
+        });
       }
     },
   });

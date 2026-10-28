@@ -1,7 +1,11 @@
 import ReactECharts from "echarts-for-react";
 import type { EChartsOption } from "echarts";
 import { useTranslation } from "react-i18next";
-import type { ParasiteType } from "@/api/types";
+import {
+  PARASITE_RESULT_GRADES,
+  type ParasiteResult,
+  type ParasiteType,
+} from "@/api/types";
 import { cn, parseDateOnly } from "@/lib/utils";
 
 // FAMACHA card colors: 1 = red mucosa (healthy) … 5 = white (severely anaemic)
@@ -107,6 +111,8 @@ export function TimelineChart({
   unitLabel,
   famachaScale = false,
   percentScale = false,
+  gradeScale = false,
+  averageValues = false,
   height = 240,
 }: {
   points: TimelinePoint[];
@@ -117,9 +123,26 @@ export function TimelineChart({
   famachaScale?: boolean;
   // Change in %: values can be negative, labels with %
   percentScale?: boolean;
+  // Grades: fixed 0–3 axis (index in PARASITE_RESULT_GRADES) labelled – / + / ++ / +++
+  gradeScale?: boolean;
+  // Values are averages per check: grade tooltips get "Ø" (count tooltips
+  // already show it through the series name)
+  averageValues?: boolean;
   height?: number;
 }) {
   const { t, i18n } = useTranslation();
+  // Short ("++") on the axis, with the word ("++ mittel") in the tooltip.
+  // Averages show the nearest step and the exact value: "Ø ++ mittel (1.6)"
+  const gradeLabel = (value: number, short = true) => {
+    const grade = PARASITE_RESULT_GRADES[Math.round(value)];
+    if (!grade) return "";
+    if (short) return t(`parasiteChecks.gradesShort.${grade}`);
+    const label = t(`parasiteChecks.grades.${grade}`);
+    if (!averageValues) return label;
+    return Number.isInteger(value)
+      ? `Ø ${label}`
+      : `Ø ${label} (${Math.round(value * 10) / 10})`;
+  };
   const sortedPoints = [...points].sort(
     (a, b) => toTimestamp(a.date) - toTimestamp(b.date),
   );
@@ -137,9 +160,11 @@ export function TimelineChart({
     tooltip: {
       trigger: "axis",
       valueFormatter: (value) =>
-        typeof value === "number"
-          ? `${Math.round(value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`
-          : String(value),
+        typeof value === "number" && gradeScale
+          ? gradeLabel(value, false)
+          : typeof value === "number"
+            ? `${Math.round(value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`
+            : String(value),
     },
     grid: { left: 45, right: 16, top: 24, bottom: isZoomed ? 56 : 30 },
     xAxis: {
@@ -155,12 +180,33 @@ export function TimelineChart({
             year: "2-digit",
           }),
       },
+      // Tooltip header: checks have a date only, the time would always be 00:00
+      axisPointer: {
+        label: {
+          formatter: ({ value }) =>
+            new Date(value).toLocaleDateString(i18n.language),
+        },
+      },
     },
     yAxis: famachaScale
       ? { type: "value", min: 1, max: 5, interval: 1, inverse: true }
-      : percentScale
-        ? { type: "value", axisLabel: { fontSize: 10, formatter: "{value}%" } }
-        : { type: "value", min: 0, axisLabel: { fontSize: 10 } },
+      : gradeScale
+        ? {
+            type: "value",
+            min: 0,
+            max: PARASITE_RESULT_GRADES.length - 1,
+            interval: 1,
+            axisLabel: {
+              fontSize: 12,
+              formatter: (value: number) => gradeLabel(value),
+            },
+          }
+        : percentScale
+          ? {
+              type: "value",
+              axisLabel: { fontSize: 10, formatter: "{value}%" },
+            }
+          : { type: "value", min: 0, axisLabel: { fontSize: 10 } },
     dataZoom: isZoomed
       ? [
           {
@@ -176,7 +222,8 @@ export function TimelineChart({
       : [],
     series: [
       {
-        name: seriesName,
+        // The grade alone says enough in the tooltip; the legend keeps the name
+        name: gradeScale ? "" : seriesName,
         type: "line",
         data: sortedPoints.map((point) => ({
           value: [toTimestamp(point.date), point.value],
@@ -345,4 +392,14 @@ export function formatCountChange(reductionPercent: number | null): string {
   if (reductionPercent === null) return "–";
   const changePercent = Math.round(-reductionPercent);
   return `${changePercent > 0 ? "+" : ""}${changePercent}%`;
+}
+
+// "150 EpG" for a count, "++" for a grade
+export function formatResultValue(
+  result: ParasiteResult,
+  t: (key: string) => string,
+): string {
+  if (result.grade !== null)
+    return t(`parasiteChecks.gradesShort.${result.grade}`);
+  return `${Math.round(result.countPerGram ?? 0)} ${t(parasiteCountUnitKey(result.parasiteType))}`;
 }

@@ -1827,6 +1827,7 @@
       "individual": "Campioni individuali"
     },
     "labName": "Laboratorio",
+    "labNameOptional": "Laboratorio (facoltativo)",
     "sampleLabel": "Denominazione (facoltativo)",
     "individualInfo": "Un risultato per animale. Non tutti gli animali devono essere registrati.",
     "parasiteTypes": {
@@ -1834,6 +1835,7 @@
       "haemonchus": "Verme rosso",
       "nematodirus": "Nematodirus",
       "trichuris": "Tricocefali",
+      "capillaria": "Capillaria",
       "strongyloides": "Strongiloidi",
       "moniezia": "Tenie",
       "coccidia": "Coccidi",
@@ -1881,13 +1883,39 @@
     "duplicateParasiteType": "Ogni parassita può comparire solo una volta per campione",
     "name": "Nome",
     "nameOptional": "Nome (facoltativo)",
-    "selectFromHerd": "Animali della mandria",
     "mixedAnimalTypes": "Un controllo può contenere solo animali di una specie.",
     "averagePerCheck": "Ø per controllo",
+    "averageGradePerCheck": "Ø grado per controllo",
     "chartCountsInfo": "Numeri nei grafici = numero di animali controllati",
     "animalType": "Specie",
     "changePercent": "variazione (%)",
     "changeToBase": "Variazione rispetto al controllo iniziale",
-    "allBaseAnimalsDead": "Tutti gli animali del controllo iniziale sono morti o non esistono più."
+    "allBaseAnimalsDead": "Tutti gli animali del controllo iniziale sono morti o non esistono più.",
+    "grade": "Grado",
+    "grades": {
+      "negative": "–",
+      "low": "+ basso",
+      "medium": "++ medio",
+      "high": "+++ alto"
+    },
+    "gradesShort": {
+      "negative": "–",
+      "low": "+",
+      "medium": "++",
+      "high": "+++"
+    },
+    "resultKind": "Tipo di risultato"
+  },
+  "animalPicker": {
+    "title": "Seleziona animali",
+    "change": "Modifica selezione",
+    "selectedCount_one": "{{count}} animale selezionato",
+    "selectedCount_other": "{{count}} animali selezionati",
+    "more": "+{{count}} altri",
+    "searchPlaceholder": "Cerca nome o marca auricolare",
+    "selectedOnly": "Solo selezionati",
+    "selectAll": "Seleziona tutti ({{count}})",
+    "confirm": "Applica ({{count}})",
+    "herd": "Gregge"
   }
 }
