@@ -14,7 +14,6 @@ import {
   TimelineChart,
 } from "@/components/parasites/ParasiteCharts";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn, formatDateOnly } from "@/lib/utils";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery } from "@tanstack/react-query";
@@ -200,55 +199,46 @@ function ParasiteChecksPage() {
 
         {(fecCharts.length > 0 || famachaChecks.length > 0) && (
           <div className="space-y-2">
-            {/* Full width, split 50/50 only when worms and FAMACHA are both shown */}
-            <div
-              className={
-                fecCharts.length > 0 && famachaChecks.length > 0
-                  ? "grid grid-cols-1 gap-6 lg:grid-cols-2"
-                  : "grid grid-cols-1 gap-6"
-              }
-            >
-              {famachaChecks.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {t("parasiteChecks.famachaDistribution")}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <FamachaDistributionChart checks={famachaChecks} />
-                  </CardContent>
-                </Card>
-              )}
-              {fecCharts.length > 0 && (
-                <ChartCarouselCard
-                  pages={fecCharts.map(({ parasiteType, points, graded }) => ({
-                    key: parasiteType,
-                    title: graded
-                      ? `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${t("parasiteChecks.grade")})`
-                      : `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
-                    content: (
-                      <TimelineChart
-                        points={points}
-                        treatmentDates={treatmentDates}
-                        seriesName={
-                          graded
-                            ? t("parasiteChecks.averageGradePerCheck")
-                            : t("parasiteChecks.averagePerCheck")
-                        }
-                        unitLabel={
-                          graded
-                            ? undefined
-                            : t(parasiteCountUnitKey(parasiteType))
-                        }
-                        gradeScale={graded}
-                        averageValues
-                      />
-                    ),
-                  }))}
-                />
-              )}
-            </div>
+            {/* All charts in one carousel: FAMACHA first, then one per parasite */}
+            <ChartCarouselCard
+              pages={[
+                ...(famachaChecks.length > 0
+                  ? [
+                      {
+                        key: "famacha",
+                        title: t("parasiteChecks.famachaDistribution"),
+                        content: (
+                          <FamachaDistributionChart checks={famachaChecks} />
+                        ),
+                      },
+                    ]
+                  : []),
+                ...fecCharts.map(({ parasiteType, points, graded }) => ({
+                  key: parasiteType,
+                  title: graded
+                    ? `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${t("parasiteChecks.grade")})`
+                    : `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
+                  content: (
+                    <TimelineChart
+                      points={points}
+                      treatmentDates={treatmentDates}
+                      seriesName={
+                        graded
+                          ? t("parasiteChecks.averageGradePerCheck")
+                          : t("parasiteChecks.averagePerCheck")
+                      }
+                      unitLabel={
+                        graded
+                          ? undefined
+                          : t(parasiteCountUnitKey(parasiteType))
+                      }
+                      gradeScale={graded}
+                      averageValues
+                    />
+                  ),
+                })),
+              ]}
+            />
             <p className="text-xs text-muted-foreground">
               {t("parasiteChecks.chartCountsInfo")}
             </p>

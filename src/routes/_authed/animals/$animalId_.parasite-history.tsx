@@ -159,56 +159,45 @@ function AnimalParasiteHistoryPage() {
           </p>
         )}
 
-        {/* Full width, split 50/50 only when worms and FAMACHA are both shown */}
+        {/* All charts in one carousel: FAMACHA first, then one per parasite */}
         {(fecCharts.length > 0 || famachaPoints.length > 0) && (
-          <div
-            className={
-              fecCharts.length > 0 && famachaPoints.length > 0
-                ? "grid grid-cols-1 gap-6 lg:grid-cols-2"
-                : "grid grid-cols-1 gap-6"
-            }
-          >
-            {famachaPoints.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">
-                    {t("parasiteChecks.methods.famacha")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+          <ChartCarouselCard
+            pages={[
+              ...(famachaPoints.length > 0
+                ? [
+                    {
+                      key: "famacha",
+                      title: t("parasiteChecks.methods.famacha"),
+                      content: (
+                        <TimelineChart
+                          points={famachaPoints}
+                          treatmentDates={treatmentDates}
+                          seriesName={t("parasiteChecks.famachaScore")}
+                          famachaScale
+                        />
+                      ),
+                    },
+                  ]
+                : []),
+              ...fecCharts.map(({ parasiteType, points, graded }) => ({
+                key: parasiteType,
+                title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${graded ? t("parasiteChecks.grade") : t(parasiteCountUnitKey(parasiteType))})`,
+                content: (
                   <TimelineChart
-                    points={famachaPoints}
+                    points={points}
                     treatmentDates={treatmentDates}
-                    seriesName={t("parasiteChecks.famachaScore")}
-                    famachaScale
+                    seriesName={t(
+                      `parasiteChecks.parasiteTypes.${parasiteType}`,
+                    )}
+                    unitLabel={
+                      graded ? undefined : t(parasiteCountUnitKey(parasiteType))
+                    }
+                    gradeScale={graded}
                   />
-                </CardContent>
-              </Card>
-            )}
-            {fecCharts.length > 0 && (
-              <ChartCarouselCard
-                pages={fecCharts.map(({ parasiteType, points, graded }) => ({
-                  key: parasiteType,
-                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${graded ? t("parasiteChecks.grade") : t(parasiteCountUnitKey(parasiteType))})`,
-                  content: (
-                    <TimelineChart
-                      points={points}
-                      treatmentDates={treatmentDates}
-                      seriesName={t(
-                        `parasiteChecks.parasiteTypes.${parasiteType}`,
-                      )}
-                      unitLabel={
-                        graded
-                          ? undefined
-                          : t(parasiteCountUnitKey(parasiteType))
-                      }
-                      gradeScale={graded}
-                    />
-                  ),
-                }))}
-              />
-            )}
-          </div>
+                ),
+              })),
+            ]}
+          />
         )}
 
         {timelineEntries.length > 0 && (
