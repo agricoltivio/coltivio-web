@@ -119,7 +119,7 @@
     },
     "importOnboardingHeading": "Importer des animaux depuis la TVD",
     "importOnboardingBody": "L'import nécessite un fichier Excel issu du «Tierbestand» de la TVD. Exportez-le à l'aide du bouton «Excel generieren».",
-    "importOnboardingColumnsHint": "Sélectionnez les colonnes Ohrmarkennummer Mutter, Vater et Todesdatum si vous souhaitez importer ces données.",
+    "importOnboardingColumnsHint": "Laissez les colonnes standard sélectionnées et ajoutez les colonnes Numéro de marque auriculaire (mère), Numéro de marque auriculaire (père) et Date de mort si vous souhaitez importer ces données.",
     "createAnimal": "Créer un animal",
     "editAnimal": "Modifier l'animal",
     "animalDetails": "Détails de l'animal",

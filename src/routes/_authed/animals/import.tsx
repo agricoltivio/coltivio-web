@@ -121,7 +121,12 @@ function ImportAnimals() {
           return formData;
         },
       });
-      if (response.error) throw new Error(t("animals.importPreviewError"));
+      if (response.error) {
+        // A 400 carries a localized explanation, e.g. which TVD columns are missing.
+        const serverMessage =
+          response.response.status === 400 ? response.error.error : undefined;
+        throw new Error(serverMessage || t("animals.importPreviewError"));
+      }
       return response.data.data.rows;
     },
     onSuccess: (rows) => {

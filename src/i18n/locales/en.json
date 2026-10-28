@@ -119,7 +119,7 @@
     },
     "importOnboardingHeading": "Import animals from the TVD",
     "importOnboardingBody": "The import needs an Excel file from the TVD «Tierbestand» (livestock register). Export it with the «Excel generieren» button.",
-    "importOnboardingColumnsHint": "Select the columns Ohrmarkennummer Mutter, Vater and Todesdatum if you want to import that data.",
+    "importOnboardingColumnsHint": "Keep the default columns selected and additionally select the columns for the mother's and father's ear tag number and the date of death if you want to import that data.",
     "createAnimal": "Create Animal",
     "editAnimal": "Edit Animal",
     "animalDetails": "Animal Details",

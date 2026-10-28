@@ -119,7 +119,7 @@
     },
     "importOnboardingHeading": "Tiere aus TVD importieren",
     "importOnboardingBody": "Für den Import wird eine Excel-Datei aus dem «Tierbestand» der TVD benötigt. Exportiere diese über den Button «Excel generieren».",
-    "importOnboardingColumnsHint": "Wähle die Spalten Ohrmarkennummer Mutter und Vater sowie Todesdatum falls du diese Daten importieren möchtest.",
+    "importOnboardingColumnsHint": "Lass die Standardspalten ausgewählt und wähle zusätzlich die Spalten Ohrmarkennummer (Mutter), Ohrmarkennummer (Vater) und Todesdatum, falls du diese Daten importieren möchtest.",
     "createAnimal": "Tier erstellen",
     "editAnimal": "Tier bearbeiten",
     "animalDetails": "Tierdetails",
