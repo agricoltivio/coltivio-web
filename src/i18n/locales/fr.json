@@ -1904,7 +1904,11 @@
       "medium": "++",
       "high": "+++"
     },
-    "resultKind": "Type de résultat"
+    "resultKind": "Type de résultat",
+    "max": "max",
+    "nAnimals_one": "{{count}} animal",
+    "nSamples_one": "{{count}} échantillon",
+    "nSamples": "{{count}} échantillons"
   },
   "animalPicker": {
     "title": "Sélectionner des animaux",

@@ -1,6 +1,5 @@
 import { parasiteChecksQueryOptions } from "@/api/parasiteChecks.queries";
 import {
-  PARASITE_RESULT_GRADES,
   PARASITE_TYPES,
   type AnimalType,
   type ParasiteCheck,
@@ -43,24 +42,6 @@ function fecCoverage(check: ParasiteCheck, parasiteType: ParasiteType) {
       sample.results.some((result) => result.parasiteType === parasiteType),
     )
     .reduce((sum, sample) => sum + sample.animalIds.length, 0);
-}
-
-// Average grade (index in PARASITE_RESULT_GRADES) over the graded samples of a
-// check, each sample weighted by the number of animals it covers. Lies between
-// the steps, e.g. 1.5 = between + and ++.
-function averageGradeIndex(check: ParasiteCheck, parasiteType: ParasiteType) {
-  let weightedSum = 0;
-  let animalCount = 0;
-  for (const sample of check.fecSamples) {
-    const result = sample.results.find(
-      (entry) => entry.parasiteType === parasiteType,
-    );
-    if (!result?.grade) continue;
-    weightedSum +=
-      PARASITE_RESULT_GRADES.indexOf(result.grade) * sample.animalIds.length;
-    animalCount += sample.animalIds.length;
-  }
-  return animalCount > 0 ? weightedSum / animalCount : null;
 }
 
 function ParasiteChecksPage() {
@@ -118,12 +99,14 @@ function ParasiteChecksPage() {
     if (countPoints.length > 0)
       return [{ parasiteType, points: countPoints, graded: false }];
     const gradePoints = typeChecks.flatMap((check) => {
-      const averageGrade = averageGradeIndex(check, parasiteType);
-      return averageGrade !== null
+      const entry = check.summary.gradesByParasite.find(
+        (gradeEntry) => gradeEntry.parasiteType === parasiteType,
+      );
+      return entry
         ? [
             {
               date: check.date,
-              value: averageGrade,
+              value: entry.averageGrade,
               coverage: fecCoverage(check, parasiteType),
             },
           ]

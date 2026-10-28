@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { parasiteCheckQueryOptions } from "@/api/parasiteChecks.queries";
-import { PARASITE_TYPES } from "@/api/types";
+import { PARASITE_RESULT_GRADES, PARASITE_TYPES } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { cn, formatDateOnly } from "@/lib/utils";
 import { PageContent } from "@/components/PageContent";
@@ -77,6 +77,12 @@ function ParasiteCheckDetailPage() {
   const queryClient = useQueryClient();
   const { canWrite } = useFeatureAccess("animals");
   const { checkId } = Route.useParams();
+
+  // Average grade (0–3) shown as its nearest step, e.g. 1.6 → "++"
+  function gradeShortLabel(averageGrade: number) {
+    const grade = PARASITE_RESULT_GRADES[Math.round(averageGrade)];
+    return grade ? t(`parasiteChecks.gradesShort.${grade}`) : "";
+  }
   const checkQuery = useQuery(parasiteCheckQueryOptions(checkId));
 
   const deleteMutation = useMutation({
@@ -303,6 +309,7 @@ function ParasiteCheckDetailPage() {
                       seriesName={t("parasiteChecks.changeToBase")}
                       unitLabel="%"
                       percentScale
+                      coverageKind="samples"
                     />
                   ),
                 }))}
@@ -378,7 +385,7 @@ function ParasiteCheckDetailPage() {
                           </TableCell>
                         </TableRow>
                       ))}
-                      {/* Graded results (+/++/+++), highest grade per parasite */}
+                      {/* Graded results (+/++/+++): average and highest grade */}
                       {check.summary.gradesByParasite.map((entry) => (
                         <TableRow key={`grade-${entry.parasiteType}`}>
                           <TableCell>
@@ -387,9 +394,11 @@ function ParasiteCheckDetailPage() {
                             )}
                           </TableCell>
                           <TableCell className="text-right font-medium">
-                            {t(
-                              `parasiteChecks.gradesShort.${entry.highestGrade}`,
-                            )}
+                            {entry.sampleCount > 1
+                              ? `Ø ${gradeShortLabel(entry.averageGrade)} (${t("parasiteChecks.max")} ${t(`parasiteChecks.gradesShort.${entry.highestGrade}`)})`
+                              : t(
+                                  `parasiteChecks.gradesShort.${entry.highestGrade}`,
+                                )}
                           </TableCell>
                         </TableRow>
                       ))}

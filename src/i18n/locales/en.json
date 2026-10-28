@@ -1904,7 +1904,11 @@
       "medium": "++",
       "high": "+++"
     },
-    "resultKind": "Result type"
+    "resultKind": "Result type",
+    "max": "max",
+    "nAnimals_one": "{{count}} animal",
+    "nSamples_one": "{{count}} sample",
+    "nSamples": "{{count}} samples"
   },
   "animalPicker": {
     "title": "Select animals",

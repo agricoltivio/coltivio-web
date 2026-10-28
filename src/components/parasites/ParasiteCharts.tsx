@@ -113,6 +113,7 @@ export function TimelineChart({
   percentScale = false,
   gradeScale = false,
   averageValues = false,
+  coverageKind = "animals",
   height = 240,
 }: {
   points: TimelinePoint[];
@@ -128,6 +129,8 @@ export function TimelineChart({
   // Values are averages per check: grade tooltips get "Ø" (count tooltips
   // already show it through the series name)
   averageValues?: boolean;
+  // What a point's coverage counts, shown in the tooltip ("12 Tiere" / "3 Proben")
+  coverageKind?: "animals" | "samples";
   height?: number;
 }) {
   const { t, i18n } = useTranslation();
@@ -157,14 +160,35 @@ export function TimelineChart({
     .filter((time) => time >= minTime && time <= maxTime);
 
   const option: EChartsOption = {
+    // Date (checks have no time), value and how many animals it is based on
     tooltip: {
       trigger: "axis",
-      valueFormatter: (value) =>
-        typeof value === "number" && gradeScale
-          ? gradeLabel(value, false)
-          : typeof value === "number"
-            ? `${Math.round(value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`
-            : String(value),
+      formatter: (params) => {
+        const firstParam = Array.isArray(params) ? params[0] : params;
+        const point = firstParam
+          ? sortedPoints[firstParam.dataIndex]
+          : undefined;
+        if (!firstParam || !point) return "";
+        const marker =
+          typeof firstParam.marker === "string" ? firstParam.marker : "";
+        const valueText = gradeScale
+          ? gradeLabel(point.value, false)
+          : `${Math.round(point.value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`;
+        // The grade alone says enough; counts are named like the legend
+        const valueLine = gradeScale
+          ? `${marker}<b>${valueText}</b>`
+          : `${marker}${seriesName}: <b>${valueText}</b>`;
+        const coverageLine =
+          point.coverage !== undefined
+            ? `<br/>${t(
+                coverageKind === "samples"
+                  ? "parasiteChecks.nSamples"
+                  : "parasiteChecks.nAnimals",
+                { count: point.coverage },
+              )}`
+            : "";
+        return `${parseDateOnly(point.date).toLocaleDateString(i18n.language)}<br/>${valueLine}${coverageLine}`;
+      },
     },
     grid: { left: 45, right: 16, top: 24, bottom: isZoomed ? 56 : 30 },
     xAxis: {
@@ -179,13 +203,6 @@ export function TimelineChart({
             month: "short",
             year: "2-digit",
           }),
-      },
-      // Tooltip header: checks have a date only, the time would always be 00:00
-      axisPointer: {
-        label: {
-          formatter: ({ value }) =>
-            new Date(value).toLocaleDateString(i18n.language),
-        },
       },
     },
     yAxis: famachaScale
@@ -222,8 +239,7 @@ export function TimelineChart({
       : [],
     series: [
       {
-        // The grade alone says enough in the tooltip; the legend keeps the name
-        name: gradeScale ? "" : seriesName,
+        name: seriesName,
         type: "line",
         data: sortedPoints.map((point) => ({
           value: [toTimestamp(point.date), point.value],

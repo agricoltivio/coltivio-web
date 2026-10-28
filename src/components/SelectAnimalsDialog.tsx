@@ -170,26 +170,27 @@ function SelectAnimalsDialog({
     ...new Set(selectableAnimals.map((animal) => animal.type)),
   ];
 
+  // Single type: once an animal is selected, only its type stays selectable
+  const lockedAnimalType =
+    singleAnimalType && selectedIds.size > 0
+      ? selectableAnimals.find((animal) => selectedIds.has(animal.id))?.type
+      : undefined;
+
   const filteredAnimals = (() => {
     let result = selectableAnimals;
 
-    // Single type: once an animal is selected, only its type stays selectable.
-    // Already selected animals stay visible, so a mixed selection can be corrected.
-    if (singleAnimalType && selectedIds.size > 0) {
-      const selectedType = selectableAnimals.find((animal) =>
-        selectedIds.has(animal.id),
-      )?.type;
-      if (selectedType)
-        result = result.filter(
-          (animal) =>
-            animal.type === selectedType || selectedIds.has(animal.id),
-        );
-    }
+    // Already selected animals stay visible, so a mixed selection can be corrected
+    if (lockedAnimalType)
+      result = result.filter(
+        (animal) =>
+          animal.type === lockedAnimalType || selectedIds.has(animal.id),
+      );
     if (selectedHerdIds.size > 0)
       result = result.filter(
         (animal) => !!animal.herdId && selectedHerdIds.has(animal.herdId),
       );
-    if (selectedTypes.size > 0)
+    // The type chips are hidden while the type is locked, so their filter is too
+    if (selectedTypes.size > 0 && !lockedAnimalType)
       result = result.filter((animal) => selectedTypes.has(animal.type));
     if (showSelectedOnly)
       result = result.filter((animal) => selectedIds.has(animal.id));
@@ -351,6 +352,7 @@ function SelectAnimalsDialog({
             </PopoverContent>
           </Popover>
           {animalTypes.length > 1 &&
+            !lockedAnimalType &&
             animalTypes.map((animalType) => (
               <FilterChip
                 key={animalType}
@@ -417,16 +419,27 @@ function SelectAnimalsDialog({
               {filteredAnimals.map((animal) => (
                 <TableRow
                   key={animal.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer outline-none focus-visible:bg-muted"
                   data-state={selectedIds.has(animal.id) ? "selected" : ""}
+                  // Reachable with Tab, toggled with Space or Enter
+                  tabIndex={0}
+                  role="checkbox"
+                  aria-checked={selectedIds.has(animal.id)}
                   onClick={() => toggleInSet(setSelectedIds, animal.id)}
+                  onKeyDown={(event) => {
+                    if (event.key !== " " && event.key !== "Enter") return;
+                    // Space would otherwise scroll the list
+                    event.preventDefault();
+                    toggleInSet(setSelectedIds, animal.id);
+                  }}
                 >
                   <TableCell>
                     <Checkbox
                       checked={selectedIds.has(animal.id)}
-                      // The row click toggles; the checkbox only shows the state
+                      // The row toggles; the checkbox only shows the state
                       className="pointer-events-none"
                       tabIndex={-1}
+                      aria-hidden
                     />
                   </TableCell>
                   <TableCell className="text-muted-foreground">

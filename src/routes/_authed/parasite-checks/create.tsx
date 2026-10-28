@@ -1,4 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -29,6 +33,7 @@ export const Route = createFileRoute("/_authed/parasite-checks/create")({
 function CreateParasiteCheckPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { previousCheckId } = Route.useSearch();
 
@@ -53,21 +58,33 @@ function CreateParasiteCheckPage() {
     onSuccess: (createdCheck) => {
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      // A re-check returns to its base check, a base check to the overview of
-      // its animal type (both replacing the form in the history)
+      // A re-check returns to its base check (replacing the form in the history)
       if (createdCheck.previousCheckId) {
         navigate({
           to: "/parasite-checks/$checkId",
           params: { checkId: createdCheck.previousCheckId },
           replace: true,
         });
-      } else {
+        return;
+      }
+      // A base check returns to the overview, showing its animal type
+      const showOverview = () =>
         navigate({
           to: "/animals/parasite-checks",
           search: { animalType: createdCheck.animalType ?? undefined },
           replace: true,
         });
+      if (!router.history.canGoBack()) {
+        showOverview();
+        return;
       }
+      // Go back to the overview the form was opened from (so the form leaves the
+      // history), then set the type there
+      const unsubscribe = router.history.subscribe(() => {
+        unsubscribe();
+        showOverview();
+      });
+      router.history.back();
     },
   });
 
@@ -75,7 +92,9 @@ function CreateParasiteCheckPage() {
   if (!checksQuery.data || !animalsQuery.data) {
     return (
       <PageContent title={t("parasiteChecks.newCheck")}>
-        <div className="py-8 text-center text-muted-foreground">{t("common.loading")}</div>
+        <div className="py-8 text-center text-muted-foreground">
+          {t("common.loading")}
+        </div>
       </PageContent>
     );
   }
@@ -92,7 +111,9 @@ function CreateParasiteCheckPage() {
         isSubmitting={createMutation.isPending}
       />
       {createMutation.isError && (
-        <p className="mt-4 text-sm text-destructive">{t("parasiteChecks.saveFailed")}</p>
+        <p className="mt-4 text-sm text-destructive">
+          {t("parasiteChecks.saveFailed")}
+        </p>
       )}
     </PageContent>
   );

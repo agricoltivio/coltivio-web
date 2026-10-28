@@ -9864,8 +9864,9 @@ export interface components {
                             /** @enum {string} */
                             parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "capillaria" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
                             sampleCount: number;
-                            /** @enum {string|null} */
-                            highestGrade: "negative" | "low" | "medium" | "high" | null;
+                            /** @enum {string} */
+                            highestGrade: "negative" | "low" | "medium" | "high";
+                            averageGrade: number;
                         }[];
                     };
                     comparisonToPrevious: {
@@ -10014,8 +10015,9 @@ export interface components {
                         /** @enum {string} */
                         parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "capillaria" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
                         sampleCount: number;
-                        /** @enum {string|null} */
-                        highestGrade: "negative" | "low" | "medium" | "high" | null;
+                        /** @enum {string} */
+                        highestGrade: "negative" | "low" | "medium" | "high";
+                        averageGrade: number;
                     }[];
                 };
                 comparisonToPrevious: {
@@ -10200,8 +10202,9 @@ export interface components {
                         /** @enum {string} */
                         parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "capillaria" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
                         sampleCount: number;
-                        /** @enum {string|null} */
-                        highestGrade: "negative" | "low" | "medium" | "high" | null;
+                        /** @enum {string} */
+                        highestGrade: "negative" | "low" | "medium" | "high";
+                        averageGrade: number;
                     }[];
                 };
                 comparisonToPrevious: {
@@ -10348,8 +10351,9 @@ export interface components {
                         /** @enum {string} */
                         parasiteType: "strongyles" | "haemonchus" | "nematodirus" | "trichuris" | "capillaria" | "strongyloides" | "moniezia" | "coccidia" | "liver_fluke" | "small_liver_fluke" | "lungworm" | "other";
                         sampleCount: number;
-                        /** @enum {string|null} */
-                        highestGrade: "negative" | "low" | "medium" | "high" | null;
+                        /** @enum {string} */
+                        highestGrade: "negative" | "low" | "medium" | "high";
+                        averageGrade: number;
                     }[];
                 };
                 comparisonToPrevious: {
