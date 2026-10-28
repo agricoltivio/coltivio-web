@@ -103,6 +103,8 @@ function ParasiteCheckDetailPage() {
         queryKey: ["parasiteChecks", "byId", checkId],
       });
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
+      // Follow-up tasks lose their link to the deleted check
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       navigate({
         to: "/animals/parasite-checks",
         search: { animalType: checkQuery.data?.animalType ?? undefined },
