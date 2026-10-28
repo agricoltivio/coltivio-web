@@ -9864,6 +9864,8 @@ export interface components {
                          * @description YYYY-MM-DDTHH:mm:ss.sssZ
                          */
                         previousDate: string;
+                        famachaBeforeAverage: number | null;
+                        famachaAfterAverage: number | null;
                         famachaAverageChange: number | null;
                         fecReduction: {
                             /** @enum {string} */
@@ -9898,6 +9900,8 @@ export interface components {
                             famachaScore: number | null;
                         }[];
                         famachaAverage: number | null;
+                        famachaBeforeAverage: number | null;
+                        famachaAfterAverage: number | null;
                         famachaAverageChange: number | null;
                         fecReduction: {
                             /** @enum {string} */
@@ -10001,6 +10005,8 @@ export interface components {
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
                     previousDate: string;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */
@@ -10035,6 +10041,8 @@ export interface components {
                         famachaScore: number | null;
                     }[];
                     famachaAverage: number | null;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */
@@ -10172,6 +10180,8 @@ export interface components {
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
                     previousDate: string;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */
@@ -10206,6 +10216,8 @@ export interface components {
                         famachaScore: number | null;
                     }[];
                     famachaAverage: number | null;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */
@@ -10307,6 +10319,8 @@ export interface components {
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
                      */
                     previousDate: string;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */
@@ -10341,6 +10355,8 @@ export interface components {
                         famachaScore: number | null;
                     }[];
                     famachaAverage: number | null;
+                    famachaBeforeAverage: number | null;
+                    famachaAfterAverage: number | null;
                     famachaAverageChange: number | null;
                     fecReduction: {
                         /** @enum {string} */

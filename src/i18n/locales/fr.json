@@ -1816,7 +1816,7 @@
       "famacha": "FAMACHA",
       "fecal_egg_count": "Coprologie"
     },
-    "recheckLockedInfo": "La méthode, le troupeau et les animaux sont repris du contrôle initial. Les animaux morts ou qui ne sont plus dans le troupeau sont exclus.",
+    "recheckLockedInfo": "La méthode et les animaux sont repris du contrôle initial. Les animaux morts sont exclus.",
     "previousCheckOptional": "Recontrôle de (facultatif)",
     "nAnimals": "{{count}} animaux",
     "famachaScores": "Scores FAMACHA",
@@ -1885,6 +1885,9 @@
     "mixedAnimalTypes": "Un contrôle ne peut contenir que des animaux d'une seule espèce.",
     "averagePerCheck": "Ø par contrôle",
     "chartCountsInfo": "Chiffres des graphiques = nombre d'animaux contrôlés",
-    "animalType": "Espèce"
+    "animalType": "Espèce",
+    "changePercent": "variation (%)",
+    "changeToBase": "Variation par rapport au contrôle initial",
+    "allBaseAnimalsDead": "Tous les animaux du contrôle initial sont morts ou n'existent plus."
   }
 }

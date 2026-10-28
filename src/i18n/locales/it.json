@@ -1816,7 +1816,7 @@
       "famacha": "FAMACHA",
       "fecal_egg_count": "Esame coprologico"
     },
-    "recheckLockedInfo": "Metodo, mandria e animali sono ripresi dal controllo iniziale. Gli animali morti o non più nella mandria sono esclusi.",
+    "recheckLockedInfo": "Metodo e animali sono ripresi dal controllo iniziale. Gli animali morti sono esclusi.",
     "previousCheckOptional": "Ricontrollo di (facoltativo)",
     "nAnimals": "{{count}} animali",
     "famachaScores": "Punteggi FAMACHA",
@@ -1885,6 +1885,9 @@
     "mixedAnimalTypes": "Un controllo può contenere solo animali di una specie.",
     "averagePerCheck": "Ø per controllo",
     "chartCountsInfo": "Numeri nei grafici = numero di animali controllati",
-    "animalType": "Specie"
+    "animalType": "Specie",
+    "changePercent": "variazione (%)",
+    "changeToBase": "Variazione rispetto al controllo iniziale",
+    "allBaseAnimalsDead": "Tutti gli animali del controllo iniziale sono morti o non esistono più."
   }
 }

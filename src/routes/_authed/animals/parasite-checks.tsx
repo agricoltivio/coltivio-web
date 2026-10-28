@@ -72,8 +72,10 @@ function ParasiteChecksPage() {
       : animalTypes[0];
 
   // Charts include re-checks; every value shows how many animals it is based on
+  // Checks whose animals were all deleted have no type; they stay listed so they
+  // can still be opened and deleted
   const typeChecks = allChecks.filter(
-    (check) => check.animalType === animalType,
+    (check) => check.animalType === animalType || check.animalType === null,
   );
   const treatmentDates = typeChecks.flatMap((check) =>
     check.treatment ? [check.treatment.startDate] : [],

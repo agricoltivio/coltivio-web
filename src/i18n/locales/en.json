@@ -1816,7 +1816,7 @@
       "famacha": "FAMACHA",
       "fecal_egg_count": "Fecal egg count"
     },
-    "recheckLockedInfo": "Method, herd and animals are taken from the base check. Animals that died or are no longer in the herd are left out.",
+    "recheckLockedInfo": "Method and animals are taken from the base check. Animals that died are left out.",
     "previousCheckOptional": "Re-check of (optional)",
     "nAnimals": "{{count}} animals",
     "famachaScores": "FAMACHA scores",
@@ -1885,6 +1885,9 @@
     "mixedAnimalTypes": "A check can only contain animals of one animal type.",
     "averagePerCheck": "Ø per check",
     "chartCountsInfo": "Numbers in the charts = number of animals checked",
-    "animalType": "Animal type"
+    "animalType": "Animal type",
+    "changePercent": "change (%)",
+    "changeToBase": "Change to base check",
+    "allBaseAnimalsDead": "All animals of the base check have died or no longer exist."
   }
 }

@@ -106,6 +106,7 @@ export function TimelineChart({
   seriesName,
   unitLabel,
   famachaScale = false,
+  percentScale = false,
   height = 240,
 }: {
   points: TimelinePoint[];
@@ -114,6 +115,8 @@ export function TimelineChart({
   unitLabel?: string;
   // FAMACHA: fixed 1–5 axis with 1 (healthy) on top
   famachaScale?: boolean;
+  // Change in %: values can be negative, labels with %
+  percentScale?: boolean;
   height?: number;
 }) {
   const { t, i18n } = useTranslation();
@@ -155,7 +158,9 @@ export function TimelineChart({
     },
     yAxis: famachaScale
       ? { type: "value", min: 1, max: 5, interval: 1, inverse: true }
-      : { type: "value", min: 0, axisLabel: { fontSize: 10 } },
+      : percentScale
+        ? { type: "value", axisLabel: { fontSize: 10, formatter: "{value}%" } }
+        : { type: "value", min: 0, axisLabel: { fontSize: 10 } },
     dataZoom: isZoomed
       ? [
           {

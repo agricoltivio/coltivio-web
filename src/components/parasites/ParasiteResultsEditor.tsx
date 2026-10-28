@@ -20,20 +20,25 @@ export function nextResultKey() {
 
 // A new sample starts with one empty row for the most common parasite
 export function newResultRows(): ParasiteResultDraft[] {
-  return [{ key: nextResultKey(), parasiteType: "strongyles", countPerGram: "" }];
+  return [
+    { key: nextResultKey(), parasiteType: "strongyles", countPerGram: "" },
+  ];
 }
 
 // Rows with a valid entered value only (e.g. "." is not a number)
 export function filledResults(results: ParasiteResultDraft[] | undefined) {
   return (results ?? []).flatMap((result) => {
-    const countPerGram = result.countPerGram === "" ? NaN : Number(result.countPerGram);
+    const countPerGram =
+      result.countPerGram === "" ? NaN : Number(result.countPerGram);
     return Number.isFinite(countPerGram)
       ? [{ parasiteType: result.parasiteType, countPerGram }]
       : [];
   });
 }
 
-export function hasDuplicateParasiteType(results: ParasiteResultDraft[] | undefined) {
+export function hasDuplicateParasiteType(
+  results: ParasiteResultDraft[] | undefined,
+) {
   const types = (results ?? []).map((result) => result.parasiteType);
   return new Set(types).size !== types.length;
 }
@@ -48,17 +53,26 @@ export function ParasiteResultsEditor({
 }) {
   const { t } = useTranslation();
 
-  function updateResult(resultKey: string, change: Partial<ParasiteResultDraft>) {
+  function updateResult(
+    resultKey: string,
+    change: Partial<ParasiteResultDraft>,
+  ) {
     onChange(
-      results.map((result) => (result.key === resultKey ? { ...result, ...change } : result)),
+      results.map((result) =>
+        result.key === resultKey ? { ...result, ...change } : result,
+      ),
     );
   }
 
   function addResult() {
     // Suggest the first parasite type not yet used in this sample
     const usedTypes = new Set(results.map((result) => result.parasiteType));
-    const nextType = PARASITE_TYPES.find((type) => !usedTypes.has(type)) ?? "other";
-    onChange([...results, { key: nextResultKey(), parasiteType: nextType, countPerGram: "" }]);
+    const nextType =
+      PARASITE_TYPES.find((type) => !usedTypes.has(type)) ?? "other";
+    onChange([
+      ...results,
+      { key: nextResultKey(), parasiteType: nextType, countPerGram: "" },
+    ]);
   }
 
   return (
@@ -74,7 +88,8 @@ export function ParasiteResultsEditor({
                 const matchingType = PARASITE_TYPES.find(
                   (type) => type === event.target.value,
                 );
-                if (matchingType) updateResult(result.key, { parasiteType: matchingType });
+                if (matchingType)
+                  updateResult(result.key, { parasiteType: matchingType });
               }}
             >
               {PARASITE_TYPES.map((parasiteType) => (
@@ -104,7 +119,11 @@ export function ParasiteResultsEditor({
               aria-label={t("common.delete")}
               className="text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={() =>
-                onChange(results.filter((currentResult) => currentResult.key !== result.key))
+                onChange(
+                  results.filter(
+                    (currentResult) => currentResult.key !== result.key,
+                  ),
+                )
               }
             >
               <Trash2 className="size-4" />
@@ -121,7 +140,9 @@ export function ParasiteResultsEditor({
         </button>
       </div>
       {hasDuplicateParasiteType(results) && (
-        <p className="text-sm text-destructive">{t("parasiteChecks.duplicateParasiteType")}</p>
+        <p className="text-sm text-destructive">
+          {t("parasiteChecks.duplicateParasiteType")}
+        </p>
       )}
     </div>
   );

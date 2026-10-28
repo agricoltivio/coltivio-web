@@ -1816,7 +1816,7 @@
       "famacha": "FAMACHA",
       "fecal_egg_count": "Kotprobe"
     },
-    "recheckLockedInfo": "Methode, Herde und Tiere werden von der Ausgangskontrolle übernommen. Verstorbene Tiere und Tiere, die nicht mehr in der Herde sind, werden ausgelassen.",
+    "recheckLockedInfo": "Methode und Tiere werden von der Ausgangskontrolle übernommen. Verstorbene Tiere werden ausgelassen.",
     "previousCheckOptional": "Nachkontrolle von (optional)",
     "nAnimals": "{{count}} Tiere",
     "famachaScores": "FAMACHA-Werte",
@@ -1885,6 +1885,9 @@
     "mixedAnimalTypes": "Eine Kontrolle kann nur Tiere einer Tierart enthalten.",
     "averagePerCheck": "Ø pro Kontrolle",
     "chartCountsInfo": "Zahlen in den Diagrammen = Anzahl geprüfter Tiere",
-    "animalType": "Tierart"
+    "animalType": "Tierart",
+    "changePercent": "Veränderung (%)",
+    "changeToBase": "Veränderung zur Ausgangskontrolle",
+    "allBaseAnimalsDead": "Alle Tiere der Ausgangskontrolle sind verstorben oder nicht mehr vorhanden."
   }
 }

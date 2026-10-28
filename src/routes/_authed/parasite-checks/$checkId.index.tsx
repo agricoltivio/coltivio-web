@@ -55,9 +55,11 @@ export const Route = createFileRoute("/_authed/parasite-checks/$checkId/")({
 
 // Only the direction: count went down (green) or up (red), no efficacy judgement
 function reductionClass(reductionPercent: number | null) {
-  if (reductionPercent === null || reductionPercent === 0)
-    return "text-muted-foreground";
-  return reductionPercent > 0 ? "text-green-600" : "text-destructive";
+  // Same rounding as the shown value, so "0%" is never colored
+  const roundedReduction =
+    reductionPercent === null ? 0 : Math.round(reductionPercent);
+  if (roundedReduction === 0) return "text-muted-foreground";
+  return roundedReduction > 0 ? "text-green-600" : "text-destructive";
 }
 
 // Lower FAMACHA is better, so a falling average is an improvement
@@ -123,33 +125,32 @@ function ParasiteCheckDetailPage() {
 
   // Charts of the base check and its re-checks; re-check values come from the
   // comparison against this check
+  // Change in % against the base check (0%), the same values as in the re-check
+  // rows. Each re-check is compared on its own matching samples, so absolute
+  // averages wouldn't be comparable; re-checks without a percent are left out.
   const fecCharts =
     isRecheck || check.method !== "fecal_egg_count"
       ? []
       : PARASITE_TYPES.flatMap((parasiteType) => {
-          const baseEntry = check.summary.fecByParasite.find(
-            (entry) => entry.parasiteType === parasiteType,
-          );
-          if (!baseEntry) return [];
+          const recheckPoints = check.rechecks.flatMap((recheck) => {
+            const reduction = recheck.fecReduction.find(
+              (entry) => entry.parasiteType === parasiteType,
+            );
+            return reduction && reduction.reductionPercent !== null
+              ? [
+                  {
+                    date: recheck.date,
+                    value: -reduction.reductionPercent,
+                    coverage: reduction.afterSampleCount,
+                  },
+                ]
+              : [];
+          });
+          if (recheckPoints.length === 0) return [];
           return [
             {
               parasiteType,
-              points: [
-                { date: check.date, value: baseEntry.avgCountPerGram },
-                ...check.rechecks.flatMap((recheck) => {
-                  const reduction = recheck.fecReduction.find(
-                    (entry) => entry.parasiteType === parasiteType,
-                  );
-                  return reduction
-                    ? [
-                        {
-                          date: recheck.date,
-                          value: reduction.afterAvgCountPerGram,
-                        },
-                      ]
-                    : [];
-                }),
-              ],
+              points: [{ date: check.date, value: 0 }, ...recheckPoints],
             },
           ];
         });
@@ -290,13 +291,14 @@ function ParasiteCheckDetailPage() {
               <ChartCarouselCard
                 pages={fecCharts.map(({ parasiteType, points }) => ({
                   key: parasiteType,
-                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
+                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)}: ${t("parasiteChecks.changePercent")}`,
                   content: (
                     <TimelineChart
                       points={points}
                       treatmentDates={treatmentDates}
-                      seriesName={t("parasiteChecks.averagePerCheck")}
-                      unitLabel={t(parasiteCountUnitKey(parasiteType))}
+                      seriesName={t("parasiteChecks.changeToBase")}
+                      unitLabel="%"
+                      percentScale
                     />
                   ),
                 }))}
@@ -439,12 +441,14 @@ function ParasiteCheckDetailPage() {
                             {recheck.treatment?.name ?? "-"}
                           </TableCell>
                           <TableCell className="space-y-0.5">
-                            {recheck.famachaAverage !== null &&
+                            {recheck.famachaBeforeAverage !== null &&
+                              recheck.famachaAfterAverage !== null &&
                               recheck.famachaAverageChange !== null && (
                                 <div className="flex justify-between gap-4 text-sm">
                                   <span className="text-muted-foreground">
                                     {t("parasiteChecks.famachaScore")} (Ø{" "}
-                                    {recheck.famachaAverage.toFixed(1)})
+                                    {recheck.famachaBeforeAverage.toFixed(1)} →{" "}
+                                    {recheck.famachaAfterAverage.toFixed(1)})
                                   </span>
                                   <span
                                     className={cn(

@@ -241,7 +241,9 @@ export function ParasiteCheckForm({
       // When editing, only base checks the stored check already fits, so nothing
       // gets overwritten or dropped
       (!isEditing ||
-        (otherCheck.method === method &&
+        // ... and not dated after the check, which the API rejects
+        (otherCheck.date.slice(0, 10) <= date &&
+          otherCheck.method === method &&
           animalIds.every((animalId) =>
             otherCheck.animals.some(
               (baseAnimal) => baseAnimal.animalId === animalId,
@@ -433,6 +435,13 @@ export function ParasiteCheckForm({
             emptyText={t("common.noResults")}
           />
         </Field>
+      )}
+
+      {/* All animals of the base check died: nothing to re-check */}
+      {baseCheck && animalIds.length === 0 && (
+        <p className="text-sm text-destructive">
+          {t("parasiteChecks.allBaseAnimalsDead")}
+        </p>
       )}
 
       {hasMixedAnimalTypes && (
