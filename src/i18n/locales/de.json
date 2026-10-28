@@ -1817,7 +1817,6 @@
       "fecal_egg_count": "Kotprobe"
     },
     "recheckLockedInfo": "Methode, Herde und Tiere werden von der Ausgangskontrolle übernommen. Verstorbene Tiere und Tiere, die nicht mehr in der Herde sind, werden ausgelassen.",
-    "herdOptional": "Herde (optional)",
     "previousCheckOptional": "Nachkontrolle von (optional)",
     "nAnimals": "{{count}} Tiere",
     "famachaScores": "FAMACHA-Werte",
@@ -1855,7 +1854,6 @@
     "recheckOf": "Nachkontrolle vom {{date}}",
     "treatment": "Behandlung",
     "followUpTask": "Nachkontrolle",
-    "herdAverage": "Herdendurchschnitt",
     "famachaDistribution": "FAMACHA-Verteilung",
     "summary": "Zusammenfassung",
     "famachaSummary": "{{count}} Tiere · Ø {{average}}",
@@ -1863,7 +1861,6 @@
     "resultsStatusNone": "Noch keine Ergebnisse erfasst",
     "noRechecks": "Noch keine Nachkontrollen",
     "famachaScore": "FAMACHA-Wert",
-    "reductionInfo": "Eizahlreduktion: ab 95 % wirksam, darunter Verdacht auf Resistenz.",
     "parasiteHistory": "Parasitenverlauf",
     "individualSample": "Einzelprobe",
     "noChecks": "Noch keine Kontrollen erfasst",
@@ -1872,7 +1869,6 @@
     "rechecks": "Nachkontrollen",
     "title": "Parasitenkontrolle",
     "method": "Methode",
-    "herd": "Herde",
     "animals": "Tiere",
     "selectAnimals": "Tiere auswählen",
     "notes": "Notizen",
@@ -1880,6 +1876,15 @@
     "deleteConfirm": "Diese Kontrolle wirklich löschen?",
     "addRecheck": "Nachkontrolle erfassen",
     "result": "Ergebnis",
-    "deleteWithRechecksConfirm": "Kontrolle und ihre {{count}} Nachkontrollen wirklich löschen?"
+    "deleteWithRechecksConfirm": "Kontrolle und ihre {{count}} Nachkontrollen wirklich löschen?",
+    "parasiteType": "Parasit",
+    "duplicateParasiteType": "Jeder Parasit darf pro Probe nur einmal vorkommen",
+    "name": "Name",
+    "nameOptional": "Name (optional)",
+    "selectFromHerd": "Tiere aus Herde",
+    "mixedAnimalTypes": "Eine Kontrolle kann nur Tiere einer Tierart enthalten.",
+    "averagePerCheck": "Ø pro Kontrolle",
+    "chartCountsInfo": "Zahlen in den Diagrammen = Anzahl geprüfter Tiere",
+    "animalType": "Tierart"
   }
 }

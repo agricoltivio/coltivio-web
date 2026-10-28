@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
 import {
-  PARASITE_TYPES,
   type Animal,
   type ParasiteCheck,
   type ParasiteCheckCreateInput,
@@ -10,7 +8,12 @@ import {
   type ParasiteType,
   type Treatment,
 } from "@/api/types";
-import { cn, formatDateOnly, parseDateOnly, toLocalDateString } from "@/lib/utils";
+import {
+  cn,
+  formatDateOnly,
+  parseDateOnly,
+  toLocalDateString,
+} from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -18,26 +21,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { animalDisplayName, FamachaScoreButtons } from "./ParasiteCharts";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  animalDisplayName,
-  FamachaScoreButtons,
-  parasiteCountUnitKey,
-} from "./ParasiteCharts";
+  filledResults,
+  hasDuplicateParasiteType,
+  newResultRows,
+  nextResultKey,
+  ParasiteResultsEditor,
+  type ParasiteResultDraft,
+} from "./ParasiteResultsEditor";
 
 const DEFAULT_RECHECK_DAYS = 14;
 const METHODS: ParasiteCheckMethod[] = ["fecal_egg_count", "famacha"];
 
 type SampleMode = "pooled" | "individual";
-// Entered counts per parasite type, as typed (empty = no result)
-type CountInputs = Partial<Record<ParasiteType, string>>;
 
 export type ParasiteCheckFormSubmit = {
   body: Omit<ParasiteCheckCreateInput, "followUp">;
@@ -50,13 +48,14 @@ function addDays(isoDate: string, days: number) {
   return toLocalDateString(date);
 }
 
-function filledResults(inputs: CountInputs | undefined) {
-  return PARASITE_TYPES.flatMap((parasiteType) => {
-    const input = inputs?.[parasiteType];
-    // Empty or not a number (e.g. ".") means no result
-    const countPerGram = input === undefined || input === "" ? NaN : Number(input);
-    return Number.isFinite(countPerGram) ? [{ parasiteType, countPerGram }] : [];
-  });
+function toResultRows(
+  results: { parasiteType: ParasiteType; countPerGram: number }[],
+): ParasiteResultDraft[] {
+  return results.map((result) => ({
+    key: nextResultKey(),
+    parasiteType: result.parasiteType,
+    countPerGram: String(result.countPerGram),
+  }));
 }
 
 export function ParasiteCheckForm({
@@ -71,7 +70,7 @@ export function ParasiteCheckForm({
 }: {
   // Set when editing
   check?: ParasiteCheck;
-  defaults?: { herdId?: string; previousCheckId?: string };
+  defaults?: { previousCheckId?: string };
   // All animals incl. dead ones (for names and to leave out dead ones in re-checks)
   animals: Animal[];
   herds: { id: string; name: string }[];
@@ -91,11 +90,14 @@ export function ParasiteCheckForm({
   const [date, setDate] = useState(
     check ? check.date.slice(0, 10) : toLocalDateString(new Date()),
   );
-  const [herdId, setHerdId] = useState(check?.herdId ?? defaults?.herdId ?? "");
+  // Only used to preselect a herd's animals, not stored with the check
+  const [herdId, setHerdId] = useState("");
   const [animalIds, setAnimalIds] = useState<string[]>(
     check?.animals.map((checkAnimal) => checkAnimal.animalId) ?? [],
   );
-  const [famachaScores, setFamachaScores] = useState<Record<string, number | null>>(
+  const [famachaScores, setFamachaScores] = useState<
+    Record<string, number | null>
+  >(
     Object.fromEntries(
       (check?.animals ?? []).map((checkAnimal) => [
         checkAnimal.animalId,
@@ -107,51 +109,49 @@ export function ParasiteCheckForm({
     check?.previousCheckId ?? defaults?.previousCheckId ?? "",
   );
   const [treatmentId, setTreatmentId] = useState(check?.treatmentId ?? "");
+  const [name, setName] = useState(check?.name ?? "");
   const [notes, setNotes] = useState(check?.notes ?? "");
   const [labName, setLabName] = useState(check?.labName ?? "");
 
   // Lab results: one pooled sample for all animals or one sample per animal
-  const existingPooledSample = check?.fecSamples.find((sample) => sample.pooled);
+  const existingPooledSample = check?.fecSamples.find(
+    (sample) => sample.pooled,
+  );
   const [sampleMode, setSampleMode] = useState<SampleMode>(
     check && check.fecSamples.length > 0 && !existingPooledSample
       ? "individual"
       : "pooled",
   );
-  const [pooledLabel, setPooledLabel] = useState(existingPooledSample?.label ?? "");
-  const [pooledInputs, setPooledInputs] = useState<CountInputs>(
-    Object.fromEntries(
-      (existingPooledSample?.results ?? []).map((result) => [
-        result.parasiteType,
-        String(result.countPerGram),
-      ]),
-    ),
+  const [pooledLabel, setPooledLabel] = useState(
+    existingPooledSample?.label ?? "",
   );
-  const [individualInputs, setIndividualInputs] = useState<Record<string, CountInputs>>(
+  const [pooledResults, setPooledResults] = useState<ParasiteResultDraft[]>(
+    () =>
+      existingPooledSample
+        ? toResultRows(existingPooledSample.results)
+        : newResultRows(),
+  );
+  // Keyed by animal, so an animal has one sample; animals without entry show an empty row
+  const [individualResults, setIndividualResults] = useState<
+    Record<string, ParasiteResultDraft[]>
+  >(() =>
     Object.fromEntries(
       (check?.fecSamples ?? [])
         .filter((sample) => !sample.pooled)
-        .map((sample) => [
-          sample.animalIds[0],
-          Object.fromEntries(
-            sample.results.map((result) => [
-              result.parasiteType,
-              String(result.countPerGram),
-            ]),
-          ),
-        ]),
+        .map((sample) => [sample.animalIds[0], toResultRows(sample.results)]),
     ),
   );
-  // Parasite columns of the results table
-  const [parasiteColumns, setParasiteColumns] = useState<ParasiteType[]>(() => {
-    const usedTypes = new Set(
-      (check?.fecSamples ?? []).flatMap((sample) =>
-        sample.results.map((result) => result.parasiteType),
-      ),
-    );
-    return usedTypes.size > 0
-      ? PARASITE_TYPES.filter((parasiteType) => usedTypes.has(parasiteType))
-      : ["strongyles"];
-  });
+  // Stable empty rows for animals that have no results yet
+  const [emptyRowsByAnimal] = useState(
+    () => new Map<string, ParasiteResultDraft[]>(),
+  );
+  function animalResultRows(animalId: string) {
+    const rows = individualResults[animalId];
+    if (rows) return rows;
+    const emptyRows = emptyRowsByAnimal.get(animalId) ?? newResultRows();
+    emptyRowsByAnimal.set(animalId, emptyRows);
+    return emptyRows;
+  }
 
   const [followUpEnabled, setFollowUpEnabled] = useState(false);
   const [followUpDate, setFollowUpDate] = useState(
@@ -160,7 +160,8 @@ export function ParasiteCheckForm({
   const [followUpDateTouched, setFollowUpDateTouched] = useState(false);
   // Re-check date follows the check date until the user picks one
   useEffect(() => {
-    if (!followUpDateTouched) setFollowUpDate(addDays(date, DEFAULT_RECHECK_DAYS));
+    if (!followUpDateTouched)
+      setFollowUpDate(addDays(date, DEFAULT_RECHECK_DAYS));
   }, [date, followUpDateTouched]);
 
   const animalsById = useMemo(
@@ -168,8 +169,8 @@ export function ParasiteCheckForm({
     [animals],
   );
 
-  // A re-check repeats its base check: method, herd and animals are taken over
-  // and fixed. Animals that died before the re-check date are left out.
+  // A re-check repeats its base check: method and animals are taken over and
+  // fixed. Animals that died before the re-check date are left out.
   const baseCheck = previousCheckId
     ? checks.find((otherCheck) => otherCheck.id === previousCheckId)
     : undefined;
@@ -177,8 +178,9 @@ export function ParasiteCheckForm({
     // Editing keeps the stored animals; only base checks that fit are offered there
     if (isEditing || !baseCheck) return;
     setMethod(baseCheck.method);
-    setHerdId(baseCheck.herdId ?? "");
-    // Left out: animals that died before the re-check date or left the herd
+    // A re-check cannot be dated before its base check
+    const baseDate = baseCheck.date.slice(0, 10);
+    if (date < baseDate) setDate(baseDate);
     setAnimalIds(
       baseCheck.animals
         .map((baseAnimal) => baseAnimal.animalId)
@@ -186,27 +188,20 @@ export function ParasiteCheckForm({
           const animal = animalsById.get(animalId);
           return (
             animal !== undefined &&
-            (!animal.dateOfDeath || parseDateOnly(animal.dateOfDeath) > parseDateOnly(date)) &&
-            (!baseCheck.herdId || animal.herdId === baseCheck.herdId)
+            (!animal.dateOfDeath ||
+              parseDateOnly(animal.dateOfDeath) > parseDateOnly(date))
           );
         }),
     );
   }, [isEditing, baseCheck, animalsById, date]);
 
-  // A base check with re-checks keeps its herd and animals (method is fixed when editing anyway)
-  const isLockedBaseCheck = (check?.rechecks.length ?? 0) > 0;
+  // A base check with re-checks cannot be dated after its first re-check
+  const earliestRecheckDate = check?.rechecks.length
+    ? check.rechecks.map((recheck) => recheck.date.slice(0, 10)).sort()[0]
+    : undefined;
 
-  // Started for a herd (e.g. from the herd overview): prefill its living animals
-  const [prefilledFromHerd, setPrefilledFromHerd] = useState(false);
-  useEffect(() => {
-    if (isEditing || prefilledFromHerd || !defaults?.herdId || defaults.previousCheckId) return;
-    setPrefilledFromHerd(true);
-    setAnimalIds(
-      animals
-        .filter((animal) => animal.herdId === defaults.herdId && !animal.dateOfDeath)
-        .map((animal) => animal.id),
-    );
-  }, [isEditing, prefilledFromHerd, defaults, animals]);
+  // A base check with re-checks keeps its animals (method is fixed when editing anyway)
+  const isLockedBaseCheck = (check?.rechecks.length ?? 0) > 0;
 
   function handleHerdChange(newHerdId: string) {
     setHerdId(newHerdId);
@@ -224,8 +219,15 @@ export function ParasiteCheckForm({
     return animal ? animalDisplayName(animal.name, animal.earTag?.number) : "…";
   }
 
+  // Once animals are selected, only animals of the same type can be added
+  const selectedAnimalType = animalIds
+    .map((animalId) => animalsById.get(animalId)?.type)
+    .find((type) => type !== undefined);
   const animalOptions = animals
     .filter((animal) => !animal.dateOfDeath || animalIds.includes(animal.id))
+    .filter(
+      (animal) => !selectedAnimalType || animal.type === selectedAnimalType,
+    )
     .map((animal) => ({
       value: animal.id,
       label: `${animalDisplayName(animal.name, animal.earTag?.number)} (${t(`animals.types.${animal.type}`)})`,
@@ -236,14 +238,14 @@ export function ParasiteCheckForm({
     (otherCheck) =>
       otherCheck.id !== check?.id &&
       otherCheck.previousCheckId === null &&
-      otherCheck.date.slice(0, 10) <= date &&
       // When editing, only base checks the stored check already fits, so nothing
       // gets overwritten or dropped
       (!isEditing ||
         (otherCheck.method === method &&
-          (otherCheck.herdId ?? "") === herdId &&
           animalIds.every((animalId) =>
-            otherCheck.animals.some((baseAnimal) => baseAnimal.animalId === animalId),
+            otherCheck.animals.some(
+              (baseAnimal) => baseAnimal.animalId === animalId,
+            ),
           ))),
   );
   // A base check with re-checks cannot become a re-check itself
@@ -253,30 +255,19 @@ export function ParasiteCheckForm({
     b.startDate.localeCompare(a.startDate),
   );
 
-  function setIndividualInput(animalId: string, parasiteType: ParasiteType, value: string) {
-    setIndividualInputs((current) => ({
-      ...current,
-      [animalId]: { ...current[animalId], [parasiteType]: value },
-    }));
-  }
+  // Duplicate parasite types in a sample are rejected by the API
+  const hasInvalidResults =
+    method === "fecal_egg_count" &&
+    (sampleMode === "pooled"
+      ? hasDuplicateParasiteType(pooledResults)
+      : animalIds.some((animalId) =>
+          hasDuplicateParasiteType(individualResults[animalId]),
+        ));
 
-  function removeParasiteColumn(parasiteType: ParasiteType) {
-    setParasiteColumns((columns) => columns.filter((column) => column !== parasiteType));
-    // Drop entered values of that column
-    setPooledInputs((inputs) => ({ ...inputs, [parasiteType]: undefined }));
-    setIndividualInputs((current) =>
-      Object.fromEntries(
-        Object.entries(current).map(([animalId, inputs]) => [
-          animalId,
-          { ...inputs, [parasiteType]: undefined },
-        ]),
-      ),
-    );
-  }
-
-  const unusedParasiteTypes = PARASITE_TYPES.filter(
-    (parasiteType) => !parasiteColumns.includes(parasiteType),
-  );
+  // A check only contains one animal type (the API rejects mixed checks)
+  const hasMixedAnimalTypes =
+    new Set(animalIds.map((animalId) => animalsById.get(animalId)?.type)).size >
+    1;
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -285,17 +276,17 @@ export function ParasiteCheckForm({
       method !== "fecal_egg_count"
         ? []
         : sampleMode === "pooled"
-          ? filledResults(pooledInputs).length > 0
+          ? filledResults(pooledResults).length > 0
             ? [
                 {
                   label: pooledLabel || null,
                   animalIds,
-                  results: filledResults(pooledInputs),
+                  results: filledResults(pooledResults),
                 },
               ]
             : []
           : animalIds.flatMap((animalId) => {
-              const results = filledResults(individualInputs[animalId]);
+              const results = filledResults(individualResults[animalId]);
               return results.length > 0
                 ? [{ label: null, animalIds: [animalId], results }]
                 : [];
@@ -305,13 +296,14 @@ export function ParasiteCheckForm({
       body: {
         date,
         method,
-        herdId: herdId || null,
         animals: animalIds.map((animalId) => ({
           animalId,
-          famachaScore: method === "famacha" ? (famachaScores[animalId] ?? null) : null,
+          famachaScore:
+            method === "famacha" ? (famachaScores[animalId] ?? null) : null,
         })),
         fecSamples,
         labName: method === "fecal_egg_count" ? labName || null : null,
+        name: name.trim() || null,
         notes: notes || null,
         treatmentId: treatmentId || null,
         previousCheckId: previousCheckId || null,
@@ -320,7 +312,8 @@ export function ParasiteCheckForm({
     });
   }
 
-  const selectClass = "w-full rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-60";
+  const selectClass =
+    "w-full rounded-md border bg-background px-3 py-2 text-sm disabled:opacity-60";
 
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl space-y-7">
@@ -349,34 +342,52 @@ export function ParasiteCheckForm({
         </p>
       )}
 
-      <FieldGroup className="flex-row">
+      <Field className="max-w-lg">
+        <FieldLabel htmlFor="name">
+          {t("parasiteChecks.nameOptional")}
+        </FieldLabel>
+        <Input
+          id="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+      </Field>
+
+      <FieldGroup className="flex-row items-end">
         <Field className="max-w-48">
           <FieldLabel htmlFor="date">{t("common.date")} *</FieldLabel>
           <Input
             id="date"
             type="date"
             required
+            // A re-check comes after its base check, a base check before its re-checks
+            min={baseCheck ? baseCheck.date.slice(0, 10) : undefined}
+            max={earliestRecheckDate}
             value={date}
             onChange={(event) => setDate(event.target.value)}
           />
         </Field>
-        <Field className="max-w-64">
-          <FieldLabel htmlFor="herdId">{t("parasiteChecks.herdOptional")}</FieldLabel>
-          <select
-            id="herdId"
-            className={selectClass}
-            value={herdId}
-            disabled={!!baseCheck || isLockedBaseCheck}
-            onChange={(event) => handleHerdChange(event.target.value)}
-          >
-            <option value="">-</option>
-            {herds.map((herd) => (
-              <option key={herd.id} value={herd.id}>
-                {herd.name}
-              </option>
-            ))}
-          </select>
-        </Field>
+        {/* Preselects the herd's living animals; only for new selections */}
+        {!baseCheck && !isLockedBaseCheck && (
+          <Field className="max-w-64">
+            <FieldLabel htmlFor="herdId">
+              {t("parasiteChecks.selectFromHerd")}
+            </FieldLabel>
+            <select
+              id="herdId"
+              className={selectClass}
+              value={herdId}
+              onChange={(event) => handleHerdChange(event.target.value)}
+            >
+              <option value="">-</option>
+              {herds.map((herd) => (
+                <option key={herd.id} value={herd.id}>
+                  {herd.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
         {canBeRecheck && (
           <Field className="max-w-72">
             <FieldLabel htmlFor="previousCheckId">
@@ -394,7 +405,7 @@ export function ParasiteCheckForm({
                   {[
                     t(`parasiteChecks.methods.${otherCheck.method}`),
                     formatDateOnly(otherCheck.date, locale),
-                    otherCheck.herd?.name,
+                    otherCheck.name,
                   ]
                     .filter(Boolean)
                     .join(" · ")}
@@ -424,6 +435,12 @@ export function ParasiteCheckForm({
         </Field>
       )}
 
+      {hasMixedAnimalTypes && (
+        <p className="text-sm text-destructive">
+          {t("parasiteChecks.mixedAnimalTypes")}
+        </p>
+      )}
+
       {/* FAMACHA scores per animal */}
       {method === "famacha" && animalIds.length > 0 && (
         <div className="space-y-2">
@@ -435,12 +452,17 @@ export function ParasiteCheckForm({
             <TableBody>
               {animalIds.map((animalId) => (
                 <TableRow key={animalId}>
-                  <TableCell className="font-medium">{animalLabel(animalId)}</TableCell>
+                  <TableCell className="font-medium">
+                    {animalLabel(animalId)}
+                  </TableCell>
                   <TableCell className="w-56">
                     <FamachaScoreButtons
                       value={famachaScores[animalId] ?? null}
                       onChange={(score) =>
-                        setFamachaScores((current) => ({ ...current, [animalId]: score }))
+                        setFamachaScores((current) => ({
+                          ...current,
+                          [animalId]: score,
+                        }))
                       }
                     />
                   </TableCell>
@@ -457,24 +479,28 @@ export function ParasiteCheckForm({
           <h3 className="font-medium">{t("parasiteChecks.samples")}</h3>
           <div className="flex flex-wrap items-end gap-4">
             <div className="inline-flex rounded-lg border p-1">
-              {(["pooled", "individual"] satisfies SampleMode[]).map((modeOption) => (
-                <button
-                  key={modeOption}
-                  type="button"
-                  onClick={() => setSampleMode(modeOption)}
-                  className={cn(
-                    "rounded-md px-3 py-1 text-sm",
-                    sampleMode === modeOption
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  {t(`parasiteChecks.sampleModes.${modeOption}`)}
-                </button>
-              ))}
+              {(["pooled", "individual"] satisfies SampleMode[]).map(
+                (modeOption) => (
+                  <button
+                    key={modeOption}
+                    type="button"
+                    onClick={() => setSampleMode(modeOption)}
+                    className={cn(
+                      "rounded-md px-3 py-1 text-sm",
+                      sampleMode === modeOption
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {t(`parasiteChecks.sampleModes.${modeOption}`)}
+                  </button>
+                ),
+              )}
             </div>
             <Field className="max-w-64">
-              <FieldLabel htmlFor="labName">{t("parasiteChecks.labName")}</FieldLabel>
+              <FieldLabel htmlFor="labName">
+                {t("parasiteChecks.labName")}
+              </FieldLabel>
               <Input
                 id="labName"
                 value={labName}
@@ -500,113 +526,36 @@ export function ParasiteCheckForm({
             </p>
           )}
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    {sampleMode === "pooled"
-                      ? t("parasiteChecks.sampleModes.pooled")
-                      : t("parasiteChecks.animals")}
-                  </TableHead>
-                  {parasiteColumns.map((parasiteType) => (
-                    <TableHead key={parasiteType} className="w-36">
-                      <div className="flex items-center gap-1">
-                        <span className="truncate">
-                          {t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (
-                          {t(parasiteCountUnitKey(parasiteType))})
-                        </span>
-                        {parasiteColumns.length > 1 && (
-                          <button
-                            type="button"
-                            aria-label={t("common.delete")}
-                            className="text-muted-foreground hover:text-destructive"
-                            onClick={() => removeParasiteColumn(parasiteType)}
-                          >
-                            <X className="size-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </TableHead>
-                  ))}
-                  <TableHead className="w-44">
-                    {unusedParasiteTypes.length > 0 && (
-                      <select
-                        className="w-full rounded-md border bg-background px-2 py-1 text-xs font-normal"
-                        value=""
-                        onChange={(event) => {
-                          const addedType = PARASITE_TYPES.find(
-                            (parasiteType) => parasiteType === event.target.value,
-                          );
-                          if (addedType) {
-                            setParasiteColumns((columns) =>
-                              PARASITE_TYPES.filter(
-                                (parasiteType) =>
-                                  columns.includes(parasiteType) || parasiteType === addedType,
-                              ),
-                            );
-                          }
-                        }}
-                      >
-                        <option value="">+ {t("parasiteChecks.addParasite")}</option>
-                        {unusedParasiteTypes.map((parasiteType) => (
-                          <option key={parasiteType} value={parasiteType}>
-                            {t(`parasiteChecks.parasiteTypes.${parasiteType}`)}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sampleMode === "pooled" ? (
-                  <TableRow>
-                    <TableCell className="font-medium">
-                      {t("parasiteChecks.pooledSample", { count: animalIds.length })}
-                    </TableCell>
-                    {parasiteColumns.map((parasiteType) => (
-                      <TableCell key={parasiteType}>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="any"
-                          value={pooledInputs[parasiteType] ?? ""}
-                          onChange={(event) =>
-                            setPooledInputs((inputs) => ({
-                              ...inputs,
-                              [parasiteType]: event.target.value,
-                            }))
-                          }
-                        />
-                      </TableCell>
-                    ))}
-                    <TableCell />
-                  </TableRow>
-                ) : (
-                  animalIds.map((animalId) => (
-                    <TableRow key={animalId}>
-                      <TableCell className="font-medium">{animalLabel(animalId)}</TableCell>
-                      {parasiteColumns.map((parasiteType) => (
-                        <TableCell key={parasiteType}>
-                          <Input
-                            type="number"
-                            min={0}
-                            step="any"
-                            value={individualInputs[animalId]?.[parasiteType] ?? ""}
-                            onChange={(event) =>
-                              setIndividualInput(animalId, parasiteType, event.target.value)
-                            }
-                          />
-                        </TableCell>
-                      ))}
-                      <TableCell />
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          {sampleMode === "pooled" ? (
+            <div className="max-w-xl">
+              <p className="mb-2 text-sm font-medium">
+                {t("parasiteChecks.pooledSample", { count: animalIds.length })}
+              </p>
+              <ParasiteResultsEditor
+                results={pooledResults}
+                onChange={setPooledResults}
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {animalIds.map((animalId) => (
+                <div key={animalId}>
+                  <p className="mb-2 text-sm font-medium">
+                    {animalLabel(animalId)}
+                  </p>
+                  <ParasiteResultsEditor
+                    results={animalResultRows(animalId)}
+                    onChange={(rows) =>
+                      setIndividualResults((current) => ({
+                        ...current,
+                        [animalId]: rows,
+                      }))
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -647,9 +596,13 @@ export function ParasiteCheckForm({
             <Checkbox
               id="followUp"
               checked={followUpEnabled}
-              onCheckedChange={(checked) => setFollowUpEnabled(checked === true)}
+              onCheckedChange={(checked) =>
+                setFollowUpEnabled(checked === true)
+              }
             />
-            <Label htmlFor="followUp">{t("parasiteChecks.createFollowUpTask")}</Label>
+            <Label htmlFor="followUp">
+              {t("parasiteChecks.createFollowUpTask")}
+            </Label>
           </div>
           {followUpEnabled && (
             <Input
@@ -667,7 +620,15 @@ export function ParasiteCheckForm({
       )}
 
       <div className="flex justify-end gap-3 pt-2">
-        <Button type="submit" disabled={isSubmitting || animalIds.length === 0}>
+        <Button
+          type="submit"
+          disabled={
+            isSubmitting ||
+            animalIds.length === 0 ||
+            hasInvalidResults ||
+            hasMixedAnimalTypes
+          }
+        >
           {t("common.save")}
         </Button>
       </div>

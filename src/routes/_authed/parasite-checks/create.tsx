@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -15,7 +15,6 @@ import {
 
 export const Route = createFileRoute("/_authed/parasite-checks/create")({
   validateSearch: z.object({
-    herdId: z.string().optional(),
     previousCheckId: z.string().optional(),
   }),
   loader: ({ context: { queryClient } }) => {
@@ -30,8 +29,9 @@ export const Route = createFileRoute("/_authed/parasite-checks/create")({
 function CreateParasiteCheckPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const { herdId, previousCheckId } = Route.useSearch();
+  const { previousCheckId } = Route.useSearch();
 
   const animalsQuery = useQuery(animalsQueryOptions(false));
   const herdsQuery = useQuery(herdsQueryOptions());
@@ -54,10 +54,19 @@ function CreateParasiteCheckPage() {
     onSuccess: (createdCheck) => {
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      navigate({
-        to: "/parasite-checks/$checkId",
-        params: { checkId: createdCheck.id },
-      });
+      // A re-check returns to its base check (replacing the form in the history),
+      // a base check to where it was started
+      if (createdCheck.previousCheckId) {
+        navigate({
+          to: "/parasite-checks/$checkId",
+          params: { checkId: createdCheck.previousCheckId },
+          replace: true,
+        });
+      } else if (router.history.length > 1) {
+        router.history.back();
+      } else {
+        navigate({ to: "/animals/parasite-checks", replace: true });
+      }
     },
   });
 
@@ -73,7 +82,7 @@ function CreateParasiteCheckPage() {
   return (
     <PageContent title={t("parasiteChecks.newCheck")} showBackButton>
       <ParasiteCheckForm
-        defaults={{ herdId, previousCheckId }}
+        defaults={{ previousCheckId }}
         animals={animalsQuery.data.result}
         herds={herdsQuery.data?.result ?? []}
         treatments={treatmentsQuery.data?.result ?? []}

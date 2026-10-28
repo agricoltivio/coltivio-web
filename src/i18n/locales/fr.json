@@ -1817,7 +1817,6 @@
       "fecal_egg_count": "Coprologie"
     },
     "recheckLockedInfo": "La méthode, le troupeau et les animaux sont repris du contrôle initial. Les animaux morts ou qui ne sont plus dans le troupeau sont exclus.",
-    "herdOptional": "Troupeau (facultatif)",
     "previousCheckOptional": "Recontrôle de (facultatif)",
     "nAnimals": "{{count}} animaux",
     "famachaScores": "Scores FAMACHA",
@@ -1855,7 +1854,6 @@
     "recheckOf": "Recontrôle du {{date}}",
     "treatment": "Traitement",
     "followUpTask": "Recontrôle",
-    "herdAverage": "Moyenne du troupeau",
     "famachaDistribution": "Répartition FAMACHA",
     "summary": "Résumé",
     "famachaSummary": "{{count}} animaux · moy. {{average}}",
@@ -1863,7 +1861,6 @@
     "resultsStatusNone": "Aucun résultat saisi",
     "noRechecks": "Aucun recontrôle",
     "famachaScore": "Score FAMACHA",
-    "reductionInfo": "Réduction du nombre d'œufs : efficace à partir de 95 %, en dessous résistance suspectée.",
     "parasiteHistory": "Historique parasitaire",
     "individualSample": "Échantillon individuel",
     "noChecks": "Aucun contrôle enregistré",
@@ -1872,7 +1869,6 @@
     "rechecks": "Recontrôles",
     "title": "Contrôle des parasites",
     "method": "Méthode",
-    "herd": "Troupeau",
     "animals": "Animaux",
     "selectAnimals": "Sélectionner des animaux",
     "notes": "Notes",
@@ -1880,6 +1876,15 @@
     "deleteConfirm": "Vraiment supprimer ce contrôle ?",
     "addRecheck": "Ajouter un recontrôle",
     "result": "Résultat",
-    "deleteWithRechecksConfirm": "Vraiment supprimer ce contrôle et ses {{count}} recontrôles ?"
+    "deleteWithRechecksConfirm": "Vraiment supprimer ce contrôle et ses {{count}} recontrôles ?",
+    "parasiteType": "Parasite",
+    "duplicateParasiteType": "Chaque parasite ne peut apparaître qu'une fois par échantillon",
+    "name": "Nom",
+    "nameOptional": "Nom (facultatif)",
+    "selectFromHerd": "Animaux du troupeau",
+    "mixedAnimalTypes": "Un contrôle ne peut contenir que des animaux d'une seule espèce.",
+    "averagePerCheck": "Ø par contrôle",
+    "chartCountsInfo": "Chiffres des graphiques = nombre d'animaux contrôlés",
+    "animalType": "Espèce"
   }
 }

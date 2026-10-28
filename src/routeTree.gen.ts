@@ -151,7 +151,6 @@ import { Route as AuthedFieldCalendarCropsCropIdEditRouteImport } from './routes
 import { Route as AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRouteImport } from './routes/_authed/field-calendar/crop-rotation-drafts_.$draftPlanId_.edit'
 import { Route as AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRouteImport } from './routes/_authed/field-calendar/crop-protection-products_.$cropProtectionProductId_.edit'
 import { Route as AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport } from './routes/_authed/field-calendar/crop-families_.$familyId_.edit'
-import { Route as AuthedAnimalsHerdsHerdIdParasiteOverviewRouteImport } from './routes/_authed/animals/herds_.$herdId_.parasite-overview'
 import { Route as AuthedAnimalsAnimalIdJournalCreateRouteImport } from './routes/_authed/animals/$animalId_.journal.create'
 import { Route as AuthedAnimalsAnimalIdJournalEntryIdRouteImport } from './routes/_authed/animals/$animalId_.journal.$entryId'
 import { Route as AuthedSponsorshipsSponsorshipIdPaymentsPaymentIdIndexRouteImport } from './routes/_authed/sponsorships/$sponsorshipId_.payments.$paymentId.index'
@@ -965,12 +964,6 @@ const AuthedFieldCalendarCropFamiliesFamilyIdEditRoute =
     path: '/field-calendar/crop-families/$familyId/edit',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
-const AuthedAnimalsHerdsHerdIdParasiteOverviewRoute =
-  AuthedAnimalsHerdsHerdIdParasiteOverviewRouteImport.update({
-    id: '/animals/herds_/$herdId_/parasite-overview',
-    path: '/animals/herds/$herdId/parasite-overview',
-    getParentRoute: () => AuthedRouteRoute,
-  } as any)
 const AuthedAnimalsAnimalIdJournalCreateRoute =
   AuthedAnimalsAnimalIdJournalCreateRouteImport.update({
     id: '/create',
@@ -1171,7 +1164,6 @@ export interface FileRoutesByFullPath {
   '/wiki/my-submissions/': typeof AuthedWikiMySubmissionsIndexRoute
   '/animals/$animalId/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/animals/$animalId/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
-  '/animals/herds/$herdId/parasite-overview': typeof AuthedAnimalsHerdsHerdIdParasiteOverviewRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
   '/field-calendar/crop-rotation-drafts/$draftPlanId/edit': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRoute
@@ -1318,7 +1310,6 @@ export interface FileRoutesByTo {
   '/wiki/my-submissions': typeof AuthedWikiMySubmissionsIndexRoute
   '/animals/$animalId/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/animals/$animalId/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
-  '/animals/herds/$herdId/parasite-overview': typeof AuthedAnimalsHerdsHerdIdParasiteOverviewRoute
   '/field-calendar/crop-families/$familyId/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/field-calendar/crop-protection-products/$cropProtectionProductId/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
   '/field-calendar/crop-rotation-drafts/$draftPlanId/edit': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRoute
@@ -1475,7 +1466,6 @@ export interface FileRoutesById {
   '/_authed/wiki/my-submissions/': typeof AuthedWikiMySubmissionsIndexRoute
   '/_authed/animals/$animalId_/journal/$entryId': typeof AuthedAnimalsAnimalIdJournalEntryIdRoute
   '/_authed/animals/$animalId_/journal/create': typeof AuthedAnimalsAnimalIdJournalCreateRoute
-  '/_authed/animals/herds_/$herdId_/parasite-overview': typeof AuthedAnimalsHerdsHerdIdParasiteOverviewRoute
   '/_authed/field-calendar/crop-families_/$familyId_/edit': typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit': typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
   '/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId_/edit': typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRoute
@@ -1633,7 +1623,6 @@ export interface FileRouteTypes {
     | '/wiki/my-submissions/'
     | '/animals/$animalId/journal/$entryId'
     | '/animals/$animalId/journal/create'
-    | '/animals/herds/$herdId/parasite-overview'
     | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
     | '/field-calendar/crop-rotation-drafts/$draftPlanId/edit'
@@ -1780,7 +1769,6 @@ export interface FileRouteTypes {
     | '/wiki/my-submissions'
     | '/animals/$animalId/journal/$entryId'
     | '/animals/$animalId/journal/create'
-    | '/animals/herds/$herdId/parasite-overview'
     | '/field-calendar/crop-families/$familyId/edit'
     | '/field-calendar/crop-protection-products/$cropProtectionProductId/edit'
     | '/field-calendar/crop-rotation-drafts/$draftPlanId/edit'
@@ -1936,7 +1924,6 @@ export interface FileRouteTypes {
     | '/_authed/wiki/my-submissions/'
     | '/_authed/animals/$animalId_/journal/$entryId'
     | '/_authed/animals/$animalId_/journal/create'
-    | '/_authed/animals/herds_/$herdId_/parasite-overview'
     | '/_authed/field-calendar/crop-families_/$familyId_/edit'
     | '/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit'
     | '/_authed/field-calendar/crop-rotation-drafts_/$draftPlanId_/edit'
@@ -2979,13 +2966,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
-    '/_authed/animals/herds_/$herdId_/parasite-overview': {
-      id: '/_authed/animals/herds_/$herdId_/parasite-overview'
-      path: '/animals/herds/$herdId/parasite-overview'
-      fullPath: '/animals/herds/$herdId/parasite-overview'
-      preLoaderRoute: typeof AuthedAnimalsHerdsHerdIdParasiteOverviewRouteImport
-      parentRoute: typeof AuthedRouteRoute
-    }
     '/_authed/animals/$animalId_/journal/create': {
       id: '/_authed/animals/$animalId_/journal/create'
       path: '/create'
@@ -3377,7 +3357,6 @@ interface AuthedRouteRouteChildren {
   AuthedWikiAdminIndexRoute: typeof AuthedWikiAdminIndexRoute
   AuthedWikiMyEntriesIndexRoute: typeof AuthedWikiMyEntriesIndexRoute
   AuthedWikiMySubmissionsIndexRoute: typeof AuthedWikiMySubmissionsIndexRoute
-  AuthedAnimalsHerdsHerdIdParasiteOverviewRoute: typeof AuthedAnimalsHerdsHerdIdParasiteOverviewRoute
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute: typeof AuthedFieldCalendarCropFamiliesFamilyIdEditRoute
   AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute: typeof AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute
   AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRoute: typeof AuthedFieldCalendarCropRotationDraftsDraftPlanIdEditRoute
@@ -3496,8 +3475,6 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedWikiAdminIndexRoute: AuthedWikiAdminIndexRoute,
   AuthedWikiMyEntriesIndexRoute: AuthedWikiMyEntriesIndexRoute,
   AuthedWikiMySubmissionsIndexRoute: AuthedWikiMySubmissionsIndexRoute,
-  AuthedAnimalsHerdsHerdIdParasiteOverviewRoute:
-    AuthedAnimalsHerdsHerdIdParasiteOverviewRoute,
   AuthedFieldCalendarCropFamiliesFamilyIdEditRoute:
     AuthedFieldCalendarCropFamiliesFamilyIdEditRoute,
   AuthedFieldCalendarCropProtectionProductsCropProtectionProductIdEditRoute:

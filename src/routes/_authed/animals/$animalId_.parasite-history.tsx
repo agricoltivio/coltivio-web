@@ -6,6 +6,7 @@ import { animalParasiteHistoryQueryOptions } from "@/api/parasiteChecks.queries"
 import { PARASITE_TYPES } from "@/api/types";
 import { formatDateOnly, parseDateOnly } from "@/lib/utils";
 import { PageContent } from "@/components/PageContent";
+import { ChartCarouselCard } from "@/components/parasites/ChartCarouselCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
@@ -15,10 +16,14 @@ import {
   TimelineChart,
 } from "@/components/parasites/ParasiteCharts";
 
-export const Route = createFileRoute("/_authed/animals/$animalId_/parasite-history")({
+export const Route = createFileRoute(
+  "/_authed/animals/$animalId_/parasite-history",
+)({
   loader: ({ params, context: { queryClient } }) => {
     queryClient.ensureQueryData(animalQueryOptions(params.animalId));
-    queryClient.ensureQueryData(animalParasiteHistoryQueryOptions(params.animalId));
+    queryClient.ensureQueryData(
+      animalParasiteHistoryQueryOptions(params.animalId),
+    );
   },
   component: AnimalParasiteHistoryPage,
 });
@@ -42,18 +47,26 @@ function AnimalParasiteHistoryPage() {
 
   const history = historyQuery.data;
   const animal = animalQuery.data;
-  const treatmentDates = (history?.treatments ?? []).map((treatment) => treatment.startDate);
+  const treatmentDates = (history?.treatments ?? []).map(
+    (treatment) => treatment.startDate,
+  );
 
   // One chart per parasite type this animal has results for, then FAMACHA
   const fecCharts = PARASITE_TYPES.flatMap((parasiteType) => {
     const points = (history?.fecResults ?? []).flatMap((fecResult) => {
-      const result = fecResult.results.find((entry) => entry.parasiteType === parasiteType);
-      return result ? [{ date: fecResult.date, value: result.countPerGram }] : [];
+      const result = fecResult.results.find(
+        (entry) => entry.parasiteType === parasiteType,
+      );
+      return result
+        ? [{ date: fecResult.date, value: result.countPerGram }]
+        : [];
     });
     return points.length > 0 ? [{ parasiteType, points }] : [];
   });
   const famachaPoints = (history?.checks ?? []).flatMap((entry) =>
-    entry.famachaScore === null ? [] : [{ date: entry.date, value: entry.famachaScore }],
+    entry.famachaScore === null
+      ? []
+      : [{ date: entry.date, value: entry.famachaScore }],
   );
 
   function openCheck(checkId: string) {
@@ -94,47 +107,52 @@ function AnimalParasiteHistoryPage() {
         ...history.treatments.map((treatment) => ({
           key: `treatment-${treatment.id}`,
           date: treatment.startDate,
-          title: treatment.drugName ? `${treatment.name} (${treatment.drugName})` : treatment.name,
+          title: treatment.drugName
+            ? `${treatment.name} (${treatment.drugName})`
+            : treatment.name,
           subtitle: t("parasiteChecks.treatment"),
           famachaScore: null,
           onOpen: () =>
-            navigate({ to: "/treatments/$treatmentId", params: { treatmentId: treatment.id } }),
+            navigate({
+              to: "/treatments/$treatmentId",
+              params: { treatmentId: treatment.id },
+            }),
         })),
-      ].sort((a, b) => parseDateOnly(b.date).getTime() - parseDateOnly(a.date).getTime())
+      ].sort(
+        (a, b) =>
+          parseDateOnly(b.date).getTime() - parseDateOnly(a.date).getTime(),
+      )
     : [];
 
   return (
     <PageContent
       title={t("parasiteChecks.parasiteHistory")}
-      description={animal ? animalDisplayName(animal.name, animal.earTag?.number) : undefined}
+      description={
+        animal
+          ? animalDisplayName(animal.name, animal.earTag?.number)
+          : undefined
+      }
       showBackButton
-      backTo={() => navigate({ to: "/animals/$animalId", params: { animalId } })}
+      backTo={() =>
+        navigate({ to: "/animals/$animalId", params: { animalId } })
+      }
     >
       <div className="space-y-6">
         {!historyQuery.isLoading && timelineEntries.length === 0 && (
-          <p className="text-sm text-muted-foreground">{t("parasiteChecks.noChecks")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("parasiteChecks.noChecks")}
+          </p>
         )}
 
+        {/* Full width, split 50/50 only when worms and FAMACHA are both shown */}
         {(fecCharts.length > 0 || famachaPoints.length > 0) && (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {fecCharts.map(({ parasiteType, points }) => (
-              <Card key={parasiteType}>
-                <CardHeader>
-                  <CardTitle className="text-base">
-                    {t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (
-                    {t(parasiteCountUnitKey(parasiteType))})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TimelineChart
-                    points={points}
-                    treatmentDates={treatmentDates}
-                    seriesName={t(`parasiteChecks.parasiteTypes.${parasiteType}`)}
-                    unitLabel={t(parasiteCountUnitKey(parasiteType))}
-                  />
-                </CardContent>
-              </Card>
-            ))}
+          <div
+            className={
+              fecCharts.length > 0 && famachaPoints.length > 0
+                ? "grid grid-cols-1 gap-6 lg:grid-cols-2"
+                : "grid grid-cols-1 gap-6"
+            }
+          >
             {famachaPoints.length > 0 && (
               <Card>
                 <CardHeader>
@@ -152,6 +170,24 @@ function AnimalParasiteHistoryPage() {
                 </CardContent>
               </Card>
             )}
+            {fecCharts.length > 0 && (
+              <ChartCarouselCard
+                pages={fecCharts.map(({ parasiteType, points }) => ({
+                  key: parasiteType,
+                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${t(parasiteCountUnitKey(parasiteType))})`,
+                  content: (
+                    <TimelineChart
+                      points={points}
+                      treatmentDates={treatmentDates}
+                      seriesName={t(
+                        `parasiteChecks.parasiteTypes.${parasiteType}`,
+                      )}
+                      unitLabel={t(parasiteCountUnitKey(parasiteType))}
+                    />
+                  ),
+                }))}
+              />
+            )}
           </div>
         )}
 
@@ -164,14 +200,20 @@ function AnimalParasiteHistoryPage() {
               <Table>
                 <TableBody>
                   {timelineEntries.map((entry) => (
-                    <TableRow key={entry.key} className="cursor-pointer" onClick={entry.onOpen}>
+                    <TableRow
+                      key={entry.key}
+                      className="cursor-pointer"
+                      onClick={entry.onOpen}
+                    >
                       <TableCell className="w-32 text-muted-foreground">
                         {formatDateOnly(entry.date, locale)}
                       </TableCell>
                       <TableCell>
                         <div className="font-medium">{entry.title}</div>
                         {entry.subtitle && (
-                          <div className="text-xs text-muted-foreground">{entry.subtitle}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {entry.subtitle}
+                          </div>
                         )}
                       </TableCell>
                       <TableCell className="w-12">

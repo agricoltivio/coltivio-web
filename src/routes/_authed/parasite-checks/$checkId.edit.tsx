@@ -51,7 +51,7 @@ function EditParasiteCheckPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
-      navigate({ to: "/parasite-checks/$checkId", params: { checkId } });
+      navigate({ to: "/parasite-checks/$checkId", params: { checkId }, replace: true });
     },
   });
 

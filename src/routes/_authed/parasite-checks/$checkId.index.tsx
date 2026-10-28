@@ -7,8 +7,15 @@ import { PARASITE_TYPES } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { cn, formatDateOnly } from "@/lib/utils";
 import { PageContent } from "@/components/PageContent";
+import { ChartCarouselCard } from "@/components/parasites/ChartCarouselCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -32,26 +39,25 @@ import {
   animalDisplayName,
   FamachaBadge,
   FamachaDistributionChart,
+  formatCountChange,
   parasiteCountUnitKey,
   TimelineChart,
 } from "@/components/parasites/ParasiteCharts";
 
-// Fecal egg count reduction thresholds commonly used to judge dewormer efficacy
-const FECRT_EFFECTIVE_PERCENT = 95;
-const FECRT_SUSPECTED_PERCENT = 90;
-
 export const Route = createFileRoute("/_authed/parasite-checks/$checkId/")({
   loader: ({ params, context: { queryClient } }) => {
-    return queryClient.ensureQueryData(parasiteCheckQueryOptions(params.checkId));
+    return queryClient.ensureQueryData(
+      parasiteCheckQueryOptions(params.checkId),
+    );
   },
   component: ParasiteCheckDetailPage,
 });
 
+// Only the direction: count went down (green) or up (red), no efficacy judgement
 function reductionClass(reductionPercent: number | null) {
-  if (reductionPercent === null) return "text-muted-foreground";
-  if (reductionPercent >= FECRT_EFFECTIVE_PERCENT) return "text-green-600";
-  if (reductionPercent >= FECRT_SUSPECTED_PERCENT) return "text-amber-600";
-  return "text-destructive";
+  if (reductionPercent === null || reductionPercent === 0)
+    return "text-muted-foreground";
+  return reductionPercent > 0 ? "text-green-600" : "text-destructive";
 }
 
 // Lower FAMACHA is better, so a falling average is an improvement
@@ -72,16 +78,21 @@ function ParasiteCheckDetailPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiClient.DELETE("/v1/parasiteChecks/byId/{checkId}", {
-        params: { path: { checkId } },
-      });
+      const response = await apiClient.DELETE(
+        "/v1/parasiteChecks/byId/{checkId}",
+        {
+          params: { path: { checkId } },
+        },
+      );
       if (response.error) {
         throw new Error("Failed to delete parasite check");
       }
     },
     onSuccess: () => {
       // The deleted check must not be refetched
-      queryClient.removeQueries({ queryKey: ["parasiteChecks", "byId", checkId] });
+      queryClient.removeQueries({
+        queryKey: ["parasiteChecks", "byId", checkId],
+      });
       queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       navigate({ to: "/animals/parasite-checks" });
     },
@@ -90,14 +101,18 @@ function ParasiteCheckDetailPage() {
   if (!checkQuery.data) {
     return (
       <PageContent title={t("common.loading")}>
-        <div className="py-8 text-center text-muted-foreground">{t("common.loading")}</div>
+        <div className="py-8 text-center text-muted-foreground">
+          {t("common.loading")}
+        </div>
       </PageContent>
     );
   }
 
   const check = checkQuery.data;
   const isRecheck = check.comparisonToPrevious !== null;
-  const title = `${t(`parasiteChecks.methods.${check.method}`)} · ${formatDateOnly(check.date, locale)}`;
+  const methodAndDate = `${t(`parasiteChecks.methods.${check.method}`)} · ${formatDateOnly(check.date, locale)}`;
+  // An own name replaces method and date as title, which then move below it
+  const title = check.name || methodAndDate;
 
   const treatmentDates = [
     ...(check.treatment ? [check.treatment.startDate] : []),
@@ -126,7 +141,12 @@ function ParasiteCheckDetailPage() {
                     (entry) => entry.parasiteType === parasiteType,
                   );
                   return reduction
-                    ? [{ date: recheck.date, value: reduction.afterAvgCountPerGram }]
+                    ? [
+                        {
+                          date: recheck.date,
+                          value: reduction.afterAvgCountPerGram,
+                        },
+                      ]
                     : [];
                 }),
               ],
@@ -156,18 +176,26 @@ function ParasiteCheckDetailPage() {
     <PageContent
       title={title}
       showBackButton
-      backTo={() => navigate({ to: "/animals/parasite-checks" })}
+      // A re-check goes back to its base check, a base check to the previous page
       description={
-        check.comparisonToPrevious && (
-          <Link
-            to="/parasite-checks/$checkId"
-            params={{ checkId: check.comparisonToPrevious.previousCheckId }}
-            className="text-primary hover:underline"
-          >
-            {t("parasiteChecks.recheckOf", {
-              date: formatDateOnly(check.comparisonToPrevious.previousDate, locale),
-            })}
-          </Link>
+        (check.name || check.comparisonToPrevious) && (
+          <span className="flex flex-wrap gap-x-2">
+            {check.name && <span>{methodAndDate}</span>}
+            {check.comparisonToPrevious && (
+              <Link
+                to="/parasite-checks/$checkId"
+                params={{ checkId: check.comparisonToPrevious.previousCheckId }}
+                className="text-primary hover:underline"
+              >
+                {t("parasiteChecks.recheckOf", {
+                  date: formatDateOnly(
+                    check.comparisonToPrevious.previousDate,
+                    locale,
+                  ),
+                })}
+              </Link>
+            )}
+          </span>
         )
       }
       actions={
@@ -216,22 +244,6 @@ function ParasiteCheckDetailPage() {
           <CardContent>
             <dl className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <DetailItem
-                label={t("parasiteChecks.herd")}
-                value={
-                  check.herd ? (
-                    <Link
-                      to="/animals/herds/$herdId/parasite-overview"
-                      params={{ herdId: check.herd.id }}
-                      className="text-primary hover:underline"
-                    >
-                      {check.herd.name}
-                    </Link>
-                  ) : (
-                    "-"
-                  )
-                }
-              />
-              <DetailItem
                 label={t("parasiteChecks.treatment")}
                 value={
                   check.treatment ? (
@@ -249,7 +261,10 @@ function ParasiteCheckDetailPage() {
                 }
               />
               {check.method === "fecal_egg_count" && (
-                <DetailItem label={t("parasiteChecks.labName")} value={check.labName || "-"} />
+                <DetailItem
+                  label={t("parasiteChecks.labName")}
+                  value={check.labName || "-"}
+                />
               )}
               {check.followUpTasks.map((task) => (
                 <DetailItem
@@ -259,7 +274,10 @@ function ParasiteCheckDetailPage() {
                 />
               ))}
               {check.notes && (
-                <DetailItem label={t("parasiteChecks.notes")} value={check.notes} />
+                <DetailItem
+                  label={t("parasiteChecks.notes")}
+                  value={check.notes}
+                />
               )}
             </dl>
           </CardContent>
@@ -267,25 +285,23 @@ function ParasiteCheckDetailPage() {
 
         {/* Charts of the base check and its re-checks */}
         {(fecCharts.length > 0 || famachaChartChecks.length > 0) && (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {fecCharts.map(({ parasiteType, points }) => (
-              <Card key={parasiteType}>
-                <CardHeader>
-                  <CardTitle className="text-base">
-                    {t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (
-                    {t(parasiteCountUnitKey(parasiteType))})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TimelineChart
-                    points={points}
-                    treatmentDates={treatmentDates}
-                    seriesName={t("parasiteChecks.herdAverage")}
-                    unitLabel={t(parasiteCountUnitKey(parasiteType))}
-                  />
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 gap-6">
+            {fecCharts.length > 0 && (
+              <ChartCarouselCard
+                pages={fecCharts.map(({ parasiteType, points }) => ({
+                  key: parasiteType,
+                  title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} Ø (${t(parasiteCountUnitKey(parasiteType))})`,
+                  content: (
+                    <TimelineChart
+                      points={points}
+                      treatmentDates={treatmentDates}
+                      seriesName={t("parasiteChecks.averagePerCheck")}
+                      unitLabel={t(parasiteCountUnitKey(parasiteType))}
+                    />
+                  ),
+                }))}
+              />
+            )}
             {famachaChartChecks.length > 0 && (
               <Card>
                 <CardHeader>
@@ -310,7 +326,9 @@ function ParasiteCheckDetailPage() {
             {check.method === "famacha" ? (
               <p className="text-sm">
                 {check.summary.famachaAverage === null
-                  ? t("parasiteChecks.nAnimals", { count: check.summary.animalCount })
+                  ? t("parasiteChecks.nAnimals", {
+                      count: check.summary.animalCount,
+                    })
                   : t("parasiteChecks.famachaSummary", {
                       count: check.summary.animalCount,
                       average: check.summary.famachaAverage.toFixed(1),
@@ -341,7 +359,9 @@ function ParasiteCheckDetailPage() {
                       {check.summary.fecByParasite.map((entry) => (
                         <TableRow key={entry.parasiteType}>
                           <TableCell>
-                            {t(`parasiteChecks.parasiteTypes.${entry.parasiteType}`)}
+                            {t(
+                              `parasiteChecks.parasiteTypes.${entry.parasiteType}`,
+                            )}
                           </TableCell>
                           <TableCell className="text-right font-medium">
                             {entry.sampleCount > 1
@@ -409,6 +429,11 @@ function ParasiteCheckDetailPage() {
                         >
                           <TableCell className="align-top font-medium">
                             {formatDateOnly(recheck.date, locale)}
+                            {recheck.name && (
+                              <div className="text-xs font-normal text-muted-foreground">
+                                {recheck.name}
+                              </div>
+                            )}
                           </TableCell>
                           <TableCell className="align-top text-muted-foreground">
                             {recheck.treatment?.name ?? "-"}
@@ -424,10 +449,14 @@ function ParasiteCheckDetailPage() {
                                   <span
                                     className={cn(
                                       "font-semibold",
-                                      famachaChangeClass(recheck.famachaAverageChange),
+                                      famachaChangeClass(
+                                        recheck.famachaAverageChange,
+                                      ),
                                     )}
                                   >
-                                    {recheck.famachaAverageChange > 0 ? "+" : ""}
+                                    {recheck.famachaAverageChange > 0
+                                      ? "+"
+                                      : ""}
                                     {recheck.famachaAverageChange.toFixed(1)}
                                   </span>
                                 </div>
@@ -438,8 +467,10 @@ function ParasiteCheckDetailPage() {
                                 className="flex justify-between gap-4 text-sm"
                               >
                                 <span className="text-muted-foreground">
-                                  {t(`parasiteChecks.parasiteTypes.${entry.parasiteType}`)} (
-                                  {entry.afterSampleCount > 1 ? "Ø " : ""}
+                                  {t(
+                                    `parasiteChecks.parasiteTypes.${entry.parasiteType}`,
+                                  )}{" "}
+                                  ({entry.afterSampleCount > 1 ? "Ø " : ""}
                                   {Math.round(entry.afterAvgCountPerGram)}{" "}
                                   {t(parasiteCountUnitKey(entry.parasiteType))})
                                 </span>
@@ -449,9 +480,7 @@ function ParasiteCheckDetailPage() {
                                     reductionClass(entry.reductionPercent),
                                   )}
                                 >
-                                  {entry.reductionPercent === null
-                                    ? "–"
-                                    : `${Math.round(entry.reductionPercent)}%`}
+                                  {formatCountChange(entry.reductionPercent)}
                                 </span>
                               </div>
                             ))}
@@ -460,11 +489,6 @@ function ParasiteCheckDetailPage() {
                       ))}
                     </TableBody>
                   </Table>
-                  {check.method === "fecal_egg_count" && (
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {t("parasiteChecks.reductionInfo")}
-                    </p>
-                  )}
                 </>
               )}
             </CardContent>
@@ -491,10 +515,16 @@ function ParasiteCheckDetailPage() {
                     }
                   >
                     <TableCell className="font-medium">
-                      {animalDisplayName(checkAnimal.name, checkAnimal.earTagNumber)}
+                      {animalDisplayName(
+                        checkAnimal.name,
+                        checkAnimal.earTagNumber,
+                      )}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {(individualResultsByAnimal.get(checkAnimal.animalId) ?? [])
+                      {(
+                        individualResultsByAnimal.get(checkAnimal.animalId) ??
+                        []
+                      )
                         .map(
                           (result) =>
                             `${t(`parasiteChecks.parasiteTypes.${result.parasiteType}`)} ${Math.round(result.countPerGram)} ${t(parasiteCountUnitKey(result.parasiteType))}`,
@@ -517,7 +547,13 @@ function ParasiteCheckDetailPage() {
   );
 }
 
-function DetailItem({ label, value }: { label: string; value: React.ReactNode }) {
+function DetailItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div>
       <dt className="text-sm font-medium text-muted-foreground">{label}</dt>

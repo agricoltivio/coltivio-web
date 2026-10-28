@@ -1817,7 +1817,6 @@
       "fecal_egg_count": "Esame coprologico"
     },
     "recheckLockedInfo": "Metodo, mandria e animali sono ripresi dal controllo iniziale. Gli animali morti o non più nella mandria sono esclusi.",
-    "herdOptional": "Mandria (facoltativo)",
     "previousCheckOptional": "Ricontrollo di (facoltativo)",
     "nAnimals": "{{count}} animali",
     "famachaScores": "Punteggi FAMACHA",
@@ -1855,7 +1854,6 @@
     "recheckOf": "Ricontrollo del {{date}}",
     "treatment": "Trattamento",
     "followUpTask": "Ricontrollo",
-    "herdAverage": "Media della mandria",
     "famachaDistribution": "Distribuzione FAMACHA",
     "summary": "Riepilogo",
     "famachaSummary": "{{count}} animali · media {{average}}",
@@ -1863,7 +1861,6 @@
     "resultsStatusNone": "Nessun risultato registrato",
     "noRechecks": "Nessun ricontrollo",
     "famachaScore": "Punteggio FAMACHA",
-    "reductionInfo": "Riduzione delle uova: efficace dal 95 %, sotto si sospetta resistenza.",
     "parasiteHistory": "Storico parassiti",
     "individualSample": "Campione individuale",
     "noChecks": "Nessun controllo registrato",
@@ -1872,7 +1869,6 @@
     "rechecks": "Ricontrolli",
     "title": "Controllo parassiti",
     "method": "Metodo",
-    "herd": "Mandria",
     "animals": "Animali",
     "selectAnimals": "Seleziona animali",
     "notes": "Note",
@@ -1880,6 +1876,15 @@
     "deleteConfirm": "Eliminare davvero questo controllo?",
     "addRecheck": "Aggiungi ricontrollo",
     "result": "Risultato",
-    "deleteWithRechecksConfirm": "Eliminare davvero questo controllo e i suoi {{count}} ricontrolli?"
+    "deleteWithRechecksConfirm": "Eliminare davvero questo controllo e i suoi {{count}} ricontrolli?",
+    "parasiteType": "Parassita",
+    "duplicateParasiteType": "Ogni parassita può comparire solo una volta per campione",
+    "name": "Nome",
+    "nameOptional": "Nome (facoltativo)",
+    "selectFromHerd": "Animali della mandria",
+    "mixedAnimalTypes": "Un controllo può contenere solo animali di una specie.",
+    "averagePerCheck": "Ø per controllo",
+    "chartCountsInfo": "Numeri nei grafici = numero di animali controllati",
+    "animalType": "Specie"
   }
 }

@@ -1817,7 +1817,6 @@
       "fecal_egg_count": "Fecal egg count"
     },
     "recheckLockedInfo": "Method, herd and animals are taken from the base check. Animals that died or are no longer in the herd are left out.",
-    "herdOptional": "Herd (optional)",
     "previousCheckOptional": "Re-check of (optional)",
     "nAnimals": "{{count}} animals",
     "famachaScores": "FAMACHA scores",
@@ -1855,7 +1854,6 @@
     "recheckOf": "Re-check of {{date}}",
     "treatment": "Treatment",
     "followUpTask": "Re-check",
-    "herdAverage": "Herd average",
     "famachaDistribution": "FAMACHA distribution",
     "summary": "Summary",
     "famachaSummary": "{{count}} animals · avg {{average}}",
@@ -1863,7 +1861,6 @@
     "resultsStatusNone": "No results recorded yet",
     "noRechecks": "No re-checks yet",
     "famachaScore": "FAMACHA score",
-    "reductionInfo": "Egg count reduction: 95% or more is effective, below suggests resistance.",
     "parasiteHistory": "Parasite history",
     "individualSample": "Individual sample",
     "noChecks": "No checks recorded yet",
@@ -1872,7 +1869,6 @@
     "rechecks": "Re-checks",
     "title": "Parasite control",
     "method": "Method",
-    "herd": "Herd",
     "animals": "Animals",
     "selectAnimals": "Select animals",
     "notes": "Notes",
@@ -1880,6 +1876,15 @@
     "deleteConfirm": "Really delete this check?",
     "addRecheck": "Add re-check",
     "result": "Result",
-    "deleteWithRechecksConfirm": "Really delete this check and its {{count}} re-checks?"
+    "deleteWithRechecksConfirm": "Really delete this check and its {{count}} re-checks?",
+    "parasiteType": "Parasite",
+    "duplicateParasiteType": "Each parasite may only appear once per sample",
+    "name": "Name",
+    "nameOptional": "Name (optional)",
+    "selectFromHerd": "Animals from herd",
+    "mixedAnimalTypes": "A check can only contain animals of one animal type.",
+    "averagePerCheck": "Ø per check",
+    "chartCountsInfo": "Numbers in the charts = number of animals checked",
+    "animalType": "Animal type"
   }
 }

@@ -1,13 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiClient } from "./client";
 
-export const parasiteChecksQueryOptions = (herdId?: string) => {
+export const parasiteChecksQueryOptions = () => {
   return queryOptions({
-    queryKey: ["parasiteChecks", "list", herdId ?? null],
+    queryKey: ["parasiteChecks", "list"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/parasiteChecks", {
-        params: { query: { herdId } },
-      });
+      const response = await apiClient.GET("/v1/parasiteChecks");
       if (response.error) {
         throw new Error("Failed to fetch parasite checks");
       }
@@ -43,22 +41,6 @@ export const animalParasiteHistoryQueryOptions = (animalId: string) => {
         throw new Error("Failed to fetch parasite history");
       }
       return response.data.data;
-    },
-  });
-};
-
-export const herdParasiteOverviewQueryOptions = (herdId: string) => {
-  return queryOptions({
-    queryKey: ["parasiteChecks", "herdOverview", herdId],
-    queryFn: async () => {
-      const response = await apiClient.GET(
-        "/v1/animals/herds/byId/{herdId}/parasiteOverview",
-        { params: { path: { herdId } } },
-      );
-      if (response.error) {
-        throw new Error("Failed to fetch herd parasite overview");
-      }
-      return response.data.data.result;
     },
   });
 };

@@ -91,7 +91,8 @@ export function FamachaScoreButtons({
   );
 }
 
-export type TimelinePoint = { date: string; value: number };
+// coverage: number of animals the value is based on, shown above the point
+export type TimelinePoint = { date: string; value: number; coverage?: number };
 
 function toTimestamp(date: string) {
   return parseDateOnly(date).getTime();
@@ -137,10 +138,13 @@ export function TimelineChart({
           ? `${Math.round(value * 10) / 10}${unitLabel ? ` ${unitLabel}` : ""}`
           : String(value),
     },
-    grid: { left: 45, right: 16, top: 16, bottom: isZoomed ? 56 : 30 },
+    grid: { left: 45, right: 16, top: 24, bottom: isZoomed ? 56 : 30 },
     xAxis: {
       type: "time",
+      // Fewer ticks in half-width cards; labels that would still collide are hidden
+      splitNumber: 4,
       axisLabel: {
+        hideOverlap: true,
         fontSize: 10,
         formatter: (value: number) =>
           new Date(value).toLocaleDateString(i18n.language, {
@@ -161,17 +165,24 @@ export function TimelineChart({
             startValue: timestamps[timestamps.length - VISIBLE_POINTS],
             endValue: maxTime,
           },
-          { type: "inside" },
+          // Dragging inside the chart pans; the mouse wheel stays with the page
+          { type: "inside", zoomOnMouseWheel: false, moveOnMouseWheel: false },
         ]
       : [],
     series: [
       {
         name: seriesName,
         type: "line",
-        data: sortedPoints.map((point) => [
-          toTimestamp(point.date),
-          point.value,
-        ]),
+        data: sortedPoints.map((point) => ({
+          value: [toTimestamp(point.date), point.value],
+          label: {
+            show: point.coverage !== undefined,
+            position: "top" as const,
+            fontSize: 10,
+            color: "#6b7280",
+            formatter: String(point.coverage ?? ""),
+          },
+        })),
         lineStyle: { color: LINE_COLOR, width: 2 },
         itemStyle: { color: LINE_COLOR },
         symbolSize: 7,
@@ -188,7 +199,11 @@ export function TimelineChart({
 
   return (
     <div>
-      <ReactECharts option={option} style={{ height, width: "100%" }} notMerge />
+      <ReactECharts
+        option={option}
+        style={{ height, width: "100%" }}
+        notMerge
+      />
       <ChartLegend
         items={[
           { color: LINE_COLOR, label: seriesName },
@@ -226,15 +241,19 @@ export function FamachaDistributionChart({
 
   const option: EChartsOption = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    grid: { left: 70, right: isZoomed ? 40 : 16, top: 8, bottom: 24 },
+    grid: { left: 95, right: isZoomed ? 40 : 16, top: 8, bottom: 24 },
     xAxis: { type: "value", minInterval: 1, axisLabel: { fontSize: 10 } },
     yAxis: {
       type: "category",
       // Newest check first, shown on top
       inverse: true,
-      data: sortedChecks.map((check) =>
-        parseDateOnly(check.date).toLocaleDateString(i18n.language),
-      ),
+      // Date with the number of scored animals
+      data: sortedChecks.map((check) => {
+        const scoredCount = check.animals.filter(
+          (checkAnimal) => checkAnimal.famachaScore !== null,
+        ).length;
+        return `${parseDateOnly(check.date).toLocaleDateString(i18n.language)} (${scoredCount})`;
+      }),
       axisLabel: { fontSize: 10 },
     },
     dataZoom: isZoomed
@@ -247,7 +266,13 @@ export function FamachaDistributionChart({
             startValue: 0,
             endValue: VISIBLE_POINTS - 1,
           },
-          { type: "inside", yAxisIndex: 0 },
+          // Dragging inside the chart pans; the mouse wheel stays with the page
+          {
+            type: "inside",
+            yAxisIndex: 0,
+            zoomOnMouseWheel: false,
+            moveOnMouseWheel: false,
+          },
         ]
       : [],
     series: [1, 2, 3, 4, 5].map((score) => ({
@@ -278,7 +303,11 @@ export function FamachaDistributionChart({
 
   return (
     <div>
-      <ReactECharts option={option} style={{ height, width: "100%" }} notMerge />
+      <ReactECharts
+        option={option}
+        style={{ height, width: "100%" }}
+        notMerge
+      />
       <ChartLegend
         items={[1, 2, 3, 4, 5].map((score) => ({
           color: FAMACHA_COLORS[score],
@@ -289,11 +318,7 @@ export function FamachaDistributionChart({
   );
 }
 
-function ChartLegend({
-  items,
-}: {
-  items: { color: string; label: string }[];
-}) {
+function ChartLegend({ items }: { items: { color: string; label: string }[] }) {
   return (
     <div className="mt-1 flex flex-wrap gap-3">
       {items.map((item) => (
@@ -307,4 +332,12 @@ function ChartLegend({
       ))}
     </div>
   );
+}
+
+// The API returns the reduction (1 - after / before); shown as the change instead,
+// so an increase from 5 to 20 reads "+300%" and a drop from 1000 to 50 "-95%"
+export function formatCountChange(reductionPercent: number | null): string {
+  if (reductionPercent === null) return "–";
+  const changePercent = Math.round(-reductionPercent);
+  return `${changePercent > 0 ? "+" : ""}${changePercent}%`;
 }
