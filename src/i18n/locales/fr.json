@@ -118,8 +118,8 @@
       "description": "Télécharger le journal des traitements et des sorties au format Excel."
     },
     "importOnboardingHeading": "Importer des animaux depuis la TVD",
-    "importOnboardingBody": "L'import nécessite un fichier Excel issu du «Tierbestand» de la TVD. Exportez-le à l'aide du bouton «Excel generieren».",
-    "importOnboardingColumnsHint": "Laissez les colonnes standard sélectionnées et ajoutez les colonnes Numéro de marque auriculaire (mère), Numéro de marque auriculaire (père) et Date de mort si vous souhaitez importer ces données.",
+    "importOnboardingBody": "L'import nécessite un fichier Excel de la TVD. Ouvrez «Cheptel actuel» ou «Évolution du cheptel» et exportez le tableau via le lien «Exporter les données» situé sous le tableau.",
+    "importOnboardingColumnsHint": "Le numéro de marque auriculaire, le nom, la date de naissance et le sexe figurent dans chaque vue. En option, la date de mort est importée depuis la «vue d'ensemble», et les numéros de marque auriculaire de la mère et du père depuis la vue «ascendance». L'«Évolution du cheptel» contient aussi les animaux sortis de l'exploitation.",
     "createAnimal": "Créer un animal",
     "editAnimal": "Modifier l'animal",
     "animalDetails": "Détails de l'animal",

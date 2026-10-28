@@ -118,8 +118,8 @@
       "description": "Download the treatment and turnout journal as an Excel file."
     },
     "importOnboardingHeading": "Import animals from the TVD",
-    "importOnboardingBody": "The import needs an Excel file from the TVD «Tierbestand» (livestock register). Export it with the «Excel generieren» button.",
-    "importOnboardingColumnsHint": "Keep the default columns selected and additionally select the columns for the mother's and father's ear tag number and the date of death if you want to import that data.",
+    "importOnboardingBody": "The import needs an Excel file from the TVD. Open «Aktueller Bestand» (current stock) or «Bestandsverlauf» (stock history) there and export the table using the «Daten exportieren» link below it.",
+    "importOnboardingColumnsHint": "Ear tag number, name, date of birth and sex are included in every view. Optionally, the date of death is imported from the «Übersicht» (overview) view and the mother's and father's ear tag numbers from the «Abstammung» (pedigree) view. The «Bestandsverlauf» also lists animals that have left the farm.",
     "createAnimal": "Create Animal",
     "editAnimal": "Edit Animal",
     "animalDetails": "Animal Details",

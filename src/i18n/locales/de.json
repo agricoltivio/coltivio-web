@@ -118,8 +118,8 @@
       "description": "Behandlungs- und Auslaufjournal als Excel-Datei herunterladen."
     },
     "importOnboardingHeading": "Tiere aus TVD importieren",
-    "importOnboardingBody": "Für den Import wird eine Excel-Datei aus dem «Tierbestand» der TVD benötigt. Exportiere diese über den Button «Excel generieren».",
-    "importOnboardingColumnsHint": "Lass die Standardspalten ausgewählt und wähle zusätzlich die Spalten Ohrmarkennummer (Mutter), Ohrmarkennummer (Vater) und Todesdatum, falls du diese Daten importieren möchtest.",
+    "importOnboardingBody": "Für den Import wird eine Excel-Datei aus der TVD benötigt. Öffne dort «Aktueller Bestand» oder «Bestandsverlauf» und exportiere die Tabelle über den Link «Daten exportieren» unterhalb der Tabelle.",
+    "importOnboardingColumnsHint": "Ohrmarken-Nr., Name, Geburtsdatum und Geschlecht sind in jeder Ansicht enthalten. Optional importiert werden das Todesdatum aus der Ansicht «Übersicht» sowie Ohrmarken-Nr. (Mutter) und Ohrmarken-Nr. (Vater) aus der Ansicht «Abstammung». Der «Bestandsverlauf» enthält auch abgegangene Tiere.",
     "createAnimal": "Tier erstellen",
     "editAnimal": "Tier bearbeiten",
     "animalDetails": "Tierdetails",

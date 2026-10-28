@@ -118,8 +118,8 @@
       "description": "Scarica il registro dei trattamenti e delle uscite come file Excel."
     },
     "importOnboardingHeading": "Importa animali dalla TVD",
-    "importOnboardingBody": "L'importazione richiede un file Excel dal «Tierbestand» della TVD. Esportalo tramite il pulsante «Excel generieren».",
-    "importOnboardingColumnsHint": "Lascia selezionate le colonne standard e aggiungi le colonne Numero di marca auricolare (madre), Numero di marca auricolare (padre) e Data del decesso se vuoi importare questi dati.",
+    "importOnboardingBody": "Per l'importazione è necessario un file Excel della TVD. Apri «Effettivo attuale» o «Andamento dell'effettivo» ed esporta la tabella tramite il link «Esportare i dati» sotto la tabella.",
+    "importOnboardingColumnsHint": "Numero di marca auricolare, nome, data di nascita e sesso sono contenuti in ogni vista. Facoltativamente vengono importati la data di morte dalla vista «panoramica» e i numeri di marca auricolare di madre e padre dalla vista «ascendenza». L'«Andamento dell'effettivo» contiene anche gli animali usciti dall'azienda.",
     "createAnimal": "Crea animale",
     "editAnimal": "Modifica animale",
     "animalDetails": "Dettagli animale",
