@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { SelectAnimalsField } from "@/components/SelectAnimalsDialog";
 import {
   Combobox,
   ComboboxInput,
@@ -42,7 +42,7 @@ type ComboboxOption = { value: string; label: string };
 
 export interface TreatmentFormProps {
   treatment?: Treatment;
-  animalOptions: ComboboxOption[];
+  herds: { id: string; name: string }[];
   drugOptions: ComboboxOption[];
   drugs: Drug[];
   animals: Animal[];
@@ -55,7 +55,7 @@ export interface TreatmentFormProps {
 
 export function TreatmentForm({
   treatment,
-  animalOptions,
+  herds,
   drugOptions,
   drugs,
   animals,
@@ -220,13 +220,12 @@ export function TreatmentForm({
             name="animalIds"
             control={control}
             render={({ field }) => (
-              <MultiSelect
-                options={animalOptions}
+              <SelectAnimalsField
+                animals={animals}
+                herds={herds}
                 value={field.value}
                 onValueChange={field.onChange}
                 placeholder={t("treatments.selectAnimals")}
-                searchPlaceholder={t("common.search")}
-                emptyText={t("common.noResults")}
               />
             )}
           />

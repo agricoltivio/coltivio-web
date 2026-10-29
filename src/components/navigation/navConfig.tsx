@@ -94,7 +94,7 @@ export const SECTIONS: readonly NavSection[] = [
     labelKey: "nav.groups.livestock",
     icon: CowIcon,
     to: "/animals",
-    match: ["/animals", "/drugs", "/treatments"],
+    match: ["/animals", "/drugs", "/treatments", "/parasite-checks"],
     feature: "animals",
     requiresFarm: true,
     groups: [
@@ -110,6 +110,7 @@ export const SECTIONS: readonly NavSection[] = [
       { labelKey: "nav.tvdImport", to: "/animals/import", groupKey: "registry" },
       { labelKey: "treatments.title", to: "/animals/treatments-journal", groupKey: "health" },
       { labelKey: "nav.drugs", to: "/drugs", groupKey: "health" },
+      { labelKey: "parasiteChecks.title", to: "/animals/parasite-checks", groupKey: "health" },
       { labelKey: "nav.animalsExport", to: "/animals/export", groupKey: "analysis" },
     ],
   },

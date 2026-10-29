@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { drugsQueryOptions } from "@/api/drugs.queries";
+import { herdsQueryOptions } from "@/api/herds.queries";
 import { PageContent } from "@/components/PageContent";
 import {
   TreatmentForm,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authed/treatments/create")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(animalsQueryOptions(true));
     queryClient.ensureQueryData(drugsQueryOptions());
+    queryClient.ensureQueryData(herdsQueryOptions());
   },
   component: CreateTreatment,
 });
@@ -60,6 +62,7 @@ function CreateTreatment() {
 
   const animalsQuery = useQuery(animalsQueryOptions(true));
   const drugsQuery = useQuery(drugsQueryOptions());
+  const herdsQuery = useQuery(herdsQueryOptions());
 
   const createMutation = useMutation({
     mutationFn: async (data: TreatmentFormData) => {
@@ -82,11 +85,6 @@ function CreateTreatment() {
     },
   });
 
-  const animalOptions = (animalsQuery.data?.result || []).map((animal) => ({
-    value: animal.id,
-    label: `${animal.name} (${t(`animals.types.${animal.type}`)})`,
-  }));
-
   const drugOptions = (drugsQuery.data?.result || []).map((drug) => ({
     value: drug.id,
     label: drug.name,
@@ -99,7 +97,7 @@ function CreateTreatment() {
       backTo={() => navigate({ to: returnTo ?? "/animals/treatments-journal" })}
     >
       <TreatmentForm
-        animalOptions={animalOptions}
+        herds={herdsQuery.data?.result ?? []}
         drugOptions={drugOptions}
         drugs={drugsQuery.data?.result || []}
         animals={animalsQuery.data?.result || []}

@@ -5,6 +5,7 @@ import { apiClient } from "@/api/client";
 import { treatmentQueryOptions } from "@/api/treatments.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { drugsQueryOptions } from "@/api/drugs.queries";
+import { herdsQueryOptions } from "@/api/herds.queries";
 import { PageContent } from "@/components/PageContent";
 import {
   TreatmentForm,
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_authed/treatments/$treatmentId/edit")({
     queryClient.ensureQueryData(treatmentQueryOptions(params.treatmentId));
     queryClient.ensureQueryData(animalsQueryOptions(true));
     queryClient.ensureQueryData(drugsQueryOptions());
+    queryClient.ensureQueryData(herdsQueryOptions());
   },
   component: EditTreatment,
 });
@@ -56,6 +58,7 @@ function EditTreatment() {
   const treatment = useQuery(treatmentQueryOptions(treatmentId)).data!;
   const animalsQuery = useQuery(animalsQueryOptions(true));
   const drugsQuery = useQuery(drugsQueryOptions());
+  const herdsQuery = useQuery(herdsQueryOptions());
 
   const updateMutation = useMutation({
     mutationFn: async (data: TreatmentFormData) => {
@@ -74,14 +77,11 @@ function EditTreatment() {
     onSuccess: () => {
       navigate({ to: "/treatments/$treatmentId", params: { treatmentId } });
       queryClient.invalidateQueries({ queryKey: ["treatments"] });
+      // Parasite checks show their linked treatment
+      queryClient.invalidateQueries({ queryKey: ["parasiteChecks"] });
       queryClient.invalidateQueries({ queryKey: ["animals"] });
     },
   });
-
-  const animalOptions = (animalsQuery.data?.result || []).map((animal) => ({
-    value: animal.id,
-    label: `${animal.name} (${t(`animals.types.${animal.type}`)})`,
-  }));
 
   const drugOptions = (drugsQuery.data?.result || []).map((drug) => ({
     value: drug.id,
@@ -92,7 +92,7 @@ function EditTreatment() {
     <PageContent title={t("treatments.editTreatment")} showBackButton backTo={() => navigate({ to: "/treatments/$treatmentId", params: { treatmentId } })}>
       <TreatmentForm
         treatment={treatment}
-        animalOptions={animalOptions}
+        herds={herdsQuery.data?.result ?? []}
         drugOptions={drugOptions}
         drugs={drugsQuery.data?.result || []}
         animals={animalsQuery.data?.result || []}

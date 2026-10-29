@@ -248,7 +248,9 @@ export type WikiEntryVisibility = WikiEntry["visibility"];
 
 export type MyWikiEntry =
   components["schemas"]["GetV1WikiMyEntriesPositiveResponse"]["data"]["result"][number];
-export type MyWikiEntryActiveChangeRequest = NonNullable<MyWikiEntry["activeChangeRequest"]>;
+export type MyWikiEntryActiveChangeRequest = NonNullable<
+  MyWikiEntry["activeChangeRequest"]
+>;
 
 export type WikiChangeRequest =
   components["schemas"]["GetV1WikiMyChangeRequestsPositiveResponse"]["data"]["result"][number];
@@ -313,3 +315,45 @@ export type MembershipStatus =
 
 export type MembershipPayment =
   components["schemas"]["GetV1MembershipPaymentsPositiveResponse"]["data"]["result"][number];
+
+// Parasite control types
+export type ParasiteCheck =
+  components["schemas"]["GetV1ParasiteChecksPositiveResponse"]["data"]["result"][number];
+
+export type ParasiteCheckMethod = ParasiteCheck["method"];
+
+export type ParasiteType =
+  ParasiteCheck["fecSamples"][number]["results"][number]["parasiteType"];
+
+export type ParasiteResult =
+  ParasiteCheck["fecSamples"][number]["results"][number];
+
+export type ParasiteResultGrade = NonNullable<ParasiteResult["grade"]>;
+
+export const PARASITE_RESULT_GRADES: ParasiteResultGrade[] = [
+  "negative",
+  "low",
+  "medium",
+  "high",
+];
+
+export type ParasiteCheckCreateInput =
+  components["schemas"]["PostV1ParasiteChecksRequestBody"];
+
+export type AnimalParasiteHistory =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdParasiteHistoryPositiveResponse"]["data"];
+
+export const PARASITE_TYPES: ParasiteType[] = [
+  "strongyles",
+  "haemonchus",
+  "nematodirus",
+  "trichuris",
+  "capillaria",
+  "strongyloides",
+  "moniezia",
+  "coccidia",
+  "liver_fluke",
+  "small_liver_fluke",
+  "lungworm",
+  "other",
+];
