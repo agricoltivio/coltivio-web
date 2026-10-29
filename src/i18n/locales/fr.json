@@ -1125,7 +1125,6 @@
       "errors": {
         "selfIntersecting": "Les bords de la parcelle ne doivent pas se croiser.",
         "invalid_geometry": "La parcelle n'a pas de surface. Dessine au moins trois points distincts.",
-        "geometry_processing_failed": "La parcelle n'a pas pu être découpée des parcelles voisines. Ajuste la forme ou contacte le support.",
         "saveFailed": "La parcelle n'a pas pu être enregistrée."
       }
     },
