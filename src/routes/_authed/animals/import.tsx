@@ -1,16 +1,16 @@
 import { useState, useRef } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { components } from "@/api/schema";
 import { apiClient } from "@/api/client";
-import { animalsQueryOptions } from "@/api/animals.queries";
 import { ANIMAL_TYPES, ANIMAL_SEX_OPTIONS, type AnimalType } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import {
   Select,
@@ -54,7 +54,6 @@ type CommitResult =
 type LocalPreviewRow = PreviewRow & {
   removed: boolean;
   mergeAnimalId: string | null;
-  mergeAnimalName: string | null;
   editedEarTagNumber: string | null;
   editedName: string | null;
   editedSex: "male" | "female" | null;
@@ -68,12 +67,21 @@ type LocalPreviewRow = PreviewRow & {
 
 type Step = "upload" | "preview" | "result";
 
+const ONBOARDING_SEEN_KEY = "tvd_import_onboarding_seen";
+
+function hasSeenOnboarding(): boolean {
+  try {
+    return localStorage.getItem(ONBOARDING_SEEN_KEY) === "true";
+  } catch {
+    return true;
+  }
+}
+
 function toLocalRow(row: PreviewRow): LocalPreviewRow {
   return {
     ...row,
     removed: false,
     mergeAnimalId: null,
-    mergeAnimalName: null,
     editedEarTagNumber: row.earTagNumber,
     editedName: row.name,
     editedSex: row.sex,
@@ -89,7 +97,7 @@ function toLocalRow(row: PreviewRow): LocalPreviewRow {
 }
 
 function ImportAnimals() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const [step, setStep] = useState<Step>("upload");
@@ -99,10 +107,22 @@ function ImportAnimals() {
   const [previewRows, setPreviewRows] = useState<LocalPreviewRow[]>([]);
   const [commitResult, setCommitResult] = useState<CommitResult | null>(null);
 
+  // The full TVD instructions open automatically on the first visit, afterwards via "learn more"
+  const [onboardingOpen, setOnboardingOpen] = useState(() => !hasSeenOnboarding());
+
+  function handleOnboardingOpenChange(open: boolean) {
+    setOnboardingOpen(open);
+    if (!open) {
+      try {
+        localStorage.setItem(ONBOARDING_SEEN_KEY, "true");
+      } catch {
+        // Storage unavailable, the dialog will just show again next time
+      }
+    }
+  }
+
   // Which row index is open in the edit sheet (null = closed)
   const [editingRowIndex, setEditingRowIndex] = useState<number | null>(null);
-  // Which row index is open in the merge dialog (null = closed)
-  const [mergingRowIndex, setMergingRowIndex] = useState<number | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -121,7 +141,12 @@ function ImportAnimals() {
           return formData;
         },
       });
-      if (response.error) throw new Error(t("animals.importPreviewError"));
+      if (response.error) {
+        // A 400 carries a localized explanation, e.g. which TVD columns are missing.
+        const serverMessage =
+          response.response.status === 400 ? response.error.error : undefined;
+        throw new Error(serverMessage || t("animals.importPreviewError"));
+      }
       return response.data.data.rows;
     },
     onSuccess: (rows) => {
@@ -177,6 +202,22 @@ function ImportAnimals() {
     updateRow(index, { removed: true });
   }
 
+  // The ear tag identifies the existing animal, so a conflict can only be merged into its current holder.
+  function mergeRow(index: number) {
+    const row = previewRows[index];
+    updateRow(index, { mergeAnimalId: row.assignedToAnimalId });
+  }
+
+  function mergeAllConflicts() {
+    setPreviewRows((prev) =>
+      prev.map((row) =>
+        !row.removed && row.earTagAssigned && !row.mergeAnimalId
+          ? { ...row, mergeAnimalId: row.assignedToAnimalId }
+          : row,
+      ),
+    );
+  }
+
   // Rows that are not removed and still have parse errors block the commit
   const hasBlockingErrors = previewRows.some(
     (row) => !row.removed && row.parseErrors.length > 0,
@@ -187,27 +228,40 @@ function ImportAnimals() {
   const committableRows = activeRows.filter(
     (row) => !(row.earTagAssigned && !row.mergeAnimalId),
   );
+  const unmergedConflictCount = activeRows.filter(
+    (row) => row.earTagAssigned && !row.mergeAnimalId && row.assignedToAnimalId,
+  ).length;
+
+  // TVD screenshots exist in de/fr/it, English users get the German TVD.
+  const tvdLocale = i18n.language.slice(0, 2);
+  const pedigreeImageSrc =
+    tvdLocale === "fr" || tvdLocale === "it"
+      ? `/tvd-pedigree-${tvdLocale}.jpg`
+      : "/tvd-pedigree-de.jpg";
 
   // --- Upload step ---
   if (step === "upload") {
     return (
       <PageContent title={t("animals.importTitle")} showBackButton backTo={() => navigate({ to: "/animals" })}>
         <div className="max-w-xl space-y-8">
-          <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
-            <h2 className="text-sm font-semibold">
-              {t("animals.importOnboardingHeading")}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {t("animals.importOnboardingBody")}
-            </p>
+          <div className="space-y-4 rounded-xl border bg-muted/40 p-4 text-sm text-muted-foreground">
+            <p>{t("animals.importOnboardingBody")}</p>
+            <ol className="list-decimal list-inside space-y-2">
+              <li>{t("animals.importOnboardingStepSelectType")}</li>
+              <li>{t("animals.importOnboardingStepExport")}</li>
+            </ol>
             <img
               src="/tvd-export-small.jpg"
-              alt={t("animals.importOnboardingHeading")}
+              alt={t("animals.importOnboardingStepExport")}
               className="w-full rounded-lg border"
             />
-            <p className="text-sm text-muted-foreground">
-              {t("animals.importOnboardingColumnsHint")}
-            </p>
+            <Button
+              variant="link"
+              className="h-auto p-0"
+              onClick={() => setOnboardingOpen(true)}
+            >
+              {t("animals.importOnboardingLearnMore")}
+            </Button>
           </div>
 
           <div className="max-w-md space-y-6">
@@ -265,6 +319,34 @@ function ImportAnimals() {
           </div>
           </div>
         </div>
+
+        <Dialog open={onboardingOpen} onOpenChange={handleOnboardingOpenChange}>
+          <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t("animals.importTitle")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 text-sm text-muted-foreground">
+              <p>{t("animals.importOnboardingBody")}</p>
+              <ol className="list-decimal list-inside space-y-2">
+                <li>{t("animals.importOnboardingStepSelectType")}</li>
+                <li>{t("animals.importOnboardingStepExport")}</li>
+              </ol>
+              <img
+                src="/tvd-export-small.jpg"
+                alt={t("animals.importOnboardingStepExport")}
+                className="w-full rounded-lg border"
+              />
+              <p>{t("animals.importOnboardingPedigree")}</p>
+              <img
+                src={pedigreeImageSrc}
+                alt={t("animals.importOnboardingPedigree")}
+                className="w-full rounded-lg border"
+              />
+              <p>{t("animals.importOnboardingSync")}</p>
+              <p>{t("animals.importOnboardingSyncMergeHint")}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </PageContent>
     );
   }
@@ -340,6 +422,15 @@ function ImportAnimals() {
           </div>
         )}
 
+        {unmergedConflictCount > 0 && (
+          <div className="flex items-center justify-between gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3">
+            <span>{t("animals.importConflictsFound", { count: unmergedConflictCount })}</span>
+            <Button variant="outline" size="sm" onClick={mergeAllConflicts}>
+              {t("animals.importMergeAll")}
+            </Button>
+          </div>
+        )}
+
         <div className="border rounded-md overflow-auto">
           <Table className="table-auto">
             <TableHeader>
@@ -386,10 +477,8 @@ function ImportAnimals() {
                     <TableCell className="overflow-visible">
                       <RowStatusCell
                         row={row}
-                        onMergeClick={() => setMergingRowIndex(index)}
-                        onClearMerge={() =>
-                          updateRow(index, { mergeAnimalId: null, mergeAnimalName: null })
-                        }
+                        onMerge={() => mergeRow(index)}
+                        onClearMerge={() => updateRow(index, { mergeAnimalId: null })}
                       />
                     </TableCell>
                     <TableCell>
@@ -477,31 +566,12 @@ function ImportAnimals() {
                 setEditingRowIndex(null);
               }}
               onCancel={() => setEditingRowIndex(null)}
-              onMergeClick={() => setMergingRowIndex(editingRowIndex)}
-              onClearMerge={() =>
-                updateRow(editingRowIndex, { mergeAnimalId: null, mergeAnimalName: null })
-              }
+              onMerge={() => mergeRow(editingRowIndex)}
+              onClearMerge={() => updateRow(editingRowIndex, { mergeAnimalId: null })}
             />
           )}
         </SheetContent>
       </Sheet>
-
-      {/* Merge animal dialog */}
-      <MergeAnimalDialog
-        open={mergingRowIndex !== null}
-        onOpenChange={(open) => {
-          if (!open) setMergingRowIndex(null);
-        }}
-        onSelect={(animalId, animalName) => {
-          if (mergingRowIndex !== null) {
-            updateRow(mergingRowIndex, {
-              mergeAnimalId: animalId,
-              mergeAnimalName: animalName,
-            });
-          }
-          setMergingRowIndex(null);
-        }}
-      />
     </PageContent>
   );
 }
@@ -510,11 +580,11 @@ function ImportAnimals() {
 
 function RowStatusCell({
   row,
-  onMergeClick,
+  onMerge,
   onClearMerge,
 }: {
   row: LocalPreviewRow;
-  onMergeClick: () => void;
+  onMerge: () => void;
   onClearMerge: () => void;
 }) {
   const { t } = useTranslation();
@@ -532,37 +602,18 @@ function RowStatusCell({
     );
   }
 
-  if (row.mergeAnimalId) {
+  // Conflict rows get an "update" checkbox, the ear tag already identifies the animal to update.
+  if (row.earTagAssigned && row.assignedToAnimalId) {
+    const willMerge = !!row.mergeAnimalId;
     return (
-      <div className="flex items-center gap-1 flex-wrap">
-        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-          {t("animals.importMergedWith", { name: row.mergeAnimalName })}
-        </Badge>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-5 w-5"
-          onClick={onClearMerge}
-          title={t("animals.importClearMerge")}
-        >
-          <X className="h-3 w-3" />
-        </Button>
-      </div>
-    );
-  }
-
-  if (row.earTagAssigned) {
-    return (
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="outline" className="border-amber-400 text-amber-700">
-            {t("animals.importConflict")}
-          </Badge>
-          <Button variant="outline" size="sm" className="h-6 text-xs" onClick={onMergeClick}>
-            {t("animals.importMergeWith")}
-          </Button>
-        </div>
-        <p className="text-xs text-amber-600">{t("animals.importConflictWillSkip")}</p>
+      <div className="flex items-center gap-2">
+        <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+          <Checkbox
+            checked={willMerge}
+            onCheckedChange={(checked) => (checked === true ? onMerge() : onClearMerge())}
+          />
+          {t("animals.importUpdateCheckbox")}
+        </label>
       </div>
     );
   }
@@ -576,7 +627,6 @@ function RowStatusCell({
 
 type RowEditUpdates = Pick<
   LocalPreviewRow,
-  | "editedEarTagNumber"
   | "editedName"
   | "editedSex"
   | "editedDateOfBirth"
@@ -591,17 +641,16 @@ function RowEditForm({
   row,
   onSave,
   onCancel,
-  onMergeClick,
+  onMerge,
   onClearMerge,
 }: {
   row: LocalPreviewRow;
   onSave: (updates: RowEditUpdates) => void;
   onCancel: () => void;
-  onMergeClick: () => void;
+  onMerge: () => void;
   onClearMerge: () => void;
 }) {
   const { t } = useTranslation();
-  const [earTagNumber, setEarTagNumber] = useState(row.editedEarTagNumber ?? "");
   const [name, setName] = useState(row.editedName ?? "");
   const [sex, setSex] = useState<"male" | "female" | "">(row.editedSex ?? "");
   const [dateOfBirth, setDateOfBirth] = useState(row.editedDateOfBirth ?? "");
@@ -613,7 +662,6 @@ function RowEditForm({
 
   function handleSave() {
     onSave({
-      editedEarTagNumber: earTagNumber || null,
       editedName: name || null,
       editedSex: (sex as "male" | "female") || null,
       editedDateOfBirth: dateOfBirth || null,
@@ -627,14 +675,31 @@ function RowEditForm({
 
   return (
     <div className="space-y-4 mt-4">
+      {row.earTagAssigned && row.assignedToAnimalId && (
+        <div className="space-y-2 rounded-md border border-l-4 border-l-amber-400 p-3 text-sm">
+          <p>{t("animals.importEarTagAssignedWarning")}</p>
+          {row.mergeAnimalId ? (
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                {t("animals.importMergedWith", { name: row.assignedToAnimalName })}
+              </Badge>
+              <Button variant="ghost" size="sm" onClick={onClearMerge}>
+                {t("animals.importClearMerge")}
+              </Button>
+            </div>
+          ) : (
+            <Button variant="outline" className="w-full" onClick={onMerge}>
+              {t("animals.importMergeWith", { name: row.assignedToAnimalName })}
+            </Button>
+          )}
+        </div>
+      )}
+
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="edit-earTag">{t("animals.earTag")}</FieldLabel>
-          <Input
-            id="edit-earTag"
-            value={earTagNumber}
-            onChange={(e) => setEarTagNumber(e.target.value)}
-          />
+          {/* Read-only: ear tag conflicts are resolved by the server on upload, an edited number would not be re-checked. */}
+          <Input id="edit-earTag" value={row.editedEarTagNumber ?? ""} disabled />
         </Field>
       </FieldGroup>
 
@@ -743,98 +808,10 @@ function RowEditForm({
         </Field>
       </FieldGroup>
 
-      <FieldGroup>
-        <Field>
-          <FieldLabel>{t("animals.importMergeWith")}</FieldLabel>
-          {row.mergeAnimalId ? (
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                {row.mergeAnimalName}
-              </Badge>
-              <Button variant="ghost" size="sm" onClick={onClearMerge}>
-                {t("animals.importClearMerge")}
-              </Button>
-            </div>
-          ) : (
-            <Button variant="outline" className="mt-1 w-full" onClick={onMergeClick}>
-              {t("animals.importSelectMerge")}
-            </Button>
-          )}
-        </Field>
-      </FieldGroup>
-
       <div className="flex gap-2 pt-2">
         <Button variant="outline" onClick={onCancel}>{t("common.cancel")}</Button>
         <Button onClick={handleSave}>{t("common.save")}</Button>
       </div>
     </div>
-  );
-}
-
-function MergeAnimalDialog({
-  open,
-  onOpenChange,
-  onSelect,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSelect: (animalId: string, animalName: string) => void;
-}) {
-  const { t } = useTranslation();
-  const [search, setSearch] = useState("");
-
-  // Only fetch when the dialog is open
-  const animalsQuery = useQuery({ ...animalsQueryOptions(), enabled: open });
-
-  const filteredAnimals = (animalsQuery.data?.result ?? []).filter((animal) => {
-    const q = search.toLowerCase();
-    return (
-      animal.name.toLowerCase().includes(q) ||
-      (animal.earTag?.number?.toLowerCase().includes(q) ?? false)
-    );
-  });
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("animals.importSelectMerge")}</DialogTitle>
-        </DialogHeader>
-        <Input
-          placeholder={t("animals.importSearchAnimal")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="mt-2"
-        />
-        <div className="mt-2 h-80 overflow-y-auto border rounded-md divide-y">
-          {animalsQuery.isPending && (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              {t("common.loading")}
-            </div>
-          )}
-          {filteredAnimals.map((animal) => (
-            <button
-              key={animal.id}
-              type="button"
-              className="w-full text-left px-4 py-2.5 hover:bg-muted text-sm flex items-center justify-between"
-              onClick={() => {
-                onSelect(animal.id, animal.name);
-                setSearch("");
-              }}
-            >
-              <span className="font-medium">{animal.name}</span>
-              {animal.earTag && (
-                <span className="text-muted-foreground text-xs">{animal.earTag.number}</span>
-              )}
-            </button>
-          ))}
-          {!animalsQuery.isPending && filteredAnimals.length === 0 && (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              {t("common.noResults")}
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 }

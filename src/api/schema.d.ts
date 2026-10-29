@@ -3502,7 +3502,6 @@ export interface components {
                 count: number;
             };
         };
-        GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer: number;
         GetV1LayersPlotsFarmsFederalFarmIdBboxPositiveResponse: {
             data: {
                 result: {
@@ -8258,6 +8257,7 @@ export interface components {
                     earTagId: string | null;
                     earTagAssigned: boolean;
                     assignedToAnimalId: string | null;
+                    assignedToAnimalName: string | null;
                     name: string | null;
                     /** @enum {string|null} */
                     sex: "male" | "female" | null;
@@ -13307,7 +13307,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description GET /v1/layers/plots/farms/:federalFarmId/bbox Parameter */
-                buffer?: components["schemas"]["GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer"];
+                buffer?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path: {
@@ -13342,7 +13342,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description HEAD /v1/layers/plots/farms/:federalFarmId/bbox Parameter */
-                buffer?: components["schemas"]["GetV1LayersPlotsFarmsFederalFarmIdBboxParameterBuffer"];
+                buffer?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path: {
