@@ -48,7 +48,7 @@ export function UsageCombobox({ value, onChange }: { value: string; onChange: (v
       <div className="relative">
         {selected && !open ? (
           <div className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm bg-background cursor-pointer" onClick={() => setOpen(true)}>
-            <span className="flex-1 truncate">{selected.label} ({selected.code})</span>
+            <span className="min-w-0 flex-1 truncate">{selected.label} ({selected.code})</span>
             <button
               type="button"
               className="text-muted-foreground hover:text-foreground shrink-0"

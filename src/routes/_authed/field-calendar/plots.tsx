@@ -2254,7 +2254,7 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>{t("fieldCalendar.plots.create.dialog.title")}</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="min-w-0 space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.create.dialog.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
           <UsageCombobox value={usage} onChange={setUsage} />
@@ -2320,7 +2320,7 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>{t("fieldCalendar.plots.edit.dialog.title")}</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="min-w-0 space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("common.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
           <UsageCombobox value={usage} onChange={setUsage} />
