@@ -2186,9 +2186,10 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
   );
 }
 
-// Crossing edges are rejected before saving; the API would repair them into unexpected shapes
+// Crossing edges are rejected before saving; the API would repair them into unexpected shapes.
+// Checked per part: parts of a merged plot share edges, which kinks() reports on the whole MultiPolygon.
 function isSelfIntersecting(geometry: GeoJSON.MultiPolygon) {
-  return turf.kinks(turf.multiPolygon(geometry.coordinates)).features.length > 0;
+  return geometry.coordinates.some((part) => turf.kinks(turf.polygon(part)).features.length > 0);
 }
 
 // Message for a failed plot save, specific when the API returned an error code.
