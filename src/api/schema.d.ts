@@ -8305,6 +8305,7 @@ export interface components {
                     earTagId: string | null;
                     earTagAssigned: boolean;
                     assignedToAnimalId: string | null;
+                    assignedToAnimalName: string | null;
                     name: string | null;
                     /** @enum {string|null} */
                     sex: "male" | "female" | null;
