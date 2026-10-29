@@ -1671,7 +1671,7 @@ function PlotsMap() {
                   type: "ENTER_EDIT",
                   target: "meadow",
                   targetId: selectedMeadow.id,
-                  rings: selectedMeadow.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
+                  rings: selectedMeadow.geometry.coordinates.map((polygon) => withoutClosingPoint(polygon[0])),
                 });
               }}
             />
@@ -1938,7 +1938,7 @@ function PlotDetailPanel({
                 type: "ENTER_EDIT",
                 target: "plot",
                 targetId: plot.id,
-                rings: plot.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
+                rings: plot.geometry.coordinates.map((polygon) => withoutClosingPoint(polygon[0])),
               })
             }
           >
@@ -2183,6 +2183,16 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
       </DialogContent>
     </Dialog>
   );
+}
+
+// GeoJSON rings repeat the first point at the end. In edit mode that would be a second marker on top of the
+// first one, and dragging it would move only the copy. handleSaveShape closes the rings again.
+function withoutClosingPoint(ring: number[][]): number[][] {
+  if (ring.length === 0) return [];
+  const [firstX, firstY] = ring[0];
+  const [lastX, lastY] = ring[ring.length - 1];
+  const openRing = firstX === lastX && firstY === lastY ? ring.slice(0, -1) : ring;
+  return openRing.map((coord) => [coord[0], coord[1]]);
 }
 
 // Crossing edges are rejected before saving; the API would repair them into unexpected shapes.
