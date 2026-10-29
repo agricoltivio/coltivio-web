@@ -1795,7 +1795,8 @@
       "satellite": "Satellit",
       "map": "Karte",
       "plots": "Schläge",
-      "meadows": "Weideflächen"
+      "meadows": "Weideflächen",
+      "parcels": "Parzellen"
     }
   },
   "archive": {

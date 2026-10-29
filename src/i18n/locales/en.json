@@ -1795,7 +1795,8 @@
       "satellite": "Satellite",
       "map": "Map",
       "plots": "Plots",
-      "meadows": "Meadows"
+      "meadows": "Meadows",
+      "parcels": "Parcels"
     }
   },
   "archive": {

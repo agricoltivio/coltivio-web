@@ -395,13 +395,21 @@ function extractSubPolygonByPoint(
 
 // Layers shown (and clickable) on the map, remembered in the browser.
 // archived: archived plots and meadows, drawn greyed out and read-only
-type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean };
+// parcels: cadastral parcel borders from the official survey, not clickable
+type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean; parcels: boolean };
 type SelectedArchivedArea = { kind: "plot" | "meadow"; id: string };
 // A click that hits several active areas (e.g. a meadow over plots) lets the user pick one
 type AreaChoiceOption = { kind: "plot" | "meadow"; id: string; name: string; size: number };
 type AreaChoice = { lngLat: [number, number]; options: AreaChoiceOption[] };
 const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
-const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false };
+const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false, parcels: false };
+
+// Parcel borders (RESF) and numbers (OSNR) of the official survey, rendered by geodienste.ch as transparent PNGs.
+// Below zoom 14 the lines are too dense to be useful and would only load lots of tiles.
+const PARCELS_WMS_URL =
+  "https://geodienste.ch/db/av_0/deu?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true" +
+  "&LAYERS=RESF,OSNR&STYLES=&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}";
+const PARCELS_MIN_ZOOM = 14;
 
 function readVisibleLayers(): VisibleLayers {
   try {
@@ -416,9 +424,10 @@ function readVisibleLayers(): VisibleLayers {
       typeof parsed.plots === "boolean" &&
       typeof parsed.meadows === "boolean"
     ) {
-      // archived is missing in choices stored before it existed, read as off
+      // archived and parcels are missing in choices stored before they existed, read as off
       const archived = "archived" in parsed && parsed.archived === true;
-      return { plots: parsed.plots, meadows: parsed.meadows, archived };
+      const parcels = "parcels" in parsed && parsed.parcels === true;
+      return { plots: parsed.plots, meadows: parsed.meadows, archived, parcels };
     }
   } catch {
     // Storage unavailable or invalid — fall back to the default
@@ -798,6 +807,8 @@ function PlotsMap() {
   const geojsonRef = useRef(geojson);
   const labelsGeojsonRef = useRef(labelsGeojson);
   const activeLayerRef = useRef(activeLayer);
+  const visibleLayersRef = useRef(visibleLayers);
+  visibleLayersRef.current = visibleLayers;
   geojsonRef.current = geojson;
   labelsGeojsonRef.current = labelsGeojson;
   activeLayerRef.current = activeLayer;
@@ -818,6 +829,18 @@ function PlotsMap() {
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
     map.addLayer({ id: "plots-fill", type: "fill", source: "plots", paint: { "fill-color": ["case", ["==", ["get", "selected"], 1], "#4ade80", ["get", "color"]], "fill-opacity": 0.5 } });
     map.addLayer({ id: "plots-line", type: "line", source: "plots", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#ffffff"], "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1] } });
+
+    // Cadastral parcel borders above the plots, so the borders inside merged plots stay visible.
+    // The WMS draws black lines; on the satellite image they are brightened to white.
+    map.addSource("parcels", { type: "raster", tiles: [PARCELS_WMS_URL], tileSize: 256, minzoom: PARCELS_MIN_ZOOM });
+    map.addLayer({
+      id: "parcels-layer",
+      type: "raster",
+      source: "parcels",
+      minzoom: PARCELS_MIN_ZOOM,
+      layout: { visibility: visibleLayersRef.current.parcels ? "visible" : "none" },
+      paint: { "raster-brightness-min": activeLayerRef.current === "satellite" ? 1 : 0 },
+    });
 
     // Dim target plot during split
     map.addSource("split-target", { type: "geojson", data: EMPTY_GEOJSON });
@@ -921,6 +944,7 @@ function PlotsMap() {
     const map = mapRef.current.getMap();
     map.setLayoutProperty("satellite-layer", "visibility", activeLayer === "satellite" ? "visible" : "none");
     map.setLayoutProperty("pixelkarte-layer", "visibility", activeLayer === "pixelkarte" ? "visible" : "none");
+    map.setPaintProperty("parcels-layer", "raster-brightness-min", activeLayer === "satellite" ? 1 : 0);
   }, [mapReady, activeLayer]);
 
   // Layer visibility follows the layer choice (and meadow modes)
@@ -933,7 +957,8 @@ function PlotsMap() {
     for (const layerId of ["plots-fill", "plots-line", "plots-label"]) setVisible(layerId, plotsVisible);
     for (const layerId of ["meadows-fill", "meadows-line", "meadows-label"]) setVisible(layerId, meadowsVisible);
     for (const layerId of ARCHIVED_AREA_LAYER_IDS) setVisible(layerId, archivedVisible);
-  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible]);
+    setVisible("parcels-layer", visibleLayers.parcels);
+  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible, visibleLayers.parcels]);
 
   // Crosshair for drawing modes
   useEffect(() => {
@@ -1491,6 +1516,14 @@ function PlotsMap() {
                   id="layer-archived"
                   checked={visibleLayers.archived}
                   onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, archived: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="layer-parcels">{t("meadows.layers.parcels")}</Label>
+                <Switch
+                  id="layer-parcels"
+                  checked={visibleLayers.parcels}
+                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, parcels: checked })}
                 />
               </div>
             </PopoverContent>

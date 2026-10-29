@@ -1795,7 +1795,8 @@
       "satellite": "Satellite",
       "map": "Carte",
       "plots": "Parcelles",
-      "meadows": "Pâtures"
+      "meadows": "Pâtures",
+      "parcels": "Parcelles"
     }
   },
   "archive": {
