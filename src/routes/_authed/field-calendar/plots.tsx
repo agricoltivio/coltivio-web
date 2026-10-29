@@ -85,7 +85,7 @@ type SavedViewport = { lng: number; lat: number; zoom: number };
 
 // --- Mode state machine ---
 
-type SplitTool = "line" | "polygon" | "extract";
+type SplitTool = "line" | "polygon";
 
 type ViewMode = { type: "view"; selectedPlotId: string | null };
 type SplitMode = {
@@ -372,25 +372,6 @@ function cutPolygonFromMultiPolygon(
     remaining: cleanedRemaining.length > 0 ? turf.multiPolygon(cleanedRemaining).geometry : { type: "MultiPolygon", coordinates: [] },
     extracted: turf.multiPolygon(cleanedCut).geometry,
   };
-}
-
-// Ported from coltivio-rn-app/utils/geo-spatials.ts — extracts a sub-polygon by click point.
-// Only works for MultiPolygons with 2+ polygons.
-function extractSubPolygonByPoint(
-  multiPolygon: GeoJSON.MultiPolygon,
-  lngLat: [number, number],
-): { remaining: GeoJSON.MultiPolygon; extracted: GeoJSON.MultiPolygon } | null {
-  if (multiPolygon.coordinates.length <= 1) return null;
-  const point = turf.point(lngLat);
-  for (let j = 0; j < multiPolygon.coordinates.length; j++) {
-    const poly = turf.polygon(multiPolygon.coordinates[j]);
-    if (!turf.booleanPointInPolygon(point, poly)) continue;
-    return {
-      remaining: { type: "MultiPolygon", coordinates: multiPolygon.coordinates.filter((_, idx) => idx !== j) },
-      extracted: { type: "MultiPolygon", coordinates: [multiPolygon.coordinates[j]] },
-    };
-  }
-  return null;
 }
 
 // Layers shown (and clickable) on the map, remembered in the browser.
@@ -1157,13 +1138,6 @@ function PlotsMap() {
     ];
   }, [mode.type, visibleLayers]);
 
-  // Is the split-target plot a MultiPolygon with 2+ sub-polygons (extract is only useful then)?
-  const targetIsMultiPolygon = useMemo(() => {
-    if (mode.type !== "split") return false;
-    const plot = mappablePlots.find((p) => p.id === mode.plotId);
-    return (plot?.geometry.coordinates.length ?? 0) > 1;
-  }, [mode, mappablePlots]);
-
   // Computed area during create mode (when polygon is closed)
   const createArea = useMemo(() => {
     if (mode.type !== "create" || mode.drawnVertices.length < 3) return 0;
@@ -1249,14 +1223,6 @@ function PlotsMap() {
                   }
                 }
                 dispatch({ type: "ADD_VERTEX", lngLat: [e.lngLat.lng, e.lngLat.lat] });
-                return;
-              }
-              if (mode.tool === "extract") {
-                const plot = mappablePlots.find((p) => p.id === mode.plotId);
-                if (!plot) return;
-                const result = extractSubPolygonByPoint(plot.geometry, [e.lngLat.lng, e.lngLat.lat]);
-                if (!result) { setToolError(t("fieldCalendar.plots.split.extractFailed")); return; }
-                dispatch({ type: "SET_SPLIT_POLYGONS", polygons: [result.remaining, result.extracted] });
                 return;
               }
               return;
@@ -1456,7 +1422,6 @@ function PlotsMap() {
                   ? t("fieldCalendar.plots.split.toolbarArea")
                   : t("fieldCalendar.plots.split.toolbarAreaReady", { count: mode.drawnVertices.length })
               )}
-              {mode.type === "split" && mode.tool === "extract" && t("fieldCalendar.plots.split.toolbarExtract")}
               {mode.type === "create" && (
                 mode.drawnVertices.length < 3
                   ? t("fieldCalendar.plots.create.toolbar")
@@ -1566,18 +1531,13 @@ function PlotsMap() {
                 <Button variant={mode.tool === "polygon" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "polygon" })}>
                   {t("fieldCalendar.plots.split.toolArea")}
                 </Button>
-                {targetIsMultiPolygon && (
-                  <Button variant={mode.tool === "extract" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "extract" })}>
-                    {t("fieldCalendar.plots.split.toolExtract")}
-                  </Button>
-                )}
               </div>
 
               <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
                 <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "EXIT_MODE" }); setToolError(null); }}>
                   {t("common.cancel")}
                 </Button>
-                {mode.tool !== "extract" && mode.drawnVertices.length > 0 && (
+                {mode.drawnVertices.length > 0 && (
                   <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "UNDO_VERTEX" }); setToolError(null); }}>
                     {t("common.back")}
                   </Button>
