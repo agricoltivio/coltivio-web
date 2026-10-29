@@ -1075,9 +1075,15 @@ function PlotsMap() {
       return;
     }
 
+    const plot = plots.find((p) => p.id === mode.targetId);
+    if (!plot) return;
+    // Holes (e.g. a stream or pond cut out of the plot) can't be edited; keep them from the saved plot
     const newGeometry: GeoJSON.MultiPolygon = {
       type: "MultiPolygon",
-      coordinates: mode.rings.map((ring) => [closeRing(ring)]),
+      coordinates: mode.rings.map((ring, partIndex) => [
+        closeRing(ring),
+        ...(plot.geometry.coordinates[partIndex]?.slice(1) ?? []),
+      ]),
     };
     if (isSelfIntersecting(newGeometry)) {
       setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
