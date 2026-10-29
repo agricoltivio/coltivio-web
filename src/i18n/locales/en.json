@@ -1124,6 +1124,12 @@
       "emptyState": {
         "title": "No plots yet",
         "body": "Import them from the cantonal system (e.g. Acorda, LAWIS) or draw them on the map."
+      },
+      "errors": {
+        "selfIntersecting": "The edges of the plot must not cross.",
+        "invalid_geometry": "The plot has no area. Draw at least three distinct points.",
+        "geometry_processing_failed": "The plot could not be cut out of the neighbouring plots. Please adjust the shape or contact support.",
+        "saveFailed": "The plot could not be saved."
       }
     },
     "cropRotations": {

@@ -1124,6 +1124,12 @@
       "emptyState": {
         "title": "Ancora nessun campo",
         "body": "Importali dal sistema cantonale (ad es. Acorda, LAWIS) o disegnali sulla mappa."
+      },
+      "errors": {
+        "selfIntersecting": "I bordi della particella non devono incrociarsi.",
+        "invalid_geometry": "La particella non ha superficie. Disegna almeno tre punti distinti.",
+        "geometry_processing_failed": "Non è stato possibile ritagliare la particella dalle particelle vicine. Modifica la forma o contatta il supporto.",
+        "saveFailed": "Non è stato possibile salvare la particella."
       }
     },
     "cropRotations": {

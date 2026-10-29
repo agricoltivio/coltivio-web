@@ -1,4 +1,5 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "./apiError";
 import { apiClient } from "./client";
 
 // The openapi-ts code-gen for these two endpoints produces a broken discriminated union
@@ -79,7 +80,7 @@ export function useCreatePlotMutation() {
       additionalNotes?: string;
     }) => {
       const response = await apiClient.POST("/v1/plots", { body });
-      if (response.error) throw new Error("Failed to create plot");
+      if (response.error) throw new ApiError("Failed to create plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -108,7 +109,7 @@ export function useUpdatePlotMutation() {
         params: { path: { plotId } },
         body,
       });
-      if (response.error) throw new Error("Failed to update plot");
+      if (response.error) throw new ApiError("Failed to update plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {

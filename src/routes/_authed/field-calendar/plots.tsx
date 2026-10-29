@@ -9,6 +9,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import Map, { AttributionControl, Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
 import {
   plotsQueryOptions,
@@ -19,6 +20,7 @@ import {
   useUpdatePlotMutation,
 } from "@/api/plots.queries";
 import type { MergePlotsBody, SplitPlotBody } from "@/api/plots.queries";
+import { ApiError } from "@/api/apiError";
 import type { Meadow, Plot } from "@/api/types";
 import {
   meadowsQueryOptions,
@@ -1071,10 +1073,17 @@ function PlotsMap() {
       type: "MultiPolygon",
       coordinates: mode.rings.map((ring) => [closeRing(ring)]),
     };
+    if (isSelfIntersecting(newGeometry)) {
+      setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
+      return;
+    }
     const size = Math.round(turf.area(newGeometry));
     updateMutation.mutate(
       { plotId: mode.targetId, body: { geometry: newGeometry, size } },
-      { onSuccess: () => dispatch({ type: "EXIT_MODE" }) },
+      {
+        onSuccess: () => dispatch({ type: "EXIT_MODE" }),
+        onError: (error) => setToolError(plotSaveErrorMessage(error, t)),
+      },
     );
   }
 
@@ -1581,9 +1590,12 @@ function PlotsMap() {
                   <Button
                     size="sm"
                     onClick={() => {
+                      const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
+                      const geometry: GeoJSON.MultiPolygon = { type: "MultiPolygon", coordinates: [[ring]] };
                       if (mode.target === "meadow") {
-                        const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
-                        continueWithMeadowGeometry({ type: "MultiPolygon", coordinates: [[ring]] });
+                        continueWithMeadowGeometry(geometry);
+                      } else if (isSelfIntersecting(geometry)) {
+                        setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
                       } else {
                         setCreateFormOpen(true);
                       }
@@ -2174,6 +2186,20 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
   );
 }
 
+// Crossing edges are rejected before saving; the API would repair them into unexpected shapes
+function isSelfIntersecting(geometry: GeoJSON.MultiPolygon) {
+  return turf.kinks(turf.multiPolygon(geometry.coordinates)).features.length > 0;
+}
+
+// Message for a failed plot save, specific when the API returned an error code.
+// Falls back to the generic message for codes this version doesn't know yet.
+function plotSaveErrorMessage(error: Error, t: TFunction) {
+  const fallback = t("fieldCalendar.plots.errors.saveFailed");
+  return error instanceof ApiError && error.code
+    ? t(`fieldCalendar.plots.errors.${error.code}`, { defaultValue: fallback })
+    : fallback;
+}
+
 function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }: {
   open: boolean; drawnVertices: [number, number][]; area: number; onClose: () => void; onSuccess: () => void;
 }) {
@@ -2186,7 +2212,7 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (open) { setName(""); setLocalId(""); setUsage(""); setCuttingDate(""); setNotes(""); }
+    if (open) { setName(""); setLocalId(""); setUsage(""); setCuttingDate(""); setNotes(""); createMutation.reset(); }
   }, [open]);
 
   function handleSubmit() {
@@ -2220,6 +2246,9 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
           </div>
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div><div className="font-medium">{(area / 100).toFixed(2)} a</div></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.additionalNotes")}</Label><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
+          {createMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(createMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
