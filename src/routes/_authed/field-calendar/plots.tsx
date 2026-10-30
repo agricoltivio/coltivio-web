@@ -386,11 +386,13 @@ const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
 const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false, parcels: false };
 
 // Parcel borders (RESF) and numbers (OSNR) of the official survey, rendered by geodienste.ch as transparent PNGs.
-// Below zoom 14 the lines are too dense to be useful and would only load lots of tiles.
+// The WMS only draws them from a scale of 1:5000, so tiles are requested at 512 px: that halves the scale and the
+// lines appear from zoom 16 (at 256 px only from zoom 17), and they are sharper on high-density screens.
+// Zoom 15 would need 1024 px tiles (~190 KB each).
 const PARCELS_WMS_URL =
   "https://geodienste.ch/db/av_0/deu?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true" +
-  "&LAYERS=RESF,OSNR&STYLES=&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}";
-const PARCELS_MIN_ZOOM = 14;
+  "&LAYERS=RESF,OSNR&STYLES=&CRS=EPSG:3857&WIDTH=512&HEIGHT=512&BBOX={bbox-epsg-3857}";
+const PARCELS_MIN_ZOOM = 16;
 
 function readVisibleLayers(): VisibleLayers {
   try {
@@ -1015,6 +1017,12 @@ function PlotsMap() {
 
   function handleCommitSplitPolygon() {
     if (mode.type !== "split" || mode.tool !== "polygon" || mode.drawnVertices.length < 3) return;
+    // A crossing cut area would be repaired by the API into unexpected sub-plots
+    const cutRing = [...mode.drawnVertices, mode.drawnVertices[0]];
+    if (isSelfIntersecting({ type: "MultiPolygon", coordinates: [[cutRing]] })) {
+      setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
+      return;
+    }
     const sources: GeoJSON.MultiPolygon[] = mode.splitPolygons.length >= 2
       ? mode.splitPolygons
       : (() => { const p = mappablePlots.find((p) => p.id === mode.plotId); return p ? [p.geometry] : []; })();
@@ -1077,14 +1085,7 @@ function PlotsMap() {
 
     const plot = plots.find((p) => p.id === mode.targetId);
     if (!plot) return;
-    // Holes (e.g. a stream or pond cut out of the plot) can't be edited; keep them from the saved plot
-    const newGeometry: GeoJSON.MultiPolygon = {
-      type: "MultiPolygon",
-      coordinates: mode.rings.map((ring, partIndex) => [
-        closeRing(ring),
-        ...(plot.geometry.coordinates[partIndex]?.slice(1) ?? []),
-      ]),
-    };
+    const newGeometry = withSavedHoles(mode.rings.map(closeRing), plot.geometry);
     if (isSelfIntersecting(newGeometry)) {
       setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
       return;
@@ -1385,9 +1386,10 @@ function PlotsMap() {
                 longitude={vertex[0]}
                 latitude={vertex[1]}
                 draggable
-                onDragEnd={(e) =>
-                  dispatch({ type: "MOVE_EDIT_VERTEX", ringIndex: rIdx, vertexIndex: vIdx, lngLat: [e.lngLat.lng, e.lngLat.lat] })
-                }
+                onDragEnd={(e) => {
+                  dispatch({ type: "MOVE_EDIT_VERTEX", ringIndex: rIdx, vertexIndex: vIdx, lngLat: [e.lngLat.lng, e.lngLat.lat] });
+                  setToolError(null);
+                }}
               >
                 <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-500 cursor-move shadow" />
               </Marker>
@@ -1632,7 +1634,7 @@ function PlotsMap() {
           {/* Edit shape mode */}
           {mode.type === "edit" && (
             <div className="flex items-center gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
-              <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
+              <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "EXIT_MODE" }); setToolError(null); }}>
                 {t("common.cancel")}
               </Button>
               <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.edit.dragInstruction")}</span>
@@ -2037,6 +2039,9 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
 }) {
   const { t } = useTranslation();
   const mergeMutation = useMergePlotsMutation();
+  useEffect(() => {
+    if (open) mergeMutation.reset();
+  }, [open]);
   const selectedPlots = useMemo(() => plots.filter((p) => selectedPlotIds.includes(p.id)), [plots, selectedPlotIds]);
 
   const mergedAreaAres = useMemo(() => {
@@ -2086,6 +2091,9 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
           </div>
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.merge.dialog.area")}</div><div className="font-medium">{mergedAreaAres.toFixed(2)} a</div></div>
           <div className="text-xs text-muted-foreground space-y-0.5">{selectedPlots.map((p) => <div key={p.id}>{p.name} — {(p.size / 100).toFixed(2)} a</div>)}</div>
+          {mergeMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(mergeMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
@@ -2116,6 +2124,7 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
       setSubPlotNames(splitPolygons.map((_, i) => `${base} ${SPLIT_LETTERS[i] ?? String(i + 1)}`));
       setStrategy("keep_reference");
       setMigrateToIndex(0);
+      splitMutation.reset();
     }
   }, [open, originalPlot, splitPolygons]);
 
@@ -2175,6 +2184,9 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
               );
             })}
           </div>
+          {splitMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(splitMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
@@ -2193,6 +2205,21 @@ function withoutClosingPoint(ring: number[][]): number[][] {
   const [lastX, lastY] = ring[ring.length - 1];
   const openRing = firstX === lastX && firstY === lastY ? ring.slice(0, -1) : ring;
   return openRing.map((coord) => [coord[0], coord[1]]);
+}
+
+// Adds the holes of the saved plot (e.g. a stream or pond cut out of it) to the edited outer rings, edit mode
+// can't edit holes. A hole the edited outline no longer touches is dropped, it would cut nothing out; a hole that
+// crosses the outline is kept, so isSelfIntersecting rejects it.
+function withSavedHoles(outerRings: number[][][], savedGeometry: GeoJSON.MultiPolygon): GeoJSON.MultiPolygon {
+  return {
+    type: "MultiPolygon",
+    coordinates: outerRings.map((outerRing, partIndex) => {
+      const savedHoles = savedGeometry.coordinates[partIndex]?.slice(1) ?? [];
+      if (outerRing.length < 4) return [outerRing, ...savedHoles];
+      const outerPolygon = turf.polygon([outerRing]);
+      return [outerRing, ...savedHoles.filter((hole) => turf.booleanIntersects(turf.polygon([hole]), outerPolygon))];
+    }),
+  };
 }
 
 // Crossing edges are rejected before saving; the API would repair them into unexpected shapes.

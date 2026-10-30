@@ -58,7 +58,7 @@ export function useSplitPlotMutation() {
         // @ts-expect-error — generated discriminated union type is broken (Record<string, never> intersection)
         body,
       });
-      if (response.error) throw new Error("Failed to split plot");
+      if (response.error) throw new ApiError("Failed to split plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -126,7 +126,7 @@ export function useMergePlotsMutation() {
         // @ts-expect-error — generated discriminated union type is broken (Record<string, never> intersection)
         body,
       });
-      if (response.error) throw new Error("Failed to merge plots");
+      if (response.error) throw new ApiError("Failed to merge plots", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
