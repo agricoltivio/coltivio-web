@@ -843,22 +843,20 @@
         "toolbarHasLine": "{{count}} Punkt(e) gesetzt",
         "toolbarArea": "Auf der Karte klicken, um eine Schnittfläche zu zeichnen",
         "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schließen zum Anwenden",
-        "toolbarExtract": "Auf ein Teilpolygon klicken, um es zu extrahieren",
         "toolLine": "Linie",
         "toolArea": "Fläche",
-        "toolExtract": "Extrahieren",
         "closePolygon": "Schließen",
         "applyCut": "Schneiden",
         "confirmSplit": "Speichern",
         "piecesCount": "{{count}} Teile",
         "splitFailed": "Der Schnitt hat den Schlag nicht gekreuzt — erneut versuchen",
-        "extractFailed": "Kein Teilpolygon an diesem Punkt gefunden",
         "dialog": {
           "title": "Aufteilung bestätigen",
           "strategy": "Strategie",
           "strategyKeepReference": "Referenz behalten",
           "strategyDeleteAndMigrate": "Referenz löschen",
           "strategyKeepReferenceInfo": "Der ursprüngliche Schlag wird als Referenz behalten. Alle bestehenden Einträge (Fruchtfolgen, Ernten, etc.) bleiben dem Referenzschlag zugeordnet.",
+          "archiveReference": "Schlag archivieren",
           "strategyDeleteAndMigrateInfo": "Der ursprüngliche Schlag wird gelöscht. Alle bestehenden Einträge werden auf den gewählten Teilschlag übertragen.",
           "originalPlotName": "Name des Referenzschlags",
           "subPlot": "Teilfläche {{letter}}",
@@ -877,6 +875,7 @@
           "strategyKeepReference": "Referenz behalten",
           "strategyDeleteAndMigrate": "Referenz löschen",
           "strategyKeepReferenceInfo": "Die ursprünglichen Schläge werden als Referenz behalten. Alle bestehenden Einträge bleiben den Referenzschlägen zugeordnet.",
+          "archiveReference": "Schlag archivieren",
           "strategyDeleteAndMigrateInfo": "Die ursprünglichen Schläge werden gelöscht. Alle bestehenden Einträge werden auf den neuen Schlag übertragen.",
           "deleteWarning": "Fruchtfolgen werden nicht übertragen und gehen verloren.",
           "name": "Name des zusammengeführten Schlags",
@@ -1124,6 +1123,11 @@
       "emptyState": {
         "title": "Noch keine Schläge",
         "body": "Importiere sie aus dem kantonalen System (z.B. Acorda, LAWIS) oder zeichne sie in der Karte ein."
+      },
+      "errors": {
+        "selfIntersecting": "Die Kanten des Schlags dürfen sich nicht kreuzen.",
+        "invalid_geometry": "Der Schlag hat keine Fläche. Zeichne mindestens drei unterschiedliche Punkte.",
+        "saveFailed": "Der Schlag konnte nicht gespeichert werden."
       }
     },
     "cropRotations": {
@@ -1789,7 +1793,8 @@
       "satellite": "Satellit",
       "map": "Karte",
       "plots": "Schläge",
-      "meadows": "Weideflächen"
+      "meadows": "Weideflächen",
+      "parcels": "Parzellen"
     }
   },
   "archive": {

@@ -9,6 +9,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import Map, { AttributionControl, Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import type { MapRef } from "react-map-gl/maplibre";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { farmQueryOptions } from "@/api/farm.queries";
 import {
   plotsQueryOptions,
@@ -19,6 +20,7 @@ import {
   useUpdatePlotMutation,
 } from "@/api/plots.queries";
 import type { MergePlotsBody, SplitPlotBody } from "@/api/plots.queries";
+import { ApiError } from "@/api/apiError";
 import type { Meadow, Plot } from "@/api/types";
 import {
   meadowsQueryOptions,
@@ -83,7 +85,7 @@ type SavedViewport = { lng: number; lat: number; zoom: number };
 
 // --- Mode state machine ---
 
-type SplitTool = "line" | "polygon" | "extract";
+type SplitTool = "line" | "polygon";
 
 type ViewMode = { type: "view"; selectedPlotId: string | null };
 type SplitMode = {
@@ -138,7 +140,8 @@ type MapAction =
   | { type: "ENTER_EDIT"; target: ShapeTarget; targetId: string; rings: number[][][] }
   | { type: "MOVE_EDIT_VERTEX"; ringIndex: number; vertexIndex: number; lngLat: [number, number] }
   | { type: "MOVE_POLYGON_VERTEX"; index: number; lngLat: [number, number] }
-  | { type: "EXIT_MODE" };
+  // selectPlotId: plot to select afterwards, e.g. a new plot when the one the mode started from has no area left
+  | { type: "EXIT_MODE"; selectPlotId?: string };
 
 function mapReducer(state: MapMode, action: MapAction): MapMode {
   switch (action.type) {
@@ -238,7 +241,8 @@ function mapReducer(state: MapMode, action: MapAction): MapMode {
     }
     case "EXIT_MODE": {
       const returnTo =
-        state.type === "split" ? state.plotId
+        action.selectPlotId ? action.selectPlotId
+        : state.type === "split" ? state.plotId
         : state.type === "merge" ? state.primaryPlotId
         : state.type === "edit" && state.target === "plot" ? state.targetId
         : null;
@@ -372,34 +376,25 @@ function cutPolygonFromMultiPolygon(
   };
 }
 
-// Ported from coltivio-rn-app/utils/geo-spatials.ts — extracts a sub-polygon by click point.
-// Only works for MultiPolygons with 2+ polygons.
-function extractSubPolygonByPoint(
-  multiPolygon: GeoJSON.MultiPolygon,
-  lngLat: [number, number],
-): { remaining: GeoJSON.MultiPolygon; extracted: GeoJSON.MultiPolygon } | null {
-  if (multiPolygon.coordinates.length <= 1) return null;
-  const point = turf.point(lngLat);
-  for (let j = 0; j < multiPolygon.coordinates.length; j++) {
-    const poly = turf.polygon(multiPolygon.coordinates[j]);
-    if (!turf.booleanPointInPolygon(point, poly)) continue;
-    return {
-      remaining: { type: "MultiPolygon", coordinates: multiPolygon.coordinates.filter((_, idx) => idx !== j) },
-      extracted: { type: "MultiPolygon", coordinates: [multiPolygon.coordinates[j]] },
-    };
-  }
-  return null;
-}
-
 // Layers shown (and clickable) on the map, remembered in the browser.
 // archived: archived plots and meadows, drawn greyed out and read-only
-type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean };
+// parcels: cadastral parcel borders from the official survey, not clickable
+type VisibleLayers = { plots: boolean; meadows: boolean; archived: boolean; parcels: boolean };
 type SelectedArchivedArea = { kind: "plot" | "meadow"; id: string };
 // A click that hits several active areas (e.g. a meadow over plots) lets the user pick one
 type AreaChoiceOption = { kind: "plot" | "meadow"; id: string; name: string; size: number };
 type AreaChoice = { lngLat: [number, number]; options: AreaChoiceOption[] };
 const VISIBLE_LAYERS_STORAGE_KEY = "plots-map-visible-layers";
-const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false };
+const DEFAULT_VISIBLE_LAYERS: VisibleLayers = { plots: true, meadows: false, archived: false, parcels: false };
+
+// Parcel borders (RESF) and numbers (OSNR) of the official survey, rendered by geodienste.ch as transparent PNGs.
+// The WMS only draws them from a scale of 1:5000, so tiles are requested at 512 px: that halves the scale and the
+// lines appear from zoom 16 (at 256 px only from zoom 17), and they are sharper on high-density screens.
+// Zoom 15 would need 1024 px tiles (~190 KB each).
+const PARCELS_WMS_URL =
+  "https://geodienste.ch/db/av_0/deu?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true" +
+  "&LAYERS=RESF,OSNR&STYLES=&CRS=EPSG:3857&WIDTH=512&HEIGHT=512&BBOX={bbox-epsg-3857}";
+const PARCELS_MIN_ZOOM = 16;
 
 function readVisibleLayers(): VisibleLayers {
   try {
@@ -414,9 +409,10 @@ function readVisibleLayers(): VisibleLayers {
       typeof parsed.plots === "boolean" &&
       typeof parsed.meadows === "boolean"
     ) {
-      // archived is missing in choices stored before it existed, read as off
+      // archived and parcels are missing in choices stored before they existed, read as off
       const archived = "archived" in parsed && parsed.archived === true;
-      return { plots: parsed.plots, meadows: parsed.meadows, archived };
+      const parcels = "parcels" in parsed && parsed.parcels === true;
+      return { plots: parsed.plots, meadows: parsed.meadows, archived, parcels };
     }
   } catch {
     // Storage unavailable or invalid — fall back to the default
@@ -796,6 +792,8 @@ function PlotsMap() {
   const geojsonRef = useRef(geojson);
   const labelsGeojsonRef = useRef(labelsGeojson);
   const activeLayerRef = useRef(activeLayer);
+  const visibleLayersRef = useRef(visibleLayers);
+  visibleLayersRef.current = visibleLayers;
   geojsonRef.current = geojson;
   labelsGeojsonRef.current = labelsGeojson;
   activeLayerRef.current = activeLayer;
@@ -816,6 +814,18 @@ function PlotsMap() {
     map.addSource("plots-labels", { type: "geojson", data: labelsGeojsonRef.current });
     map.addLayer({ id: "plots-fill", type: "fill", source: "plots", paint: { "fill-color": ["case", ["==", ["get", "selected"], 1], "#4ade80", ["get", "color"]], "fill-opacity": 0.5 } });
     map.addLayer({ id: "plots-line", type: "line", source: "plots", paint: { "line-color": ["case", ["==", ["get", "selected"], 1], "#facc15", "#ffffff"], "line-width": ["case", ["==", ["get", "selected"], 1], 3, 1] } });
+
+    // Cadastral parcel borders above the plots, so the borders inside merged plots stay visible.
+    // The WMS draws black lines; on the satellite image they are brightened to white.
+    map.addSource("parcels", { type: "raster", tiles: [PARCELS_WMS_URL], tileSize: 256, minzoom: PARCELS_MIN_ZOOM, attribution: attribution.cantons });
+    map.addLayer({
+      id: "parcels-layer",
+      type: "raster",
+      source: "parcels",
+      minzoom: PARCELS_MIN_ZOOM,
+      layout: { visibility: visibleLayersRef.current.parcels ? "visible" : "none" },
+      paint: { "raster-brightness-min": activeLayerRef.current === "satellite" ? 1 : 0 },
+    });
 
     // Dim target plot during split
     map.addSource("split-target", { type: "geojson", data: EMPTY_GEOJSON });
@@ -919,6 +929,7 @@ function PlotsMap() {
     const map = mapRef.current.getMap();
     map.setLayoutProperty("satellite-layer", "visibility", activeLayer === "satellite" ? "visible" : "none");
     map.setLayoutProperty("pixelkarte-layer", "visibility", activeLayer === "pixelkarte" ? "visible" : "none");
+    map.setPaintProperty("parcels-layer", "raster-brightness-min", activeLayer === "satellite" ? 1 : 0);
   }, [mapReady, activeLayer]);
 
   // Layer visibility follows the layer choice (and meadow modes)
@@ -931,7 +942,8 @@ function PlotsMap() {
     for (const layerId of ["plots-fill", "plots-line", "plots-label"]) setVisible(layerId, plotsVisible);
     for (const layerId of ["meadows-fill", "meadows-line", "meadows-label"]) setVisible(layerId, meadowsVisible);
     for (const layerId of ARCHIVED_AREA_LAYER_IDS) setVisible(layerId, archivedVisible);
-  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible]);
+    setVisible("parcels-layer", visibleLayers.parcels);
+  }, [mapReady, plotsVisible, meadowsVisible, archivedVisible, visibleLayers.parcels]);
 
   // Crosshair for drawing modes
   useEffect(() => {
@@ -1007,6 +1019,12 @@ function PlotsMap() {
 
   function handleCommitSplitPolygon() {
     if (mode.type !== "split" || mode.tool !== "polygon" || mode.drawnVertices.length < 3) return;
+    // A crossing cut area would be repaired by the API into unexpected sub-plots
+    const cutRing = [...mode.drawnVertices, mode.drawnVertices[0]];
+    if (isSelfIntersecting({ type: "MultiPolygon", coordinates: [[cutRing]] })) {
+      setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
+      return;
+    }
     const sources: GeoJSON.MultiPolygon[] = mode.splitPolygons.length >= 2
       ? mode.splitPolygons
       : (() => { const p = mappablePlots.find((p) => p.id === mode.plotId); return p ? [p.geometry] : []; })();
@@ -1067,14 +1085,25 @@ function PlotsMap() {
       return;
     }
 
+    const plot = plots.find((p) => p.id === mode.targetId);
+    if (!plot) return;
+    const withHoles = withSavedHoles(mode.rings.map(closeRing), plot.geometry);
+    // Parts without an outline (stored degenerate) are dropped instead of being sent as invalid GeoJSON
     const newGeometry: GeoJSON.MultiPolygon = {
       type: "MultiPolygon",
-      coordinates: mode.rings.map((ring) => [closeRing(ring)]),
+      coordinates: withHoles.coordinates.filter((part) => part[0].length >= 4),
     };
+    if (isSelfIntersecting(newGeometry)) {
+      setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
+      return;
+    }
     const size = Math.round(turf.area(newGeometry));
     updateMutation.mutate(
       { plotId: mode.targetId, body: { geometry: newGeometry, size } },
-      { onSuccess: () => dispatch({ type: "EXIT_MODE" }) },
+      {
+        onSuccess: () => dispatch({ type: "EXIT_MODE" }),
+        onError: (error) => setToolError(plotSaveErrorMessage(error, t)),
+      },
     );
   }
 
@@ -1122,13 +1151,6 @@ function PlotsMap() {
       ...(visibleLayers.archived ? [ARCHIVED_AREA_FILL_LAYER_ID] : []),
     ];
   }, [mode.type, visibleLayers]);
-
-  // Is the split-target plot a MultiPolygon with 2+ sub-polygons (extract is only useful then)?
-  const targetIsMultiPolygon = useMemo(() => {
-    if (mode.type !== "split") return false;
-    const plot = mappablePlots.find((p) => p.id === mode.plotId);
-    return (plot?.geometry.coordinates.length ?? 0) > 1;
-  }, [mode, mappablePlots]);
 
   // Computed area during create mode (when polygon is closed)
   const createArea = useMemo(() => {
@@ -1215,14 +1237,6 @@ function PlotsMap() {
                   }
                 }
                 dispatch({ type: "ADD_VERTEX", lngLat: [e.lngLat.lng, e.lngLat.lat] });
-                return;
-              }
-              if (mode.tool === "extract") {
-                const plot = mappablePlots.find((p) => p.id === mode.plotId);
-                if (!plot) return;
-                const result = extractSubPolygonByPoint(plot.geometry, [e.lngLat.lng, e.lngLat.lat]);
-                if (!result) { setToolError(t("fieldCalendar.plots.split.extractFailed")); return; }
-                dispatch({ type: "SET_SPLIT_POLYGONS", polygons: [result.remaining, result.extracted] });
                 return;
               }
               return;
@@ -1379,9 +1393,10 @@ function PlotsMap() {
                 longitude={vertex[0]}
                 latitude={vertex[1]}
                 draggable
-                onDragEnd={(e) =>
-                  dispatch({ type: "MOVE_EDIT_VERTEX", ringIndex: rIdx, vertexIndex: vIdx, lngLat: [e.lngLat.lng, e.lngLat.lat] })
-                }
+                onDragEnd={(e) => {
+                  dispatch({ type: "MOVE_EDIT_VERTEX", ringIndex: rIdx, vertexIndex: vIdx, lngLat: [e.lngLat.lng, e.lngLat.lat] });
+                  setToolError(null);
+                }}
               >
                 <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-500 cursor-move shadow" />
               </Marker>
@@ -1422,7 +1437,6 @@ function PlotsMap() {
                   ? t("fieldCalendar.plots.split.toolbarArea")
                   : t("fieldCalendar.plots.split.toolbarAreaReady", { count: mode.drawnVertices.length })
               )}
-              {mode.type === "split" && mode.tool === "extract" && t("fieldCalendar.plots.split.toolbarExtract")}
               {mode.type === "create" && (
                 mode.drawnVertices.length < 3
                   ? t("fieldCalendar.plots.create.toolbar")
@@ -1484,6 +1498,14 @@ function PlotsMap() {
                   onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, archived: checked })}
                 />
               </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="layer-parcels">{t("meadows.layers.parcels")}</Label>
+                <Switch
+                  id="layer-parcels"
+                  checked={visibleLayers.parcels}
+                  onCheckedChange={(checked) => setVisibleLayers({ ...visibleLayers, parcels: checked })}
+                />
+              </div>
             </PopoverContent>
           </Popover>
           {mode.type === "view" && visibleLayers.plots && (
@@ -1524,18 +1546,13 @@ function PlotsMap() {
                 <Button variant={mode.tool === "polygon" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "polygon" })}>
                   {t("fieldCalendar.plots.split.toolArea")}
                 </Button>
-                {targetIsMultiPolygon && (
-                  <Button variant={mode.tool === "extract" ? "default" : "ghost"} size="sm" onClick={() => dispatch({ type: "SET_SPLIT_TOOL", tool: "extract" })}>
-                    {t("fieldCalendar.plots.split.toolExtract")}
-                  </Button>
-                )}
               </div>
 
               <div className="flex items-center gap-1.5 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
                 <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "EXIT_MODE" }); setToolError(null); }}>
                   {t("common.cancel")}
                 </Button>
-                {mode.tool !== "extract" && mode.drawnVertices.length > 0 && (
+                {mode.drawnVertices.length > 0 && (
                   <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "UNDO_VERTEX" }); setToolError(null); }}>
                     {t("common.back")}
                   </Button>
@@ -1581,9 +1598,12 @@ function PlotsMap() {
                   <Button
                     size="sm"
                     onClick={() => {
+                      const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
+                      const geometry: GeoJSON.MultiPolygon = { type: "MultiPolygon", coordinates: [[ring]] };
                       if (mode.target === "meadow") {
-                        const ring = [...mode.drawnVertices, mode.drawnVertices[0]];
-                        continueWithMeadowGeometry({ type: "MultiPolygon", coordinates: [[ring]] });
+                        continueWithMeadowGeometry(geometry);
+                      } else if (isSelfIntersecting(geometry)) {
+                        setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
                       } else {
                         setCreateFormOpen(true);
                       }
@@ -1621,7 +1641,7 @@ function PlotsMap() {
           {/* Edit shape mode */}
           {mode.type === "edit" && (
             <div className="flex items-center gap-2 bg-background/95 backdrop-blur-sm rounded-md border shadow-md px-3 py-1.5">
-              <Button variant="ghost" size="sm" onClick={() => dispatch({ type: "EXIT_MODE" })}>
+              <Button variant="ghost" size="sm" onClick={() => { dispatch({ type: "EXIT_MODE" }); setToolError(null); }}>
                 {t("common.cancel")}
               </Button>
               <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.edit.dragInstruction")}</span>
@@ -1660,7 +1680,7 @@ function PlotsMap() {
                   type: "ENTER_EDIT",
                   target: "meadow",
                   targetId: selectedMeadow.id,
-                  rings: selectedMeadow.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
+                  rings: selectedMeadow.geometry.coordinates.map((polygon) => withoutClosingPoint(polygon[0])),
                 });
               }}
             />
@@ -1770,7 +1790,7 @@ function PlotsMap() {
           selectedPlotIds={mode.selectedPlotIds}
           plots={plots}
           onClose={() => setMergeFormOpen(false)}
-          onSuccess={() => { setMergeFormOpen(false); dispatch({ type: "EXIT_MODE" }); }}
+          onSuccess={(mergedPlotId) => { setMergeFormOpen(false); dispatch({ type: "EXIT_MODE", selectPlotId: mergedPlotId }); }}
         />
       )}
 
@@ -1781,7 +1801,7 @@ function PlotsMap() {
           originalPlot={plots.find((p) => p.id === mode.plotId) ?? null}
           splitPolygons={mode.splitPolygons}
           onClose={() => setSplitFormOpen(false)}
-          onSuccess={() => { setSplitFormOpen(false); dispatch({ type: "EXIT_MODE" }); }}
+          onSuccess={(firstSubPlotId) => { setSplitFormOpen(false); dispatch({ type: "EXIT_MODE", selectPlotId: firstSubPlotId }); }}
         />
       )}
 
@@ -1927,7 +1947,7 @@ function PlotDetailPanel({
                 type: "ENTER_EDIT",
                 target: "plot",
                 targetId: plot.id,
-                rings: plot.geometry.coordinates.map((polygon) => polygon[0].map((coord) => [coord[0], coord[1]])),
+                rings: plot.geometry.coordinates.map((polygon) => withoutClosingPoint(polygon[0])),
               })
             }
           >
@@ -2022,10 +2042,13 @@ function PlotDetailPanel({
 }
 
 function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
-  open: boolean; selectedPlotIds: string[]; plots: Plot[]; onClose: () => void; onSuccess: () => void;
+  open: boolean; selectedPlotIds: string[]; plots: Plot[]; onClose: () => void; onSuccess: (mergedPlotId: string) => void;
 }) {
   const { t } = useTranslation();
   const mergeMutation = useMergePlotsMutation();
+  useEffect(() => {
+    if (open) mergeMutation.reset();
+  }, [open]);
   const selectedPlots = useMemo(() => plots.filter((p) => selectedPlotIds.includes(p.id)), [plots, selectedPlotIds]);
 
   const mergedAreaAres = useMemo(() => {
@@ -2043,16 +2066,17 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
 
   const [name, setName] = useState(() => selectedPlots.map((p) => p.localId ?? p.name).join(" + "));
   const [strategy, setStrategy] = useState<"keep_reference" | "delete_and_migrate">("keep_reference");
+  const [archiveReference, setArchiveReference] = useState(false);
 
   useEffect(() => {
-    if (open) { setName(selectedPlots.map((p) => p.localId ?? p.name).join(" + ")); setStrategy("keep_reference"); }
+    if (open) { setName(selectedPlots.map((p) => p.localId ?? p.name).join(" + ")); setStrategy("keep_reference"); setArchiveReference(false); }
   }, [open, selectedPlots]);
 
   function handleSubmit() {
     const body: MergePlotsBody = strategy === "delete_and_migrate"
       ? { strategy: "delete_and_migrate", plotIds: selectedPlotIds, name }
-      : { strategy: "keep_reference", plotIds: selectedPlotIds, name };
-    mergeMutation.mutate(body, { onSuccess });
+      : { strategy: "keep_reference", archiveReference, plotIds: selectedPlotIds, name };
+    mergeMutation.mutate(body, { onSuccess: (mergedPlot) => onSuccess(mergedPlot.id) });
   }
 
   return (
@@ -2073,8 +2097,17 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
             <p className="text-xs text-muted-foreground">{strategy === "keep_reference" ? t("fieldCalendar.plots.merge.dialog.strategyKeepReferenceInfo") : t("fieldCalendar.plots.merge.dialog.strategyDeleteAndMigrateInfo")}</p>
             {strategy === "delete_and_migrate" && <p className="text-xs text-destructive">{t("fieldCalendar.plots.merge.dialog.deleteWarning")}</p>}
           </div>
+          {strategy === "keep_reference" && (
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="merge-archive-reference">{t("fieldCalendar.plots.merge.dialog.archiveReference")}</Label>
+              <Switch id="merge-archive-reference" checked={archiveReference} onCheckedChange={setArchiveReference} />
+            </div>
+          )}
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.merge.dialog.area")}</div><div className="font-medium">{mergedAreaAres.toFixed(2)} a</div></div>
           <div className="text-xs text-muted-foreground space-y-0.5">{selectedPlots.map((p) => <div key={p.id}>{p.name} — {(p.size / 100).toFixed(2)} a</div>)}</div>
+          {mergeMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(mergeMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
@@ -2088,7 +2121,7 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
 const SPLIT_LETTERS = ["A", "B", "C", "D", "E"];
 
 function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, onSuccess }: {
-  open: boolean; plotId: string; originalPlot: Plot | null; splitPolygons: GeoJSON.MultiPolygon[]; onClose: () => void; onSuccess: () => void;
+  open: boolean; plotId: string; originalPlot: Plot | null; splitPolygons: GeoJSON.MultiPolygon[]; onClose: () => void; onSuccess: (firstSubPlotId: string | undefined) => void;
 }) {
   const { t } = useTranslation();
   const splitMutation = useSplitPlotMutation();
@@ -2097,6 +2130,7 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
   const [originalPlotName, setOriginalPlotName] = useState(baseName);
   const [subPlotNames, setSubPlotNames] = useState<string[]>(splitPolygons.map((_, i) => `${baseName} ${SPLIT_LETTERS[i] ?? String(i + 1)}`));
   const [migrateToIndex, setMigrateToIndex] = useState(0);
+  const [archiveReference, setArchiveReference] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -2105,6 +2139,8 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
       setSubPlotNames(splitPolygons.map((_, i) => `${base} ${SPLIT_LETTERS[i] ?? String(i + 1)}`));
       setStrategy("keep_reference");
       setMigrateToIndex(0);
+      setArchiveReference(false);
+      splitMutation.reset();
     }
   }, [open, originalPlot, splitPolygons]);
 
@@ -2116,8 +2152,9 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
     }));
     const body: SplitPlotBody = strategy === "delete_and_migrate"
       ? { strategy: "delete_and_migrate", migrateToIndex, subPlots }
-      : { strategy: "keep_reference", originalPlotName, subPlots };
-    splitMutation.mutate({ plotId, body }, { onSuccess });
+      : { strategy: "keep_reference", originalPlotName, archiveReference, subPlots };
+    // The original plot has no area left (or is deleted), so the first sub-plot is selected instead
+    splitMutation.mutate({ plotId, body }, { onSuccess: (subPlots) => onSuccess(subPlots.result[0]?.id) });
   }
 
   return (
@@ -2137,7 +2174,13 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
             <p className="text-xs text-muted-foreground">{strategy === "keep_reference" ? t("fieldCalendar.plots.split.dialog.strategyKeepReferenceInfo") : t("fieldCalendar.plots.split.dialog.strategyDeleteAndMigrateInfo")}</p>
           </div>
           {strategy === "keep_reference" && (
-            <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.split.dialog.originalPlotName")}</Label><Input value={originalPlotName} onChange={(e) => setOriginalPlotName(e.target.value)} /></div>
+            <>
+              <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.split.dialog.originalPlotName")}</Label><Input value={originalPlotName} onChange={(e) => setOriginalPlotName(e.target.value)} /></div>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="split-archive-reference">{t("fieldCalendar.plots.split.dialog.archiveReference")}</Label>
+                <Switch id="split-archive-reference" checked={archiveReference} onCheckedChange={setArchiveReference} />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             {splitPolygons.map((polygon, i) => {
@@ -2164,6 +2207,9 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
               );
             })}
           </div>
+          {splitMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(splitMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
@@ -2172,6 +2218,54 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
       </DialogContent>
     </Dialog>
   );
+}
+
+// GeoJSON rings repeat the first point at the end. In edit mode that would be a second marker on top of the
+// first one, and dragging it would move only the copy. handleSaveShape closes the rings again.
+function withoutClosingPoint(ring: number[][]): number[][] {
+  if (ring.length === 0) return [];
+  const [firstX, firstY] = ring[0];
+  const [lastX, lastY] = ring[ring.length - 1];
+  const openRing = firstX === lastX && firstY === lastY ? ring.slice(0, -1) : ring;
+  return openRing.map((coord) => [coord[0], coord[1]]);
+}
+
+// Adds the holes of the saved plot (e.g. a stream or pond cut out of it) to the edited outer rings, edit mode
+// can't edit holes. A hole the edited outline no longer touches is dropped, it would cut nothing out; a hole that
+// crosses the outline is kept, so isSelfIntersecting rejects it.
+function withSavedHoles(outerRings: number[][][], savedGeometry: GeoJSON.MultiPolygon): GeoJSON.MultiPolygon {
+  return {
+    type: "MultiPolygon",
+    coordinates: outerRings.map((outerRing, partIndex) => {
+      const savedHoles = savedGeometry.coordinates[partIndex]?.slice(1) ?? [];
+      if (outerRing.length < 4) return [outerRing, ...savedHoles];
+      const outerPolygon = turf.polygon([outerRing]);
+      return [outerRing, ...savedHoles.filter((hole) => turf.booleanIntersects(turf.polygon([hole]), outerPolygon))];
+    }),
+  };
+}
+
+// Crossing edges are rejected before saving; the API would repair them into unexpected shapes.
+// Checked per part: parts of a merged plot share edges, which kinks() reports on the whole MultiPolygon.
+// Duplicate points are removed first: kinks() reports them as crossings, and cut plots can contain them.
+function isSelfIntersecting(geometry: GeoJSON.MultiPolygon) {
+  return geometry.coordinates.some((part) => {
+    try {
+      return turf.kinks(turf.cleanCoords(turf.polygon(part))).features.length > 0;
+    } catch {
+      // The part collapses to a line (no area); the API rejects it with invalid_geometry
+      return false;
+    }
+  });
+}
+
+// Message for a failed plot save, specific when the API returned an error code.
+// Falls back to the generic message for codes this version doesn't know yet.
+function plotSaveErrorMessage(error: Error, t: TFunction) {
+  const fallback = t("fieldCalendar.plots.errors.saveFailed");
+  return error instanceof ApiError && error.code
+    ? t(`fieldCalendar.plots.errors.${error.code}`, { defaultValue: fallback })
+    : fallback;
 }
 
 function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }: {
@@ -2186,7 +2280,7 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
-    if (open) { setName(""); setLocalId(""); setUsage(""); setCuttingDate(""); setNotes(""); }
+    if (open) { setName(""); setLocalId(""); setUsage(""); setCuttingDate(""); setNotes(""); createMutation.reset(); }
   }, [open]);
 
   function handleSubmit() {
@@ -2210,7 +2304,7 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>{t("fieldCalendar.plots.create.dialog.title")}</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="min-w-0 space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.create.dialog.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
           <UsageCombobox value={usage} onChange={setUsage} />
@@ -2220,6 +2314,9 @@ function CreatePlotFormDialog({ open, drawnVertices, area, onClose, onSuccess }:
           </div>
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.size")}</div><div className="font-medium">{(area / 100).toFixed(2)} a</div></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.additionalNotes")}</Label><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
+          {createMutation.error && (
+            <p className="text-sm text-destructive">{plotSaveErrorMessage(createMutation.error, t)}</p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
@@ -2273,7 +2370,7 @@ function EditMetadataDialog({ open, plot, onClose, onSuccess }: {
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>{t("fieldCalendar.plots.edit.dialog.title")}</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="min-w-0 space-y-4 py-2">
           <div className="space-y-1.5"><Label>{t("common.name")}</Label><Input value={name} onChange={(e) => setName(e.target.value)} autoFocus /></div>
           <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.localId")}</Label><Input value={localId} onChange={(e) => setLocalId(e.target.value)} /></div>
           <UsageCombobox value={usage} onChange={setUsage} />

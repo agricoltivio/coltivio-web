@@ -1,4 +1,5 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "./apiError";
 import { apiClient } from "./client";
 
 // The openapi-ts code-gen for these two endpoints produces a broken discriminated union
@@ -10,11 +11,11 @@ type SubPlotGeometry = { type: "MultiPolygon"; coordinates: number[][][][]; };
 type SubPlot = { geometry: SubPlotGeometry; name: string; size: number };
 
 export type SplitPlotBody =
-  | { strategy: "keep_reference"; originalPlotName?: string; subPlots: SubPlot[] }
+  | { strategy: "keep_reference"; originalPlotName?: string; archiveReference?: boolean; subPlots: SubPlot[] }
   | { strategy: "delete_and_migrate"; migrateToIndex: number; subPlots: SubPlot[] };
 
 export type MergePlotsBody =
-  | { strategy: "keep_reference"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string }
+  | { strategy: "keep_reference"; archiveReference?: boolean; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string }
   | { strategy: "delete_and_migrate"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string };
 
 // Archived plots are left out unless includeArchived is set
@@ -57,7 +58,7 @@ export function useSplitPlotMutation() {
         // @ts-expect-error — generated discriminated union type is broken (Record<string, never> intersection)
         body,
       });
-      if (response.error) throw new Error("Failed to split plot");
+      if (response.error) throw new ApiError("Failed to split plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -79,7 +80,7 @@ export function useCreatePlotMutation() {
       additionalNotes?: string;
     }) => {
       const response = await apiClient.POST("/v1/plots", { body });
-      if (response.error) throw new Error("Failed to create plot");
+      if (response.error) throw new ApiError("Failed to create plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -108,7 +109,7 @@ export function useUpdatePlotMutation() {
         params: { path: { plotId } },
         body,
       });
-      if (response.error) throw new Error("Failed to update plot");
+      if (response.error) throw new ApiError("Failed to update plot", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -125,7 +126,7 @@ export function useMergePlotsMutation() {
         // @ts-expect-error — generated discriminated union type is broken (Record<string, never> intersection)
         body,
       });
-      if (response.error) throw new Error("Failed to merge plots");
+      if (response.error) throw new ApiError("Failed to merge plots", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {

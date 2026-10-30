@@ -843,22 +843,20 @@
         "toolbarHasLine": "{{count}} punto/i posizionato/i",
         "toolbarArea": "Clicca sulla mappa per disegnare un'area di taglio",
         "toolbarAreaReady": "{{count}} punto/i — chiudi l'area per applicare",
-        "toolbarExtract": "Clicca su un sotto-poligono per estrarlo",
         "toolLine": "Linea",
         "toolArea": "Area",
-        "toolExtract": "Estrai",
         "closePolygon": "Chiudi",
         "applyCut": "Taglia",
         "confirmSplit": "Salva",
         "piecesCount": "{{count}} parti",
         "splitFailed": "Il taglio non ha intersecato il campo — riprovare",
-        "extractFailed": "Nessun sotto-poligono trovato in quel punto",
         "dialog": {
           "title": "Conferma divisione",
           "strategy": "Strategia",
           "strategyKeepReference": "Mantieni riferimento",
           "strategyDeleteAndMigrate": "Elimina riferimento",
           "strategyKeepReferenceInfo": "Il campo originale viene mantenuto come riferimento. Tutte le registrazioni esistenti (rotazioni colturali, raccolti, ecc.) restano associate al campo di riferimento.",
+          "archiveReference": "Archivia il campo",
           "strategyDeleteAndMigrateInfo": "Il campo originale viene eliminato. Tutte le registrazioni esistenti vengono trasferite al sottocampo selezionato.",
           "originalPlotName": "Nome del campo di riferimento",
           "subPlot": "Sottocampo {{letter}}",
@@ -877,6 +875,7 @@
           "strategyKeepReference": "Mantieni riferimento",
           "strategyDeleteAndMigrate": "Elimina riferimento",
           "strategyKeepReferenceInfo": "I campi originali vengono mantenuti come riferimento. Tutte le registrazioni esistenti restano associate ai campi di riferimento.",
+          "archiveReference": "Archivia il campo",
           "strategyDeleteAndMigrateInfo": "I campi originali vengono eliminati. Tutte le registrazioni esistenti vengono trasferite al nuovo campo.",
           "deleteWarning": "Le rotazioni colturali non vengono trasferite e andranno perse.",
           "name": "Nome del campo unito",
@@ -1124,6 +1123,11 @@
       "emptyState": {
         "title": "Ancora nessun campo",
         "body": "Importali dal sistema cantonale (ad es. Acorda, LAWIS) o disegnali sulla mappa."
+      },
+      "errors": {
+        "selfIntersecting": "I bordi della particella non devono incrociarsi.",
+        "invalid_geometry": "La particella non ha superficie. Disegna almeno tre punti distinti.",
+        "saveFailed": "Non è stato possibile salvare la particella."
       }
     },
     "cropRotations": {
@@ -1789,7 +1793,8 @@
       "satellite": "Satellite",
       "map": "Carta",
       "plots": "Particelle",
-      "meadows": "Aree di pascolo"
+      "meadows": "Aree di pascolo",
+      "parcels": "Particelle catastali"
     }
   },
   "archive": {

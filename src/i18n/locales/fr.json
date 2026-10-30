@@ -843,22 +843,20 @@
         "toolbarHasLine": "{{count}} point(s) placé(s)",
         "toolbarArea": "Cliquer sur la carte pour tracer une zone de coupe",
         "toolbarAreaReady": "{{count}} point(s) — fermer la zone pour appliquer",
-        "toolbarExtract": "Cliquer sur un sous-polygone pour l'extraire",
         "toolLine": "Ligne",
         "toolArea": "Zone",
-        "toolExtract": "Extraire",
         "closePolygon": "Fermer",
         "applyCut": "Couper",
         "confirmSplit": "Enregistrer",
         "piecesCount": "{{count}} parties",
         "splitFailed": "La coupe n'a pas croisé le champ — réessayer",
-        "extractFailed": "Aucun sous-polygone trouvé à cet endroit",
         "dialog": {
           "title": "Confirmer la division",
           "strategy": "Stratégie",
           "strategyKeepReference": "Conserver la référence",
           "strategyDeleteAndMigrate": "Supprimer la référence",
           "strategyKeepReferenceInfo": "Le champ d'origine sera conservé comme référence. Toutes les entrées existantes (rotations, récoltes, etc.) resteront associées au champ de référence.",
+          "archiveReference": "Archiver le champ",
           "strategyDeleteAndMigrateInfo": "Le champ d'origine sera supprimé. Toutes les entrées existantes seront transférées au sous-champ choisi.",
           "originalPlotName": "Nom du champ de référence",
           "subPlot": "Sous-champ {{letter}}",
@@ -877,6 +875,7 @@
           "strategyKeepReference": "Conserver la référence",
           "strategyDeleteAndMigrate": "Supprimer la référence",
           "strategyKeepReferenceInfo": "Les champs d'origine seront conservés comme référence. Toutes les entrées existantes resteront associées aux champs de référence.",
+          "archiveReference": "Archiver le champ",
           "strategyDeleteAndMigrateInfo": "Les champs d'origine seront supprimés. Toutes les entrées existantes seront transférées au nouveau champ.",
           "deleteWarning": "Les rotations de cultures ne seront pas transférées et seront perdues.",
           "name": "Nom du champ fusionné",
@@ -1124,6 +1123,11 @@
       "emptyState": {
         "title": "Pas encore de parcelles",
         "body": "Importe-les depuis le système cantonal (p. ex. Acorda, LAWIS) ou dessine-les sur la carte."
+      },
+      "errors": {
+        "selfIntersecting": "Les bords de la parcelle ne doivent pas se croiser.",
+        "invalid_geometry": "La parcelle n'a pas de surface. Dessine au moins trois points distincts.",
+        "saveFailed": "La parcelle n'a pas pu être enregistrée."
       }
     },
     "cropRotations": {
@@ -1789,7 +1793,8 @@
       "satellite": "Satellite",
       "map": "Carte",
       "plots": "Parcelles",
-      "meadows": "Pâtures"
+      "meadows": "Pâtures",
+      "parcels": "Parcelles cadastrales"
     }
   },
   "archive": {
