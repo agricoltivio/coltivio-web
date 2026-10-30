@@ -817,7 +817,7 @@ function PlotsMap() {
 
     // Cadastral parcel borders above the plots, so the borders inside merged plots stay visible.
     // The WMS draws black lines; on the satellite image they are brightened to white.
-    map.addSource("parcels", { type: "raster", tiles: [PARCELS_WMS_URL], tileSize: 256, minzoom: PARCELS_MIN_ZOOM });
+    map.addSource("parcels", { type: "raster", tiles: [PARCELS_WMS_URL], tileSize: 256, minzoom: PARCELS_MIN_ZOOM, attribution: attribution.cantons });
     map.addLayer({
       id: "parcels-layer",
       type: "raster",
