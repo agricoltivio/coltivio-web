@@ -140,7 +140,8 @@ type MapAction =
   | { type: "ENTER_EDIT"; target: ShapeTarget; targetId: string; rings: number[][][] }
   | { type: "MOVE_EDIT_VERTEX"; ringIndex: number; vertexIndex: number; lngLat: [number, number] }
   | { type: "MOVE_POLYGON_VERTEX"; index: number; lngLat: [number, number] }
-  | { type: "EXIT_MODE" };
+  // selectPlotId: plot to select afterwards, e.g. a new plot when the one the mode started from has no area left
+  | { type: "EXIT_MODE"; selectPlotId?: string };
 
 function mapReducer(state: MapMode, action: MapAction): MapMode {
   switch (action.type) {
@@ -240,7 +241,8 @@ function mapReducer(state: MapMode, action: MapAction): MapMode {
     }
     case "EXIT_MODE": {
       const returnTo =
-        state.type === "split" ? state.plotId
+        action.selectPlotId ? action.selectPlotId
+        : state.type === "split" ? state.plotId
         : state.type === "merge" ? state.primaryPlotId
         : state.type === "edit" && state.target === "plot" ? state.targetId
         : null;
@@ -1788,7 +1790,7 @@ function PlotsMap() {
           selectedPlotIds={mode.selectedPlotIds}
           plots={plots}
           onClose={() => setMergeFormOpen(false)}
-          onSuccess={() => { setMergeFormOpen(false); dispatch({ type: "EXIT_MODE" }); }}
+          onSuccess={(mergedPlotId) => { setMergeFormOpen(false); dispatch({ type: "EXIT_MODE", selectPlotId: mergedPlotId }); }}
         />
       )}
 
@@ -1799,7 +1801,7 @@ function PlotsMap() {
           originalPlot={plots.find((p) => p.id === mode.plotId) ?? null}
           splitPolygons={mode.splitPolygons}
           onClose={() => setSplitFormOpen(false)}
-          onSuccess={() => { setSplitFormOpen(false); dispatch({ type: "EXIT_MODE" }); }}
+          onSuccess={(firstSubPlotId) => { setSplitFormOpen(false); dispatch({ type: "EXIT_MODE", selectPlotId: firstSubPlotId }); }}
         />
       )}
 
@@ -2040,7 +2042,7 @@ function PlotDetailPanel({
 }
 
 function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
-  open: boolean; selectedPlotIds: string[]; plots: Plot[]; onClose: () => void; onSuccess: () => void;
+  open: boolean; selectedPlotIds: string[]; plots: Plot[]; onClose: () => void; onSuccess: (mergedPlotId: string) => void;
 }) {
   const { t } = useTranslation();
   const mergeMutation = useMergePlotsMutation();
@@ -2064,16 +2066,17 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
 
   const [name, setName] = useState(() => selectedPlots.map((p) => p.localId ?? p.name).join(" + "));
   const [strategy, setStrategy] = useState<"keep_reference" | "delete_and_migrate">("keep_reference");
+  const [archiveReference, setArchiveReference] = useState(false);
 
   useEffect(() => {
-    if (open) { setName(selectedPlots.map((p) => p.localId ?? p.name).join(" + ")); setStrategy("keep_reference"); }
+    if (open) { setName(selectedPlots.map((p) => p.localId ?? p.name).join(" + ")); setStrategy("keep_reference"); setArchiveReference(false); }
   }, [open, selectedPlots]);
 
   function handleSubmit() {
     const body: MergePlotsBody = strategy === "delete_and_migrate"
       ? { strategy: "delete_and_migrate", plotIds: selectedPlotIds, name }
-      : { strategy: "keep_reference", plotIds: selectedPlotIds, name };
-    mergeMutation.mutate(body, { onSuccess });
+      : { strategy: "keep_reference", archiveReference, plotIds: selectedPlotIds, name };
+    mergeMutation.mutate(body, { onSuccess: (mergedPlot) => onSuccess(mergedPlot.id) });
   }
 
   return (
@@ -2094,6 +2097,12 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
             <p className="text-xs text-muted-foreground">{strategy === "keep_reference" ? t("fieldCalendar.plots.merge.dialog.strategyKeepReferenceInfo") : t("fieldCalendar.plots.merge.dialog.strategyDeleteAndMigrateInfo")}</p>
             {strategy === "delete_and_migrate" && <p className="text-xs text-destructive">{t("fieldCalendar.plots.merge.dialog.deleteWarning")}</p>}
           </div>
+          {strategy === "keep_reference" && (
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="merge-archive-reference">{t("fieldCalendar.plots.merge.dialog.archiveReference")}</Label>
+              <Switch id="merge-archive-reference" checked={archiveReference} onCheckedChange={setArchiveReference} />
+            </div>
+          )}
           <div><div className="text-xs text-muted-foreground">{t("fieldCalendar.plots.merge.dialog.area")}</div><div className="font-medium">{mergedAreaAres.toFixed(2)} a</div></div>
           <div className="text-xs text-muted-foreground space-y-0.5">{selectedPlots.map((p) => <div key={p.id}>{p.name} — {(p.size / 100).toFixed(2)} a</div>)}</div>
           {mergeMutation.error && (
@@ -2112,7 +2121,7 @@ function MergeFormDialog({ open, selectedPlotIds, plots, onClose, onSuccess }: {
 const SPLIT_LETTERS = ["A", "B", "C", "D", "E"];
 
 function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, onSuccess }: {
-  open: boolean; plotId: string; originalPlot: Plot | null; splitPolygons: GeoJSON.MultiPolygon[]; onClose: () => void; onSuccess: () => void;
+  open: boolean; plotId: string; originalPlot: Plot | null; splitPolygons: GeoJSON.MultiPolygon[]; onClose: () => void; onSuccess: (firstSubPlotId: string | undefined) => void;
 }) {
   const { t } = useTranslation();
   const splitMutation = useSplitPlotMutation();
@@ -2121,6 +2130,7 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
   const [originalPlotName, setOriginalPlotName] = useState(baseName);
   const [subPlotNames, setSubPlotNames] = useState<string[]>(splitPolygons.map((_, i) => `${baseName} ${SPLIT_LETTERS[i] ?? String(i + 1)}`));
   const [migrateToIndex, setMigrateToIndex] = useState(0);
+  const [archiveReference, setArchiveReference] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -2129,6 +2139,7 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
       setSubPlotNames(splitPolygons.map((_, i) => `${base} ${SPLIT_LETTERS[i] ?? String(i + 1)}`));
       setStrategy("keep_reference");
       setMigrateToIndex(0);
+      setArchiveReference(false);
       splitMutation.reset();
     }
   }, [open, originalPlot, splitPolygons]);
@@ -2141,8 +2152,9 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
     }));
     const body: SplitPlotBody = strategy === "delete_and_migrate"
       ? { strategy: "delete_and_migrate", migrateToIndex, subPlots }
-      : { strategy: "keep_reference", originalPlotName, subPlots };
-    splitMutation.mutate({ plotId, body }, { onSuccess });
+      : { strategy: "keep_reference", originalPlotName, archiveReference, subPlots };
+    // The original plot has no area left (or is deleted), so the first sub-plot is selected instead
+    splitMutation.mutate({ plotId, body }, { onSuccess: (subPlots) => onSuccess(subPlots.result[0]?.id) });
   }
 
   return (
@@ -2162,7 +2174,13 @@ function SplitFormDialog({ open, plotId, originalPlot, splitPolygons, onClose, o
             <p className="text-xs text-muted-foreground">{strategy === "keep_reference" ? t("fieldCalendar.plots.split.dialog.strategyKeepReferenceInfo") : t("fieldCalendar.plots.split.dialog.strategyDeleteAndMigrateInfo")}</p>
           </div>
           {strategy === "keep_reference" && (
-            <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.split.dialog.originalPlotName")}</Label><Input value={originalPlotName} onChange={(e) => setOriginalPlotName(e.target.value)} /></div>
+            <>
+              <div className="space-y-1.5"><Label>{t("fieldCalendar.plots.split.dialog.originalPlotName")}</Label><Input value={originalPlotName} onChange={(e) => setOriginalPlotName(e.target.value)} /></div>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="split-archive-reference">{t("fieldCalendar.plots.split.dialog.archiveReference")}</Label>
+                <Switch id="split-archive-reference" checked={archiveReference} onCheckedChange={setArchiveReference} />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             {splitPolygons.map((polygon, i) => {

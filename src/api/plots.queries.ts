@@ -11,11 +11,11 @@ type SubPlotGeometry = { type: "MultiPolygon"; coordinates: number[][][][]; };
 type SubPlot = { geometry: SubPlotGeometry; name: string; size: number };
 
 export type SplitPlotBody =
-  | { strategy: "keep_reference"; originalPlotName?: string; subPlots: SubPlot[] }
+  | { strategy: "keep_reference"; originalPlotName?: string; archiveReference?: boolean; subPlots: SubPlot[] }
   | { strategy: "delete_and_migrate"; migrateToIndex: number; subPlots: SubPlot[] };
 
 export type MergePlotsBody =
-  | { strategy: "keep_reference"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string }
+  | { strategy: "keep_reference"; archiveReference?: boolean; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string }
   | { strategy: "delete_and_migrate"; plotIds: string[]; name: string; localId?: string; usage?: number; cuttingDate?: string | null; additionalNotes?: string };
 
 // Archived plots are left out unless includeArchived is set
