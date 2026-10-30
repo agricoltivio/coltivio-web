@@ -1085,7 +1085,12 @@ function PlotsMap() {
 
     const plot = plots.find((p) => p.id === mode.targetId);
     if (!plot) return;
-    const newGeometry = withSavedHoles(mode.rings.map(closeRing), plot.geometry);
+    const withHoles = withSavedHoles(mode.rings.map(closeRing), plot.geometry);
+    // Parts without an outline (stored degenerate) are dropped instead of being sent as invalid GeoJSON
+    const newGeometry: GeoJSON.MultiPolygon = {
+      type: "MultiPolygon",
+      coordinates: withHoles.coordinates.filter((part) => part[0].length >= 4),
+    };
     if (isSelfIntersecting(newGeometry)) {
       setToolError(t("fieldCalendar.plots.errors.selfIntersecting"));
       return;
