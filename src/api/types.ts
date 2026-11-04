@@ -357,3 +357,21 @@ export const PARASITE_TYPES: ParasiteType[] = [
   "lungworm",
   "other",
 ];
+
+export type Seed =
+  components["schemas"]["GetV1SeedsPositiveResponse"]["data"]["result"][number];
+
+export type SeedQuantityKind = Seed["quantityKind"];
+
+export const SEED_QUANTITY_KINDS: SeedQuantityKind[] = ["weight", "count"];
+
+export type Sowing =
+  components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
+
+export type SowingUnit = Sowing["unit"];
+
+export type SowingUnitInfo =
+  components["schemas"]["GetV1SowingsUnitsPositiveResponse"]["data"]["result"][number];
+
+export type SowingPreset =
+  components["schemas"]["GetV1SowingsPresetsPositiveResponse"]["data"]["result"][number];
