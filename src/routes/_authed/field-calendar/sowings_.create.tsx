@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { computeCounterpart, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
+import { computeCounterpart, formatArea, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
 
 const ALL_STEPS = ["crop", "config", "plots", "divide", "summary"] as const;
 type WizardStep = (typeof ALL_STEPS)[number];
@@ -490,6 +490,10 @@ function CreateSowing() {
               <SummaryRow
                 label={t("fieldCalendar.sowings.date")}
                 value={new Date(watchedDate).toLocaleDateString()}
+              />
+              <SummaryRow
+                label={t("fieldCalendar.tillages.size")}
+                value={formatArea(selectedSize)}
               />
               <SummaryRow
                 label={t("fieldCalendar.sowings.amount")}
