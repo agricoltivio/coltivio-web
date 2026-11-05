@@ -1,0 +1,17 @@
+# Supply-chain policy, keep identical across Coltivio repos.
+minimumReleaseAge: 10080 # 7 days
+minimumReleaseAgeStrict: true
+# Urgent security fixes only, as 'pkg@x.y.z' with a removal date.
+minimumReleaseAgeExclude: []
+blockExoticSubdeps: true
+strictDepBuilds: true
+trustPolicy: no-downgrade
+# Older releases often predate provenance; the check matters for fresh publishes.
+trustPolicyIgnoreAfter: 43200 # 30 days
+
+# Dependency install scripts. Unlisted packages fail the install; only allow what breaks without.
+allowBuilds:
+  es5-ext: false
+  esbuild: false
+  sharp: false
+  workerd: false
