@@ -45,7 +45,9 @@
     "title": "Titre",
     "date": "Date",
     "done": "Terminé",
-    "wizardStepOf": "Étape {{current}} sur {{total}}"
+    "wizardStepOf": "Étape {{current}} sur {{total}}",
+    "saveFailed": "Cela n'a pas fonctionné. Veuillez réessayer.",
+    "required": "Obligatoire"
   },
   "nav": {
     "groups": {
@@ -1190,7 +1192,6 @@
       "unit": "Unité",
       "total": "Total",
       "rate": "Densité de semis",
-      "pieces": "pce",
       "computedTotal": "Correspond à {{amount}} {{unit}} sur {{area}}",
       "computedRate": "Correspond à {{amount}} {{unit}} sur {{area}}",
       "deleteConfirm": "Voulez-vous vraiment supprimer ce semis ?",
@@ -1216,7 +1217,8 @@
         "plants": "plants"
       },
       "seedOptional": "Semence (optionnel)",
-      "cropFromSeed": "La culture est reprise de la semence."
+      "cropFromSeed": "La culture est reprise de la semence.",
+      "amountInvalid": "La quantité doit être supérieure à 0"
     },
     "tillages": {
       "title": "Travail du sol",
@@ -1418,7 +1420,7 @@
     "createSeed": "Créer une semence",
     "editSeed": "Modifier la semence",
     "seedDetails": "Détails de la semence",
-    "deleteConfirm": "Voulez-vous vraiment supprimer cette semence ?",
+    "deleteConfirm": "Voulez-vous vraiment supprimer cette semence ? Les modèles avec cette semence seront également supprimés.",
     "name": "Nom",
     "crop": "Culture",
     "quantityKind": "Mesuré par",
@@ -1437,7 +1439,8 @@
     "description": "Description",
     "selectCrop": "Choisir une culture",
     "descriptionOptional": "Description (optionnel)",
-    "defaultValuesOptional": "Valeurs par défaut (optionnel)"
+    "defaultValuesOptional": "Valeurs par défaut (optionnel)",
+    "deleteFailed": "La semence n'a pas pu être supprimée. Elle est peut-être encore utilisée."
   },
   "wiki": {
     "title": "Wiki",

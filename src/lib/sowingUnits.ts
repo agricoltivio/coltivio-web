@@ -73,14 +73,17 @@ export function computeCounterpart(
   return { amount: round2(total), unit: counterpartUnit, area };
 }
 
-/** Base amounts from the API are grams (weight) or pieces (count). */
+/**
+ * Base amounts from the API are grams (weight) or pieces (seeds / plants); the
+ * unit info says which, so seeds and plants keep their own label.
+ */
 export function formatBaseAmount(
   totalBaseAmount: number,
-  quantityKind: SeedQuantityKind,
+  unitInfo: SowingUnitInfo,
   t: TFunction,
 ): string {
-  if (quantityKind === "count") {
-    return `${Math.round(totalBaseAmount).toLocaleString()} ${t("fieldCalendar.sowings.pieces")}`;
+  if (unitInfo.countUnit) {
+    return `${Math.round(totalBaseAmount).toLocaleString()} ${t(`fieldCalendar.sowings.units.${unitInfo.countUnit}`)}`;
   }
   if (totalBaseAmount >= 1000) {
     return `${round2(totalBaseAmount / 1000).toLocaleString()} kg`;

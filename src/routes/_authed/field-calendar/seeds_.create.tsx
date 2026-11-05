@@ -49,6 +49,9 @@ function CreateSeedPage() {
       showBackButton
       backTo={() => navigate({ to: "/field-calendar/seeds" })}
     >
+      {createMutation.isError && (
+        <p className="mb-4 text-sm text-destructive">{t("common.saveFailed")}</p>
+      )}
       <SeedForm
         defaultValues={{
           name: "",

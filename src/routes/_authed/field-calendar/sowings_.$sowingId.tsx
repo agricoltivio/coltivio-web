@@ -69,7 +69,15 @@ function SowingDetail() {
   const seeds = useQuery(seedsQueryOptions()).data?.result ?? [];
   const units = useQuery(sowingUnitsQueryOptions()).data ?? [];
 
-  const { register, handleSubmit, setValue, watch, reset, getValues } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
       date: "",
       cropId: "",
@@ -147,7 +155,7 @@ function SowingDetail() {
   const availableUnits = unitsForQuantityKind(units, selectedSeed?.quantityKind);
   const perArea = isPerAreaUnit(units, watchedUnit);
   const counterpart = computeCounterpart(units, parseFloat(watchedAmount) || 0, watchedUnit, sowing.size);
-  const storedQuantityKind = units.find((unitInfo) => unitInfo.unit === sowing.unit)?.quantityKind;
+  const storedUnitInfo = units.find((unitInfo) => unitInfo.unit === sowing.unit);
 
   function selectSeed(seedId: string) {
     setValue("seedId", seedId);
@@ -155,10 +163,13 @@ function SowingDetail() {
     if (!seed) return;
     // the crop always comes from the seed
     setValue("cropId", seed.cropId);
+    // A seed of another kind brings its own default unit and amount, the old
+    // number would mean something else in the new unit
     const fittingUnits = unitsForQuantityKind(units, seed.quantityKind);
-    if (!fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit")) && fittingUnits[0]) {
-      setValue("unit", fittingUnits[0].unit);
-    }
+    if (fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit"))) return;
+    const nextUnit = seed.defaultUnit ?? fittingUnits[0]?.unit;
+    if (nextUnit) setValue("unit", nextUnit);
+    setValue("amount", seed.defaultAmount?.toString() ?? "");
   }
 
   return (
@@ -209,11 +220,11 @@ function SowingDetail() {
             <span className="text-muted-foreground">{t("fieldCalendar.tillages.size")}</span>
             <span className="font-medium">{(sowing.size / 100).toFixed(2)} a</span>
           </div>
-          {storedQuantityKind && (
+          {storedUnitInfo && (
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">{t("fieldCalendar.sowings.total")}</span>
               <span className="font-medium">
-                {formatBaseAmount(sowing.totalBaseAmount, storedQuantityKind, t)}
+                {formatBaseAmount(sowing.totalBaseAmount, storedUnitInfo, t)}
               </span>
             </div>
           )}
@@ -284,8 +295,15 @@ function SowingDetail() {
                 type="number"
                 min={0}
                 step="any"
-                {...register("amount", { required: true })}
+                {...register("amount", {
+                  required: true,
+                  // "." or "0" would be saved as an empty sowing
+                  validate: (value) => Number(value) > 0,
+                })}
               />
+              {errors.amount && (
+                <p className="text-sm text-destructive">{t("fieldCalendar.sowings.amountInvalid")}</p>
+              )}
             </div>
             <div className="space-y-1">
               <Label>{t("fieldCalendar.sowings.unit")}</Label>
@@ -329,6 +347,9 @@ function SowingDetail() {
           </div>
         </fieldset>
 
+        {(updateMutation.isError || deleteMutation.isError) && (
+          <p className="text-sm text-destructive">{t("common.saveFailed")}</p>
+        )}
         {canWrite && (
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={updateMutation.isPending}>

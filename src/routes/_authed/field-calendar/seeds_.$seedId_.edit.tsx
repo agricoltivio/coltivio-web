@@ -58,6 +58,9 @@ function EditSeedPage() {
         navigate({ to: "/field-calendar/seeds/$seedId", params: { seedId } })
       }
     >
+      {updateMutation.isError && (
+        <p className="mb-4 text-sm text-destructive">{t("common.saveFailed")}</p>
+      )}
       <SeedForm
         defaultValues={{
           name: seed.name,

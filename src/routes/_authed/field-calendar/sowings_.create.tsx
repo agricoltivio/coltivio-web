@@ -139,6 +139,8 @@ function CreateSowing() {
   const selectedSize = selectedPlots.reduce((sum, plot) => sum + plot.size, 0);
 
   const amountNumber = parseFloat(watchedAmount) || 0;
+  // "." or "0" would be saved as an empty sowing
+  const amountValid = Number.isFinite(Number(watchedAmount)) && Number(watchedAmount) > 0;
   const perArea = isPerAreaUnit(units, watchedUnit);
   const counterpart = computeCounterpart(units, amountNumber, watchedUnit, selectedSize);
   const unitLabel = t(`fieldCalendar.sowings.units.${watchedUnit}`);
@@ -155,16 +157,19 @@ function CreateSowing() {
     // the crop always comes from the seed
     setValue("cropId", seed.cropId);
     setSelectedPresetId(null);
-    // the seed's default unit (and amount, if set) is preselected
-    if (seed.defaultUnit) {
-      setValue("unit", seed.defaultUnit);
-      if (seed.defaultAmount != null) setValue("amount", seed.defaultAmount.toString());
-      return;
-    }
-    // keep the unit if it fits the seed, otherwise fall back to the first fitting one
+    // The seed's default unit is preselected, otherwise the current unit stays if it
+    // fits the seed. When the unit changes kind, the old amount would mean something
+    // else, so it's replaced by the seed's default amount or cleared.
+    const previousUnit = getValues("unit");
     const fittingUnits = unitsForQuantityKind(units, seed.quantityKind);
-    if (!fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit")) && fittingUnits[0]) {
-      setValue("unit", fittingUnits[0].unit);
+    const keepsUnit = fittingUnits.some((unitInfo) => unitInfo.unit === previousUnit);
+    const nextUnit = seed.defaultUnit ?? (keepsUnit ? previousUnit : fittingUnits[0]?.unit);
+    if (!nextUnit) return;
+    setValue("unit", nextUnit);
+    if (seed.defaultAmount != null) {
+      setValue("amount", seed.defaultAmount.toString());
+    } else if (!keepsUnit) {
+      setValue("amount", "");
     }
   }
 
@@ -259,7 +264,7 @@ function CreateSowing() {
       case "plots":
         return watchedPlotIds.length >= 1;
       case "config":
-        return watchedAmount.trim() !== "" && amountNumber >= 0;
+        return watchedAmount.trim() !== "" && amountValid;
       case "divide":
         return !divideInvalid;
       case "summary":
@@ -433,6 +438,9 @@ function CreateSowing() {
                   </Select>
                 </div>
               </div>
+              {watchedAmount.trim() !== "" && !amountValid && (
+                <p className="text-sm text-destructive">{t("fieldCalendar.sowings.amountInvalid")}</p>
+              )}
               {counterpart && amountNumber > 0 && (
                 <p className="text-sm text-muted-foreground">
                   {t(
@@ -537,6 +545,11 @@ function CreateSowing() {
           </div>
         )}
 
+        {(createMutation.isError ||
+          createPresetMutation.isError ||
+          deletePresetMutation.isError) && (
+          <p className="text-sm text-destructive">{t("common.saveFailed")}</p>
+        )}
         <WizardNav
           isFirst={stepIndex === 0}
           isLast={activeStep === "summary"}

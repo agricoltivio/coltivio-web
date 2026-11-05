@@ -72,7 +72,8 @@ function SeedDetailPage() {
   }
 
   const seed = seedQuery.data;
-  const canDelete = !inUseQuery.data?.inUse;
+  // only once the in-use check has answered, the API refuses seeds in use
+  const canDelete = inUseQuery.data?.inUse === false;
 
   return (
     <PageContent
@@ -115,6 +116,9 @@ function SeedDetailPage() {
         </div>
       )}
 
+      {deleteMutation.isError && (
+        <p className="mb-4 text-sm text-destructive">{t("seeds.deleteFailed")}</p>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>{t("seeds.seedDetails")}</CardTitle>

@@ -11,7 +11,6 @@ import {
   sowingUnitsQueryOptions,
 } from "@/api/sowings.queries";
 import type { components } from "@/api/schema";
-import type { SeedQuantityKind } from "@/api/types";
 import { MonthlyComparisonChart, type YearData } from "@/components/charts/MonthlyStackedChart";
 import {
   assignYearColors,
@@ -33,12 +32,13 @@ type AnySowing = GlobalSowing | PlotSowing;
 type MonthlySowing =
   components["schemas"]["GetV1SowingsSummariesPositiveResponse"]["data"]["monthlySowings"][number];
 
-// One chart per seed (or crop when sown without a seed) and quantity kind,
-// weight and count can never share an axis
+// One chart per seed (or crop when sown without a seed) and what is counted:
+// weight, seeds and plants can never share an axis
 type SowingSeries = {
   key: string;
   title: string;
-  quantityKind: SeedQuantityKind;
+  // seeds or plants, null for weight
+  countUnit: "seeds" | "plants" | null;
   // year -> 12 monthly values, kg for weight, pieces for count
   monthly: Record<number, number[]>;
 };
@@ -118,15 +118,16 @@ function Sowings() {
     for (const summary of summaries) {
       for (const sownSeed of summary.sownSeeds) {
         if (!visibleCrops.includes(sownSeed.cropName)) continue;
-        const key = `${sownSeed.cropId}-${sownSeed.seedId ?? "none"}-${sownSeed.quantityKind}`;
+        const key = `${sownSeed.cropId}-${sownSeed.seedId ?? "none"}-${sownSeed.countUnit ?? "weight"}`;
         let entry = seriesByKey.get(key);
         if (!entry) {
           entry = {
             key,
-            title: sownSeed.seedName
-              ? `${sownSeed.cropName} – ${sownSeed.seedName}`
-              : sownSeed.cropName,
-            quantityKind: sownSeed.quantityKind,
+            // the same seed can be counted as seeds and as plants, both get a chart
+            title:
+              (sownSeed.seedName ? `${sownSeed.cropName} – ${sownSeed.seedName}` : sownSeed.cropName) +
+              (sownSeed.countUnit ? ` (${t(`fieldCalendar.sowings.units.${sownSeed.countUnit}`)})` : ""),
+            countUnit: sownSeed.countUnit,
             monthly: {},
           };
           seriesByKey.set(key, entry);
@@ -136,13 +137,11 @@ function Sowings() {
         }
         // base amounts are grams for weight, the chart works in kg
         entry.monthly[summary.year][summary.month] +=
-          sownSeed.quantityKind === "weight"
-            ? sownSeed.totalBaseAmount / 1000
-            : sownSeed.totalBaseAmount;
+          sownSeed.countUnit ? sownSeed.totalBaseAmount : sownSeed.totalBaseAmount / 1000;
       }
     }
     return [...seriesByKey.values()].sort((a, b) => a.title.localeCompare(b.title));
-  }, [summaries, visibleCrops]);
+  }, [summaries, visibleCrops, t]);
 
   const tableData = sowings.filter((sowing) => visibleCrops.includes(sowing.crop.name));
 
@@ -188,8 +187,8 @@ function Sowings() {
         accessorFn: (row) => row.totalBaseAmount,
         header: t("fieldCalendar.sowings.total"),
         cell: ({ row }) => {
-          const quantityKind = units.find((unitInfo) => unitInfo.unit === row.original.unit)?.quantityKind;
-          return quantityKind ? formatBaseAmount(row.original.totalBaseAmount, quantityKind, t) : "—";
+          const unitInfo = units.find((info) => info.unit === row.original.unit);
+          return unitInfo ? formatBaseAmount(row.original.totalBaseAmount, unitInfo, t) : "—";
         },
       },
       {
@@ -317,8 +316,8 @@ function SowingChartPage({
       0,
     );
     const { divisor, label } =
-      series.quantityKind === "count"
-        ? { divisor: 1, label: t("fieldCalendar.sowings.pieces") }
+      series.countUnit
+        ? { divisor: 1, label: t(`fieldCalendar.sowings.units.${series.countUnit}`) }
         : pickDisplayUnit(maxTotal, "kg");
     const data: YearData[] = activeYears.map((year) => {
       const scaled = (series.monthly[year] ?? Array.from({ length: 12 }, () => 0)).map(

@@ -45,7 +45,9 @@
     "title": "Titolo",
     "date": "Data",
     "done": "Fatto",
-    "wizardStepOf": "Passo {{current}} di {{total}}"
+    "wizardStepOf": "Passo {{current}} di {{total}}",
+    "saveFailed": "Non ha funzionato. Riprova.",
+    "required": "Obbligatorio"
   },
   "nav": {
     "groups": {
@@ -1190,7 +1192,6 @@
       "unit": "Unità",
       "total": "Totale",
       "rate": "Densità di semina",
-      "pieces": "pz.",
       "computedTotal": "Corrisponde a {{amount}} {{unit}} su {{area}}",
       "computedRate": "Corrisponde a {{amount}} {{unit}} su {{area}}",
       "deleteConfirm": "Vuoi davvero eliminare questa semina?",
@@ -1216,7 +1217,8 @@
         "plants": "piante"
       },
       "seedOptional": "Semente (opzionale)",
-      "cropFromSeed": "La coltura è presa dalla semente."
+      "cropFromSeed": "La coltura è presa dalla semente.",
+      "amountInvalid": "La quantità deve essere maggiore di 0"
     },
     "tillages": {
       "title": "Lavorazione del suolo",
@@ -1418,7 +1420,7 @@
     "createSeed": "Crea semente",
     "editSeed": "Modifica semente",
     "seedDetails": "Dettagli semente",
-    "deleteConfirm": "Sei sicuro di voler eliminare questa semente?",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa semente? Anche i modelli con questa semente verranno eliminati.",
     "name": "Nome",
     "crop": "Coltura",
     "quantityKind": "Misurato per",
@@ -1437,7 +1439,8 @@
     "description": "Descrizione",
     "selectCrop": "Seleziona coltura",
     "descriptionOptional": "Descrizione (opzionale)",
-    "defaultValuesOptional": "Valori predefiniti (opzionale)"
+    "defaultValuesOptional": "Valori predefiniti (opzionale)",
+    "deleteFailed": "La semente non può essere eliminata. Potrebbe essere ancora in uso."
   },
   "wiki": {
     "title": "Wiki",

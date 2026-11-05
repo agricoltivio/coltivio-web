@@ -5304,6 +5304,8 @@ export interface components {
                         seedName: string | null;
                         /** @enum {string} */
                         quantityKind: "weight" | "count";
+                        /** @enum {string|null} */
+                        countUnit: "seeds" | "plants" | null;
                         totalBaseAmount: number;
                         totalSize: number;
                     }[];
@@ -8679,6 +8681,8 @@ export interface components {
                         seedName: string | null;
                         /** @enum {string} */
                         quantityKind: "weight" | "count";
+                        /** @enum {string|null} */
+                        countUnit: "seeds" | "plants" | null;
                         totalBaseAmount: number;
                         totalSize: number;
                     }[];
@@ -8698,6 +8702,8 @@ export interface components {
                     unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
                     /** @enum {string} */
                     quantityKind: "weight" | "count";
+                    /** @enum {string|null} */
+                    countUnit: "seeds" | "plants" | null;
                     perArea: boolean;
                 }[];
                 count: number;

@@ -45,7 +45,9 @@
     "title": "Titel",
     "date": "Datum",
     "done": "Fertig",
-    "wizardStepOf": "Schritt {{current}} von {{total}}"
+    "wizardStepOf": "Schritt {{current}} von {{total}}",
+    "saveFailed": "Das hat nicht geklappt. Bitte versuchen Sie es erneut.",
+    "required": "Pflichtfeld"
   },
   "nav": {
     "groups": {
@@ -1190,7 +1192,6 @@
       "unit": "Einheit",
       "total": "Total",
       "rate": "Saatstärke",
-      "pieces": "Stk.",
       "computedTotal": "Entspricht {{amount}} {{unit}} auf {{area}}",
       "computedRate": "Entspricht {{amount}} {{unit}} auf {{area}}",
       "deleteConfirm": "Möchten Sie diese Saat wirklich löschen?",
@@ -1216,7 +1217,8 @@
         "plants": "Pflanzen"
       },
       "seedOptional": "Saatgut (optional)",
-      "cropFromSeed": "Die Kultur ergibt sich aus dem Saatgut."
+      "cropFromSeed": "Die Kultur ergibt sich aus dem Saatgut.",
+      "amountInvalid": "Menge muss grösser als 0 sein"
     },
     "tillages": {
       "title": "Bodenbearbeitung",
@@ -1418,7 +1420,7 @@
     "createSeed": "Saatgut erstellen",
     "editSeed": "Saatgut bearbeiten",
     "seedDetails": "Saatgutdetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Saatgut löschen möchten?",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Saatgut löschen möchten? Die Vorlagen mit diesem Saatgut werden ebenfalls gelöscht.",
     "name": "Name",
     "crop": "Kultur",
     "quantityKind": "Mengenangabe",
@@ -1437,7 +1439,8 @@
     "description": "Beschreibung",
     "selectCrop": "Kultur auswählen",
     "descriptionOptional": "Beschreibung (optional)",
-    "defaultValuesOptional": "Standardwerte (optional)"
+    "defaultValuesOptional": "Standardwerte (optional)",
+    "deleteFailed": "Das Saatgut konnte nicht gelöscht werden. Es wird möglicherweise noch verwendet."
   },
   "wiki": {
     "title": "Wiki",

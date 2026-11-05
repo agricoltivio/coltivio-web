@@ -54,7 +54,13 @@ export function SeedForm({
   const unitsQuery = useQuery(sowingUnitsQueryOptions());
   const crops = cropsQuery.data?.result ?? [];
 
-  const { register, handleSubmit, setValue, watch } = useForm<SeedFormData>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<SeedFormData>({
     defaultValues,
   });
   // the crop select is controlled, register it only for the required rule
@@ -75,6 +81,7 @@ export function SeedForm({
       <div className="space-y-1">
         <Label htmlFor="name">{t("seeds.name")}</Label>
         <Input id="name" {...register("name", { required: true })} />
+        {errors.name && <p className="text-sm text-destructive">{t("common.required")}</p>}
       </div>
 
       <div className="space-y-1">
@@ -98,6 +105,7 @@ export function SeedForm({
                 ))}
               </SelectContent>
             </Select>
+            {errors.cropId && <p className="text-sm text-destructive">{t("common.required")}</p>}
           </div>
           <div className="space-y-1">
             <Label>{t("seeds.quantityKind")}</Label>
