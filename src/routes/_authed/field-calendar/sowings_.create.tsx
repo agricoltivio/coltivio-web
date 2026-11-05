@@ -130,8 +130,15 @@ function CreateSowing() {
 
   const selectedCrop = crops.find((crop) => crop.id === watchedCropId);
   const selectedSeed = seeds.find((seed) => seed.id === watchedSeedId);
-  const presetsForCrop = presets.filter((preset) => preset.cropId === watchedCropId);
   const availableUnits = unitsForQuantityKind(units, selectedSeed?.quantityKind);
+  // Only presets of this crop whose seed (if any) is the chosen one and whose unit
+  // fits the chosen seed can be applied without changing the seed (same as the app)
+  const presetsForCrop = presets.filter(
+    (preset) =>
+      preset.cropId === watchedCropId &&
+      (preset.seedId === null || preset.seedId === watchedSeedId) &&
+      availableUnits.some((unitInfo) => unitInfo.unit === preset.unit),
+  );
 
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((plot) => plot.id === plotId))
@@ -186,13 +193,16 @@ function CreateSowing() {
           seedId: data.seedId || undefined,
           unit: data.unit,
           additionalNotes: data.additionalNotes || undefined,
-          plots: selectedPlots.map((plot) => ({
-            plotId: plot.id,
-            // per-area rates apply to every plot, totals are split across plots
-            amount: needsDivide ? parseFloat(amountsByPlot[plot.id] ?? "") || 0 : amount,
-            geometry: plot.geometry,
-            size: plot.size,
-          })),
+          plots: selectedPlots
+            .map((plot) => ({
+              plotId: plot.id,
+              // per-area rates apply to every plot, totals are split across plots
+              amount: needsDivide ? parseFloat(amountsByPlot[plot.id] ?? "") || 0 : amount,
+              geometry: plot.geometry,
+              size: plot.size,
+            }))
+            // a plot that got nothing in the split isn't sown
+            .filter((plot) => plot.amount > 0),
         },
       });
       if (response.error) throw new Error("Failed to create sowing");
@@ -466,7 +476,7 @@ function CreateSowing() {
                 variant="outline"
                 size="sm"
                 onClick={() => setSavePresetOpen(true)}
-                disabled={!watchedCropId || watchedAmount.trim() === ""}
+                disabled={!watchedCropId || !amountValid}
               >
                 {t("fieldCalendar.presets.saveAs")}
               </Button>
