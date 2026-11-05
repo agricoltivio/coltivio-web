@@ -5,12 +5,13 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
   plotSowingsQueryOptions,
+  plotSowingSummariesQueryOptions,
   sowingsQueryOptions,
   sowingSummariesQueryOptions,
   sowingUnitsQueryOptions,
-  sowingYearsQueryOptions,
 } from "@/api/sowings.queries";
 import type { components } from "@/api/schema";
+import type { SeedQuantityKind } from "@/api/types";
 import { MonthlyComparisonChart, type YearData } from "@/components/charts/MonthlyStackedChart";
 import {
   assignYearColors,
@@ -20,9 +21,8 @@ import {
 } from "@/components/charts/chartUtils";
 import { DataTable } from "@/components/DataTable";
 import { PageContent } from "@/components/PageContent";
+import { ChartCarouselCard } from "@/components/parasites/ChartCarouselCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { formatBaseAmount } from "@/lib/sowingUnits";
@@ -30,6 +30,18 @@ import { formatBaseAmount } from "@/lib/sowingUnits";
 type GlobalSowing = components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
 type PlotSowing = components["schemas"]["GetV1PlotsByIdPlotIdSowingsPositiveResponse"]["data"]["result"][number];
 type AnySowing = GlobalSowing | PlotSowing;
+type MonthlySowing =
+  components["schemas"]["GetV1SowingsSummariesPositiveResponse"]["data"]["monthlySowings"][number];
+
+// One chart per seed (or crop when sown without a seed) and quantity kind,
+// weight and count can never share an axis
+type SowingSeries = {
+  key: string;
+  title: string;
+  quantityKind: SeedQuantityKind;
+  // year -> 12 monthly values, kg for weight, pieces for count
+  monthly: Record<number, number[]>;
+};
 
 const searchSchema = z.object({
   plotId: z.string().optional(),
@@ -43,178 +55,96 @@ export const Route = createFileRoute("/_authed/field-calendar/sowings")({
     const plotId = new URLSearchParams(location.search).get("plotId");
     if (plotId) {
       queryClient.ensureQueryData(plotSowingsQueryOptions(plotId));
+      queryClient.ensureQueryData(plotSowingSummariesQueryOptions(plotId));
     } else {
       queryClient.ensureQueryData(sowingsQueryOptions());
       queryClient.ensureQueryData(sowingSummariesQueryOptions());
-      queryClient.ensureQueryData(sowingYearsQueryOptions());
     }
   },
   component: Sowings,
 });
-
-function SowingChart() {
-  const { t, i18n } = useTranslation();
-  const currentYear = new Date().getFullYear();
-  const monthLabels = getMonthLabels(i18n.language);
-
-  const summariesQuery = useQuery(sowingSummariesQueryOptions());
-  const yearsQuery = useQuery(sowingYearsQueryOptions());
-
-  const availableYears = useMemo(
-    () => (yearsQuery.data ?? []).map(Number).sort((a, b) => b - a),
-    [yearsQuery.data],
-  );
-
-  const [selectedYears, setSelectedYears] = useState<number[]>([currentYear, currentYear - 1]);
-  const activeYears = selectedYears.filter((y) => availableYears.includes(y));
-
-  const monthly = summariesQuery.data?.monthlySowings ?? [];
-
-  // One chart series per seed (or crop when sown without a seed) and quantity kind,
-  // weight and count can never be shown on the same axis
-  const seriesOptions = useMemo(() => {
-    const options = new Map<string, { label: string; quantityKind: "weight" | "count" }>();
-    for (const month of monthly) {
-      for (const sownSeed of month.sownSeeds) {
-        const key = `${sownSeed.cropId}-${sownSeed.seedId ?? "none"}-${sownSeed.quantityKind}`;
-        if (!options.has(key)) {
-          const name = sownSeed.seedName
-            ? `${sownSeed.cropName} – ${sownSeed.seedName}`
-            : sownSeed.cropName;
-          options.set(key, { label: name, quantityKind: sownSeed.quantityKind });
-        }
-      }
-    }
-    return Array.from(options.entries())
-      .map(([key, value]) => ({ key, ...value }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [monthly]);
-
-  const defaultKey = useMemo(() => {
-    const sorted = [...monthly].sort((a, b) => b.year - a.year || b.month - a.month);
-    const latest = sorted[0]?.sownSeeds[0];
-    return latest
-      ? `${latest.cropId}-${latest.seedId ?? "none"}-${latest.quantityKind}`
-      : (seriesOptions[0]?.key ?? "");
-  }, [monthly, seriesOptions]);
-
-  const [selectedKey, setSelectedKey] = useState<string>("");
-  const activeKey = selectedKey || defaultKey;
-  const activeSeries = seriesOptions.find((option) => option.key === activeKey);
-
-  const { yearData, unit } = useMemo(() => {
-    const filtered = monthly.filter((m) => activeYears.includes(m.year));
-    const yearColors = assignYearColors(activeYears);
-
-    const perYearData = activeYears.map((year) => {
-      const monthlyData = Array.from({ length: 12 }, (_, monthIndex) => {
-        const entry = filtered.find((m) => m.year === year && m.month === monthIndex);
-        const sownSeed = entry?.sownSeeds.find(
-          (s) => `${s.cropId}-${s.seedId ?? "none"}-${s.quantityKind}` === activeKey,
-        );
-        if (!sownSeed) return 0;
-        // weight base amounts are grams, chart works in kg
-        return sownSeed.quantityKind === "weight"
-          ? sownSeed.totalBaseAmount / 1000
-          : sownSeed.totalBaseAmount;
-      });
-      return { year, color: yearColors[year], monthlyData };
-    });
-
-    const maxCumulative = Math.max(
-      ...perYearData.map((s) => s.monthlyData.reduce((a, b) => a + b, 0)),
-      0,
-    );
-    const { divisor, label } =
-      activeSeries?.quantityKind === "count"
-        ? { divisor: 1, label: t("fieldCalendar.sowings.pieces") }
-        : pickDisplayUnit(maxCumulative, "kg");
-
-    const scaledYearData: YearData[] = perYearData.map((s) => {
-      const scaled = s.monthlyData.map((v) => v / divisor);
-      return { year: s.year, color: s.color, monthlyData: scaled, cumulativeData: computeCumulative(scaled) };
-    });
-
-    return { yearData: scaledYearData, unit: label };
-  }, [monthly, activeYears, activeKey, activeSeries, t]);
-
-  function toggleYear(year: number) {
-    setSelectedYears((prev) =>
-      prev.includes(year)
-        ? prev.length > 1 ? prev.filter((y) => y !== year) : prev
-        : [...prev, year],
-    );
-  }
-
-  if (!summariesQuery.data && summariesQuery.isLoading) return null;
-
-  if (seriesOptions.length === 0) {
-    return (
-      <Card className="mb-6">
-        <CardContent className="pt-4">
-          <p className="text-sm text-muted-foreground text-center py-8">
-            {t("fieldCalendar.chart.noData")}
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="mb-6">
-      <CardContent className="pt-4">
-        <div className="flex items-center justify-between gap-2 mb-4">
-          <div className="flex gap-1 flex-wrap">
-            {availableYears.map((year) => (
-              <button
-                key={year}
-                onClick={() => toggleYear(year)}
-                className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
-                  activeYears.includes(year)
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-muted-foreground border-border"
-                }`}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
-          <Select value={activeKey} onValueChange={setSelectedKey}>
-            <SelectTrigger className="w-56 border-primary text-primary">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {seriesOptions.map((option) => (
-                <SelectItem key={option.key} value={option.key}>{option.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <MonthlyComparisonChart yearData={yearData} monthLabels={monthLabels} unit={unit} />
-      </CardContent>
-    </Card>
-  );
-}
 
 function Sowings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { canWrite } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
+  const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
 
   const unitsQuery = useQuery(sowingUnitsQueryOptions());
-  const globalQuery = useQuery({
-    ...sowingsQueryOptions(),
-    enabled: !plotId,
-  });
+  const globalQuery = useQuery({ ...sowingsQueryOptions(), enabled: !plotId });
   const plotQuery = useQuery({
     ...plotSowingsQueryOptions(plotId ?? ""),
     enabled: !!plotId,
   });
+  const globalSummariesQuery = useQuery({
+    ...sowingSummariesQueryOptions(),
+    enabled: !plotId,
+  });
+  const plotSummariesQuery = useQuery({
+    ...plotSowingSummariesQueryOptions(plotId ?? ""),
+    enabled: !!plotId,
+  });
 
-  const data: AnySowing[] =
+  const sowings: AnySowing[] =
     (plotId ? plotQuery.data?.result : globalQuery.data?.result) ?? [];
+  const summaries: MonthlySowing[] =
+    (plotId ? plotSummariesQuery.data : globalSummariesQuery.data)?.monthlySowings ?? [];
   const units = unitsQuery.data ?? [];
+
+  // Crop chips filter the charts and the table
+  const allCrops = useMemo(
+    () => [...new Set(sowings.map((sowing) => sowing.crop.name))].sort(),
+    [sowings],
+  );
+  const visibleCrops = selectedCrops.length === 0 ? allCrops : selectedCrops;
+
+  function toggleCrop(cropName: string) {
+    setSelectedCrops((prev) =>
+      prev.includes(cropName)
+        ? prev.filter((name) => name !== cropName)
+        : [...prev, cropName],
+    );
+  }
+
+  // Year -> color mapping stays the same on every chart
+  const availableYears = useMemo(
+    () => [...new Set(summaries.map((summary) => summary.year))].sort((a, b) => b - a),
+    [summaries],
+  );
+
+  const series = useMemo(() => {
+    const seriesByKey = new Map<string, SowingSeries>();
+    for (const summary of summaries) {
+      for (const sownSeed of summary.sownSeeds) {
+        if (!visibleCrops.includes(sownSeed.cropName)) continue;
+        const key = `${sownSeed.cropId}-${sownSeed.seedId ?? "none"}-${sownSeed.quantityKind}`;
+        let entry = seriesByKey.get(key);
+        if (!entry) {
+          entry = {
+            key,
+            title: sownSeed.seedName
+              ? `${sownSeed.cropName} – ${sownSeed.seedName}`
+              : sownSeed.cropName,
+            quantityKind: sownSeed.quantityKind,
+            monthly: {},
+          };
+          seriesByKey.set(key, entry);
+        }
+        if (!entry.monthly[summary.year]) {
+          entry.monthly[summary.year] = Array.from({ length: 12 }, () => 0);
+        }
+        // base amounts are grams for weight, the chart works in kg
+        entry.monthly[summary.year][summary.month] +=
+          sownSeed.quantityKind === "weight"
+            ? sownSeed.totalBaseAmount / 1000
+            : sownSeed.totalBaseAmount;
+      }
+    }
+    return [...seriesByKey.values()].sort((a, b) => a.title.localeCompare(b.title));
+  }, [summaries, visibleCrops]);
+
+  const tableData = sowings.filter((sowing) => visibleCrops.includes(sowing.crop.name));
 
   const columns = useMemo<ColumnDef<AnySowing>[]>(() => {
     const plotColumn: ColumnDef<AnySowing>[] = plotId
@@ -297,18 +227,134 @@ function Sowings() {
         )
       }
     >
-      {!plotId && <SowingChart />}
-      <DataTable
-        data={data}
-        columns={columns}
-        onRowClick={(sowing) =>
-          navigate({
-            to: "/field-calendar/sowings/$sowingId",
-            params: { sowingId: sowing.id },
-          })
-        }
-        defaultSorting={[{ id: "date", desc: true }]}
-      />
+      <div className="space-y-6">
+        {allCrops.length > 1 && (
+          <div className="flex gap-1 flex-wrap">
+            {allCrops.map((cropName) => (
+              <button
+                key={cropName}
+                type="button"
+                onClick={() => toggleCrop(cropName)}
+                className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                  selectedCrops.includes(cropName)
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-muted-foreground border-border"
+                }`}
+              >
+                {cropName}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {series.length > 0 && (
+          <ChartCarouselCard
+            pages={series.map((entry) => ({
+              key: entry.key,
+              title: entry.title,
+              content: <SowingChartPage series={entry} availableYears={availableYears} />,
+            }))}
+          />
+        )}
+
+        <DataTable
+          data={tableData}
+          columns={columns}
+          onRowClick={(sowing) =>
+            navigate({
+              to: "/field-calendar/sowings/$sowingId",
+              params: { sowingId: sowing.id },
+            })
+          }
+          defaultSorting={[{ id: "date", desc: true }]}
+          globalFilterFn={(row, _columnId, filterValue) => {
+            const searchValue = String(filterValue).toLowerCase();
+            const sowing = row.original;
+            return [
+              "plot" in sowing ? sowing.plot.name : "",
+              sowing.crop.name,
+              sowing.seed?.name ?? "",
+              new Date(sowing.date).toLocaleDateString(),
+            ].some((value) => value.toLowerCase().includes(searchValue));
+          }}
+        />
+      </div>
     </PageContent>
+  );
+}
+
+// One carousel page: its own year selection, then the year comparison chart
+function SowingChartPage({
+  series,
+  availableYears,
+}: {
+  series: SowingSeries;
+  availableYears: number[];
+}) {
+  const { t, i18n } = useTranslation();
+  const monthLabels = getMonthLabels(i18n.language);
+  const seriesYears = useMemo(
+    () => Object.keys(series.monthly).map(Number).sort((a, b) => b - a),
+    [series.monthly],
+  );
+  const [selectedYears, setSelectedYears] = useState<number[]>(() => seriesYears.slice(0, 2));
+  const activeYears = selectedYears.filter((year) => seriesYears.includes(year));
+
+  function toggleYear(year: number) {
+    setSelectedYears((prev) =>
+      prev.includes(year)
+        ? prev.length > 1
+          ? prev.filter((selectedYear) => selectedYear !== year)
+          : prev
+        : [...prev, year],
+    );
+  }
+
+  const { yearData, unit } = useMemo(() => {
+    const allYearColors = assignYearColors(availableYears);
+    const maxTotal = Math.max(
+      ...activeYears.map((year) => (series.monthly[year] ?? []).reduce((sum, value) => sum + value, 0)),
+      0,
+    );
+    const { divisor, label } =
+      series.quantityKind === "count"
+        ? { divisor: 1, label: t("fieldCalendar.sowings.pieces") }
+        : pickDisplayUnit(maxTotal, "kg");
+    const data: YearData[] = activeYears.map((year) => {
+      const scaled = (series.monthly[year] ?? Array.from({ length: 12 }, () => 0)).map(
+        (value) => value / divisor,
+      );
+      return {
+        year,
+        color: allYearColors[year],
+        monthlyData: scaled,
+        cumulativeData: computeCumulative(scaled),
+      };
+    });
+    return { yearData: data, unit: label };
+  }, [series, activeYears, availableYears, t]);
+
+  return (
+    <div className="space-y-3">
+      {seriesYears.length > 1 && (
+        <div className="flex gap-1 flex-wrap">
+          {seriesYears.map((year) => (
+            <button
+              key={year}
+              type="button"
+              onClick={() => toggleYear(year)}
+              className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                activeYears.includes(year)
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-muted-foreground border-border"
+              }`}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
+      )}
+      <MonthlyComparisonChart yearData={yearData} monthLabels={monthLabels} unit={unit} />
+    </div>
   );
 }

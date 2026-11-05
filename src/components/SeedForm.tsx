@@ -147,16 +147,14 @@ export function SeedForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <Label>{t("seeds.defaultAmount")}</Label>
-            <Input type="number" min={0} step="any" {...register("defaultAmount")} />
-          </div>
-          <div className="space-y-1">
             <Label>{t("seeds.defaultUnit")}</Label>
             <Select
               value={watchedDefaultUnit}
               onValueChange={(value) => {
                 if (value === NONE) {
+                  // an amount without a unit means nothing
                   setValue("defaultUnit", NONE);
+                  setValue("defaultAmount", "");
                   return;
                 }
                 const unitInfo = availableUnits.find((info) => info.unit === value);
@@ -175,6 +173,16 @@ export function SeedForm({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="space-y-1">
+            <Label>{t("seeds.defaultAmountOptional")}</Label>
+            <Input
+              type="number"
+              min={0}
+              step="any"
+              disabled={watchedDefaultUnit === NONE}
+              {...register("defaultAmount")}
+            />
           </div>
         </div>
       </div>
@@ -196,16 +204,22 @@ export function SeedForm({
   );
 }
 
-/** Converts form values to the API's optional default rate fields. */
+/**
+ * Converts form values to the API's optional default rate fields. A unit can be
+ * saved on its own (it's preselected in a sowing), an amount only with a unit.
+ */
 export function seedDefaultRateFromForm(data: SeedFormData): {
   defaultAmount: number | null;
   defaultUnit: SowingUnit | null;
 } {
-  const defaultAmount = parseFloat(data.defaultAmount);
-  if (data.defaultUnit === NONE || Number.isNaN(defaultAmount)) {
+  if (data.defaultUnit === NONE) {
     return { defaultAmount: null, defaultUnit: null };
   }
-  return { defaultAmount, defaultUnit: data.defaultUnit };
+  const defaultAmount = parseFloat(data.defaultAmount);
+  return {
+    defaultAmount: Number.isNaN(defaultAmount) ? null : defaultAmount,
+    defaultUnit: data.defaultUnit,
+  };
 }
 
 export const SEED_FORM_NONE = NONE;

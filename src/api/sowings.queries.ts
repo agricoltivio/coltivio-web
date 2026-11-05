@@ -51,17 +51,18 @@ export const sowingSummariesQueryOptions = () =>
     },
   });
 
-export const sowingYearsQueryOptions = () =>
+export const plotSowingSummariesQueryOptions = (plotId: string) =>
   queryOptions({
-    queryKey: ["sowings", "years"],
+    queryKey: ["plots", "byId", plotId, "sowingSummary"],
     queryFn: async () => {
-      const response = await apiClient.GET("/v1/sowings/years");
-      if (response.error) throw new Error("Failed to fetch sowing years");
-      return response.data.data.result;
+      const response = await apiClient.GET("/v1/plots/byId/{plotId}/sowingSummary", {
+        params: { path: { plotId } },
+      });
+      if (response.error) throw new Error("Failed to fetch plot sowing summaries");
+      return response.data.data;
     },
   });
 
-// unit -> quantity kind / per-area map, the single source of truth for unit filtering
 export const sowingUnitsQueryOptions = () =>
   queryOptions({
     queryKey: ["sowings", "units"],

@@ -155,9 +155,10 @@ function CreateSowing() {
     // the crop always comes from the seed
     setValue("cropId", seed.cropId);
     setSelectedPresetId(null);
-    if (seed.defaultUnit && seed.defaultAmount != null) {
+    // the seed's default unit (and amount, if set) is preselected
+    if (seed.defaultUnit) {
       setValue("unit", seed.defaultUnit);
-      setValue("amount", seed.defaultAmount.toString());
+      if (seed.defaultAmount != null) setValue("amount", seed.defaultAmount.toString());
       return;
     }
     // keep the unit if it fits the seed, otherwise fall back to the first fitting one

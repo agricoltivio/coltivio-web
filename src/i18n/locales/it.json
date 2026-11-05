@@ -1431,6 +1431,7 @@
     "quantityKindLockedHint": "Il modo di misurazione non può essere modificato affinché le quantità restino sommabili. Crea una nuova semente.",
     "defaultValuesDescription": "Precompilati quando si registra una nuova semina con questa semente e modificabili in quel momento.",
     "defaultAmount": "Quantità predefinita",
+    "defaultAmountOptional": "Quantità predefinita (opzionale)",
     "defaultUnit": "Unità predefinita",
     "defaultRate": "Densità di semina predefinita",
     "description": "Descrizione",

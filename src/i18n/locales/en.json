@@ -1431,6 +1431,7 @@
     "quantityKindLockedHint": "How the amount is measured can't be changed so amounts stay summable. Create a new seed instead.",
     "defaultValuesDescription": "Prefilled when recording a new sowing with this seed and can be adjusted there.",
     "defaultAmount": "Default amount",
+    "defaultAmountOptional": "Default amount (optional)",
     "defaultUnit": "Default unit",
     "defaultRate": "Default seed rate",
     "description": "Description",

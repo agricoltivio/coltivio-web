@@ -56,9 +56,9 @@ function SeedsPage() {
         id: "defaultRate",
         header: t("seeds.defaultRate"),
         cell: ({ row }) =>
-          row.original.defaultAmount != null && row.original.defaultUnit ? (
+          row.original.defaultUnit ? (
             <span className="text-muted-foreground">
-              {row.original.defaultAmount}{" "}
+              {row.original.defaultAmount != null && `${row.original.defaultAmount} `}
               {t(`fieldCalendar.sowings.units.${row.original.defaultUnit}`)}
             </span>
           ) : (

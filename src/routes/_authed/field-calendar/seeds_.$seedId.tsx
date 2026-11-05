@@ -130,8 +130,10 @@ function SeedDetailPage() {
             <DetailItem
               label={t("seeds.defaultRate")}
               value={
-                seed.defaultAmount != null && seed.defaultUnit
-                  ? `${seed.defaultAmount} ${t(`fieldCalendar.sowings.units.${seed.defaultUnit}`)}`
+                seed.defaultUnit
+                  ? [seed.defaultAmount, t(`fieldCalendar.sowings.units.${seed.defaultUnit}`)]
+                      .filter((part) => part != null)
+                      .join(" ")
                   : "-"
               }
             />
