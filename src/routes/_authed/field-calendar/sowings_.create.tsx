@@ -1,4 +1,4 @@
-import { toLocalDateString } from "@/lib/utils";
+import { formatDateOnly, toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, Trash2Icon } from "lucide-react";
@@ -16,7 +16,7 @@ import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
-import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
+import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -70,7 +70,7 @@ type FormData = {
 };
 
 function CreateSowing() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId, returnTo } = Route.useSearch();
@@ -86,6 +86,7 @@ function CreateSowing() {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
+  const [presetIdPendingDelete, setPresetIdPendingDelete] = useState<string | null>(null);
   const [newPresetName, setNewPresetName] = useState("");
   // Per-plot totals, only used for total units on more than one plot
   const [amountsByPlot, setAmountsByPlot] = useState<Record<string, string>>({});
@@ -141,8 +142,8 @@ function CreateSowing() {
   const amountNumber = parseFloat(watchedAmount) || 0;
   // "." or "0" would be saved as an empty sowing
   const amountValid = Number.isFinite(Number(watchedAmount)) && Number(watchedAmount) > 0;
-  const perArea = isPerAreaUnit(units, watchedUnit);
-  const counterpart = computeCounterpart(units, amountNumber, watchedUnit, selectedSize);
+  const perArea = isPerAreaUnit(watchedUnit);
+  const counterpart = computeCounterpart(amountNumber, watchedUnit, selectedSize);
   const unitLabel = t(`fieldCalendar.sowings.units.${watchedUnit}`);
   const roundedTotal = Math.round((amountNumber + Number.EPSILON) * 100) / 100;
   const needsDivide = isMultiPlot && !perArea;
@@ -243,7 +244,8 @@ function CreateSowing() {
     const preset = presets.find((candidate) => candidate.id === presetId);
     if (!preset) return;
     setSelectedPresetId(presetId);
-    setValue("seedId", preset.seedId ?? "");
+    // a preset without a seed keeps the seed chosen in step 1
+    if (preset.seedId) setValue("seedId", preset.seedId);
     setValue("unit", preset.unit);
     setValue("amount", preset.amount.toString());
   }
@@ -296,7 +298,7 @@ function CreateSowing() {
         {activeStep === "crop" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.sowings.seedOptional")}</Label>
+              <Label htmlFor="sowing-seedOptional">{t("fieldCalendar.sowings.seedOptional")}</Label>
               <Select
                 value={watchedSeedId || NO_SEED}
                 onValueChange={(value) => {
@@ -304,7 +306,7 @@ function CreateSowing() {
                   else if (value) selectSeed(value);
                 }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger id="sowing-seedOptional" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -319,7 +321,7 @@ function CreateSowing() {
               </Select>
             </div>
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.sowings.crop")}</Label>
+              <Label htmlFor="sowing-crop">{t("fieldCalendar.sowings.crop")}</Label>
               <Select
                 value={watchedCropId}
                 disabled={!!selectedSeed}
@@ -329,7 +331,7 @@ function CreateSowing() {
                   setSelectedPresetId(null);
                 }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger id="sowing-crop" className="w-full">
                   <SelectValue placeholder={t("fieldCalendar.sowings.selectCrop")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -347,8 +349,8 @@ function CreateSowing() {
               )}
             </div>
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.sowings.date")}</Label>
-              <Input type="date" {...register("date", { required: true })} />
+              <Label htmlFor="sowing-date">{t("fieldCalendar.sowings.date")}</Label>
+              <Input id="sowing-date" type="date" {...register("date", { required: true })} />
             </div>
           </div>
         )}
@@ -369,14 +371,14 @@ function CreateSowing() {
         {activeStep === "config" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.presets.select")}</Label>
+              <Label htmlFor="sowing-select">{t("fieldCalendar.presets.select")}</Label>
               <div className="flex gap-1">
                 <div className="min-w-0 flex-1">
                   <Select
                     value={selectedPresetId ?? ""}
                     onValueChange={(value) => applyPreset(value)}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger id="sowing-select" className="w-full">
                       <SelectValue placeholder={t("fieldCalendar.presets.select")} />
                     </SelectTrigger>
                     <SelectContent>
@@ -398,6 +400,7 @@ function CreateSowing() {
                   type="button"
                   variant="outline"
                   size="icon"
+                  aria-label={t("fieldCalendar.presets.manage")}
                   onClick={() => setManagePresetsOpen(true)}
                 >
                   <PencilIcon className="size-4" />
@@ -408,8 +411,8 @@ function CreateSowing() {
             <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label>{t("fieldCalendar.sowings.amount")}</Label>
-                  <Input
+                  <Label htmlFor="sowing-amount">{t("fieldCalendar.sowings.amount")}</Label>
+                  <Input id="sowing-amount"
                     type="number"
                     min={0}
                     step="any"
@@ -417,7 +420,7 @@ function CreateSowing() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label>{t("fieldCalendar.sowings.unit")}</Label>
+                  <Label htmlFor="sowing-unit">{t("fieldCalendar.sowings.unit")}</Label>
                   <Select
                     value={watchedUnit}
                     onValueChange={(value) => {
@@ -425,7 +428,7 @@ function CreateSowing() {
                       if (unitInfo) setValue("unit", unitInfo.unit);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger id="sowing-unit">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -498,7 +501,7 @@ function CreateSowing() {
               />
               <SummaryRow
                 label={t("fieldCalendar.sowings.date")}
-                value={new Date(watchedDate).toLocaleDateString()}
+                value={formatDateOnly(watchedDate, i18n.language)}
               />
               <SummaryRow
                 label={t("fieldCalendar.tillages.size")}
@@ -539,8 +542,8 @@ function CreateSowing() {
             </dl>
 
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.tillages.notes")}</Label>
-              <Textarea {...register("additionalNotes")} rows={3} />
+              <Label htmlFor="sowing-notes">{t("fieldCalendar.tillages.notes")}</Label>
+              <Textarea id="sowing-notes" {...register("additionalNotes")} rows={3} />
             </div>
           </div>
         )}
@@ -569,8 +572,8 @@ function CreateSowing() {
             <DialogTitle>{t("fieldCalendar.presets.saveAs")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.presets.name")}</Label>
-            <Input
+            <Label htmlFor="sowing-name">{t("fieldCalendar.presets.name")}</Label>
+            <Input id="sowing-name"
               value={newPresetName}
               onChange={(e) => setNewPresetName(e.target.value)}
               autoFocus
@@ -617,15 +620,41 @@ function CreateSowing() {
                     {preset.name}
                     <span className="text-muted-foreground"> · {preset.crop.name}</span>
                   </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deletePresetMutation.mutate(preset.id)}
-                    disabled={deletePresetMutation.isPending}
-                  >
-                    <Trash2Icon className="size-4 text-destructive" />
-                  </Button>
+                  {/* deleting asks once more in the row itself */}
+                  {presetIdPendingDelete === preset.id ? (
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPresetIdPendingDelete(null)}
+                      >
+                        {t("common.cancel")}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          deletePresetMutation.mutate(preset.id);
+                          setPresetIdPendingDelete(null);
+                        }}
+                        disabled={deletePresetMutation.isPending}
+                      >
+                        {t("common.delete")}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`${t("common.delete")}: ${preset.name}`}
+                      onClick={() => setPresetIdPendingDelete(preset.id)}
+                    >
+                      <Trash2Icon className="size-4 text-destructive" />
+                    </Button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -638,14 +667,5 @@ function CreateSowing() {
         </DialogContent>
       </Dialog>
     </PageContent>
-  );
-}
-
-function SummaryRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex items-start justify-between gap-4 px-3 py-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{value}</dd>
-    </div>
   );
 }

@@ -1,30 +1,29 @@
 import type { TFunction } from "i18next";
+import { round2 } from "@/lib/utils";
 import type { SeedQuantityKind, SowingUnit, SowingUnitInfo } from "@/api/types";
 
-// Display-only conversions between a per-area rate and the matching total.
-// Which units exist and their quantity kind come from GET /v1/sowings/units.
+// Display-only conversions between a per-area rate and the matching total, known
+// locally so hints are right before GET /v1/sowings/units has loaded. Which units a
+// seed allows (quantity kind) still comes from that endpoint.
 const AREA_COUNTERPARTS: Record<
   SowingUnit,
-  { counterpartUnit: SowingUnit; squareMetersPerAreaUnit: number }
+  { perArea: boolean; counterpartUnit: SowingUnit; squareMetersPerAreaUnit: number }
 > = {
-  kg_per_ha: { counterpartUnit: "kg", squareMetersPerAreaUnit: 10000 },
-  g_per_m2: { counterpartUnit: "g", squareMetersPerAreaUnit: 1 },
-  seeds_per_ha: { counterpartUnit: "seeds", squareMetersPerAreaUnit: 10000 },
-  seeds_per_m2: { counterpartUnit: "seeds", squareMetersPerAreaUnit: 1 },
-  plants_per_ha: { counterpartUnit: "plants", squareMetersPerAreaUnit: 10000 },
-  plants_per_m2: { counterpartUnit: "plants", squareMetersPerAreaUnit: 1 },
-  kg: { counterpartUnit: "kg_per_ha", squareMetersPerAreaUnit: 10000 },
-  g: { counterpartUnit: "g_per_m2", squareMetersPerAreaUnit: 1 },
-  seeds: { counterpartUnit: "seeds_per_ha", squareMetersPerAreaUnit: 10000 },
-  plants: { counterpartUnit: "plants_per_ha", squareMetersPerAreaUnit: 10000 },
+  kg_per_ha: { perArea: true, counterpartUnit: "kg", squareMetersPerAreaUnit: 10000 },
+  g_per_m2: { perArea: true, counterpartUnit: "g", squareMetersPerAreaUnit: 1 },
+  seeds_per_ha: { perArea: true, counterpartUnit: "seeds", squareMetersPerAreaUnit: 10000 },
+  seeds_per_m2: { perArea: true, counterpartUnit: "seeds", squareMetersPerAreaUnit: 1 },
+  plants_per_ha: { perArea: true, counterpartUnit: "plants", squareMetersPerAreaUnit: 10000 },
+  plants_per_m2: { perArea: true, counterpartUnit: "plants", squareMetersPerAreaUnit: 1 },
+  kg: { perArea: false, counterpartUnit: "kg_per_ha", squareMetersPerAreaUnit: 10000 },
+  g: { perArea: false, counterpartUnit: "g_per_m2", squareMetersPerAreaUnit: 1 },
+  seeds: { perArea: false, counterpartUnit: "seeds_per_ha", squareMetersPerAreaUnit: 10000 },
+  plants: { perArea: false, counterpartUnit: "plants_per_ha", squareMetersPerAreaUnit: 10000 },
 };
 
-function round2(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
 
-export function isPerAreaUnit(units: SowingUnitInfo[], unit: SowingUnit): boolean {
-  return units.find((unitInfo) => unitInfo.unit === unit)?.perArea ?? false;
+export function isPerAreaUnit(unit: SowingUnit): boolean {
+  return AREA_COUNTERPARTS[unit].perArea;
 }
 
 export function unitsForQuantityKind(
@@ -51,7 +50,6 @@ export function formatArea(sizeInSquareMeters: number): string {
  * Weight totals switch between g and kg so large values stay readable.
  */
 export function computeCounterpart(
-  units: SowingUnitInfo[],
   amount: number,
   unit: SowingUnit,
   sizeInSquareMeters: number,
@@ -60,7 +58,7 @@ export function computeCounterpart(
   const { counterpartUnit, squareMetersPerAreaUnit } = AREA_COUNTERPARTS[unit];
   const areaUnits = sizeInSquareMeters / squareMetersPerAreaUnit;
   const area = formatArea(sizeInSquareMeters);
-  if (!isPerAreaUnit(units, unit)) {
+  if (!isPerAreaUnit(unit)) {
     return { amount: round2(amount / areaUnits), unit: counterpartUnit, area };
   }
   const total = amount * areaUnits;

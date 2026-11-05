@@ -1432,7 +1432,6 @@
     "quantityKindPermanent": "Ne peut pas être modifié par la suite.",
     "quantityKindLockedHint": "Le mode de mesure ne peut pas être modifié afin que les quantités restent additionnables. Créez une nouvelle semence.",
     "defaultValuesDescription": "Pré-remplies lors de la saisie d'un nouveau semis avec cette semence et modifiables à ce moment-là.",
-    "defaultAmount": "Quantité par défaut",
     "defaultAmountOptional": "Quantité par défaut (optionnel)",
     "defaultUnit": "Unité par défaut",
     "defaultRate": "Densité de semis par défaut",

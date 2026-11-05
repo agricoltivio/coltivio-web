@@ -46,6 +46,9 @@ function EditSeedPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["seeds"] });
+      // a crop change is carried over to the seed's sowings and presets
+      queryClient.invalidateQueries({ queryKey: ["sowings"] });
+      queryClient.invalidateQueries({ queryKey: ["plots"] });
       navigate({ to: "/field-calendar/seeds/$seedId", params: { seedId } });
     },
   });

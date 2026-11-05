@@ -3,13 +3,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 import { apiClient } from "@/api/client";
 import { cropsQueryOptions } from "@/api/crops.queries";
 import { seedsQueryOptions } from "@/api/seeds.queries";
 import { sowingQueryOptions, sowingUnitsQueryOptions } from "@/api/sowings.queries";
 import type { SowingUnit } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
-import { computeCounterpart, formatBaseAmount, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
+import { computeCounterpart, formatArea, formatBaseAmount, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +38,13 @@ import {
 // Radix Select doesn't allow an empty item value
 const NO_SEED = "none";
 
+const searchSchema = z.object({
+  plotId: z.string().optional(),
+  returnTo: z.string().optional(),
+});
+
 export const Route = createFileRoute("/_authed/field-calendar/sowings_/$sowingId")({
+  validateSearch: searchSchema,
   loader: ({ context: { queryClient }, params: { sowingId } }) => {
     queryClient.ensureQueryData(sowingQueryOptions(sowingId));
     queryClient.ensureQueryData(cropsQueryOptions());
@@ -59,6 +66,14 @@ type FormData = {
 function SowingDetail() {
   const { t } = useTranslation();
   const { sowingId } = Route.useParams();
+  const { plotId, returnTo } = Route.useSearch();
+  // back to the list the sowing was opened from (per plot or all)
+  function goToList() {
+    navigate({
+      to: "/field-calendar/sowings",
+      search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {},
+    });
+  }
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { canWrite } = useFeatureAccess("field_calendar");
@@ -121,7 +136,7 @@ function SowingDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sowings"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      navigate({ to: "/field-calendar/sowings" });
+      goToList();
     },
   });
 
@@ -134,7 +149,8 @@ function SowingDetail() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sowings"] });
-      navigate({ to: "/field-calendar/sowings" });
+      queryClient.invalidateQueries({ queryKey: ["plots"] });
+      goToList();
     },
   });
 
@@ -145,7 +161,7 @@ function SowingDetail() {
 
   if (!sowing) {
     return (
-      <PageContent title={t("common.loading")} showBackButton backTo={() => navigate({ to: "/field-calendar/sowings" })}>
+      <PageContent title={t("common.loading")} showBackButton backTo={goToList}>
         <p className="text-muted-foreground">{t("common.loading")}</p>
       </PageContent>
     );
@@ -153,8 +169,8 @@ function SowingDetail() {
 
   const selectedSeed = seeds.find((seed) => seed.id === watchedSeedId);
   const availableUnits = unitsForQuantityKind(units, selectedSeed?.quantityKind);
-  const perArea = isPerAreaUnit(units, watchedUnit);
-  const counterpart = computeCounterpart(units, parseFloat(watchedAmount) || 0, watchedUnit, sowing.size);
+  const perArea = isPerAreaUnit(watchedUnit);
+  const counterpart = computeCounterpart(parseFloat(watchedAmount) || 0, watchedUnit, sowing.size);
   const storedUnitInfo = units.find((unitInfo) => unitInfo.unit === sowing.unit);
 
   function selectSeed(seedId: string) {
@@ -176,7 +192,7 @@ function SowingDetail() {
     <PageContent
       title={`${sowing.crop.name} – ${sowing.plot.name}`}
       showBackButton
-      backTo={() => navigate({ to: "/field-calendar/sowings" })}
+      backTo={goToList}
       actions={
         canWrite && (
           <AlertDialog>
@@ -218,7 +234,7 @@ function SowingDetail() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("fieldCalendar.tillages.size")}</span>
-            <span className="font-medium">{(sowing.size / 100).toFixed(2)} a</span>
+            <span className="font-medium">{formatArea(sowing.size)}</span>
           </div>
           {storedUnitInfo && (
             <div className="flex justify-between text-sm">
@@ -232,7 +248,7 @@ function SowingDetail() {
 
         <fieldset disabled={!canWrite} className="space-y-4">
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.sowings.seedOptional")}</Label>
+            <Label htmlFor="sowing-edit-seedOptional">{t("fieldCalendar.sowings.seedOptional")}</Label>
             <Select
               value={watchedSeedId || NO_SEED}
               onValueChange={(value) => {
@@ -241,7 +257,7 @@ function SowingDetail() {
               }}
               disabled={!canWrite}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="sowing-edit-seedOptional" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -257,7 +273,7 @@ function SowingDetail() {
           </div>
 
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.sowings.crop")}</Label>
+            <Label htmlFor="sowing-edit-crop">{t("fieldCalendar.sowings.crop")}</Label>
             <Select
               value={watchedCropId}
               onValueChange={(value) => {
@@ -265,7 +281,7 @@ function SowingDetail() {
               }}
               disabled={!canWrite || !!selectedSeed}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="sowing-edit-crop" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -284,14 +300,14 @@ function SowingDetail() {
           </div>
 
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.sowings.date")}</Label>
-            <Input type="date" {...register("date", { required: true })} />
+            <Label htmlFor="sowing-edit-date">{t("fieldCalendar.sowings.date")}</Label>
+            <Input id="sowing-edit-date" type="date" {...register("date", { required: true })} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.sowings.amount")}</Label>
-              <Input
+              <Label htmlFor="sowing-edit-amount">{t("fieldCalendar.sowings.amount")}</Label>
+              <Input id="sowing-edit-amount"
                 type="number"
                 min={0}
                 step="any"
@@ -306,7 +322,7 @@ function SowingDetail() {
               )}
             </div>
             <div className="space-y-1">
-              <Label>{t("fieldCalendar.sowings.unit")}</Label>
+              <Label htmlFor="sowing-edit-unit">{t("fieldCalendar.sowings.unit")}</Label>
               <Select
                 value={watchedUnit}
                 onValueChange={(value) => {
@@ -315,7 +331,7 @@ function SowingDetail() {
                 }}
                 disabled={!canWrite}
               >
-                <SelectTrigger>
+                <SelectTrigger id="sowing-edit-unit">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -342,8 +358,8 @@ function SowingDetail() {
           )}
 
           <div className="space-y-1">
-            <Label>{t("fieldCalendar.tillages.notes")}</Label>
-            <Textarea {...register("additionalNotes")} rows={3} />
+            <Label htmlFor="sowing-edit-notes">{t("fieldCalendar.tillages.notes")}</Label>
+            <Textarea id="sowing-edit-notes" {...register("additionalNotes")} rows={3} />
           </div>
         </fieldset>
 
@@ -358,7 +374,7 @@ function SowingDetail() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate({ to: "/field-calendar/sowings" })}
+              onClick={goToList}
             >
               {t("common.cancel")}
             </Button>

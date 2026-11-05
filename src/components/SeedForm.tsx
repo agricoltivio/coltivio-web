@@ -87,14 +87,14 @@ export function SeedForm({
       <div className="space-y-1">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <Label>{t("seeds.crop")}</Label>
+            <Label htmlFor="seed-crop">{t("seeds.crop")}</Label>
             <Select
               value={watch("cropId")}
               onValueChange={(value) => {
                 if (value) setValue("cropId", value, { shouldValidate: true });
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="seed-crop" className="w-full">
                 <SelectValue placeholder={t("seeds.selectCrop")} />
               </SelectTrigger>
               <SelectContent>
@@ -108,7 +108,7 @@ export function SeedForm({
             {errors.cropId && <p className="text-sm text-destructive">{t("common.required")}</p>}
           </div>
           <div className="space-y-1">
-            <Label>{t("seeds.quantityKind")}</Label>
+            <Label htmlFor="seed-quantityKind">{t("seeds.quantityKind")}</Label>
             <Select
               value={watchedQuantityKind}
               disabled={quantityKindLocked}
@@ -123,7 +123,7 @@ export function SeedForm({
                 if (!stillValid) setValue("defaultUnit", NONE);
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="seed-quantityKind" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -155,7 +155,7 @@ export function SeedForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <Label>{t("seeds.defaultUnit")}</Label>
+            <Label htmlFor="seed-defaultUnit">{t("seeds.defaultUnit")}</Label>
             <Select
               value={watchedDefaultUnit}
               onValueChange={(value) => {
@@ -169,7 +169,7 @@ export function SeedForm({
                 if (unitInfo) setValue("defaultUnit", unitInfo.unit);
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="seed-defaultUnit" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -183,8 +183,8 @@ export function SeedForm({
             </Select>
           </div>
           <div className="space-y-1">
-            <Label>{t("seeds.defaultAmountOptional")}</Label>
-            <Input
+            <Label htmlFor="seed-defaultAmountOptional">{t("seeds.defaultAmountOptional")}</Label>
+            <Input id="seed-defaultAmountOptional"
               type="number"
               min={0}
               step="any"

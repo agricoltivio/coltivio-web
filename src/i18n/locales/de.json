@@ -1432,7 +1432,6 @@
     "quantityKindPermanent": "Kann später nicht geändert werden.",
     "quantityKindLockedHint": "Die Mengenangabe kann nicht geändert werden, damit Mengen summierbar bleiben. Erstellen Sie dafür ein neues Saatgut.",
     "defaultValuesDescription": "Werden beim Erfassen einer neuen Saat mit diesem Saatgut vorausgefüllt und können dort angepasst werden.",
-    "defaultAmount": "Standardmenge",
     "defaultAmountOptional": "Standardmenge (optional)",
     "defaultUnit": "Standardeinheit",
     "defaultRate": "Standard-Saatstärke",

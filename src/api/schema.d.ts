@@ -3719,7 +3719,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {

@@ -24,7 +24,8 @@ import { ChartCarouselCard } from "@/components/parasites/ChartCarouselCard";
 import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
-import { formatBaseAmount } from "@/lib/sowingUnits";
+import { formatArea, formatBaseAmount } from "@/lib/sowingUnits";
+import { formatDateOnly } from "@/lib/utils";
 
 type GlobalSowing = components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
 type PlotSowing = components["schemas"]["GetV1PlotsByIdPlotIdSowingsPositiveResponse"]["data"]["result"][number];
@@ -65,7 +66,7 @@ export const Route = createFileRoute("/_authed/field-calendar/sowings")({
 });
 
 function Sowings() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { canWrite } = useFeatureAccess("field_calendar");
   const { plotId, returnTo } = Route.useSearch();
@@ -160,7 +161,8 @@ function Sowings() {
       {
         accessorKey: "date",
         header: t("fieldCalendar.sowings.date"),
-        cell: ({ row }) => new Date(row.original.date).toLocaleDateString(),
+        // calendar day, so the date doesn't shift in timezones behind UTC
+        cell: ({ row }) => formatDateOnly(row.original.date, i18n.language),
       },
       ...plotColumn,
       {
@@ -194,10 +196,10 @@ function Sowings() {
       {
         accessorKey: "size",
         header: t("fieldCalendar.tillages.size"),
-        cell: ({ row }) => `${(row.original.size / 100).toFixed(2)} a`,
+        cell: ({ row }) => formatArea(row.original.size),
       },
     ];
-  }, [t, plotId, units]);
+  }, [t, i18n.language, plotId, units]);
 
   return (
     <PageContent
@@ -233,6 +235,7 @@ function Sowings() {
               <button
                 key={cropName}
                 type="button"
+                aria-pressed={selectedCrops.includes(cropName)}
                 onClick={() => toggleCrop(cropName)}
                 className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
                   selectedCrops.includes(cropName)
@@ -263,6 +266,8 @@ function Sowings() {
             navigate({
               to: "/field-calendar/sowings/$sowingId",
               params: { sowingId: sowing.id },
+              // keeps the per-plot view when coming back
+              search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {},
             })
           }
           defaultSorting={[{ id: "date", desc: true }]}
@@ -273,7 +278,7 @@ function Sowings() {
               "plot" in sowing ? sowing.plot.name : "",
               sowing.crop.name,
               sowing.seed?.name ?? "",
-              new Date(sowing.date).toLocaleDateString(),
+              formatDateOnly(sowing.date, i18n.language),
             ].some((value) => value.toLowerCase().includes(searchValue));
           }}
         />
@@ -341,6 +346,7 @@ function SowingChartPage({
             <button
               key={year}
               type="button"
+              aria-pressed={activeYears.includes(year)}
               onClick={() => toggleYear(year)}
               className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
                 activeYears.includes(year)
