@@ -10,6 +10,7 @@ import { plotsQueryOptions } from "@/api/plots.queries";
 import { TILLAGE_ACTIONS, type TillageAction, type Plot } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,6 +63,8 @@ function CreateTillage() {
   }
 
   const [step, setStep] = useState<WizardStep>("plots");
+  // parts of plots selected by drawing on the map, keyed by plot id
+  const [drawnAreas, setDrawnAreas] = useState<Record<string, DrawnArea>>({});
   const plotsQuery = useQuery(plotsQueryOptions());
   const plots = plotsQuery.data?.result ?? [];
 
@@ -79,7 +82,9 @@ function CreateTillage() {
     mutationFn: async (data: FormData) => {
       const selectedPlots = data.plotIds
         .map((plotId) => plots.find((p) => p.id === plotId))
-        .filter((p): p is Plot => p != null);
+        .filter((p): p is Plot => p != null)
+        // drawn areas replace the geometry and size of partly covered plots
+        .map((plot) => withDrawnArea(plot, drawnAreas));
       if (selectedPlots.length === 0) throw new Error("Plot not found");
 
       const response = await apiClient.POST("/v1/tillages/batch", {
@@ -113,7 +118,9 @@ function CreateTillage() {
 
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((p) => p.id === plotId))
-    .filter((p): p is Plot => p != null);
+    .filter((p): p is Plot => p != null)
+    // drawn areas replace the geometry and size of partly covered plots
+    .map((plot) => withDrawnArea(plot, drawnAreas));
 
   const stepIndex = STEPS.indexOf(step);
 
@@ -156,6 +163,8 @@ function CreateTillage() {
               plots={plots}
               value={watchedPlotIds}
               onChange={(ids) => setValue("plotIds", ids)}
+              drawnAreas={drawnAreas}
+              onDrawnAreasChange={setDrawnAreas}
             />
           </div>
         )}

@@ -43,7 +43,8 @@ export function PlotDivideSection({
 
   // Work with a 2-decimal total so the rounded per-plot split adds back up exactly.
   const total = round2(totalUnits);
-  const plotKey = plots.map((p) => p.id).join(",");
+  // sizes are part of the key: a redrawn area of the same plot needs a new split
+  const plotKey = plots.map((p) => `${p.id}:${p.size}`).join(",");
 
   // Auto-split by area whenever the switch is on and the inputs change.
   useEffect(() => {

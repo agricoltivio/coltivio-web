@@ -1128,7 +1128,12 @@
         "selfIntersecting": "Les bords de la parcelle ne doivent pas se croiser.",
         "invalid_geometry": "La parcelle n'a pas de surface. Dessine au moins trois points distincts.",
         "saveFailed": "La parcelle n'a pas pu être enregistrée."
-      }
+      },
+      "drawArea": "Dessiner une surface",
+      "drawHint": "Placez des points sur la carte et faites-les glisser pour les déplacer. Les petits points intermédiaires ajoutent un point. Validez à partir de 3 points.",
+      "undoPoint": "Dernier point",
+      "finishDrawing": "Utiliser la surface",
+      "editDrawingHint": "Cliquez sur une surface dessinée pour la modifier."
     },
     "cropRotations": {
       "title": "Rotation des cultures",

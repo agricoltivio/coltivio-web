@@ -24,6 +24,7 @@ import {
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
 import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import {
@@ -121,6 +122,8 @@ function CreateFertilizerApplication() {
   }
 
   const [step, setStep] = useState<WizardStep>("fertilizer");
+  // parts of plots selected by drawing on the map, keyed by plot id
+  const [drawnAreas, setDrawnAreas] = useState<Record<string, DrawnArea>>({});
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
@@ -155,7 +158,9 @@ function CreateFertilizerApplication() {
     mutationFn: async (data: FormData) => {
       const selectedPlots = data.plotIds
         .map((plotId) => plots.find((p) => p.id === plotId))
-        .filter((p): p is Plot => p != null);
+        .filter((p): p is Plot => p != null)
+        // drawn areas replace the geometry and size of partly covered plots
+        .map((plot) => withDrawnArea(plot, drawnAreas));
       if (selectedPlots.length === 0) throw new Error("Plot not found");
 
       const amountPerUnit = parseFloat(data.amountPerUnit) || 0;
@@ -299,7 +304,9 @@ function CreateFertilizerApplication() {
 
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((p) => p.id === plotId))
-    .filter((p): p is Plot => p != null);
+    .filter((p): p is Plot => p != null)
+    // drawn areas replace the geometry and size of partly covered plots
+    .map((plot) => withDrawnArea(plot, drawnAreas));
   const isMultiPlot = selectedPlots.length > 1;
 
   // total_amount and amount_per_hectare carry a fixed amount, so the number of
@@ -582,6 +589,8 @@ function CreateFertilizerApplication() {
               plots={plots}
               value={watchedPlotIds}
               onChange={(ids) => setValue("plotIds", ids)}
+              drawnAreas={drawnAreas}
+              onDrawnAreasChange={setDrawnAreas}
             />
           </div>
         )}

@@ -1128,7 +1128,12 @@
         "selfIntersecting": "The edges of the plot must not cross.",
         "invalid_geometry": "The plot has no area. Draw at least three distinct points.",
         "saveFailed": "The plot could not be saved."
-      }
+      },
+      "drawArea": "Draw area",
+      "drawHint": "Place points on the map and drag them to move them. The small points in between add a point. Apply once there are 3 or more.",
+      "undoPoint": "Last point",
+      "finishDrawing": "Use area",
+      "editDrawingHint": "Click a drawn area to edit it."
     },
     "cropRotations": {
       "title": "Crop Rotations",

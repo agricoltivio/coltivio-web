@@ -32,6 +32,8 @@ import {
   type MeadowGeometryError,
 } from "@/lib/meadowGeometry";
 import { Switch } from "@/components/ui/switch";
+import { MidpointMarker } from "@/components/MidpointMarker";
+import { insertVertexAfter, ringMidpoints } from "@/lib/ringMidpoints";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { z } from "zod";
@@ -140,6 +142,9 @@ type MapAction =
   | { type: "ENTER_EDIT"; target: ShapeTarget; targetId: string; rings: number[][][] }
   | { type: "MOVE_EDIT_VERTEX"; ringIndex: number; vertexIndex: number; lngLat: [number, number] }
   | { type: "MOVE_POLYGON_VERTEX"; index: number; lngLat: [number, number] }
+  // midpoint handles insert a point after afterIndex
+  | { type: "INSERT_EDIT_VERTEX"; ringIndex: number; afterIndex: number; lngLat: [number, number] }
+  | { type: "INSERT_POLYGON_VERTEX"; afterIndex: number; lngLat: [number, number] }
   // selectPlotId: plot to select afterwards, e.g. a new plot when the one the mode started from has no area left
   | { type: "EXIT_MODE"; selectPlotId?: string };
 
@@ -227,6 +232,23 @@ function mapReducer(state: MapMode, action: MapAction): MapMode {
         return ring.map((vertex, vIdx) => (vIdx === action.vertexIndex ? action.lngLat : vertex));
       });
       return { ...state, rings: newRings, geometryChanged: true };
+    }
+    case "INSERT_EDIT_VERTEX": {
+      if (state.type !== "edit") return state;
+      const newRings = state.rings.map((ring, rIdx) =>
+        rIdx === action.ringIndex ? insertVertexAfter(ring, action.afterIndex, action.lngLat) : ring,
+      );
+      return { ...state, rings: newRings, geometryChanged: true };
+    }
+    case "INSERT_POLYGON_VERTEX": {
+      // only closed outlines have point handles, like MOVE_POLYGON_VERTEX
+      if (state.type === "split" && state.tool === "polygon" && state.polygonClosed) {
+        return { ...state, drawnVertices: insertVertexAfter(state.drawnVertices, action.afterIndex, action.lngLat) };
+      }
+      if (state.type === "create" && state.closed) {
+        return { ...state, drawnVertices: insertVertexAfter(state.drawnVertices, action.afterIndex, action.lngLat) };
+      }
+      return state;
     }
     case "MOVE_POLYGON_VERTEX": {
       if (state.type === "split" && state.tool === "polygon") {
@@ -1402,6 +1424,19 @@ function PlotsMap() {
               </Marker>
             ))
           )}
+          {mode.type === "edit" && mode.rings.map((ring, rIdx) =>
+            ringMidpoints(ring, true).map(({ afterIndex, lngLat }) => (
+              <MidpointMarker
+                key={`edit-midpoint-${rIdx}-${afterIndex}`}
+                lngLat={lngLat}
+                className="border-blue-500"
+                onInsert={(insertedLngLat) => {
+                  dispatch({ type: "INSERT_EDIT_VERTEX", ringIndex: rIdx, afterIndex, lngLat: insertedLngLat });
+                  setToolError(null);
+                }}
+              />
+            ))
+          )}
 
           {/* Draggable vertex markers for closed polygon (split-area) */}
           {mode.type === "split" && mode.tool === "polygon" && mode.polygonClosed && mode.drawnVertices.map((vertex, i) => (
@@ -1410,6 +1445,14 @@ function PlotsMap() {
               <div className="w-3 h-3 rounded-full bg-white border-2 border-yellow-400 cursor-move shadow" />
             </Marker>
           ))}
+          {mode.type === "split" && mode.tool === "polygon" && mode.polygonClosed && ringMidpoints(mode.drawnVertices, true).map(({ afterIndex, lngLat }) => (
+            <MidpointMarker
+              key={`poly-midpoint-${afterIndex}`}
+              lngLat={lngLat}
+              className="border-yellow-400"
+              onInsert={(insertedLngLat) => dispatch({ type: "INSERT_POLYGON_VERTEX", afterIndex, lngLat: insertedLngLat })}
+            />
+          ))}
 
           {/* Draggable vertex markers for closed polygon (create) */}
           {mode.type === "create" && mode.closed && mode.drawnVertices.map((vertex, i) => (
@@ -1417,6 +1460,14 @@ function PlotsMap() {
               onDragEnd={(e) => dispatch({ type: "MOVE_POLYGON_VERTEX", index: i, lngLat: [e.lngLat.lng, e.lngLat.lat] })}>
               <div className="w-3 h-3 rounded-full bg-white border-2 border-green-500 cursor-move shadow" />
             </Marker>
+          ))}
+          {mode.type === "create" && mode.closed && ringMidpoints(mode.drawnVertices, true).map(({ afterIndex, lngLat }) => (
+            <MidpointMarker
+              key={`create-midpoint-${afterIndex}`}
+              lngLat={lngLat}
+              className="border-green-500"
+              onInsert={(insertedLngLat) => dispatch({ type: "INSERT_POLYGON_VERTEX", afterIndex, lngLat: insertedLngLat })}
+            />
           ))}
 
           <NavigationControl position="top-left" />

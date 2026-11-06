@@ -20,6 +20,7 @@ import {
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
 import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
 import {
@@ -126,6 +127,8 @@ function CreateHarvest() {
   }
 
   const [step, setStep] = useState<WizardStep>("crop");
+  // parts of plots selected by drawing on the map, keyed by plot id
+  const [drawnAreas, setDrawnAreas] = useState<Record<string, DrawnArea>>({});
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
@@ -167,7 +170,9 @@ function CreateHarvest() {
     mutationFn: async (data: FormData) => {
       const selectedPlots = data.plotIds
         .map((plotId) => plots.find((p) => p.id === plotId))
-        .filter((p): p is Plot => p != null);
+        .filter((p): p is Plot => p != null)
+        // drawn areas replace the geometry and size of partly covered plots
+        .map((plot) => withDrawnArea(plot, drawnAreas));
       if (selectedPlots.length === 0) throw new Error("Plot not found");
 
       const kilosPerUnit = parseFloat(data.kilosPerUnit) || 0;
@@ -299,7 +304,9 @@ function CreateHarvest() {
   const selectedCrop = crops.find((c) => c.id === watchedCropId);
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((p) => p.id === plotId))
-    .filter((p): p is Plot => p != null);
+    .filter((p): p is Plot => p != null)
+    // drawn areas replace the geometry and size of partly covered plots
+    .map((plot) => withDrawnArea(plot, drawnAreas));
   const isMultiPlot = selectedPlots.length > 1;
   const isFixedAmountUnit = watchedUnit === "total_amount";
 
@@ -554,6 +561,8 @@ function CreateHarvest() {
               plots={plots}
               value={watchedPlotIds}
               onChange={(ids) => setValue("plotIds", ids)}
+              drawnAreas={drawnAreas}
+              onDrawnAreasChange={setDrawnAreas}
             />
           </div>
         )}
