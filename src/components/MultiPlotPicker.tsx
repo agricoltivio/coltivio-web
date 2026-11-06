@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
-import { X } from "lucide-react";
+import { PencilIcon, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Plot } from "@/api/types";
 import {
@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PlotPickerMap } from "@/components/PlotPickerMap";
+import { applyDrawing, NO_DRAWN_AREAS, type DrawnArea } from "@/lib/drawnAreas";
 
 type PlotOption = {
   value: string;
@@ -30,17 +31,23 @@ type PlotOption = {
 
 /**
  * Select one or more plots. Selected plots show as removable chips; more can be
- * added via the search combobox or by clicking polygons on the map.
+ * added via the search combobox or by clicking polygons on the map. With
+ * `onDrawnAreasChange`, an area can also be drawn on the map: every plot it touches
+ * is selected, and plots it only partly covers get the drawn part as their area.
  */
 export function MultiPlotPicker({
   plots,
   value,
   onChange,
+  drawnAreas = NO_DRAWN_AREAS,
+  onDrawnAreasChange,
   id,
 }: {
   plots: Plot[];
   value: string[];
   onChange: (plotIds: string[]) => void;
+  drawnAreas?: Record<string, DrawnArea>;
+  onDrawnAreasChange?: (drawnAreas: Record<string, DrawnArea>) => void;
   id?: string;
 }) {
   const { t } = useTranslation();
@@ -85,14 +92,31 @@ export function MultiPlotPicker({
     .map((plotId) => plots.find((p) => p.id === plotId))
     .filter((p): p is Plot => p != null);
 
+  // a plot added or removed as a whole drops its drawn area
+  function clearDrawnArea(plotId: string) {
+    if (!drawnAreas[plotId] || !onDrawnAreasChange) return;
+    const remainingAreas = { ...drawnAreas };
+    delete remainingAreas[plotId];
+    onDrawnAreasChange(remainingAreas);
+  }
   function add(plotId: string) {
     if (!value.includes(plotId)) onChange([...value, plotId]);
+    clearDrawnArea(plotId);
   }
   function remove(plotId: string) {
     onChange(value.filter((existingId) => existingId !== plotId));
+    clearDrawnArea(plotId);
+  }
+  function handleDrawComplete(drawnRing: [number, number][], editedRing: [number, number][] | null) {
+    if (!onDrawnAreasChange) return;
+    const next = applyDrawing({ plots, plotIds: value, drawnAreas, drawnRing, editedRing });
+    onChange(next.plotIds);
+    onDrawnAreasChange(next.drawnAreas);
   }
   function toggle(plotId: string) {
-    if (value.includes(plotId)) remove(plotId);
+    // clicking the rest of a partly drawn plot takes the whole plot, a second click deselects it
+    if (drawnAreas[plotId]) clearDrawnArea(plotId);
+    else if (value.includes(plotId)) remove(plotId);
     else add(plotId);
   }
 
@@ -105,7 +129,13 @@ export function MultiPlotPicker({
               key={plot.id}
               className="inline-flex items-center gap-1 rounded-full border bg-muted/40 py-1 pl-2.5 pr-1 text-sm"
             >
+              {drawnAreas[plot.id] && <PencilIcon className="size-3 text-muted-foreground" />}
               {plot.name}
+              {drawnAreas[plot.id] && (
+                <span className="text-muted-foreground">
+                  ({(drawnAreas[plot.id].size / 100).toFixed(1)} a)
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => remove(plot.id)}
@@ -178,7 +208,13 @@ export function MultiPlotPicker({
           <DialogHeader>
             <DialogTitle>{t("fieldCalendar.plots.selectPlot")}</DialogTitle>
           </DialogHeader>
-          <PlotPickerMap plots={plots} selectedIds={value} onPick={toggle} />
+          <PlotPickerMap
+            plots={plots}
+            selectedIds={value}
+            onPick={toggle}
+            drawnAreas={drawnAreas}
+            onDrawComplete={onDrawnAreasChange ? handleDrawComplete : undefined}
+          />
           <DialogFooter>
             <Button type="button" onClick={() => setMapOpen(false)}>
               {t("common.done")}

@@ -1128,7 +1128,12 @@
         "selfIntersecting": "I bordi della particella non devono incrociarsi.",
         "invalid_geometry": "La particella non ha superficie. Disegna almeno tre punti distinti.",
         "saveFailed": "Non è stato possibile salvare la particella."
-      }
+      },
+      "drawArea": "Disegna superficie",
+      "drawHint": "Posiziona i punti sulla mappa e trascinali per spostarli. I piccoli punti intermedi aggiungono un punto. Conferma con almeno 3 punti.",
+      "undoPoint": "Ultimo punto",
+      "finishDrawing": "Usa superficie",
+      "editDrawingHint": "Clicca su una superficie disegnata per modificarla."
     },
     "cropRotations": {
       "title": "Rotazione colturale",
