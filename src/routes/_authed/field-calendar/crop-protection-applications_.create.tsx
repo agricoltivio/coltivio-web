@@ -23,7 +23,7 @@ import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
-import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
+import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -854,20 +854,5 @@ function CreateCropProtectionApplication() {
         </DialogContent>
       </Dialog>
     </PageContent>
-  );
-}
-
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start justify-between gap-4 px-3 py-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{value}</dd>
-    </div>
   );
 }

@@ -45,7 +45,9 @@
     "title": "Titel",
     "date": "Datum",
     "done": "Fertig",
-    "wizardStepOf": "Schritt {{current}} von {{total}}"
+    "wizardStepOf": "Schritt {{current}} von {{total}}",
+    "saveFailed": "Das hat nicht geklappt. Bitte versuchen Sie es erneut.",
+    "required": "Pflichtfeld"
   },
   "nav": {
     "groups": {
@@ -109,7 +111,9 @@
     "treffpunkt": "Treffpunkt",
     "myFarm": "Mein Hof",
     "invoiceSettings": "Rechnungseinstellungen",
-    "users": "Benutzer"
+    "users": "Benutzer",
+    "sowings": "Saat",
+    "seeds": "Saatgut"
   },
   "animals": {
     "title": "Tiere",
@@ -1176,6 +1180,46 @@
       "deselectAll": "Alle abwählen",
       "entries": "{{count}} Einträge"
     },
+    "sowings": {
+      "title": "Saat",
+      "create": "Saat erfassen",
+      "date": "Datum",
+      "crop": "Kultur",
+      "selectCrop": "Kultur auswählen",
+      "seed": "Saatgut",
+      "noSeed": "Kein Saatgut",
+      "amount": "Menge",
+      "unit": "Einheit",
+      "total": "Total",
+      "rate": "Saatstärke",
+      "computedTotal": "Entspricht {{amount}} {{unit}} auf {{area}}",
+      "computedRate": "Entspricht {{amount}} {{unit}} auf {{area}}",
+      "deleteConfirm": "Möchten Sie diese Saat wirklich löschen?",
+      "wizard": {
+        "steps": {
+          "crop": "Saatgut, Kultur & Datum",
+          "plots": "Schläge",
+          "config": "Saat konfigurieren",
+          "divide": "Aufteilen",
+          "summary": "Zusammenfassung"
+        }
+      },
+      "units": {
+        "kg_per_ha": "kg/ha",
+        "g_per_m2": "g/m²",
+        "seeds_per_ha": "Körner/ha",
+        "seeds_per_m2": "Körner/m²",
+        "plants_per_ha": "Pflanzen/ha",
+        "plants_per_m2": "Pflanzen/m²",
+        "kg": "kg",
+        "g": "g",
+        "seeds": "Körner",
+        "plants": "Pflanzen"
+      },
+      "seedOptional": "Saatgut (optional)",
+      "cropFromSeed": "Die Kultur ergibt sich aus dem Saatgut.",
+      "amountInvalid": "Menge muss grösser als 0 sein"
+    },
     "tillages": {
       "title": "Bodenbearbeitung",
       "create": "Bodenbearbeitung erstellen",
@@ -1370,6 +1414,32 @@
       "mineral": "Mineralisch",
       "organic": "Organisch"
     }
+  },
+  "seeds": {
+    "title": "Saatgut",
+    "createSeed": "Saatgut erstellen",
+    "editSeed": "Saatgut bearbeiten",
+    "seedDetails": "Saatgutdetails",
+    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Saatgut löschen möchten? Die Vorlagen mit diesem Saatgut werden ebenfalls gelöscht.",
+    "name": "Name",
+    "crop": "Kultur",
+    "quantityKind": "Mengenangabe",
+    "quantityKinds": {
+      "weight": "nach Gewicht (kg, g)",
+      "count": "nach Stückzahl (Körner, Pflanzen)"
+    },
+    "quantityKindHint": "Gewicht für Saatgut in kg/g, Stückzahl für Körner oder Setzlinge.",
+    "quantityKindPermanent": "Kann später nicht geändert werden.",
+    "quantityKindLockedHint": "Die Mengenangabe kann nicht geändert werden, damit Mengen summierbar bleiben. Erstellen Sie dafür ein neues Saatgut.",
+    "defaultValuesDescription": "Werden beim Erfassen einer neuen Saat mit diesem Saatgut vorausgefüllt und können dort angepasst werden.",
+    "defaultAmountOptional": "Standardmenge (optional)",
+    "defaultUnit": "Standardeinheit",
+    "defaultRate": "Standard-Saatstärke",
+    "description": "Beschreibung",
+    "selectCrop": "Kultur auswählen",
+    "descriptionOptional": "Beschreibung (optional)",
+    "defaultValuesOptional": "Standardwerte (optional)",
+    "deleteFailed": "Das Saatgut konnte nicht gelöscht werden. Es wird möglicherweise noch verwendet."
   },
   "wiki": {
     "title": "Wiki",

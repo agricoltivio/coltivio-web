@@ -45,7 +45,9 @@
     "title": "Title",
     "date": "Date",
     "done": "Done",
-    "wizardStepOf": "Step {{current}} of {{total}}"
+    "wizardStepOf": "Step {{current}} of {{total}}",
+    "saveFailed": "That didn't work. Please try again.",
+    "required": "Required"
   },
   "nav": {
     "groups": {
@@ -109,7 +111,9 @@
     "treffpunkt": "Community",
     "myFarm": "My Farm",
     "invoiceSettings": "Invoice Settings",
-    "users": "Users"
+    "users": "Users",
+    "sowings": "Sowing",
+    "seeds": "Seeds"
   },
   "animals": {
     "title": "Animals",
@@ -1176,6 +1180,46 @@
       "deselectAll": "Deselect All",
       "entries": "{{count}} entries"
     },
+    "sowings": {
+      "title": "Sowing",
+      "create": "Record sowing",
+      "date": "Date",
+      "crop": "Crop",
+      "selectCrop": "Select crop",
+      "seed": "Seed",
+      "noSeed": "No seed",
+      "amount": "Amount",
+      "unit": "Unit",
+      "total": "Total",
+      "rate": "Seed rate",
+      "computedTotal": "Equals {{amount}} {{unit}} on {{area}}",
+      "computedRate": "Equals {{amount}} {{unit}} on {{area}}",
+      "deleteConfirm": "Do you really want to delete this sowing?",
+      "wizard": {
+        "steps": {
+          "crop": "Seed, crop & date",
+          "plots": "Plots",
+          "config": "Configure sowing",
+          "divide": "Divide",
+          "summary": "Summary"
+        }
+      },
+      "units": {
+        "kg_per_ha": "kg/ha",
+        "g_per_m2": "g/m²",
+        "seeds_per_ha": "seeds/ha",
+        "seeds_per_m2": "seeds/m²",
+        "plants_per_ha": "plants/ha",
+        "plants_per_m2": "plants/m²",
+        "kg": "kg",
+        "g": "g",
+        "seeds": "seeds",
+        "plants": "plants"
+      },
+      "seedOptional": "Seed (optional)",
+      "cropFromSeed": "The crop is taken from the seed.",
+      "amountInvalid": "Amount must be greater than 0"
+    },
     "tillages": {
       "title": "Tillages",
       "create": "Create tillage",
@@ -1370,6 +1414,32 @@
       "mineral": "Mineral",
       "organic": "Organic"
     }
+  },
+  "seeds": {
+    "title": "Seeds",
+    "createSeed": "Create seed",
+    "editSeed": "Edit seed",
+    "seedDetails": "Seed details",
+    "deleteConfirm": "Are you sure you want to delete this seed? Presets with this seed are deleted as well.",
+    "name": "Name",
+    "crop": "Crop",
+    "quantityKind": "Measured by",
+    "quantityKinds": {
+      "weight": "weight (kg, g)",
+      "count": "count (seeds, plants)"
+    },
+    "quantityKindHint": "Weight for seed in kg/g, count for seeds or seedlings.",
+    "quantityKindPermanent": "Can't be changed later.",
+    "quantityKindLockedHint": "How the amount is measured can't be changed so amounts stay summable. Create a new seed instead.",
+    "defaultValuesDescription": "Prefilled when recording a new sowing with this seed and can be adjusted there.",
+    "defaultAmountOptional": "Default amount (optional)",
+    "defaultUnit": "Default unit",
+    "defaultRate": "Default seed rate",
+    "description": "Description",
+    "selectCrop": "Select crop",
+    "descriptionOptional": "Description (optional)",
+    "defaultValuesOptional": "Default values (optional)",
+    "deleteFailed": "The seed couldn't be deleted. It may still be in use."
   },
   "wiki": {
     "title": "Wiki",

@@ -45,7 +45,9 @@
     "title": "Titre",
     "date": "Date",
     "done": "Terminé",
-    "wizardStepOf": "Étape {{current}} sur {{total}}"
+    "wizardStepOf": "Étape {{current}} sur {{total}}",
+    "saveFailed": "Cela n'a pas fonctionné. Veuillez réessayer.",
+    "required": "Obligatoire"
   },
   "nav": {
     "groups": {
@@ -109,7 +111,9 @@
     "treffpunkt": "Communauté",
     "myFarm": "Ma ferme",
     "invoiceSettings": "Paramètres de facturation",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "sowings": "Semis",
+    "seeds": "Semences"
   },
   "animals": {
     "title": "Animaux",
@@ -1176,6 +1180,46 @@
       "deselectAll": "Tout désélectionner",
       "entries": "{{count}} entrées"
     },
+    "sowings": {
+      "title": "Semis",
+      "create": "Saisir un semis",
+      "date": "Date",
+      "crop": "Culture",
+      "selectCrop": "Choisir une culture",
+      "seed": "Semence",
+      "noSeed": "Aucune semence",
+      "amount": "Quantité",
+      "unit": "Unité",
+      "total": "Total",
+      "rate": "Densité de semis",
+      "computedTotal": "Correspond à {{amount}} {{unit}} sur {{area}}",
+      "computedRate": "Correspond à {{amount}} {{unit}} sur {{area}}",
+      "deleteConfirm": "Voulez-vous vraiment supprimer ce semis ?",
+      "wizard": {
+        "steps": {
+          "crop": "Semence, culture & date",
+          "plots": "Parcelles",
+          "config": "Configurer le semis",
+          "divide": "Répartir",
+          "summary": "Résumé"
+        }
+      },
+      "units": {
+        "kg_per_ha": "kg/ha",
+        "g_per_m2": "g/m²",
+        "seeds_per_ha": "graines/ha",
+        "seeds_per_m2": "graines/m²",
+        "plants_per_ha": "plants/ha",
+        "plants_per_m2": "plants/m²",
+        "kg": "kg",
+        "g": "g",
+        "seeds": "graines",
+        "plants": "plants"
+      },
+      "seedOptional": "Semence (optionnel)",
+      "cropFromSeed": "La culture est reprise de la semence.",
+      "amountInvalid": "La quantité doit être supérieure à 0"
+    },
     "tillages": {
       "title": "Travail du sol",
       "create": "Enregistrer un travail",
@@ -1370,6 +1414,32 @@
       "mineral": "Minéral",
       "organic": "Organique"
     }
+  },
+  "seeds": {
+    "title": "Semences",
+    "createSeed": "Créer une semence",
+    "editSeed": "Modifier la semence",
+    "seedDetails": "Détails de la semence",
+    "deleteConfirm": "Voulez-vous vraiment supprimer cette semence ? Les modèles avec cette semence seront également supprimés.",
+    "name": "Nom",
+    "crop": "Culture",
+    "quantityKind": "Mesuré par",
+    "quantityKinds": {
+      "weight": "poids (kg, g)",
+      "count": "nombre (graines, plants)"
+    },
+    "quantityKindHint": "Poids pour les semences en kg/g, nombre pour les graines ou plants.",
+    "quantityKindPermanent": "Ne peut pas être modifié par la suite.",
+    "quantityKindLockedHint": "Le mode de mesure ne peut pas être modifié afin que les quantités restent additionnables. Créez une nouvelle semence.",
+    "defaultValuesDescription": "Pré-remplies lors de la saisie d'un nouveau semis avec cette semence et modifiables à ce moment-là.",
+    "defaultAmountOptional": "Quantité par défaut (optionnel)",
+    "defaultUnit": "Unité par défaut",
+    "defaultRate": "Densité de semis par défaut",
+    "description": "Description",
+    "selectCrop": "Choisir une culture",
+    "descriptionOptional": "Description (optionnel)",
+    "defaultValuesOptional": "Valeurs par défaut (optionnel)",
+    "deleteFailed": "La semence n'a pas pu être supprimée. Elle est peut-être encore utilisée."
   },
   "wiki": {
     "title": "Wiki",
