@@ -631,9 +631,7 @@ function CreateSowing() {
           </div>
         )}
 
-        {(createMutation.isError ||
-          createPresetMutation.isError ||
-          deletePresetMutation.isError) && (
+        {createMutation.isError && (
           <p className="text-sm text-destructive">{t("common.saveFailed")}</p>
         )}
         <WizardNav
@@ -667,12 +665,17 @@ function CreateSowing() {
               autoFocus
             />
           </div>
+          {/* the dialog covers the page, so its error is shown here */}
+          {createPresetMutation.isError && (
+            <p className="text-sm text-destructive">{t("common.saveFailed")}</p>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
               onClick={() => {
                 setSavePresetOpen(false);
                 setNewPresetName("");
+                createPresetMutation.reset();
               }}
             >
               {t("common.cancel")}
@@ -749,6 +752,10 @@ function CreateSowing() {
                 </li>
               ))}
             </ul>
+          )}
+          {/* the dialog covers the page, so its error is shown here */}
+          {deletePresetMutation.isError && (
+            <p className="text-sm text-destructive">{t("common.saveFailed")}</p>
           )}
           <DialogFooter>
             <Button
