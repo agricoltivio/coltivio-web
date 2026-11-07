@@ -7,20 +7,59 @@ import type { SeedQuantityKind, SowingUnit, SowingUnitInfo } from "@/api/types";
 // seed allows (quantity kind) still comes from that endpoint.
 const AREA_COUNTERPARTS: Record<
   SowingUnit,
-  { perArea: boolean; counterpartUnit: SowingUnit; squareMetersPerAreaUnit: number }
+  {
+    perArea: boolean;
+    counterpartUnit: SowingUnit;
+    squareMetersPerAreaUnit: number;
+  }
 > = {
-  kg_per_ha: { perArea: true, counterpartUnit: "kg", squareMetersPerAreaUnit: 10000 },
+  kg_per_ha: {
+    perArea: true,
+    counterpartUnit: "kg",
+    squareMetersPerAreaUnit: 10000,
+  },
   g_per_m2: { perArea: true, counterpartUnit: "g", squareMetersPerAreaUnit: 1 },
-  seeds_per_ha: { perArea: true, counterpartUnit: "seeds", squareMetersPerAreaUnit: 10000 },
-  seeds_per_m2: { perArea: true, counterpartUnit: "seeds", squareMetersPerAreaUnit: 1 },
-  plants_per_ha: { perArea: true, counterpartUnit: "plants", squareMetersPerAreaUnit: 10000 },
-  plants_per_m2: { perArea: true, counterpartUnit: "plants", squareMetersPerAreaUnit: 1 },
-  kg: { perArea: false, counterpartUnit: "kg_per_ha", squareMetersPerAreaUnit: 10000 },
-  g: { perArea: false, counterpartUnit: "g_per_m2", squareMetersPerAreaUnit: 1 },
-  seeds: { perArea: false, counterpartUnit: "seeds_per_ha", squareMetersPerAreaUnit: 10000 },
-  plants: { perArea: false, counterpartUnit: "plants_per_ha", squareMetersPerAreaUnit: 10000 },
+  seeds_per_ha: {
+    perArea: true,
+    counterpartUnit: "seeds",
+    squareMetersPerAreaUnit: 10000,
+  },
+  seeds_per_m2: {
+    perArea: true,
+    counterpartUnit: "seeds",
+    squareMetersPerAreaUnit: 1,
+  },
+  plants_per_ha: {
+    perArea: true,
+    counterpartUnit: "plants",
+    squareMetersPerAreaUnit: 10000,
+  },
+  plants_per_m2: {
+    perArea: true,
+    counterpartUnit: "plants",
+    squareMetersPerAreaUnit: 1,
+  },
+  kg: {
+    perArea: false,
+    counterpartUnit: "kg_per_ha",
+    squareMetersPerAreaUnit: 10000,
+  },
+  g: {
+    perArea: false,
+    counterpartUnit: "g_per_m2",
+    squareMetersPerAreaUnit: 1,
+  },
+  seeds: {
+    perArea: false,
+    counterpartUnit: "seeds_per_ha",
+    squareMetersPerAreaUnit: 10000,
+  },
+  plants: {
+    perArea: false,
+    counterpartUnit: "plants_per_ha",
+    squareMetersPerAreaUnit: 10000,
+  },
 };
-
 
 export function isPerAreaUnit(unit: SowingUnit): boolean {
   return AREA_COUNTERPARTS[unit].perArea;

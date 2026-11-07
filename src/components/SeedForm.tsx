@@ -81,7 +81,9 @@ export function SeedForm({
       <div className="space-y-1">
         <Label htmlFor="name">{t("seeds.name")}</Label>
         <Input id="name" {...register("name", { required: true })} />
-        {errors.name && <p className="text-sm text-destructive">{t("common.required")}</p>}
+        {errors.name && (
+          <p className="text-sm text-destructive">{t("common.required")}</p>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -105,7 +107,9 @@ export function SeedForm({
                 ))}
               </SelectContent>
             </Select>
-            {errors.cropId && <p className="text-sm text-destructive">{t("common.required")}</p>}
+            {errors.cropId && (
+              <p className="text-sm text-destructive">{t("common.required")}</p>
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="seed-quantityKind">{t("seeds.quantityKind")}</Label>
@@ -113,13 +117,16 @@ export function SeedForm({
               value={watchedQuantityKind}
               disabled={quantityKindLocked}
               onValueChange={(value) => {
-                const quantityKind = SEED_QUANTITY_KINDS.find((kind) => kind === value);
+                const quantityKind = SEED_QUANTITY_KINDS.find(
+                  (kind) => kind === value,
+                );
                 if (!quantityKind) return;
                 setValue("quantityKind", quantityKind);
                 // drop a default unit that doesn't fit the new kind
-                const stillValid = unitsForQuantityKind(unitsQuery.data ?? [], quantityKind).some(
-                  (unitInfo) => unitInfo.unit === watchedDefaultUnit,
-                );
+                const stillValid = unitsForQuantityKind(
+                  unitsQuery.data ?? [],
+                  quantityKind,
+                ).some((unitInfo) => unitInfo.unit === watchedDefaultUnit);
                 if (!stillValid) setValue("defaultUnit", NONE);
               }}
             >
@@ -142,7 +149,9 @@ export function SeedForm({
           ) : (
             <>
               {t("seeds.quantityKindHint")}{" "}
-              <span className="font-semibold">{t("seeds.quantityKindPermanent")}</span>
+              <span className="font-semibold">
+                {t("seeds.quantityKindPermanent")}
+              </span>
             </>
           )}
         </p>
@@ -150,8 +159,12 @@ export function SeedForm({
 
       <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
         <div className="space-y-1">
-          <h3 className="text-sm font-medium">{t("seeds.defaultValuesOptional")}</h3>
-          <p className="text-xs text-muted-foreground">{t("seeds.defaultValuesDescription")}</p>
+          <h3 className="text-sm font-medium">
+            {t("seeds.defaultValuesOptional")}
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            {t("seeds.defaultValuesDescription")}
+          </p>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
@@ -165,7 +178,9 @@ export function SeedForm({
                   setValue("defaultAmount", "");
                   return;
                 }
-                const unitInfo = availableUnits.find((info) => info.unit === value);
+                const unitInfo = availableUnits.find(
+                  (info) => info.unit === value,
+                );
                 if (unitInfo) setValue("defaultUnit", unitInfo.unit);
               }}
             >
@@ -183,8 +198,11 @@ export function SeedForm({
             </Select>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="seed-defaultAmountOptional">{t("seeds.defaultAmountOptional")}</Label>
-            <Input id="seed-defaultAmountOptional"
+            <Label htmlFor="seed-defaultAmountOptional">
+              {t("seeds.defaultAmountOptional")}
+            </Label>
+            <Input
+              id="seed-defaultAmountOptional"
               type="number"
               min={0}
               step="any"

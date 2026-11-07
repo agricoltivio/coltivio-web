@@ -117,7 +117,9 @@ function SeedDetailPage() {
       )}
 
       {deleteMutation.isError && (
-        <p className="mb-4 text-sm text-destructive">{t("seeds.deleteFailed")}</p>
+        <p className="mb-4 text-sm text-destructive">
+          {t("seeds.deleteFailed")}
+        </p>
       )}
       <Card>
         <CardHeader>
@@ -135,7 +137,10 @@ function SeedDetailPage() {
               label={t("seeds.defaultRate")}
               value={
                 seed.defaultUnit
-                  ? [seed.defaultAmount, t(`fieldCalendar.sowings.units.${seed.defaultUnit}`)]
+                  ? [
+                      seed.defaultAmount,
+                      t(`fieldCalendar.sowings.units.${seed.defaultUnit}`),
+                    ]
                       .filter((part) => part != null)
                       .join(" ")
                   : "-"
@@ -152,7 +157,13 @@ function SeedDetailPage() {
   );
 }
 
-function DetailItem({ label, value }: { label: string; value: React.ReactNode }) {
+function DetailItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div>
       <dt className="text-sm font-medium text-muted-foreground">{label}</dt>

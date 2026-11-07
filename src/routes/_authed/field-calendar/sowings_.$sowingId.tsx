@@ -7,10 +7,19 @@ import { z } from "zod";
 import { apiClient } from "@/api/client";
 import { cropsQueryOptions } from "@/api/crops.queries";
 import { seedsQueryOptions } from "@/api/seeds.queries";
-import { sowingQueryOptions, sowingUnitsQueryOptions } from "@/api/sowings.queries";
+import {
+  sowingQueryOptions,
+  sowingUnitsQueryOptions,
+} from "@/api/sowings.queries";
 import type { SowingUnit } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
-import { computeCounterpart, formatArea, formatBaseAmount, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
+import {
+  computeCounterpart,
+  formatArea,
+  formatBaseAmount,
+  isPerAreaUnit,
+  unitsForQuantityKind,
+} from "@/lib/sowingUnits";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +52,9 @@ const searchSchema = z.object({
   returnTo: z.string().optional(),
 });
 
-export const Route = createFileRoute("/_authed/field-calendar/sowings_/$sowingId")({
+export const Route = createFileRoute(
+  "/_authed/field-calendar/sowings_/$sowingId",
+)({
   validateSearch: searchSchema,
   loader: ({ context: { queryClient }, params: { sowingId } }) => {
     queryClient.ensureQueryData(sowingQueryOptions(sowingId));
@@ -168,10 +179,19 @@ function SowingDetail() {
   }
 
   const selectedSeed = seeds.find((seed) => seed.id === watchedSeedId);
-  const availableUnits = unitsForQuantityKind(units, selectedSeed?.quantityKind);
+  const availableUnits = unitsForQuantityKind(
+    units,
+    selectedSeed?.quantityKind,
+  );
   const perArea = isPerAreaUnit(watchedUnit);
-  const counterpart = computeCounterpart(parseFloat(watchedAmount) || 0, watchedUnit, sowing.size);
-  const storedUnitInfo = units.find((unitInfo) => unitInfo.unit === sowing.unit);
+  const counterpart = computeCounterpart(
+    parseFloat(watchedAmount) || 0,
+    watchedUnit,
+    sowing.size,
+  );
+  const storedUnitInfo = units.find(
+    (unitInfo) => unitInfo.unit === sowing.unit,
+  );
 
   function selectSeed(seedId: string) {
     setValue("seedId", seedId);
@@ -182,7 +202,8 @@ function SowingDetail() {
     // A seed of another kind brings its own default unit and amount, the old
     // number would mean something else in the new unit
     const fittingUnits = unitsForQuantityKind(units, seed.quantityKind);
-    if (fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit"))) return;
+    if (fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit")))
+      return;
     const nextUnit = seed.defaultUnit ?? fittingUnits[0]?.unit;
     if (nextUnit) setValue("unit", nextUnit);
     setValue("amount", seed.defaultAmount?.toString() ?? "");
@@ -229,16 +250,22 @@ function SowingDetail() {
         {/* Area is fixed after creation, only shown for reference */}
         <div className="rounded-md border p-4 space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">{t("fieldCalendar.plots.plot")}</span>
+            <span className="text-muted-foreground">
+              {t("fieldCalendar.plots.plot")}
+            </span>
             <span className="font-medium">{sowing.plot.name}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">{t("fieldCalendar.tillages.size")}</span>
+            <span className="text-muted-foreground">
+              {t("fieldCalendar.tillages.size")}
+            </span>
             <span className="font-medium">{formatArea(sowing.size)}</span>
           </div>
           {storedUnitInfo && (
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t("fieldCalendar.sowings.total")}</span>
+              <span className="text-muted-foreground">
+                {t("fieldCalendar.sowings.total")}
+              </span>
               <span className="font-medium">
                 {formatBaseAmount(sowing.totalBaseAmount, storedUnitInfo, t)}
               </span>
@@ -248,7 +275,9 @@ function SowingDetail() {
 
         <fieldset disabled={!canWrite} className="space-y-4">
           <div className="space-y-1">
-            <Label htmlFor="sowing-edit-seedOptional">{t("fieldCalendar.sowings.seedOptional")}</Label>
+            <Label htmlFor="sowing-edit-seedOptional">
+              {t("fieldCalendar.sowings.seedOptional")}
+            </Label>
             <Select
               value={watchedSeedId || NO_SEED}
               onValueChange={(value) => {
@@ -261,11 +290,16 @@ function SowingDetail() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={NO_SEED}>{t("fieldCalendar.sowings.noSeed")}</SelectItem>
+                <SelectItem value={NO_SEED}>
+                  {t("fieldCalendar.sowings.noSeed")}
+                </SelectItem>
                 {seeds.map((seed) => (
                   <SelectItem key={seed.id} value={seed.id}>
                     {seed.name}
-                    <span className="text-muted-foreground"> · {seed.crop.name}</span>
+                    <span className="text-muted-foreground">
+                      {" "}
+                      · {seed.crop.name}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -273,7 +307,9 @@ function SowingDetail() {
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="sowing-edit-crop">{t("fieldCalendar.sowings.crop")}</Label>
+            <Label htmlFor="sowing-edit-crop">
+              {t("fieldCalendar.sowings.crop")}
+            </Label>
             <Select
               value={watchedCropId}
               onValueChange={(value) => {
@@ -300,14 +336,23 @@ function SowingDetail() {
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="sowing-edit-date">{t("fieldCalendar.sowings.date")}</Label>
-            <Input id="sowing-edit-date" type="date" {...register("date", { required: true })} />
+            <Label htmlFor="sowing-edit-date">
+              {t("fieldCalendar.sowings.date")}
+            </Label>
+            <Input
+              id="sowing-edit-date"
+              type="date"
+              {...register("date", { required: true })}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label htmlFor="sowing-edit-amount">{t("fieldCalendar.sowings.amount")}</Label>
-              <Input id="sowing-edit-amount"
+              <Label htmlFor="sowing-edit-amount">
+                {t("fieldCalendar.sowings.amount")}
+              </Label>
+              <Input
+                id="sowing-edit-amount"
                 type="number"
                 min={0}
                 step="any"
@@ -318,15 +363,21 @@ function SowingDetail() {
                 })}
               />
               {errors.amount && (
-                <p className="text-sm text-destructive">{t("fieldCalendar.sowings.amountInvalid")}</p>
+                <p className="text-sm text-destructive">
+                  {t("fieldCalendar.sowings.amountInvalid")}
+                </p>
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="sowing-edit-unit">{t("fieldCalendar.sowings.unit")}</Label>
+              <Label htmlFor="sowing-edit-unit">
+                {t("fieldCalendar.sowings.unit")}
+              </Label>
               <Select
                 value={watchedUnit}
                 onValueChange={(value) => {
-                  const unitInfo = availableUnits.find((info) => info.unit === value);
+                  const unitInfo = availableUnits.find(
+                    (info) => info.unit === value,
+                  );
                   if (unitInfo) setValue("unit", unitInfo.unit);
                 }}
                 disabled={!canWrite}
@@ -347,7 +398,9 @@ function SowingDetail() {
           {counterpart && (
             <p className="text-sm text-muted-foreground">
               {t(
-                perArea ? "fieldCalendar.sowings.computedTotal" : "fieldCalendar.sowings.computedRate",
+                perArea
+                  ? "fieldCalendar.sowings.computedTotal"
+                  : "fieldCalendar.sowings.computedRate",
                 {
                   amount: counterpart.amount.toLocaleString(),
                   unit: t(`fieldCalendar.sowings.units.${counterpart.unit}`),
@@ -358,8 +411,14 @@ function SowingDetail() {
           )}
 
           <div className="space-y-1">
-            <Label htmlFor="sowing-edit-notes">{t("fieldCalendar.tillages.notes")}</Label>
-            <Textarea id="sowing-edit-notes" {...register("additionalNotes")} rows={3} />
+            <Label htmlFor="sowing-edit-notes">
+              {t("fieldCalendar.tillages.notes")}
+            </Label>
+            <Textarea
+              id="sowing-edit-notes"
+              {...register("additionalNotes")}
+              rows={3}
+            />
           </div>
         </fieldset>
 
@@ -371,11 +430,7 @@ function SowingDetail() {
             <Button type="submit" disabled={updateMutation.isPending}>
               {t("common.save")}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToList}
-            >
+            <Button type="button" variant="outline" onClick={goToList}>
               {t("common.cancel")}
             </Button>
           </div>

@@ -10,13 +10,20 @@ import { apiClient } from "@/api/client";
 import { cropsQueryOptions } from "@/api/crops.queries";
 import { plotsQueryOptions } from "@/api/plots.queries";
 import { seedsQueryOptions } from "@/api/seeds.queries";
-import { sowingPresetsQueryOptions, sowingUnitsQueryOptions } from "@/api/sowings.queries";
+import {
+  sowingPresetsQueryOptions,
+  sowingUnitsQueryOptions,
+} from "@/api/sowings.queries";
 import type { Plot, SowingPreset, SowingUnit } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
-import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
+import {
+  WizardNav,
+  WizardProgress,
+  SummaryRow,
+} from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +41,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { computeCounterpart, formatArea, isPerAreaUnit, unitsForQuantityKind } from "@/lib/sowingUnits";
+import {
+  computeCounterpart,
+  formatArea,
+  isPerAreaUnit,
+  unitsForQuantityKind,
+} from "@/lib/sowingUnits";
 
 const ALL_STEPS = ["crop", "config", "plots", "divide", "summary"] as const;
 type WizardStep = (typeof ALL_STEPS)[number];
@@ -47,17 +59,19 @@ const searchSchema = z.object({
   returnTo: z.string().optional(),
 });
 
-export const Route = createFileRoute("/_authed/field-calendar/sowings_/create")({
-  validateSearch: searchSchema,
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(plotsQueryOptions());
-    queryClient.ensureQueryData(cropsQueryOptions());
-    queryClient.ensureQueryData(seedsQueryOptions());
-    queryClient.ensureQueryData(sowingPresetsQueryOptions());
-    queryClient.ensureQueryData(sowingUnitsQueryOptions());
+export const Route = createFileRoute("/_authed/field-calendar/sowings_/create")(
+  {
+    validateSearch: searchSchema,
+    loader: ({ context: { queryClient } }) => {
+      queryClient.ensureQueryData(plotsQueryOptions());
+      queryClient.ensureQueryData(cropsQueryOptions());
+      queryClient.ensureQueryData(seedsQueryOptions());
+      queryClient.ensureQueryData(sowingPresetsQueryOptions());
+      queryClient.ensureQueryData(sowingUnitsQueryOptions());
+    },
+    component: CreateSowing,
   },
-  component: CreateSowing,
-});
+);
 
 type FormData = {
   plotIds: string[];
@@ -86,10 +100,14 @@ function CreateSowing() {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [savePresetOpen, setSavePresetOpen] = useState(false);
   const [managePresetsOpen, setManagePresetsOpen] = useState(false);
-  const [presetIdPendingDelete, setPresetIdPendingDelete] = useState<string | null>(null);
+  const [presetIdPendingDelete, setPresetIdPendingDelete] = useState<
+    string | null
+  >(null);
   const [newPresetName, setNewPresetName] = useState("");
   // Per-plot totals, only used for total units on more than one plot
-  const [amountsByPlot, setAmountsByPlot] = useState<Record<string, string>>({});
+  const [amountsByPlot, setAmountsByPlot] = useState<Record<string, string>>(
+    {},
+  );
   const [divideByArea, setDivideByArea] = useState(true);
 
   const plotsQuery = useQuery(plotsQueryOptions());
@@ -130,7 +148,10 @@ function CreateSowing() {
 
   const selectedCrop = crops.find((crop) => crop.id === watchedCropId);
   const selectedSeed = seeds.find((seed) => seed.id === watchedSeedId);
-  const availableUnits = unitsForQuantityKind(units, selectedSeed?.quantityKind);
+  const availableUnits = unitsForQuantityKind(
+    units,
+    selectedSeed?.quantityKind,
+  );
   // Only presets of this crop whose seed (if any) is the chosen one and whose unit
   // fits the chosen seed can be applied without changing the seed (same as the app)
   const presetsForCrop = presets.filter(
@@ -148,9 +169,14 @@ function CreateSowing() {
 
   const amountNumber = parseFloat(watchedAmount) || 0;
   // "." or "0" would be saved as an empty sowing
-  const amountValid = Number.isFinite(Number(watchedAmount)) && Number(watchedAmount) > 0;
+  const amountValid =
+    Number.isFinite(Number(watchedAmount)) && Number(watchedAmount) > 0;
   const perArea = isPerAreaUnit(watchedUnit);
-  const counterpart = computeCounterpart(amountNumber, watchedUnit, selectedSize);
+  const counterpart = computeCounterpart(
+    amountNumber,
+    watchedUnit,
+    selectedSize,
+  );
   const unitLabel = t(`fieldCalendar.sowings.units.${watchedUnit}`);
   const roundedTotal = Math.round((amountNumber + Number.EPSILON) * 100) / 100;
   const needsDivide = isMultiPlot && !perArea;
@@ -170,8 +196,11 @@ function CreateSowing() {
     // else, so it's replaced by the seed's default amount or cleared.
     const previousUnit = getValues("unit");
     const fittingUnits = unitsForQuantityKind(units, seed.quantityKind);
-    const keepsUnit = fittingUnits.some((unitInfo) => unitInfo.unit === previousUnit);
-    const nextUnit = seed.defaultUnit ?? (keepsUnit ? previousUnit : fittingUnits[0]?.unit);
+    const keepsUnit = fittingUnits.some(
+      (unitInfo) => unitInfo.unit === previousUnit,
+    );
+    const nextUnit =
+      seed.defaultUnit ?? (keepsUnit ? previousUnit : fittingUnits[0]?.unit);
     if (!nextUnit) return;
     setValue("unit", nextUnit);
     if (seed.defaultAmount != null) {
@@ -197,7 +226,9 @@ function CreateSowing() {
             .map((plot) => ({
               plotId: plot.id,
               // per-area rates apply to every plot, totals are split across plots
-              amount: needsDivide ? parseFloat(amountsByPlot[plot.id] ?? "") || 0 : amount,
+              amount: needsDivide
+                ? parseFloat(amountsByPlot[plot.id] ?? "") || 0
+                : amount,
               geometry: plot.geometry,
               size: plot.size,
             }))
@@ -239,9 +270,12 @@ function CreateSowing() {
 
   const deletePresetMutation = useMutation({
     mutationFn: async (presetId: string) => {
-      const response = await apiClient.DELETE("/v1/sowings/presets/byId/{presetId}", {
-        params: { path: { presetId } },
-      });
+      const response = await apiClient.DELETE(
+        "/v1/sowings/presets/byId/{presetId}",
+        {
+          params: { path: { presetId } },
+        },
+      );
       if (response.error) throw new Error("Failed to delete sowing preset");
     },
     onSuccess: (_data, deletedPresetId) => {
@@ -266,7 +300,8 @@ function CreateSowing() {
     ? step
     : ([...steps]
         .reverse()
-        .find((s) => ALL_STEPS.indexOf(s) <= ALL_STEPS.indexOf(step)) ?? steps[0]);
+        .find((s) => ALL_STEPS.indexOf(s) <= ALL_STEPS.indexOf(step)) ??
+      steps[0]);
   const stepIndex = steps.indexOf(activeStep);
 
   function stepValid(s: WizardStep): boolean {
@@ -308,7 +343,9 @@ function CreateSowing() {
         {activeStep === "crop" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <Label htmlFor="sowing-seedOptional">{t("fieldCalendar.sowings.seedOptional")}</Label>
+              <Label htmlFor="sowing-seedOptional">
+                {t("fieldCalendar.sowings.seedOptional")}
+              </Label>
               <Select
                 value={watchedSeedId || NO_SEED}
                 onValueChange={(value) => {
@@ -320,18 +357,25 @@ function CreateSowing() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={NO_SEED}>{t("fieldCalendar.sowings.noSeed")}</SelectItem>
+                  <SelectItem value={NO_SEED}>
+                    {t("fieldCalendar.sowings.noSeed")}
+                  </SelectItem>
                   {seeds.map((seed) => (
                     <SelectItem key={seed.id} value={seed.id}>
                       {seed.name}
-                      <span className="text-muted-foreground"> · {seed.crop.name}</span>
+                      <span className="text-muted-foreground">
+                        {" "}
+                        · {seed.crop.name}
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="sowing-crop">{t("fieldCalendar.sowings.crop")}</Label>
+              <Label htmlFor="sowing-crop">
+                {t("fieldCalendar.sowings.crop")}
+              </Label>
               <Select
                 value={watchedCropId}
                 disabled={!!selectedSeed}
@@ -342,7 +386,9 @@ function CreateSowing() {
                 }}
               >
                 <SelectTrigger id="sowing-crop" className="w-full">
-                  <SelectValue placeholder={t("fieldCalendar.sowings.selectCrop")} />
+                  <SelectValue
+                    placeholder={t("fieldCalendar.sowings.selectCrop")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {crops.map((crop) => (
@@ -359,8 +405,14 @@ function CreateSowing() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="sowing-date">{t("fieldCalendar.sowings.date")}</Label>
-              <Input id="sowing-date" type="date" {...register("date", { required: true })} />
+              <Label htmlFor="sowing-date">
+                {t("fieldCalendar.sowings.date")}
+              </Label>
+              <Input
+                id="sowing-date"
+                type="date"
+                {...register("date", { required: true })}
+              />
             </div>
           </div>
         )}
@@ -381,7 +433,9 @@ function CreateSowing() {
         {activeStep === "config" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <Label htmlFor="sowing-select">{t("fieldCalendar.presets.select")}</Label>
+              <Label htmlFor="sowing-select">
+                {t("fieldCalendar.presets.select")}
+              </Label>
               <div className="flex gap-1">
                 <div className="min-w-0 flex-1">
                   <Select
@@ -389,7 +443,9 @@ function CreateSowing() {
                     onValueChange={(value) => applyPreset(value)}
                   >
                     <SelectTrigger id="sowing-select" className="w-full">
-                      <SelectValue placeholder={t("fieldCalendar.presets.select")} />
+                      <SelectValue
+                        placeholder={t("fieldCalendar.presets.select")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {presetsForCrop.length === 0 ? (
@@ -421,8 +477,11 @@ function CreateSowing() {
             <div className="space-y-4 rounded-lg border bg-muted/20 p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label htmlFor="sowing-amount">{t("fieldCalendar.sowings.amount")}</Label>
-                  <Input id="sowing-amount"
+                  <Label htmlFor="sowing-amount">
+                    {t("fieldCalendar.sowings.amount")}
+                  </Label>
+                  <Input
+                    id="sowing-amount"
                     type="number"
                     min={0}
                     step="any"
@@ -430,11 +489,15 @@ function CreateSowing() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="sowing-unit">{t("fieldCalendar.sowings.unit")}</Label>
+                  <Label htmlFor="sowing-unit">
+                    {t("fieldCalendar.sowings.unit")}
+                  </Label>
                   <Select
                     value={watchedUnit}
                     onValueChange={(value) => {
-                      const unitInfo = availableUnits.find((info) => info.unit === value);
+                      const unitInfo = availableUnits.find(
+                        (info) => info.unit === value,
+                      );
                       if (unitInfo) setValue("unit", unitInfo.unit);
                     }}
                   >
@@ -452,7 +515,9 @@ function CreateSowing() {
                 </div>
               </div>
               {watchedAmount.trim() !== "" && !amountValid && (
-                <p className="text-sm text-destructive">{t("fieldCalendar.sowings.amountInvalid")}</p>
+                <p className="text-sm text-destructive">
+                  {t("fieldCalendar.sowings.amountInvalid")}
+                </p>
               )}
               {counterpart && amountNumber > 0 && (
                 <p className="text-sm text-muted-foreground">
@@ -462,7 +527,9 @@ function CreateSowing() {
                       : "fieldCalendar.sowings.computedRate",
                     {
                       amount: counterpart.amount.toLocaleString(),
-                      unit: t(`fieldCalendar.sowings.units.${counterpart.unit}`),
+                      unit: t(
+                        `fieldCalendar.sowings.units.${counterpart.unit}`,
+                      ),
                       area: counterpart.area,
                     },
                   )}
@@ -552,8 +619,14 @@ function CreateSowing() {
             </dl>
 
             <div className="space-y-1">
-              <Label htmlFor="sowing-notes">{t("fieldCalendar.tillages.notes")}</Label>
-              <Textarea id="sowing-notes" {...register("additionalNotes")} rows={3} />
+              <Label htmlFor="sowing-notes">
+                {t("fieldCalendar.tillages.notes")}
+              </Label>
+              <Textarea
+                id="sowing-notes"
+                {...register("additionalNotes")}
+                rows={3}
+              />
             </div>
           </div>
         )}
@@ -566,7 +639,9 @@ function CreateSowing() {
         <WizardNav
           isFirst={stepIndex === 0}
           isLast={activeStep === "summary"}
-          canAdvance={activeStep === "summary" ? !divideInvalid : stepValid(activeStep)}
+          canAdvance={
+            activeStep === "summary" ? !divideInvalid : stepValid(activeStep)
+          }
           saving={createMutation.isPending}
           onBack={goBack}
           onCancel={goToOverview}
@@ -582,8 +657,11 @@ function CreateSowing() {
             <DialogTitle>{t("fieldCalendar.presets.saveAs")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-1">
-            <Label htmlFor="sowing-name">{t("fieldCalendar.presets.name")}</Label>
-            <Input id="sowing-name"
+            <Label htmlFor="sowing-name">
+              {t("fieldCalendar.presets.name")}
+            </Label>
+            <Input
+              id="sowing-name"
               value={newPresetName}
               onChange={(e) => setNewPresetName(e.target.value)}
               autoFocus
@@ -628,7 +706,10 @@ function CreateSowing() {
                 >
                   <span className="text-sm">
                     {preset.name}
-                    <span className="text-muted-foreground"> · {preset.crop.name}</span>
+                    <span className="text-muted-foreground">
+                      {" "}
+                      · {preset.crop.name}
+                    </span>
                   </span>
                   {/* deleting asks once more in the row itself */}
                   {presetIdPendingDelete === preset.id ? (
@@ -670,7 +751,10 @@ function CreateSowing() {
             </ul>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setManagePresetsOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setManagePresetsOpen(false)}
+            >
               {t("common.close")}
             </Button>
           </DialogFooter>

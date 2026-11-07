@@ -1,7 +1,12 @@
 import { createInstance } from "i18next";
 import { beforeAll, describe, expect, test } from "vitest";
 import type { SowingUnitInfo } from "@/api/types";
-import { computeCounterpart, formatArea, formatBaseAmount, isPerAreaUnit } from "./sowingUnits";
+import {
+  computeCounterpart,
+  formatArea,
+  formatBaseAmount,
+  isPerAreaUnit,
+} from "./sowingUnits";
 
 const translator = createInstance();
 
@@ -9,7 +14,13 @@ beforeAll(async () => {
   await translator.init({
     lng: "de",
     resources: {
-      de: { translation: { fieldCalendar: { sowings: { units: { plants: "Pflanzen", seeds: "Körner" } } } } },
+      de: {
+        translation: {
+          fieldCalendar: {
+            sowings: { units: { plants: "Pflanzen", seeds: "Körner" } },
+          },
+        },
+      },
     },
   });
 });
@@ -46,12 +57,20 @@ describe("formatArea", () => {
 
 describe("computeCounterpart", () => {
   test("turns a rate per hectare into a total", () => {
-    expect(computeCounterpart(30, "kg_per_ha", 5000)).toEqual({ amount: 15, unit: "kg", area: "50 a" });
+    expect(computeCounterpart(30, "kg_per_ha", 5000)).toEqual({
+      amount: 15,
+      unit: "kg",
+      area: "50 a",
+    });
   });
 
   test("switches large gram totals to kg", () => {
     // 10 g/m² on 3875 m² = 38'750 g
-    expect(computeCounterpart(10, "g_per_m2", 3875)).toEqual({ amount: 38.75, unit: "kg", area: "38.75 a" });
+    expect(computeCounterpart(10, "g_per_m2", 3875)).toEqual({
+      amount: 38.75,
+      unit: "kg",
+      area: "38.75 a",
+    });
   });
 
   test("turns a total into a rate", () => {

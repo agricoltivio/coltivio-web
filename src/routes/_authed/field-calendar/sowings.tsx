@@ -11,7 +11,10 @@ import {
   sowingUnitsQueryOptions,
 } from "@/api/sowings.queries";
 import type { components } from "@/api/schema";
-import { MonthlyComparisonChart, type YearData } from "@/components/charts/MonthlyStackedChart";
+import {
+  MonthlyComparisonChart,
+  type YearData,
+} from "@/components/charts/MonthlyStackedChart";
 import {
   assignYearColors,
   computeCumulative,
@@ -27,8 +30,10 @@ import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { formatArea, formatBaseAmount } from "@/lib/sowingUnits";
 import { formatDateOnly } from "@/lib/utils";
 
-type GlobalSowing = components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
-type PlotSowing = components["schemas"]["GetV1PlotsByIdPlotIdSowingsPositiveResponse"]["data"]["result"][number];
+type GlobalSowing =
+  components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
+type PlotSowing =
+  components["schemas"]["GetV1PlotsByIdPlotIdSowingsPositiveResponse"]["data"]["result"][number];
 type AnySowing = GlobalSowing | PlotSowing;
 type MonthlySowing =
   components["schemas"]["GetV1SowingsSummariesPositiveResponse"]["data"]["monthlySowings"][number];
@@ -90,7 +95,8 @@ function Sowings() {
   const sowings: AnySowing[] =
     (plotId ? plotQuery.data?.result : globalQuery.data?.result) ?? [];
   const summaries: MonthlySowing[] =
-    (plotId ? plotSummariesQuery.data : globalSummariesQuery.data)?.monthlySowings ?? [];
+    (plotId ? plotSummariesQuery.data : globalSummariesQuery.data)
+      ?.monthlySowings ?? [];
   const units = unitsQuery.data ?? [];
 
   // Crop chips filter the charts and the table
@@ -110,7 +116,10 @@ function Sowings() {
 
   // Year -> color mapping stays the same on every chart
   const availableYears = useMemo(
-    () => [...new Set(summaries.map((summary) => summary.year))].sort((a, b) => b - a),
+    () =>
+      [...new Set(summaries.map((summary) => summary.year))].sort(
+        (a, b) => b - a,
+      ),
     [summaries],
   );
 
@@ -126,8 +135,12 @@ function Sowings() {
             key,
             // the same seed can be counted as seeds and as plants, both get a chart
             title:
-              (sownSeed.seedName ? `${sownSeed.cropName} – ${sownSeed.seedName}` : sownSeed.cropName) +
-              (sownSeed.countUnit ? ` (${t(`fieldCalendar.sowings.units.${sownSeed.countUnit}`)})` : ""),
+              (sownSeed.seedName
+                ? `${sownSeed.cropName} – ${sownSeed.seedName}`
+                : sownSeed.cropName) +
+              (sownSeed.countUnit
+                ? ` (${t(`fieldCalendar.sowings.units.${sownSeed.countUnit}`)})`
+                : ""),
             countUnit: sownSeed.countUnit,
             monthly: {},
           };
@@ -137,14 +150,19 @@ function Sowings() {
           entry.monthly[summary.year] = Array.from({ length: 12 }, () => 0);
         }
         // base amounts are grams for weight, the chart works in kg
-        entry.monthly[summary.year][summary.month] +=
-          sownSeed.countUnit ? sownSeed.totalBaseAmount : sownSeed.totalBaseAmount / 1000;
+        entry.monthly[summary.year][summary.month] += sownSeed.countUnit
+          ? sownSeed.totalBaseAmount
+          : sownSeed.totalBaseAmount / 1000;
       }
     }
-    return [...seriesByKey.values()].sort((a, b) => a.title.localeCompare(b.title));
+    return [...seriesByKey.values()].sort((a, b) =>
+      a.title.localeCompare(b.title),
+    );
   }, [summaries, visibleCrops, t]);
 
-  const tableData = sowings.filter((sowing) => visibleCrops.includes(sowing.crop.name));
+  const tableData = sowings.filter((sowing) =>
+    visibleCrops.includes(sowing.crop.name),
+  );
 
   const columns = useMemo<ColumnDef<AnySowing>[]>(() => {
     const plotColumn: ColumnDef<AnySowing>[] = plotId
@@ -154,7 +172,8 @@ function Sowings() {
             id: "plotName",
             accessorFn: (row) => ("plot" in row ? row.plot.name : ""),
             header: t("fieldCalendar.plots.plot"),
-            cell: ({ row }) => ("plot" in row.original ? row.original.plot.name : "—"),
+            cell: ({ row }) =>
+              "plot" in row.original ? row.original.plot.name : "—",
           },
         ];
     return [
@@ -182,15 +201,19 @@ function Sowings() {
         accessorFn: (row) => row.amount,
         header: t("fieldCalendar.sowings.amount"),
         cell: ({ row }) =>
-          `${row.original.amount} ${t(`fieldCalendar.sowings.units.${row.original.unit}`)}`,
+          `${row.original.amount.toLocaleString()} ${t(`fieldCalendar.sowings.units.${row.original.unit}`)}`,
       },
       {
         id: "total",
         accessorFn: (row) => row.totalBaseAmount,
         header: t("fieldCalendar.sowings.total"),
         cell: ({ row }) => {
-          const unitInfo = units.find((info) => info.unit === row.original.unit);
-          return unitInfo ? formatBaseAmount(row.original.totalBaseAmount, unitInfo, t) : "—";
+          const unitInfo = units.find(
+            (info) => info.unit === row.original.unit,
+          );
+          return unitInfo
+            ? formatBaseAmount(row.original.totalBaseAmount, unitInfo, t)
+            : "—";
         },
       },
       {
@@ -210,7 +233,10 @@ function Sowings() {
           ? () =>
               returnTo
                 ? navigate({ href: returnTo })
-                : navigate({ to: "/field-calendar/plots/$plotId", params: { plotId } })
+                : navigate({
+                    to: "/field-calendar/plots/$plotId",
+                    params: { plotId },
+                  })
           : undefined
       }
       actions={
@@ -219,7 +245,9 @@ function Sowings() {
             onClick={() =>
               navigate({
                 to: "/field-calendar/sowings/create",
-                search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {},
+                search: plotId
+                  ? { plotId, ...(returnTo ? { returnTo } : {}) }
+                  : {},
               })
             }
           >
@@ -254,7 +282,12 @@ function Sowings() {
             pages={series.map((entry) => ({
               key: entry.key,
               title: entry.title,
-              content: <SowingChartPage series={entry} availableYears={availableYears} />,
+              content: (
+                <SowingChartPage
+                  series={entry}
+                  availableYears={availableYears}
+                />
+              ),
             }))}
           />
         )}
@@ -267,7 +300,9 @@ function Sowings() {
               to: "/field-calendar/sowings/$sowingId",
               params: { sowingId: sowing.id },
               // keeps the per-plot view when coming back
-              search: plotId ? { plotId, ...(returnTo ? { returnTo } : {}) } : {},
+              search: plotId
+                ? { plotId, ...(returnTo ? { returnTo } : {}) }
+                : {},
             })
           }
           defaultSorting={[{ id: "date", desc: true }]}
@@ -298,11 +333,18 @@ function SowingChartPage({
   const { t, i18n } = useTranslation();
   const monthLabels = getMonthLabels(i18n.language);
   const seriesYears = useMemo(
-    () => Object.keys(series.monthly).map(Number).sort((a, b) => b - a),
+    () =>
+      Object.keys(series.monthly)
+        .map(Number)
+        .sort((a, b) => b - a),
     [series.monthly],
   );
-  const [selectedYears, setSelectedYears] = useState<number[]>(() => seriesYears.slice(0, 2));
-  const activeYears = selectedYears.filter((year) => seriesYears.includes(year));
+  const [selectedYears, setSelectedYears] = useState<number[]>(() =>
+    seriesYears.slice(0, 2),
+  );
+  const activeYears = selectedYears.filter((year) =>
+    seriesYears.includes(year),
+  );
 
   function toggleYear(year: number) {
     setSelectedYears((prev) =>
@@ -317,17 +359,21 @@ function SowingChartPage({
   const { yearData, unit } = useMemo(() => {
     const allYearColors = assignYearColors(availableYears);
     const maxTotal = Math.max(
-      ...activeYears.map((year) => (series.monthly[year] ?? []).reduce((sum, value) => sum + value, 0)),
+      ...activeYears.map((year) =>
+        (series.monthly[year] ?? []).reduce((sum, value) => sum + value, 0),
+      ),
       0,
     );
-    const { divisor, label } =
-      series.countUnit
-        ? { divisor: 1, label: t(`fieldCalendar.sowings.units.${series.countUnit}`) }
-        : pickDisplayUnit(maxTotal, "kg");
+    const { divisor, label } = series.countUnit
+      ? {
+          divisor: 1,
+          label: t(`fieldCalendar.sowings.units.${series.countUnit}`),
+        }
+      : pickDisplayUnit(maxTotal, "kg");
     const data: YearData[] = activeYears.map((year) => {
-      const scaled = (series.monthly[year] ?? Array.from({ length: 12 }, () => 0)).map(
-        (value) => value / divisor,
-      );
+      const scaled = (
+        series.monthly[year] ?? Array.from({ length: 12 }, () => 0)
+      ).map((value) => value / divisor);
       return {
         year,
         color: allYearColors[year],
@@ -359,7 +405,11 @@ function SowingChartPage({
           ))}
         </div>
       )}
-      <MonthlyComparisonChart yearData={yearData} monthLabels={monthLabels} unit={unit} />
+      <MonthlyComparisonChart
+        yearData={yearData}
+        monthLabels={monthLabels}
+        unit={unit}
+      />
     </div>
   );
 }

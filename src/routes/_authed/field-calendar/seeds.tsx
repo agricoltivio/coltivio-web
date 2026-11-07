@@ -58,7 +58,8 @@ function SeedsPage() {
         cell: ({ row }) =>
           row.original.defaultUnit ? (
             <span className="text-muted-foreground">
-              {row.original.defaultAmount != null && `${row.original.defaultAmount} `}
+              {row.original.defaultAmount != null &&
+                `${row.original.defaultAmount} `}
               {t(`fieldCalendar.sowings.units.${row.original.defaultUnit}`)}
             </span>
           ) : (
@@ -78,7 +79,9 @@ function SeedsPage() {
       showBackButton={false}
       actions={
         canWrite && (
-          <Button onClick={() => navigate({ to: "/field-calendar/seeds/create" })}>
+          <Button
+            onClick={() => navigate({ to: "/field-calendar/seeds/create" })}
+          >
             {t("common.create")}
           </Button>
         )
