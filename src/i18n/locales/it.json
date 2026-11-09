@@ -1995,6 +1995,7 @@
     "conceptionFailed": "Non rimasta gravida",
     "sireOptional": "Padre (facoltativo)",
     "sireExternalOptional": "Padre esterno (facoltativo)",
-    "notesOptional": "Note (facoltative)"
+    "notesOptional": "Note (facoltative)",
+    "saveFailed": "Salvataggio non riuscito"
   }
 }

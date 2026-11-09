@@ -267,7 +267,14 @@ function WeightEntryDialog({
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="weightDate">{t("common.date")}</Label>
-            <Input id="weightDate" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+            <Input
+              id="weightDate"
+              type="date"
+              // A weighing can't be in the future
+              max={toLocalDateString(new Date())}
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="weightKg">{t("breeding.weightKg")}</Label>
@@ -285,6 +292,9 @@ function WeightEntryDialog({
             <Textarea id="weightNotes" value={notes} onChange={(event) => setNotes(event.target.value)} />
           </div>
         </div>
+        {(saveMutation.isError || deleteMutation.isError) && (
+          <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>
+        )}
         <DialogFooter className="sm:justify-between">
           {weight ? (
             <Button
@@ -403,20 +413,26 @@ export function HeatEntryDialog({
 }) {
   const { t, i18n } = useTranslation();
   const invalidate = useInvalidateBreeding();
-  const livingAnimalsQuery = useQuery(animalsQueryOptions(true));
+  // All animals, so a sire that died since the mating can still be shown
+  const allAnimalsQuery = useQuery(animalsQueryOptions(false));
   const [date, setDate] = useState(heat ? heat.date.slice(0, 10) : toLocalDateString(new Date()));
   const [mated, setMated] = useState(heat?.mated ?? false);
   const [sireId, setSireId] = useState(heat?.sireId ?? "");
   const [sireName, setSireName] = useState(heat?.sireName ?? "");
   const [notes, setNotes] = useState(heat?.notes ?? "");
 
-  // Living males of the same type are offered as sire
+  // Living males of the same type are offered as sire, plus the saved sire if it died since
   const sireCandidates = useMemo(
     () =>
-      (livingAnimalsQuery.data?.result ?? [])
-        .filter((candidate) => candidate.sex === "male" && candidate.type === animal.type)
+      (allAnimalsQuery.data?.result ?? [])
+        .filter(
+          (candidate) =>
+            candidate.sex === "male" &&
+            candidate.type === animal.type &&
+            (candidate.dateOfDeath == null || candidate.id === heat?.sireId),
+        )
         .sort((a, b) => a.name.localeCompare(b.name)),
-    [livingAnimalsQuery.data, animal.type],
+    [allAnimalsQuery.data, animal.type, heat?.sireId],
   );
 
   const saveMutation = useMutation({
@@ -489,6 +505,7 @@ export function HeatEntryDialog({
                   {sireCandidates.map((candidate) => (
                     <option key={candidate.id} value={candidate.id}>
                       {candidate.earTag?.number ? `${candidate.earTag.number} - ${candidate.name}` : candidate.name}
+                      {candidate.dateOfDeath ? " †" : ""}
                     </option>
                   ))}
                 </select>
@@ -510,6 +527,9 @@ export function HeatEntryDialog({
             <Textarea id="heatNotes" value={notes} onChange={(event) => setNotes(event.target.value)} />
           </div>
         </div>
+        {(saveMutation.isError || deleteMutation.isError) && (
+          <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>
+        )}
         <DialogFooter className="sm:justify-between">
           {heat ? (
             <Button

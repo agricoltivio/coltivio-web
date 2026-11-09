@@ -321,6 +321,7 @@ function ReminderSettingsCard() {
         {reminderSelect("reminder2", t("breeding.reminder2"), meQuery.data?.breedingReminderDaysBefore2, (days) =>
           updateMutation.mutate({ breedingReminderDaysBefore2: days }),
         )}
+        {updateMutation.isError && <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>}
       </CardContent>
     </Card>
   );
@@ -345,10 +346,13 @@ function GestationSettingsCard() {
     mutationFn: async () => {
       const settings = (gestationSettingsQuery.data ?? []).map((setting) => {
         const gestationDays = parseInt(gestationInputs[setting.animalType] ?? "", 10);
-        // An empty field resets the type to its default
+        const isValidValue = Number.isFinite(gestationDays) && gestationDays > 0;
+        // An empty field resets the type to its default. An unchanged default stays a default, so later
+        // changes of the default still apply and it keeps its "default" label.
+        const keepsDefault = setting.isDefault && gestationDays === setting.gestationDays;
         return {
           animalType: setting.animalType,
-          gestationDays: Number.isFinite(gestationDays) && gestationDays > 0 ? gestationDays : null,
+          gestationDays: isValidValue && !keepsDefault ? gestationDays : null,
         };
       });
       const response = await apiClient.PUT("/v1/animals/breedingCalendar/gestationSettings", {
@@ -392,6 +396,7 @@ function GestationSettingsCard() {
             {t("common.save")}
           </Button>
         )}
+        {saveMutation.isError && <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>}
       </CardContent>
     </Card>
   );

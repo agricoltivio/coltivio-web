@@ -1995,6 +1995,7 @@
     "conceptionFailed": "Non fécondée",
     "sireOptional": "Père (facultatif)",
     "sireExternalOptional": "Père externe (facultatif)",
-    "notesOptional": "Notes (facultatives)"
+    "notesOptional": "Notes (facultatives)",
+    "saveFailed": "L'enregistrement a échoué"
   }
 }
