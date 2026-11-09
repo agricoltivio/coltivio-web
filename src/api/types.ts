@@ -357,3 +357,13 @@ export const PARASITE_TYPES: ParasiteType[] = [
   "lungworm",
   "other",
 ];
+
+// Weights and breeding
+export type AnimalWeight =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdWeightsPositiveResponse"]["data"]["result"][number];
+export type AnimalHeat =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdHeatsPositiveResponse"]["data"]["result"][number];
+export type BreedingCalendarEntry =
+  components["schemas"]["GetV1AnimalsBreedingCalendarPositiveResponse"]["data"]["result"][number];
+export type GestationSetting =
+  components["schemas"]["GetV1AnimalsBreedingCalendarGestationSettingsPositiveResponse"]["data"]["result"][number];

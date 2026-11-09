@@ -1,5 +1,5 @@
 import { toLocalDateString } from "@/lib/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import type { Treatment, Drug, Animal, DrugTreatment } from "@/api/types";
@@ -36,6 +36,8 @@ export interface TreatmentFormData {
   drugDoseUnit: DrugTreatment["doseUnit"] | null;
   drugDosePerUnit: DrugTreatment["dosePerUnit"] | null;
   drugReceivedFrom: string | null;
+  // Effective amounts the user entered for per-kg doses, other animals get dose × weight from the server
+  effectiveDoseOverrides?: { animalId: string; effectiveDoseValue: number | null }[];
 }
 
 type ComboboxOption = { value: string; label: string };
@@ -113,6 +115,57 @@ export function TreatmentForm({
   });
 
   const watchedAnimalIds = watch("animalIds");
+  const watchedDoseValue = watch("drugDoseValue");
+  const watchedDoseUnit = watch("drugDoseUnit");
+  const watchedDosePerUnit = watch("drugDosePerUnit");
+  // Effective amounts the user typed, keyed by animal id
+  const [effectiveDoseInputs, setEffectiveDoseInputs] = useState<Record<string, string>>({});
+
+  function computeEffectiveDoseValue(weightKg: number | null, doseValue: number | string | null | undefined) {
+    const parsedDoseValue = typeof doseValue === "number" ? doseValue : parseFloat(doseValue ?? "");
+    if (weightKg == null || !Number.isFinite(parsedDoseValue)) return null;
+    return Math.round(weightKg * parsedDoseValue * 1000) / 1000;
+  }
+
+  // Weight stored at treatment time (else the latest weight entry), not editable here. An amount that
+  // differs from stored dose × weight was entered by hand and stays until it is changed.
+  function doseInfo(animalId: string) {
+    const animal = animals.find((candidate) => candidate.id === animalId);
+    const storedDose = treatment?.animalDoses?.find((animalDose) => animalDose.animalId === animalId);
+    const weightKg = storedDose?.animalWeightKg ?? animal?.latestWeight?.weightKg ?? null;
+    const storedEffectiveDoseValue = storedDose?.effectiveDoseValue ?? null;
+    const isManual =
+      storedEffectiveDoseValue != null &&
+      storedEffectiveDoseValue !==
+        computeEffectiveDoseValue(storedDose?.animalWeightKg ?? null, treatment?.drugDoseValue);
+    return { animal, weightKg, manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null };
+  }
+
+  function submitWithDoses(data: TreatmentFormData) {
+    onSubmit({
+      ...data,
+      effectiveDoseOverrides:
+        data.drugDosePerUnit === "kg"
+          ? data.animalIds.flatMap((animalId) => {
+              const typedInput = effectiveDoseInputs[animalId];
+              if (typedInput !== undefined) {
+                const effectiveDoseValue = parseFloat(typedInput);
+                return [
+                  {
+                    animalId,
+                    effectiveDoseValue:
+                      Number.isFinite(effectiveDoseValue) && effectiveDoseValue >= 0 ? effectiveDoseValue : null,
+                  },
+                ];
+              }
+              const { manualEffectiveDoseValue } = doseInfo(animalId);
+              return manualEffectiveDoseValue != null
+                ? [{ animalId, effectiveDoseValue: manualEffectiveDoseValue }]
+                : [];
+            })
+          : undefined,
+    });
+  }
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
   const watchedEndDate = watch("endDate");
@@ -211,7 +264,7 @@ export function TreatmentForm({
   const showWaitingDates = !!watchedDrugId;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
+    <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-lg">
       {/* Animals multi-select */}
       <FieldGroup>
         <Field>
@@ -328,6 +381,51 @@ export function TreatmentForm({
               </select>
             </Field>
           </FieldGroup>
+          {watchedDosePerUnit === "kg" && watchedAnimalIds.length > 0 && (
+            <div className="mt-7 rounded-md border p-4">
+              <div className="mb-3 text-sm font-medium">{t("breeding.weightPerAnimal")}</div>
+              <div className="space-y-3">
+                {watchedAnimalIds.map((animalId) => {
+                  const { animal, weightKg, manualEffectiveDoseValue } = doseInfo(animalId);
+                  if (!animal) return null;
+                  const shownEffectiveDoseValue =
+                    manualEffectiveDoseValue ?? computeEffectiveDoseValue(weightKg, watchedDoseValue);
+                  const effectiveDoseInput =
+                    effectiveDoseInputs[animalId] ??
+                    (shownEffectiveDoseValue != null ? String(shownEffectiveDoseValue) : "");
+                  return (
+                    <div key={animalId} className="space-y-1">
+                      {/* Own line so long ear tags and names stay readable */}
+                      <div className="text-sm font-medium">
+                        {animal.earTag?.number ? `${animal.earTag.number} - ${animal.name}` : animal.name}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="flex-1 text-sm text-muted-foreground">
+                          {weightKg != null ? `${weightKg} kg` : t("breeding.noWeight")}
+                        </span>
+                        <div className="flex w-44 items-center gap-1">
+                          <Input
+                            type="number"
+                            step="any"
+                            min="0"
+                            aria-label={t("breeding.amount")}
+                            placeholder={t("breeding.amount")}
+                            value={effectiveDoseInput}
+                            onChange={(event) =>
+                              setEffectiveDoseInputs((inputs) => ({ ...inputs, [animalId]: event.target.value }))
+                            }
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {watchedDoseUnit ? t(`drugs.doseUnits.${watchedDoseUnit}`) : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <FieldGroup className="mt-7">
             <Field>
               <FieldLabel htmlFor="drugReceivedFrom">{t("treatments.drugReceivedFrom")}</FieldLabel>

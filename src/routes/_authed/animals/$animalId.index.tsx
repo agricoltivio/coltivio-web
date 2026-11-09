@@ -13,6 +13,7 @@ import {
 } from "@/api/animals.queries";
 import type { AnimalDetail } from "@/api/types";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
+import { AnimalHeatsCard, AnimalWeightCard } from "@/components/AnimalBreedingCards";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
@@ -308,6 +309,10 @@ function AnimalDetailPage() {
             )}
           </CardContent>
         </Card>
+
+        <AnimalWeightCard animal={animal} />
+
+        {animal.sex === "female" && <AnimalHeatsCard animal={animal} />}
 
         {/* Children Card */}
         <Card>

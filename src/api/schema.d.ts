@@ -1924,6 +1924,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/byId/{animalId}/weights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdWeights"];
+        put?: never;
+        post: operations["PostV1AnimalsByIdAnimalIdWeights"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdWeights"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/byId/{animalId}/heats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsByIdAnimalIdHeats"];
+        put?: never;
+        post: operations["PostV1AnimalsByIdAnimalIdHeats"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsByIdAnimalIdHeats"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/weights/byId/{weightId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalsWeightsByIdWeightId"];
+        options?: never;
+        head?: never;
+        patch: operations["PatchV1AnimalsWeightsByIdWeightId"];
+        trace?: never;
+    };
+    "/v1/animals/heats/byId/{heatId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalsHeatsByIdHeatId"];
+        options?: never;
+        head?: never;
+        patch: operations["PatchV1AnimalsHeatsByIdHeatId"];
+        trace?: never;
+    };
+    "/v1/animals/breedingCalendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsBreedingCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsBreedingCalendar"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/animals/breedingCalendar/gestationSettings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsBreedingCalendarGestationSettings"];
+        put: operations["PutV1AnimalsBreedingCalendarGestationSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsBreedingCalendarGestationSettings"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/journal/byId/{entryId}": {
         parameters: {
             query?: never;
@@ -4145,12 +4241,16 @@ export interface components {
                 isWikiModerator: boolean;
                 isForumModerator: boolean;
                 taskPushNotifications: boolean;
+                breedingReminderDaysBefore1?: number | null;
+                breedingReminderDaysBefore2?: number | null;
             };
         };
         PatchV1MeRequestBody: {
             fullName?: string;
             newsletterConsent?: boolean;
             taskPushNotifications?: boolean;
+            breedingReminderDaysBefore1?: number | null;
+            breedingReminderDaysBefore2?: number | null;
         };
         GetV1MePositiveResponse: {
             data: {
@@ -4170,6 +4270,8 @@ export interface components {
                     access: "none" | "read" | "write";
                 }[];
                 taskPushNotifications: boolean;
+                breedingReminderDaysBefore1?: number | null;
+                breedingReminderDaysBefore2?: number | null;
             };
         };
         PostV1MeVerificationEmailPositiveResponse: {
@@ -8121,6 +8223,15 @@ export interface components {
                     color: string | null;
                     notes: string | null;
                     milkAndMeatUsable: boolean;
+                    latestWeight?: {
+                        id: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        date: string;
+                        weightKg: number;
+                    } | null;
                 }[];
                 count: number;
             };
@@ -8419,6 +8530,15 @@ export interface components {
                 herdId: string | null;
                 color: string | null;
                 notes: string | null;
+                latestWeight?: {
+                    id: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    weightKg: number;
+                } | null;
                 mother: {
                     id: string;
                     farmId: string;
@@ -8953,6 +9073,249 @@ export interface components {
                     drugName: string | null;
                 }[];
             };
+        };
+        GetV1AnimalsByIdAnimalIdWeightsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    weightKg: number;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                }[];
+            };
+        };
+        PostV1AnimalsByIdAnimalIdWeightsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                weightKg: number;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PostV1AnimalsByIdAnimalIdWeightsRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            weightKg: number;
+            notes?: string | null;
+        };
+        GetV1AnimalsByIdAnimalIdHeatsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    mated: boolean;
+                    sireId: string | null;
+                    sireName: string | null;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                }[];
+            };
+        };
+        PostV1AnimalsByIdAnimalIdHeatsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                mated: boolean;
+                sireId: string | null;
+                sireName: string | null;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PostV1AnimalsByIdAnimalIdHeatsRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            mated?: boolean;
+            sireId?: string | null;
+            sireName?: string | null;
+            notes?: string | null;
+        };
+        PatchV1AnimalsWeightsByIdWeightIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                weightKg: number;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PatchV1AnimalsWeightsByIdWeightIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            weightKg?: number;
+            notes?: string | null;
+        };
+        DeleteV1AnimalsWeightsByIdWeightIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PatchV1AnimalsHeatsByIdHeatIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                animalId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                mated: boolean;
+                sireId: string | null;
+                sireName: string | null;
+                notes: string | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+            };
+        };
+        PatchV1AnimalsHeatsByIdHeatIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            mated?: boolean;
+            sireId?: string | null;
+            sireName?: string | null;
+            notes?: string | null;
+        };
+        DeleteV1AnimalsHeatsByIdHeatIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1AnimalsBreedingCalendarPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    mated: boolean;
+                    sireId: string | null;
+                    sireName: string | null;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    expectedBirthDate: string | null;
+                    animal: {
+                        id: string;
+                        name: string;
+                        /** @enum {string} */
+                        type: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                        earTagNumber: string | null;
+                    };
+                    sire: {
+                        id: string;
+                        name: string;
+                    } | null;
+                }[];
+            };
+        };
+        GetV1AnimalsBreedingCalendarGestationSettingsPositiveResponse: {
+            data: {
+                result: {
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    gestationDays: number;
+                    isDefault: boolean;
+                }[];
+            };
+        };
+        PutV1AnimalsBreedingCalendarGestationSettingsPositiveResponse: {
+            data: {
+                result: {
+                    /** @enum {string} */
+                    animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                    gestationDays: number;
+                    isDefault: boolean;
+                }[];
+            };
+        };
+        PutV1AnimalsBreedingCalendarGestationSettingsRequestBody: {
+            settings: {
+                /** @enum {string} */
+                animalType: "goat" | "sheep" | "cow" | "horse" | "donkey" | "pig" | "deer";
+                gestationDays: number | null;
+            }[];
         };
         GetV1AnimalsJournalByIdEntryIdPositiveResponse: {
             data: {
@@ -10530,6 +10893,11 @@ export interface components {
                      */
                     createdAt: string;
                     createdBy: string | null;
+                    animalDoses?: {
+                        animalId: string;
+                        animalWeightKg: number | null;
+                        effectiveDoseValue: number | null;
+                    }[];
                     animals: {
                         id: string;
                         farmId: string;
@@ -10681,6 +11049,14 @@ export interface components {
             isAntibiotic: boolean;
             criticalAntibiotic: boolean;
             antibiogramAvailable: boolean;
+            animalWeights?: {
+                animalId: string;
+                weightKg: number | null;
+            }[];
+            effectiveDoseOverrides?: {
+                animalId: string;
+                effectiveDoseValue: number | null;
+            }[];
         };
         GetV1TreatmentsByIdTreatmentIdPositiveResponse: {
             data: {
@@ -10729,6 +11105,11 @@ export interface components {
                  */
                 createdAt: string;
                 createdBy: string | null;
+                animalDoses?: {
+                    animalId: string;
+                    animalWeightKg: number | null;
+                    effectiveDoseValue: number | null;
+                }[];
                 animals: {
                     id: string;
                     farmId: string;
@@ -10874,10 +11255,17 @@ export interface components {
             drugDosePerUnit?: "kg" | "animal" | "day" | "total_amount" | null;
             drugDoseValue?: number | null;
             drugReceivedFrom?: string | null;
-            /** @default false */
-            isAntibiotic: boolean;
+            isAntibiotic?: boolean;
             criticalAntibiotic?: boolean;
             antibiogramAvailable?: boolean;
+            animalWeights?: {
+                animalId: string;
+                weightKg: number | null;
+            }[];
+            effectiveDoseOverrides?: {
+                animalId: string;
+                effectiveDoseValue: number | null;
+            }[];
         };
         DeleteV1TreatmentsByIdTreatmentIdPositiveResponse: {
             data: Record<string, never>;
@@ -22345,6 +22733,490 @@ export interface operations {
                 content?: never;
             };
             /** @description HEAD /v1/animals/byId/:animalId/parasiteHistory Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalsByIdAnimalIdWeights: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/weights Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/weights Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdWeightsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/weights Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsByIdAnimalIdWeights: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/animals/byId/:animalId/weights Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/byId/:animalId/weights Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdWeightsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/byId/:animalId/weights Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdWeightsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/byId/:animalId/weights Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdWeights: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/weights Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/weights Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/weights Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalsByIdAnimalIdHeats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/byId/:animalId/heats Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/byId/:animalId/heats Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsByIdAnimalIdHeatsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/byId/:animalId/heats Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsByIdAnimalIdHeats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/animals/byId/:animalId/heats Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/byId/:animalId/heats Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdHeatsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/byId/:animalId/heats Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsByIdAnimalIdHeatsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/byId/:animalId/heats Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsByIdAnimalIdHeats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/byId/:animalId/heats Parameter */
+                animalId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/byId/:animalId/heats Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/byId/:animalId/heats Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DeleteV1AnimalsWeightsByIdWeightId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animals/weights/byId/:weightId Parameter */
+                weightId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animals/weights/byId/:weightId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalsWeightsByIdWeightIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animals/weights/byId/:weightId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PatchV1AnimalsWeightsByIdWeightId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animals/weights/byId/:weightId Parameter */
+                weightId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animals/weights/byId/:weightId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalsWeightsByIdWeightIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animals/weights/byId/:weightId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalsWeightsByIdWeightIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animals/weights/byId/:weightId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalsHeatsByIdHeatId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animals/heats/byId/:heatId Parameter */
+                heatId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animals/heats/byId/:heatId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalsHeatsByIdHeatIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animals/heats/byId/:heatId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PatchV1AnimalsHeatsByIdHeatId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animals/heats/byId/:heatId Parameter */
+                heatId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animals/heats/byId/:heatId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalsHeatsByIdHeatIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animals/heats/byId/:heatId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalsHeatsByIdHeatIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animals/heats/byId/:heatId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1AnimalsBreedingCalendar: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/breedingCalendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsBreedingCalendarPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/breedingCalendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsBreedingCalendar: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                from?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                to?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/breedingCalendar Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/breedingCalendar Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1AnimalsBreedingCalendarGestationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/breedingCalendar/gestationSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsBreedingCalendarGestationSettingsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/breedingCalendar/gestationSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PutV1AnimalsBreedingCalendarGestationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description PUT /v1/animals/breedingCalendar/gestationSettings Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PutV1AnimalsBreedingCalendarGestationSettingsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PUT /v1/animals/breedingCalendar/gestationSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PutV1AnimalsBreedingCalendarGestationSettingsPositiveResponse"];
+                };
+            };
+            /** @description PUT /v1/animals/breedingCalendar/gestationSettings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsBreedingCalendarGestationSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/breedingCalendar/gestationSettings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/breedingCalendar/gestationSettings Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

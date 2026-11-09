@@ -78,6 +78,7 @@ import { Route as AuthedAnimalsFamilyTreeRouteImport } from './routes/_authed/an
 import { Route as AuthedAnimalsExportRouteImport } from './routes/_authed/animals/export'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
+import { Route as AuthedAnimalsBreedingCalendarRouteImport } from './routes/_authed/animals/breeding-calendar'
 import { Route as AuthedWikiMySubmissionsIndexRouteImport } from './routes/_authed/wiki/my-submissions/index'
 import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
 import { Route as AuthedWikiAdminIndexRouteImport } from './routes/_authed/wiki/admin/index'
@@ -527,6 +528,12 @@ const AuthedAnimalsCreateRoute = AuthedAnimalsCreateRouteImport.update({
   path: '/animals/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedAnimalsBreedingCalendarRoute =
+  AuthedAnimalsBreedingCalendarRouteImport.update({
+    id: '/animals/breeding-calendar',
+    path: '/animals/breeding-calendar',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedWikiMySubmissionsIndexRoute =
   AuthedWikiMySubmissionsIndexRouteImport.update({
     id: '/wiki/my-submissions/',
@@ -1062,6 +1069,7 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1210,6 +1218,7 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1364,6 +1373,7 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/_authed/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/export': typeof AuthedAnimalsExportRoute
@@ -1521,6 +1531,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/animals/breeding-calendar'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1669,6 +1680,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/animals/breeding-calendar'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1822,6 +1834,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/_authed/animals/breeding-calendar'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/export'
@@ -2453,6 +2466,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/create'
       fullPath: '/animals/create'
       preLoaderRoute: typeof AuthedAnimalsCreateRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/animals/breeding-calendar': {
+      id: '/_authed/animals/breeding-calendar'
+      path: '/animals/breeding-calendar'
+      fullPath: '/animals/breeding-calendar'
+      preLoaderRoute: typeof AuthedAnimalsBreedingCalendarRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/wiki/my-submissions/': {
@@ -3290,6 +3310,7 @@ interface AuthedRouteRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedUsersRoute: typeof AuthedUsersRoute
+  AuthedAnimalsBreedingCalendarRoute: typeof AuthedAnimalsBreedingCalendarRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
   AuthedAnimalsExportRoute: typeof AuthedAnimalsExportRoute
@@ -3386,6 +3407,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedUsersRoute: AuthedUsersRoute,
+  AuthedAnimalsBreedingCalendarRoute: AuthedAnimalsBreedingCalendarRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
   AuthedAnimalsExportRoute: AuthedAnimalsExportRoute,

@@ -8,6 +8,7 @@ import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -182,6 +183,46 @@ function TreatmentDetailPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Weight of each animal at treatment time and the resulting amount for per-kg doses */}
+        {treatment.animalDoses?.some((animalDose) => animalDose.animalWeightKg != null) && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("breeding.weightPerAnimal")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("treatments.animals")}</TableHead>
+                    <TableHead>{t("breeding.weightKg")}</TableHead>
+                    <TableHead>{t("breeding.effectiveAmount")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {treatment.animals.map((animal) => {
+                    const animalDose = treatment.animalDoses?.find((dose) => dose.animalId === animal.id);
+                    return (
+                      <TableRow key={animal.id}>
+                        <TableCell>
+                          {animal.earTag?.number ? `${animal.earTag.number} - ${animal.name}` : animal.name}
+                        </TableCell>
+                        <TableCell>{animalDose?.animalWeightKg ?? "–"}</TableCell>
+                        <TableCell className="font-medium">
+                          {animalDose?.effectiveDoseValue != null
+                            ? `${animalDose.effectiveDoseValue} ${
+                                treatment.drugDoseUnit ? t(`drugs.doseUnits.${treatment.drugDoseUnit}`) : ""
+                              }`
+                            : "–"}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Waiting Dates Card (if drug was used) */}
         {treatment.drug && (
