@@ -7,6 +7,7 @@ import { apiClient } from "@/api/client";
 import { breedingCalendarQueryOptions, gestationSettingsQueryOptions } from "@/api/breeding.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import type { AnimalType, BreedingCalendarEntry } from "@/api/types";
+import { HeatEntryDialog } from "@/components/AnimalBreedingCards";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { inlineLink } from "@/lib/ui";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { cn, parseDateOnly, toLocalDateString } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authed/animals/breeding-calendar")({
@@ -46,6 +48,10 @@ function BreedingCalendarPage() {
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  // Calendar entry whose heat is open in the dialog
+  const [editedEntry, setEditedEntry] = useState<BreedingCalendarEntry | null>(null);
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
+  const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
   const monthEnd = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0);
 
   const calendarQuery = useQuery(
@@ -69,15 +75,30 @@ function BreedingCalendarPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarQuery.data, visibleMonth]);
 
-  // Legend uses the species words of this month's heats ("Bockig / Stierig"), hidden without any
-  const heatLegendLabel =
-    [
-      ...new Set(
-        monthEvents
-          .filter((event) => event.kind === "heat")
-          .map((event) => t(`breeding.heatByType.${event.entry.animal.type}`)),
-      ),
-    ].join(" / ");
+  // Distinct colors (brand palette): heat orange, mated heat teal, expected birth green
+  const HEAT_COLOR = "#db751d";
+  const MATED_COLOR = "#2a5159";
+  const BIRTH_COLOR = "#85a60f";
+  function eventColor(event: CalendarEvent) {
+    if (event.kind === "birth") return BIRTH_COLOR;
+    return event.entry.mated ? MATED_COLOR : HEAT_COLOR;
+  }
+
+  // Legend only lists what this month contains; heats use the species words ("Bockig / Stierig")
+  const heatLegendLabel = [
+    ...new Set(
+      monthEvents
+        .filter((event) => event.kind === "heat" && !event.entry.mated)
+        .map((event) => t(`breeding.heatByType.${event.entry.animal.type}`)),
+    ),
+  ].join(" / ");
+  const legendItems = [
+    ...(heatLegendLabel ? [{ color: HEAT_COLOR, label: heatLegendLabel }] : []),
+    ...(monthEvents.some((event) => event.kind === "heat" && event.entry.mated)
+      ? [{ color: MATED_COLOR, label: t("breeding.mated") }]
+      : []),
+    { color: BIRTH_COLOR, label: t("breeding.expectedBirth") },
+  ];
 
   const shownEvents = selectedDay ? monthEvents.filter((event) => isSameDay(event.date, selectedDay)) : monthEvents;
 
@@ -131,8 +152,7 @@ function BreedingCalendarPage() {
                 {dayCells.map((day, cellIndex) => {
                   if (!day) return <div key={`blank-${cellIndex}`} className="h-14" />;
                   const dayEvents = monthEvents.filter((event) => isSameDay(event.date, day));
-                  const hasBirth = dayEvents.some((event) => event.kind === "birth");
-                  const hasHeat = dayEvents.some((event) => event.kind === "heat");
+                  const dayColors = [...new Set(dayEvents.map(eventColor))];
                   const isSelected = selectedDay != null && isSameDay(day, selectedDay);
                   return (
                     <button
@@ -147,24 +167,25 @@ function BreedingCalendarPage() {
                     >
                       <span>{day.getDate()}</span>
                       <span className="flex h-1.5 gap-0.5">
-                        {hasBirth && (
-                          <span className={cn("size-1.5 rounded-full", isSelected ? "bg-primary-foreground" : "bg-primary")} />
-                        )}
-                        {hasHeat && <span className="size-1.5 rounded-full bg-muted-foreground" />}
+                        {dayColors.map((dotColor) => (
+                          <span
+                            key={dotColor}
+                            className={cn("size-1.5 rounded-full", isSelected && "ring-1 ring-primary-foreground")}
+                            style={{ backgroundColor: dotColor }}
+                          />
+                        ))}
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <div className="mt-3 flex gap-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <span className="size-2 rounded-full bg-primary" /> {t("breeding.expectedBirth")}
-                </span>
-                {heatLegendLabel && (
-                  <span className="flex items-center gap-1">
-                    <span className="size-2 rounded-full bg-muted-foreground" /> {heatLegendLabel}
+              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                {legendItems.map((legendItem) => (
+                  <span key={legendItem.label} className="flex items-center gap-1">
+                    <span className="size-2 rounded-full" style={{ backgroundColor: legendItem.color }} />{" "}
+                    {legendItem.label}
                   </span>
-                )}
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -185,7 +206,12 @@ function BreedingCalendarPage() {
                   </TableHeader>
                   <TableBody>
                     {shownEvents.map((event) => (
-                      <TableRow key={event.key}>
+                      <TableRow
+                        key={event.key}
+                        // Births and heats both belong to the heat entry, open it to edit
+                        className={canWriteAnimals ? "cursor-pointer" : undefined}
+                        onClick={() => canWriteAnimals && setEditedEntry(event.entry)}
+                      >
                         <TableCell>{event.date.toLocaleDateString(locale)}</TableCell>
                         <TableCell>
                           <Link
@@ -193,6 +219,7 @@ function BreedingCalendarPage() {
                             to="/animals/$animalId"
                             params={{ animalId: event.entry.animal.id }}
                             search={{ returnTo: "/animals/breeding-calendar" }}
+                            onClick={(clickEvent) => clickEvent.stopPropagation()}
                           >
                             {event.entry.animal.earTagNumber
                               ? `${event.entry.animal.earTagNumber} - ${event.entry.animal.name}`
@@ -200,11 +227,16 @@ function BreedingCalendarPage() {
                           </Link>
                         </TableCell>
                         <TableCell className={event.kind === "birth" ? "font-medium" : "text-muted-foreground"}>
-                          {event.kind === "birth"
-                            ? t("breeding.expectedBirth")
-                            : event.entry.mated
-                              ? `${t(`breeding.heatByType.${event.entry.animal.type}`)} · ${t("breeding.mated")}`
-                              : t(`breeding.heatByType.${event.entry.animal.type}`)}
+                          <span className="flex items-center gap-2">
+                            <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: eventColor(event) }} />
+                            {event.kind === "birth"
+                              ? t("breeding.expectedBirth")
+                              : [
+                                  t(`breeding.heatByType.${event.entry.animal.type}`),
+                                  ...(event.entry.mated ? [t("breeding.mated")] : []),
+                                  ...(event.entry.conceptionFailed ? [t("breeding.conceptionFailed")] : []),
+                                ].join(" · ")}
+                          </span>
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {event.entry.sire?.name ?? event.entry.sireName ?? ""}
@@ -223,6 +255,17 @@ function BreedingCalendarPage() {
           <GestationSettingsCard />
         </div>
       </div>
+      {editedEntry && (
+        <HeatEntryDialog
+          animal={{ id: editedEntry.animal.id, type: editedEntry.animal.type }}
+          heat={editedEntry}
+          gestationDays={
+            gestationSettingsQuery.data?.find((setting) => setting.animalType === editedEntry.animal.type)
+              ?.gestationDays
+          }
+          onClose={() => setEditedEntry(null)}
+        />
+      )}
     </PageContent>
   );
 }

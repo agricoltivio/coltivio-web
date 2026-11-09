@@ -273,7 +273,7 @@ export function AnimalForm({
           <Label htmlFor="registered">{t("animals.registered")}</Label>
         </Field>
         <Field>
-          <FieldLabel htmlFor="color">{t("animals.color")}</FieldLabel>
+          <FieldLabel htmlFor="color">{t("animals.colorOptional")}</FieldLabel>
           <Input id="color" type="text" {...register("color")} />
         </Field>
       </FieldGroup>
@@ -414,7 +414,7 @@ export function AnimalForm({
       </FieldGroup>
       <FieldGroup className="mt-7">
         <Field>
-          <FieldLabel htmlFor="notes">{t("animals.notes")}</FieldLabel>
+          <FieldLabel htmlFor="notes">{t("animals.notesOptional")}</FieldLabel>
           <Textarea id="notes" rows={4} {...register("notes")} />
         </Field>
       </FieldGroup>

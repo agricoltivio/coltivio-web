@@ -281,7 +281,7 @@ function WeightEntryDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="weightNotes">{t("breeding.notes")}</Label>
+            <Label htmlFor="weightNotes">{t("breeding.notesOptional")}</Label>
             <Textarea id="weightNotes" value={notes} onChange={(event) => setNotes(event.target.value)} />
           </div>
         </div>
@@ -363,10 +363,13 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
                   <TableCell className="text-muted-foreground">
                     {(heat.sireId ? animalNameById.get(heat.sireId) : undefined) ?? heat.sireName ?? ""}
                   </TableCell>
+                  {/* Computed on the server, also knows when a later heat showed the mating didn't work */}
                   <TableCell className="text-muted-foreground">
-                    {heat.mated && gestationDays
-                      ? addDaysToDateOnly(heat.date, gestationDays).toLocaleDateString(i18n.language)
-                      : "–"}
+                    {heat.conceptionFailed
+                      ? t("breeding.conceptionFailed")
+                      : heat.expectedBirthDate
+                        ? formatDateOnly(heat.expectedBirthDate, i18n.language)
+                        : "–"}
                   </TableCell>
                 </TableRow>
               ))}
@@ -386,13 +389,14 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
   );
 }
 
-function HeatEntryDialog({
+// Also opened from the breeding calendar, which only knows the animal's id and type
+export function HeatEntryDialog({
   animal,
   heat,
   gestationDays,
   onClose,
 }: {
-  animal: AnimalDetail;
+  animal: { id: string; type: AnimalDetail["type"] };
   heat: AnimalHeat | null;
   gestationDays: number | undefined;
   onClose: () => void;
@@ -474,7 +478,7 @@ function HeatEntryDialog({
           {mated && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="heatSire">{t("breeding.sire")}</Label>
+                <Label htmlFor="heatSire">{t("breeding.sireOptional")}</Label>
                 <select
                   id="heatSire"
                   className="w-full rounded border px-3 py-2 text-sm"
@@ -490,7 +494,7 @@ function HeatEntryDialog({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="heatSireName">{t("breeding.sireExternal")}</Label>
+                <Label htmlFor="heatSireName">{t("breeding.sireExternalOptional")}</Label>
                 <Input id="heatSireName" value={sireName} onChange={(event) => setSireName(event.target.value)} />
               </div>
               {date && gestationDays && (
@@ -502,7 +506,7 @@ function HeatEntryDialog({
             </>
           )}
           <div className="space-y-2">
-            <Label htmlFor="heatNotes">{t("breeding.notes")}</Label>
+            <Label htmlFor="heatNotes">{t("breeding.notesOptional")}</Label>
             <Textarea id="heatNotes" value={notes} onChange={(event) => setNotes(event.target.value)} />
           </div>
         </div>

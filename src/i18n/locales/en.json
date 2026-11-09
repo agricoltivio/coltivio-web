@@ -246,7 +246,9 @@
     "importNoRows": "All rows removed.",
     "importPreviewError": "Failed to load preview. Check the file and try again.",
     "importCommitError": "Import failed. Please try again.",
-    "importStatus": "Status"
+    "importStatus": "Status",
+    "colorOptional": "Color (optional)",
+    "notesOptional": "Notes (optional)"
   },
   "earTags": {
     "title": "Ear Tags",
@@ -1989,6 +1991,10 @@
       "pig": "In heat",
       "deer": "In heat"
     },
-    "amount": "Amount"
+    "amount": "Amount",
+    "conceptionFailed": "Did not conceive",
+    "sireOptional": "Sire (optional)",
+    "sireExternalOptional": "External sire (optional)",
+    "notesOptional": "Notes (optional)"
   }
 }

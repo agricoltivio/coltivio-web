@@ -246,7 +246,9 @@
     "importNoRows": "Tutte le righe rimosse.",
     "importPreviewError": "Impossibile caricare l'anteprima. Controlla il file e riprova.",
     "importCommitError": "Importazione fallita. Riprova.",
-    "importStatus": "Stato"
+    "importStatus": "Stato",
+    "colorOptional": "Colore (facoltativo)",
+    "notesOptional": "Note (facoltative)"
   },
   "earTags": {
     "title": "Marchi auricolari",
@@ -1989,6 +1991,10 @@
       "pig": "In calore",
       "deer": "In calore"
     },
-    "amount": "Quantità"
+    "amount": "Quantità",
+    "conceptionFailed": "Non rimasta gravida",
+    "sireOptional": "Padre (facoltativo)",
+    "sireExternalOptional": "Padre esterno (facoltativo)",
+    "notesOptional": "Note (facoltative)"
   }
 }

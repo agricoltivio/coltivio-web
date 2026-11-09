@@ -246,7 +246,9 @@
     "importNoRows": "Alle Zeilen entfernt.",
     "importPreviewError": "Vorschau konnte nicht geladen werden. Überprüfen Sie die Datei und versuchen Sie es erneut.",
     "importCommitError": "Import fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "importStatus": "Status"
+    "importStatus": "Status",
+    "colorOptional": "Farbe (optional)",
+    "notesOptional": "Notizen (optional)"
   },
   "earTags": {
     "title": "Ohrmarken",
@@ -1989,6 +1991,10 @@
       "pig": "Rauschig",
       "deer": "Brunftig"
     },
-    "amount": "Menge"
+    "amount": "Menge",
+    "conceptionFailed": "Nicht trächtig geworden",
+    "sireOptional": "Vatertier (optional)",
+    "sireExternalOptional": "Externes Vatertier (optional)",
+    "notesOptional": "Notizen (optional)"
   }
 }

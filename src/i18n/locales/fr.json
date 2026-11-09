@@ -246,7 +246,9 @@
     "importNoRows": "Toutes les lignes supprimées.",
     "importPreviewError": "Impossible de charger l'aperçu. Vérifiez le fichier et réessayez.",
     "importCommitError": "L'importation a échoué. Veuillez réessayer.",
-    "importStatus": "Statut"
+    "importStatus": "Statut",
+    "colorOptional": "Couleur (facultative)",
+    "notesOptional": "Notes (facultatives)"
   },
   "earTags": {
     "title": "Boucles d'oreille",
@@ -1989,6 +1991,10 @@
       "pig": "En chaleur",
       "deer": "En chaleur"
     },
-    "amount": "Quantité"
+    "amount": "Quantité",
+    "conceptionFailed": "Non fécondée",
+    "sireOptional": "Père (facultatif)",
+    "sireExternalOptional": "Père externe (facultatif)",
+    "notesOptional": "Notes (facultatives)"
   }
 }
