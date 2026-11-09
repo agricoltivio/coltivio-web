@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -63,13 +64,23 @@ function EarTags() {
         body: { fromNumber, toNumber },
       });
       if (response.error) {
-        throw new Error("Failed to create ear tags");
+        // Conflicts are checked in the dialog; the API still rejects them if tags were
+        // created in the meantime (e.g. in the app)
+        throw new Error(
+          response.error.code === "ear_tag_range_conflict"
+            ? t("earTags.rangeConflictServer")
+            : t("common.error"),
+        );
       }
       return response.data.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["earTags"] });
       setCreateDialogOpen(false);
+    },
+    onError: () => {
+      // Existing tags may have changed, so the dialog's own conflict check sees them
+      queryClient.invalidateQueries({ queryKey: ["earTags"] });
     },
   });
 
@@ -182,7 +193,14 @@ function EarTags() {
         canWriteAnimals && (
           <CreateRangeDialog
             open={createDialogOpen}
-            onOpenChange={setCreateDialogOpen}
+            onOpenChange={(isOpen) => {
+              setCreateDialogOpen(isOpen);
+              if (!isOpen) createRangeMutation.reset();
+            }}
+            existingNumbers={earTagsQuery.data?.result.map(
+              (earTag) => earTag.number,
+            )}
+            submitError={createRangeMutation.error?.message ?? null}
             onSubmit={(fromNumber, toNumber) =>
               createRangeMutation.mutate({ fromNumber, toNumber })
             }
@@ -236,114 +254,247 @@ function EarTags() {
   );
 }
 
+// Same format the API expects: optional letter prefix + number, e.g. "CH001" or "201231"
+const EAR_TAG_NUMBER_PATTERN = /^([A-Za-z]*)(\d+)$/;
+
+// Conflicting numbers listed in the preview; the rest is summarized as a count
+const MAX_LISTED_CONFLICTS = 10;
+
+type EarTagRangePreview = {
+  fromNumber: string;
+  toNumber: string;
+  amount: number;
+  // Existing tags inside the range, sorted
+  conflictingNumbers: string[];
+};
+
+// The range of `amount` tags starting at `fromNumber`, numbered like the API does it:
+// same prefix, zero padded to the start number's length, e.g. ("CH001", 50) -> CH001..CH050.
+// Conflicts are found by checking each existing tag against the range, so a large
+// amount doesn't build a large list. Null while the input is incomplete or invalid.
+function buildRangePreview(
+  fromNumberInput: string,
+  amountInput: string,
+  existingNumbers: string[],
+): EarTagRangePreview | null {
+  const fromNumber = fromNumberInput.trim();
+  const match = fromNumber.match(EAR_TAG_NUMBER_PATTERN);
+  const amount = /^\d+$/.test(amountInput.trim())
+    ? parseInt(amountInput, 10)
+    : 0;
+  if (!match || amount < 1) return null;
+  const [, prefix, digits] = match;
+  const firstValue = parseInt(digits, 10);
+  const lastValue = firstValue + amount - 1;
+  const formatNumber = (value: number) =>
+    `${prefix}${value.toString().padStart(digits.length, "0")}`;
+
+  const conflictingNumbers = existingNumbers
+    .filter((existingNumber) => {
+      const existingMatch = existingNumber.match(EAR_TAG_NUMBER_PATTERN);
+      if (!existingMatch || existingMatch[1] !== prefix) return false;
+      const existingValue = parseInt(existingMatch[2], 10);
+      // Only an exact match counts, e.g. "CH0105" isn't "CH105"
+      return (
+        existingValue >= firstValue &&
+        existingValue <= lastValue &&
+        formatNumber(existingValue) === existingNumber
+      );
+    })
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+  return {
+    fromNumber,
+    toNumber: formatNumber(lastValue),
+    amount,
+    conflictingNumbers,
+  };
+}
+
 // Create range dialog component
 function CreateRangeDialog({
   open,
   onOpenChange,
   onSubmit,
   isPending,
+  existingNumbers,
+  submitError,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (fromNumber: string, toNumber: string) => void;
   isPending: boolean;
+  // Numbers of the farm's ear tags; undefined while loading
+  existingNumbers: string[] | undefined;
+  submitError: string | null;
 }) {
   const { t } = useTranslation();
-  const [prefix, setPrefix] = useState("");
   const [fromNumber, setFromNumber] = useState("");
-  const [toNumber, setToNumber] = useState("");
+  const [amount, setAmount] = useState("");
+  // Creating a wrong range produces many tags that are tedious to clean up, so the
+  // dialog asks for confirmation of the computed range before creating it
+  const [confirming, setConfirming] = useState(false);
+
+  const trimmedFromNumber = fromNumber.trim();
+  const fromNumberInvalid =
+    trimmedFromNumber.length > 0 &&
+    !EAR_TAG_NUMBER_PATTERN.test(trimmedFromNumber);
+  // Live preview of the range below the inputs, including overlaps with existing tags
+  const preview = existingNumbers
+    ? buildRangePreview(fromNumber, amount, existingNumbers)
+    : null;
+  const listedConflicts =
+    preview?.conflictingNumbers.slice(0, MAX_LISTED_CONFLICTS) ?? [];
+  const remainingConflictCount =
+    (preview?.conflictingNumbers.length ?? 0) - listedConflicts.length;
+  // Overlapping existing tags isn't possible: the API would reject the whole range
+  const canCreate = !!preview && preview.conflictingNumbers.length === 0;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fullFromNumber = prefix + fromNumber;
-    const fullToNumber = prefix + toNumber;
-    onSubmit(fullFromNumber, fullToNumber);
-  }
-
-  function handleOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      setPrefix("");
-      setFromNumber("");
-      setToNumber("");
+    if (!preview || !canCreate) return;
+    if (!confirming) {
+      setConfirming(true);
+      return;
     }
-    onOpenChange(isOpen);
+    onSubmit(preview.fromNumber, preview.toNumber);
   }
 
-  const isValid =
-    prefix.length > 0 && fromNumber.length > 0 && toNumber.length > 0;
+  // Reset whenever the dialog closes, also when the parent closes it after creating
+  useEffect(() => {
+    if (open) return;
+    setFromNumber("");
+    setAmount("");
+    setConfirming(false);
+  }, [open]);
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button>{t("earTags.addRange")}</Button>
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>{t("earTags.addRange")}</DialogTitle>
-            <DialogDescription>
-              {t("earTags.number")}: {prefix}
-              {fromNumber} - {prefix}
-              {toNumber}
-            </DialogDescription>
+            <DialogTitle>
+              {confirming
+                ? t("earTags.confirmCreateTitle")
+                : t("earTags.addRange")}
+            </DialogTitle>
+            {confirming && preview && (
+              <DialogDescription className="whitespace-pre-line">
+                {t("earTags.confirmCreateMessage", {
+                  from: preview.fromNumber,
+                  to: preview.toNumber,
+                  total: preview.amount,
+                })}
+              </DialogDescription>
+            )}
           </DialogHeader>
 
-          <div className="py-4">
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="prefix">
-                  {t("earTags.prefix")} *
-                </FieldLabel>
-                <Input
-                  id="prefix"
-                  value={prefix}
-                  onChange={(e) => setPrefix(e.target.value)}
-                  placeholder="CH 123."
-                />
-              </Field>
-            </FieldGroup>
-
-            <div className="grid grid-cols-2 gap-4 mt-4">
+          {!confirming && (
+            <div className="grid grid-cols-2 gap-4 py-4">
               <FieldGroup>
                 <Field>
                   <FieldLabel htmlFor="fromNumber">
-                    {t("earTags.fromNumber")} *
+                    {t("earTags.firstNumber")} *
                   </FieldLabel>
                   <Input
                     id="fromNumber"
                     value={fromNumber}
                     onChange={(e) => setFromNumber(e.target.value)}
-                    placeholder="0001"
+                    placeholder="201231"
+                    aria-invalid={fromNumberInvalid}
                   />
+                  {fromNumberInvalid && (
+                    <p className="text-sm text-destructive">
+                      {t("earTags.invalidNumber")}
+                    </p>
+                  )}
                 </Field>
               </FieldGroup>
 
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="toNumber">
-                    {t("earTags.toNumber")} *
+                  <FieldLabel htmlFor="amount">
+                    {t("earTags.amount")} *
                   </FieldLabel>
                   <Input
-                    id="toNumber"
-                    value={toNumber}
-                    onChange={(e) => setToNumber(e.target.value)}
-                    placeholder="0100"
+                    id="amount"
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="50"
                   />
                 </Field>
               </FieldGroup>
+              {preview && (
+                <div
+                  className={cn(
+                    "col-span-2 rounded-md border bg-muted/40 p-4",
+                    listedConflicts.length > 0 && "border-destructive/50",
+                  )}
+                >
+                  <p className="text-sm text-muted-foreground">
+                    {t("earTags.rangePreviewTitle")}
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">
+                    {t("earTags.rangePreviewRange", {
+                      from: preview.fromNumber,
+                      to: preview.toNumber,
+                    })}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("earTags.rangePreviewTotal", { total: preview.amount })}
+                  </p>
+                  {listedConflicts.length > 0 && (
+                    <p className="mt-2 text-sm text-destructive">
+                      {remainingConflictCount > 0
+                        ? t("earTags.rangeConflictMore", {
+                            numbers: listedConflicts.join(", "),
+                            remaining: remainingConflictCount,
+                          })
+                        : t("earTags.rangeConflict", {
+                            numbers: listedConflicts.join(", "),
+                          })}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-            >
-              {t("common.cancel")}
-            </Button>
-            <Button type="submit" disabled={!isValid || isPending}>
-              {isPending ? t("common.loading") : t("common.create")}
+          {/* Only on the confirm step: after going back the preview shows the conflicts */}
+          {confirming && submitError && (
+            <p className="mt-4 text-sm text-destructive">{submitError}</p>
+          )}
+
+          <DialogFooter className={confirming ? "mt-4" : undefined}>
+            {confirming ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setConfirming(false)}
+              >
+                {t("common.back")}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                {t("common.cancel")}
+              </Button>
+            )}
+            <Button type="submit" disabled={!canCreate || isPending}>
+              {isPending
+                ? t("common.loading")
+                : confirming
+                  ? t("common.confirm")
+                  : t("common.create")}
             </Button>
           </DialogFooter>
         </form>

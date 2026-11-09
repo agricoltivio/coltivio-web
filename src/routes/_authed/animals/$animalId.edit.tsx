@@ -47,10 +47,14 @@ function buildParentOptions(
   animals: Animal[],
   excludeId: string | undefined,
   sex: "male" | "female",
-): { value: string; label: string }[] {
+): { value: string; label: string; description?: string }[] {
   return animals
     .filter((animal) => animal.id !== excludeId && animal.sex === sex)
-    .map((animal) => ({ value: animal.id, label: animal.name }));
+    .map((animal) => ({
+      value: animal.id,
+      label: animal.name,
+      description: animal.earTag?.number,
+    }));
 }
 
 // Convert form data to API body
@@ -61,14 +65,18 @@ function formDataToApiBody(data: AnimalFormData) {
     sex: data.sex,
     dateOfBirth: data.dateOfBirth || toLocalDateString(new Date()),
     earTagId: data.earTagId || undefined,
-    motherId: data.motherId || undefined,
-    fatherId: data.fatherId || undefined,
+    // null clears the parent; undefined would leave it unchanged
+    motherId: data.motherId || null,
+    fatherId: data.fatherId || null,
     dateOfDeath: data.dateOfDeath
       ? data.dateOfDeath
       : null,
     deathReason: data.deathReason || null,
     registered: data.registered,
     usage: data.usage,
+    // An emptied field clears the value
+    color: data.color.trim() || null,
+    notes: data.notes.trim() || null,
   };
 }
 
