@@ -275,7 +275,8 @@
     "rangePreviewRange": "{{from}} – {{to}}",
     "rangePreviewTotal": "{{total}} marche auricolari",
     "rangeConflict": "Queste marche auricolari esistono già: {{numbers}}. Modifica il primo numero o la quantità.",
-    "rangeConflictMore": "Queste marche auricolari esistono già: {{numbers}} e altre {{remaining}}. Modifica il primo numero o la quantità."
+    "rangeConflictMore": "Queste marche auricolari esistono già: {{numbers}} e altre {{remaining}}. Modifica il primo numero o la quantità.",
+    "rangeTooLarge": "Al massimo {{max}} marche auricolari alla volta"
   },
   "auth": {
     "signIn": "Accedi",

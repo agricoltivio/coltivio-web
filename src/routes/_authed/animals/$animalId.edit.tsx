@@ -64,7 +64,8 @@ function formDataToApiBody(data: AnimalFormData) {
     type: data.type,
     sex: data.sex,
     dateOfBirth: data.dateOfBirth || toLocalDateString(new Date()),
-    earTagId: data.earTagId || undefined,
+    // null removes the ear tag; undefined would leave it unchanged
+    earTagId: data.earTagId || null,
     // null clears the parent; undefined would leave it unchanged
     motherId: data.motherId || null,
     fatherId: data.fatherId || null,

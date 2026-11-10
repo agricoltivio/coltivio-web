@@ -275,7 +275,8 @@
     "rangePreviewRange": "{{from}} – {{to}}",
     "rangePreviewTotal": "{{total}} Ohrmarken",
     "rangeConflict": "Diese Ohrmarken gibt es bereits: {{numbers}}. Passe die erste Nummer oder die Anzahl an.",
-    "rangeConflictMore": "Diese Ohrmarken gibt es bereits: {{numbers}} und {{remaining}} weitere. Passe die erste Nummer oder die Anzahl an."
+    "rangeConflictMore": "Diese Ohrmarken gibt es bereits: {{numbers}} und {{remaining}} weitere. Passe die erste Nummer oder die Anzahl an.",
+    "rangeTooLarge": "Höchstens {{max}} Ohrmarken auf einmal"
   },
   "auth": {
     "signIn": "Anmelden",

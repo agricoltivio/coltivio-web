@@ -275,7 +275,8 @@
     "rangePreviewRange": "{{from}} – {{to}}",
     "rangePreviewTotal": "{{total}} marques auriculaires",
     "rangeConflict": "Ces marques auriculaires existent déjà : {{numbers}}. Modifie le premier numéro ou le nombre.",
-    "rangeConflictMore": "Ces marques auriculaires existent déjà : {{numbers}} et {{remaining}} autres. Modifie le premier numéro ou le nombre."
+    "rangeConflictMore": "Ces marques auriculaires existent déjà : {{numbers}} et {{remaining}} autres. Modifie le premier numéro ou le nombre.",
+    "rangeTooLarge": "Au maximum {{max}} boucles d'oreille à la fois"
   },
   "auth": {
     "signIn": "Se connecter",

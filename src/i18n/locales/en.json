@@ -275,7 +275,8 @@
     "rangePreviewRange": "{{from}} – {{to}}",
     "rangePreviewTotal": "{{total}} ear tags",
     "rangeConflict": "These ear tags already exist: {{numbers}}. Change the first number or the number of ear tags.",
-    "rangeConflictMore": "These ear tags already exist: {{numbers}} and {{remaining}} more. Change the first number or the number of ear tags."
+    "rangeConflictMore": "These ear tags already exist: {{numbers}} and {{remaining}} more. Change the first number or the number of ear tags.",
+    "rangeTooLarge": "At most {{max}} ear tags at once"
   },
   "auth": {
     "signIn": "Sign In",

@@ -259,6 +259,8 @@ const EAR_TAG_NUMBER_PATTERN = /^([A-Za-z]*)(\d+)$/;
 
 // Conflicting numbers listed in the preview; the rest is summarized as a count
 const MAX_LISTED_CONFLICTS = 10;
+// Largest range the API creates at once
+const MAX_EAR_TAG_RANGE_SIZE = 1000;
 
 type EarTagRangePreview = {
   fromNumber: string;
@@ -347,8 +349,10 @@ function CreateRangeDialog({
     preview?.conflictingNumbers.slice(0, MAX_LISTED_CONFLICTS) ?? [];
   const remainingConflictCount =
     (preview?.conflictingNumbers.length ?? 0) - listedConflicts.length;
+  // The API creates at most this many tags at once
+  const isTooLarge = !!preview && preview.amount > MAX_EAR_TAG_RANGE_SIZE;
   // Overlapping existing tags isn't possible: the API would reject the whole range
-  const canCreate = !!preview && preview.conflictingNumbers.length === 0;
+  const canCreate = !!preview && preview.conflictingNumbers.length === 0 && !isTooLarge;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -423,6 +427,7 @@ function CreateRangeDialog({
                     id="amount"
                     type="number"
                     min={1}
+                    max={MAX_EAR_TAG_RANGE_SIZE}
                     step={1}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
@@ -449,6 +454,11 @@ function CreateRangeDialog({
                   <p className="text-sm text-muted-foreground">
                     {t("earTags.rangePreviewTotal", { total: preview.amount })}
                   </p>
+                  {isTooLarge && (
+                    <p className="mt-2 text-sm text-destructive">
+                      {t("earTags.rangeTooLarge", { max: MAX_EAR_TAG_RANGE_SIZE })}
+                    </p>
+                  )}
                   {listedConflicts.length > 0 && (
                     <p className="mt-2 text-sm text-destructive">
                       {remainingConflictCount > 0
