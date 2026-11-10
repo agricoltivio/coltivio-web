@@ -33,7 +33,14 @@ export const farmFieldEventsQueryOptions = (fromDate: string, toDate: string) =>
     queryKey: ["farm", "fieldEvents", fromDate, toDate],
     queryFn: async () => {
       const response = await apiClient.GET("/v1/farm/fieldEvents", {
-        params: { query: { fromDate, toDate } },
+        // without types the API only returns the legacy event types
+        params: {
+          query: {
+            fromDate,
+            toDate,
+            types: "harvest,fertilizerApplication,cropProtectionApplication,tillage,sowing",
+          },
+        },
       });
       if (response.error) throw new Error("Failed to fetch field events");
       return response.data.data.result;

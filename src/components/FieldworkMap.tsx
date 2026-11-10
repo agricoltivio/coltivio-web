@@ -36,6 +36,7 @@ const TYPE_COLORS: Record<FieldEvent["type"], string> = {
   fertilizerApplication: "#60a5fa",
   cropProtectionApplication: "#f97316",
   tillage: "#a78bfa",
+  sowing: "#facc15",
 };
 
 const LABEL_LIFETIME_MS = 5000;

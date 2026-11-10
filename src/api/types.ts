@@ -358,6 +358,24 @@ export const PARASITE_TYPES: ParasiteType[] = [
   "other",
 ];
 
+export type Seed =
+  components["schemas"]["GetV1SeedsPositiveResponse"]["data"]["result"][number];
+
+export type SeedQuantityKind = Seed["quantityKind"];
+
+export const SEED_QUANTITY_KINDS: SeedQuantityKind[] = ["weight", "count"];
+
+export type Sowing =
+  components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
+
+export type SowingUnit = Sowing["unit"];
+
+export type SowingUnitInfo =
+  components["schemas"]["GetV1SowingsUnitsPositiveResponse"]["data"]["result"][number];
+
+export type SowingPreset =
+  components["schemas"]["GetV1SowingsPresetsPositiveResponse"]["data"]["result"][number];
+
 // Weights and breeding
 export type AnimalWeight =
   components["schemas"]["GetV1AnimalsByIdAnimalIdWeightsPositiveResponse"]["data"]["result"][number];

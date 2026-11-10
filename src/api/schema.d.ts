@@ -756,6 +756,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/plots/byId/{plotId}/sowings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1PlotsByIdPlotIdSowings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1PlotsByIdPlotIdSowings"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/plots/byId/{plotId}/sowingSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1PlotsByIdPlotIdSowingSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1PlotsByIdPlotIdSowingSummary"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/plots/byId/{plotId}/split": {
         parameters: {
             query?: never;
@@ -1650,6 +1682,150 @@ export interface paths {
         options?: never;
         head: operations["HeadV1FertilizersByIdFertilizerIdInUse"];
         patch?: never;
+        trace?: never;
+    };
+    "/v1/seeds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Seeds"];
+        put?: never;
+        post: operations["PostV1Seeds"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Seeds"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/seeds/byId/{seedId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SeedsByIdSeedId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1SeedsByIdSeedId"];
+        options?: never;
+        head: operations["HeadV1SeedsByIdSeedId"];
+        patch: operations["PatchV1SeedsByIdSeedId"];
+        trace?: never;
+    };
+    "/v1/seeds/byId/{seedId}/inUse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SeedsByIdSeedIdInUse"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1SeedsByIdSeedIdInUse"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sowings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1Sowings"];
+        put?: never;
+        post: operations["PostV1Sowings"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1Sowings"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sowings/byId/{sowingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SowingsByIdSowingId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1SowingsByIdSowingId"];
+        options?: never;
+        head: operations["HeadV1SowingsByIdSowingId"];
+        patch: operations["PatchV1SowingsByIdSowingId"];
+        trace?: never;
+    };
+    "/v1/sowings/summaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SowingsSummaries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1SowingsSummaries"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sowings/units": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SowingsUnits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1SowingsUnits"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sowings/presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SowingsPresets"];
+        put?: never;
+        post: operations["PostV1SowingsPresets"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1SowingsPresets"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/sowings/presets/byId/{presetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1SowingsPresetsByIdPresetId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1SowingsPresetsByIdPresetId"];
+        options?: never;
+        head: operations["HeadV1SowingsPresetsByIdPresetId"];
+        patch: operations["PatchV1SowingsPresetsByIdPresetId"];
         trace?: never;
     };
     "/v1/reports/fieldcalendar/email": {
@@ -3623,7 +3799,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "ear_tag_range_conflict";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {
@@ -3902,7 +4078,7 @@ export interface components {
                     plotId: string;
                     plotName: string;
                     /** @enum {string} */
-                    type: "harvest" | "fertilizerApplication" | "cropProtectionApplication" | "tillage";
+                    type: "harvest" | "fertilizerApplication" | "cropProtectionApplication" | "tillage" | "sowing";
                     action: string;
                 }[];
             };
@@ -5139,6 +5315,85 @@ export interface components {
                             totalAmountInKilos: number;
                             totalProducedUnits: number;
                         }[];
+                    }[];
+                }[];
+            };
+        };
+        GetV1PlotsByIdPlotIdSowingsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    plotId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    cropId: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                    };
+                    seedId: string | null;
+                    seed: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                        cropId: string;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        defaultAmount: number | null;
+                        /** @enum {string|null} */
+                        defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                    } | null;
+                    /** @enum {string} */
+                    unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                    amount: number;
+                    totalBaseAmount: number;
+                    baseAmountPerHectare: number;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    size: number;
+                    additionalNotes: string | null;
+                }[];
+                count: number;
+            };
+        };
+        GetV1PlotsByIdPlotIdSowingSummaryPositiveResponse: {
+            data: {
+                monthlySowings: {
+                    year: number;
+                    month: number;
+                    sownSeeds: {
+                        cropId: string;
+                        cropName: string;
+                        seedId: string | null;
+                        seedName: string | null;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        /** @enum {string|null} */
+                        countUnit: "seeds" | "plants" | null;
+                        totalBaseAmount: number;
+                        totalSize: number;
                     }[];
                 }[];
             };
@@ -8083,6 +8338,623 @@ export interface components {
                 inUse: boolean;
             };
         };
+        GetV1SeedsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                    };
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                }[];
+                count: number;
+            };
+        };
+        PostV1SeedsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                /** @enum {string} */
+                quantityKind: "weight" | "count";
+                defaultAmount: number | null;
+                /** @enum {string|null} */
+                defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+            };
+        };
+        PostV1SeedsRequestBody: {
+            name: string;
+            description?: string;
+            cropId: string;
+            /** @enum {string} */
+            quantityKind: "weight" | "count";
+            defaultAmount?: number;
+            /** @enum {string} */
+            defaultUnit?: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+        };
+        GetV1SeedsByIdSeedIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                /** @enum {string} */
+                quantityKind: "weight" | "count";
+                defaultAmount: number | null;
+                /** @enum {string|null} */
+                defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+            };
+        };
+        PatchV1SeedsByIdSeedIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                description: string | null;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                /** @enum {string} */
+                quantityKind: "weight" | "count";
+                defaultAmount: number | null;
+                /** @enum {string|null} */
+                defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+            };
+        };
+        PatchV1SeedsByIdSeedIdRequestBody: {
+            name?: string;
+            description?: string | null;
+            cropId?: string;
+            defaultAmount?: number | null;
+            /** @enum {string|null} */
+            defaultUnit?: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+        };
+        DeleteV1SeedsByIdSeedIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1SeedsByIdSeedIdInUsePositiveResponse: {
+            data: {
+                inUse: boolean;
+            };
+        };
+        GetV1SowingsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    plotId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    cropId: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                    };
+                    seedId: string | null;
+                    seed: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                        cropId: string;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        defaultAmount: number | null;
+                        /** @enum {string|null} */
+                        defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                    } | null;
+                    /** @enum {string} */
+                    unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                    amount: number;
+                    totalBaseAmount: number;
+                    baseAmountPerHectare: number;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    size: number;
+                    additionalNotes: string | null;
+                    plot: {
+                        id: string;
+                        name: string;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1SowingsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                    plotId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    cropId: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                    };
+                    seedId: string | null;
+                    seed: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                        cropId: string;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        defaultAmount: number | null;
+                        /** @enum {string|null} */
+                        defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                    } | null;
+                    /** @enum {string} */
+                    unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                    amount: number;
+                    totalBaseAmount: number;
+                    baseAmountPerHectare: number;
+                    geometry: {
+                        /** @constant */
+                        type: "MultiPolygon";
+                        coordinates: number[][][][];
+                    };
+                    size: number;
+                    additionalNotes: string | null;
+                    plot: {
+                        id: string;
+                        name: string;
+                    };
+                }[];
+                count: number;
+            };
+        };
+        PostV1SowingsRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            cropId?: string;
+            seedId?: string;
+            /** @enum {string} */
+            unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+            additionalNotes?: string;
+            plots: {
+                plotId: string;
+                amount: number;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+            }[];
+        };
+        GetV1SowingsByIdSowingIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+                plotId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                seedId: string | null;
+                seed: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                } | null;
+                /** @enum {string} */
+                unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                amount: number;
+                totalBaseAmount: number;
+                baseAmountPerHectare: number;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                plot: {
+                    id: string;
+                    name: string;
+                };
+            };
+        };
+        DeleteV1SowingsByIdSowingIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PatchV1SowingsByIdSowingIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                createdAt: string;
+                createdBy: string | null;
+                plotId: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                date: string;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                seedId: string | null;
+                seed: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                } | null;
+                /** @enum {string} */
+                unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                amount: number;
+                totalBaseAmount: number;
+                baseAmountPerHectare: number;
+                geometry: {
+                    /** @constant */
+                    type: "MultiPolygon";
+                    coordinates: number[][][][];
+                };
+                size: number;
+                additionalNotes: string | null;
+                plot: {
+                    id: string;
+                    name: string;
+                };
+            };
+        };
+        PatchV1SowingsByIdSowingIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date?: string;
+            cropId?: string;
+            seedId?: string | null;
+            /** @enum {string} */
+            unit?: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+            amount?: number;
+            additionalNotes?: string | null;
+        };
+        GetV1SowingsSummariesPositiveResponse: {
+            data: {
+                monthlySowings: {
+                    year: number;
+                    month: number;
+                    sownSeeds: {
+                        cropId: string;
+                        cropName: string;
+                        seedId: string | null;
+                        seedName: string | null;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        /** @enum {string|null} */
+                        countUnit: "seeds" | "plants" | null;
+                        totalBaseAmount: number;
+                        totalSize: number;
+                    }[];
+                }[];
+            };
+        };
+        GetV1SowingsUnitsPositiveResponse: {
+            data: {
+                result: {
+                    /** @enum {string} */
+                    unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    /** @enum {string|null} */
+                    countUnit: "seeds" | "plants" | null;
+                    perArea: boolean;
+                }[];
+                count: number;
+            };
+        };
+        GetV1SowingsPresetsPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    cropId: string;
+                    crop: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        /** @enum {string} */
+                        category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                        familyId: string | null;
+                        variety: string | null;
+                        usageCodes: number[];
+                        waitingTimeInYears: number | null;
+                        additionalNotes: string | null;
+                    };
+                    seedId: string | null;
+                    seed: {
+                        id: string;
+                        farmId: string;
+                        name: string;
+                        description: string | null;
+                        cropId: string;
+                        /** @enum {string} */
+                        quantityKind: "weight" | "count";
+                        defaultAmount: number | null;
+                        /** @enum {string|null} */
+                        defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                    } | null;
+                    /** @enum {string} */
+                    unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                    amount: number;
+                }[];
+                count: number;
+            };
+        };
+        PostV1SowingsPresetsPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                seedId: string | null;
+                seed: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                } | null;
+                /** @enum {string} */
+                unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                amount: number;
+            };
+        };
+        PostV1SowingsPresetsRequestBody: {
+            name: string;
+            cropId?: string;
+            seedId?: string;
+            /** @enum {string} */
+            unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+            amount: number;
+        };
+        GetV1SowingsPresetsByIdPresetIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                seedId: string | null;
+                seed: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                } | null;
+                /** @enum {string} */
+                unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                amount: number;
+            };
+        };
+        PatchV1SowingsPresetsByIdPresetIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                name: string;
+                cropId: string;
+                crop: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    /** @enum {string} */
+                    category: "grass" | "grain" | "vegetable" | "fruit" | "other";
+                    familyId: string | null;
+                    variety: string | null;
+                    usageCodes: number[];
+                    waitingTimeInYears: number | null;
+                    additionalNotes: string | null;
+                };
+                seedId: string | null;
+                seed: {
+                    id: string;
+                    farmId: string;
+                    name: string;
+                    description: string | null;
+                    cropId: string;
+                    /** @enum {string} */
+                    quantityKind: "weight" | "count";
+                    defaultAmount: number | null;
+                    /** @enum {string|null} */
+                    defaultUnit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants" | null;
+                } | null;
+                /** @enum {string} */
+                unit: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+                amount: number;
+            };
+        };
+        PatchV1SowingsPresetsByIdPresetIdRequestBody: {
+            name?: string;
+            cropId?: string;
+            seedId?: string | null;
+            /** @enum {string} */
+            unit?: "kg_per_ha" | "g_per_m2" | "seeds_per_ha" | "seeds_per_m2" | "plants_per_ha" | "plants_per_m2" | "kg" | "g" | "seeds" | "plants";
+            amount?: number;
+        };
+        DeleteV1SowingsPresetsByIdPresetIdPositiveResponse: {
+            data: Record<string, never>;
+        };
         PostV1ReportsFieldcalendarEmailPositiveResponse: {
             data: Record<string, never>;
         };
@@ -8102,6 +8974,8 @@ export interface components {
             generateFertilizerApplications: boolean;
             generateCropProtectionApplications: boolean;
             generateHarvests: boolean;
+            /** @default false */
+            generateSowings: boolean;
         };
         PostV1ReportsFieldcalendarDownloadPositiveResponse: {
             data: {
@@ -8125,6 +8999,8 @@ export interface components {
             generateFertilizerApplications: boolean;
             generateCropProtectionApplications: boolean;
             generateHarvests: boolean;
+            /** @default false */
+            generateSowings: boolean;
         };
         PostV1ReportsTreatmentsDownloadPositiveResponse: {
             data: {
@@ -15030,6 +15906,8 @@ export interface operations {
                 fromDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
                 /** @description GET /v1/farm/fieldEvents Parameter */
                 toDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+                /** @description GET /v1/farm/fieldEvents Parameter */
+                types?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path?: never;
@@ -15064,6 +15942,8 @@ export interface operations {
                 fromDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
                 /** @description HEAD /v1/farm/fieldEvents Parameter */
                 toDate: components["schemas"]["GetV1FarmFieldEventsParameterFromDate"];
+                /** @description HEAD /v1/farm/fieldEvents Parameter */
+                types?: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
             };
             header?: never;
             path?: never;
@@ -17299,6 +18179,126 @@ export interface operations {
                 content?: never;
             };
             /** @description HEAD /v1/plots/byId/:plotId/harvestSummary Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1PlotsByIdPlotIdSowings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/plots/byId/:plotId/sowings Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/plots/byId/:plotId/sowings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1PlotsByIdPlotIdSowingsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/plots/byId/:plotId/sowings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1PlotsByIdPlotIdSowings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/plots/byId/:plotId/sowings Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/plots/byId/:plotId/sowings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/plots/byId/:plotId/sowings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1PlotsByIdPlotIdSowingSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/plots/byId/:plotId/sowingSummary Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/plots/byId/:plotId/sowingSummary Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1PlotsByIdPlotIdSowingSummaryPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/plots/byId/:plotId/sowingSummary Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1PlotsByIdPlotIdSowingSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/plots/byId/:plotId/sowingSummary Parameter */
+                plotId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/plots/byId/:plotId/sowingSummary Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/plots/byId/:plotId/sowingSummary Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -21790,6 +22790,835 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    GetV1Seeds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/seeds Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SeedsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/seeds Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Seeds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/seeds Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1SeedsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/seeds Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1SeedsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/seeds Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Seeds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/seeds Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/seeds Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1SeedsByIdSeedId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/seeds/byId/:seedId Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/seeds/byId/:seedId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SeedsByIdSeedIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/seeds/byId/:seedId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1SeedsByIdSeedId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/seeds/byId/:seedId Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/seeds/byId/:seedId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1SeedsByIdSeedIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/seeds/byId/:seedId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SeedsByIdSeedId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/seeds/byId/:seedId Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/seeds/byId/:seedId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/seeds/byId/:seedId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1SeedsByIdSeedId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/seeds/byId/:seedId Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/seeds/byId/:seedId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1SeedsByIdSeedIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/seeds/byId/:seedId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1SeedsByIdSeedIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/seeds/byId/:seedId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1SeedsByIdSeedIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/seeds/byId/:seedId/inUse Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/seeds/byId/:seedId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SeedsByIdSeedIdInUsePositiveResponse"];
+                };
+            };
+            /** @description GET /v1/seeds/byId/:seedId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SeedsByIdSeedIdInUse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/seeds/byId/:seedId/inUse Parameter */
+                seedId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/seeds/byId/:seedId/inUse Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/seeds/byId/:seedId/inUse Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1Sowings: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1Sowings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/sowings Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1SowingsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/sowings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1SowingsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/sowings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1Sowings: {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                fromDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+                /** @description YYYY-MM-DDTHH:mm:ss.sssZ */
+                toDate?: components["schemas"]["GetV1MeadowsByIdMeadowIdUsageParameterFromDate"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1SowingsByIdSowingId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/sowings/byId/:sowingId Parameter */
+                sowingId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings/byId/:sowingId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsByIdSowingIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings/byId/:sowingId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1SowingsByIdSowingId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/sowings/byId/:sowingId Parameter */
+                sowingId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/sowings/byId/:sowingId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1SowingsByIdSowingIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/sowings/byId/:sowingId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SowingsByIdSowingId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/sowings/byId/:sowingId Parameter */
+                sowingId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings/byId/:sowingId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings/byId/:sowingId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1SowingsByIdSowingId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/sowings/byId/:sowingId Parameter */
+                sowingId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/sowings/byId/:sowingId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1SowingsByIdSowingIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/sowings/byId/:sowingId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1SowingsByIdSowingIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/sowings/byId/:sowingId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1SowingsSummaries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings/summaries Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsSummariesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings/summaries Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SowingsSummaries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings/summaries Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings/summaries Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1SowingsUnits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings/units Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsUnitsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings/units Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SowingsUnits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings/units Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings/units Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1SowingsPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings/presets Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsPresetsPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings/presets Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1SowingsPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/sowings/presets Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1SowingsPresetsRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/sowings/presets Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1SowingsPresetsPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/sowings/presets Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SowingsPresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings/presets Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings/presets Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetV1SowingsPresetsByIdPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/sowings/presets/byId/:presetId Parameter */
+                presetId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/sowings/presets/byId/:presetId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1SowingsPresetsByIdPresetIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/sowings/presets/byId/:presetId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1SowingsPresetsByIdPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/sowings/presets/byId/:presetId Parameter */
+                presetId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/sowings/presets/byId/:presetId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1SowingsPresetsByIdPresetIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/sowings/presets/byId/:presetId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1SowingsPresetsByIdPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/sowings/presets/byId/:presetId Parameter */
+                presetId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/sowings/presets/byId/:presetId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/sowings/presets/byId/:presetId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1SowingsPresetsByIdPresetId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/sowings/presets/byId/:presetId Parameter */
+                presetId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/sowings/presets/byId/:presetId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1SowingsPresetsByIdPresetIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/sowings/presets/byId/:presetId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1SowingsPresetsByIdPresetIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/sowings/presets/byId/:presetId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
             };
         };
     };
