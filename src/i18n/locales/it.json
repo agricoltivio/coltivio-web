@@ -1955,7 +1955,7 @@
     "addWeightEntry": "Aggiungi nuova pesata",
     "weightHistory": "Andamento del peso",
     "notes": "Note",
-    "weightPerAnimal": "Peso e quantità effettiva per animale",
+    "weightPerAnimal": "Quantità effettiva per animale",
     "heats": "Gravidanza",
     "heat": "In calore",
     "noHeats": "Nessuna voce",
@@ -1969,14 +1969,6 @@
     "event": "Evento",
     "calendarTitle": "Calendario gravidanze",
     "noEntriesMonth": "Nessuna voce in questo mese",
-    "reminders": "Promemoria push",
-    "remindersDescription": "I promemoria prima dei parti previsti vengono inviati all'app Coltivio sui tuoi dispositivi mobili.",
-    "reminder1": "Primo promemoria",
-    "reminder2": "Secondo promemoria",
-    "reminderOff": "Disattivato",
-    "reminderOnDay": "Il giorno del parto",
-    "reminderDaysBefore_one": "{{count}} giorno prima",
-    "reminderDaysBefore_other": "{{count}} giorni prima",
     "gestationDays": "Durata della gravidanza (giorni)",
     "gestationDescription": "Vale per tutta l'azienda. Un campo vuoto ripristina il valore predefinito.",
     "onlyOwnerCanEdit": "Solo i titolari dell'azienda possono modificare la durata della gravidanza.",
@@ -1996,6 +1988,7 @@
     "sireOptional": "Padre (facoltativo)",
     "sireExternalOptional": "Padre esterno (facoltativo)",
     "notesOptional": "Note (facoltative)",
-    "saveFailed": "Salvataggio non riuscito"
+    "saveFailed": "Salvataggio non riuscito",
+    "settingsTitle": "Impostazioni"
   }
 }

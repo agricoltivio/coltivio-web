@@ -264,7 +264,7 @@ export function TreatmentForm({
   const showWaitingDates = !!watchedDrugId;
 
   return (
-    <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-lg">
+    <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-2xl">
       {/* Animals multi-select */}
       <FieldGroup>
         <Field>
@@ -286,7 +286,7 @@ export function TreatmentForm({
       </FieldGroup>
 
       {/* Date range */}
-      <FieldGroup className="flex-row mt-7">
+      <FieldGroup className="flex-row items-end mt-7">
         <Field className="max-w-48">
           <FieldLabel htmlFor="startDate">{t("treatments.startDate")} *</FieldLabel>
           <Input
@@ -357,7 +357,7 @@ export function TreatmentForm({
       {/* Dose fields and waiting dates (shown when drug is selected) */}
       {showWaitingDates && (
         <>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="drugDoseValue">{t("treatments.drugDoseValue")}</FieldLabel>
               <Input id="drugDoseValue" type="number" step="any" {...register("drugDoseValue")} />
@@ -432,7 +432,7 @@ export function TreatmentForm({
               <Input id="drugReceivedFrom" type="text" {...register("drugReceivedFrom")} />
             </Field>
           </FieldGroup>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="milkUsableDate">
                 {t("treatments.milkUsableDate")}

@@ -1955,7 +1955,7 @@
     "addWeightEntry": "Neuen Gewichtseintrag hinzufügen",
     "weightHistory": "Gewichtsverlauf",
     "notes": "Notizen",
-    "weightPerAnimal": "Gewicht und effektive Menge pro Tier",
+    "weightPerAnimal": "Effektive Menge pro Tier",
     "heats": "Trächtigkeit",
     "heat": "Paarungsbereit",
     "noHeats": "Keine Einträge",
@@ -1969,14 +1969,6 @@
     "event": "Ereignis",
     "calendarTitle": "Trächtigkeitskalender",
     "noEntriesMonth": "Keine Einträge in diesem Monat",
-    "reminders": "Push-Erinnerungen",
-    "remindersDescription": "Erinnerungen vor erwarteten Geburten werden an die Coltivio-App auf deinen Mobilgeräten gesendet.",
-    "reminder1": "Erste Erinnerung",
-    "reminder2": "Zweite Erinnerung",
-    "reminderOff": "Aus",
-    "reminderOnDay": "Am Tag der Geburt",
-    "reminderDaysBefore_one": "{{count}} Tag vorher",
-    "reminderDaysBefore_other": "{{count}} Tage vorher",
     "gestationDays": "Trächtigkeitsdauer (Tage)",
     "gestationDescription": "Gilt für den ganzen Betrieb. Leeres Feld setzt den Standardwert.",
     "onlyOwnerCanEdit": "Nur Betriebsinhaber können die Trächtigkeitsdauer ändern.",
@@ -1996,6 +1988,7 @@
     "sireOptional": "Vatertier (optional)",
     "sireExternalOptional": "Externes Vatertier (optional)",
     "notesOptional": "Notizen (optional)",
-    "saveFailed": "Speichern fehlgeschlagen"
+    "saveFailed": "Speichern fehlgeschlagen",
+    "settingsTitle": "Einstellungen"
   }
 }

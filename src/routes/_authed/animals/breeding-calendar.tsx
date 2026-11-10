@@ -1,17 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { apiClient } from "@/api/client";
+import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { breedingCalendarQueryOptions, gestationSettingsQueryOptions } from "@/api/breeding.queries";
-import { meQueryOptions } from "@/api/user.queries";
-import type { AnimalType, BreedingCalendarEntry } from "@/api/types";
+import type { BreedingCalendarEntry } from "@/api/types";
 import { HeatEntryDialog } from "@/components/AnimalBreedingCards";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { inlineLink } from "@/lib/ui";
@@ -30,7 +26,6 @@ type CalendarEvent = {
 };
 
 const WEEKDAY_COUNT = 7;
-const REMINDER_DAY_OPTIONS = [0, 1, 3, 7, 14, 30];
 
 function isSameDay(first: Date, second: Date) {
   return (
@@ -123,9 +118,18 @@ function BreedingCalendarPage() {
   }
 
   return (
-    <PageContent title={t("breeding.calendarTitle")}>
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="space-y-6">
+    <PageContent
+      title={t("breeding.calendarTitle")}
+      actions={
+        <Button variant="outline" asChild>
+          <Link to="/animals/breeding-calendar/settings">
+            <Settings className="h-4 w-4" />
+            {t("breeding.settingsTitle")}
+          </Link>
+        </Button>
+      }
+    >
+      <div className="space-y-6">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -248,12 +252,6 @@ function BreedingCalendarPage() {
               )}
             </CardContent>
           </Card>
-        </div>
-
-        <div className="space-y-6">
-          <ReminderSettingsCard />
-          <GestationSettingsCard />
-        </div>
       </div>
       {editedEntry && (
         <HeatEntryDialog
@@ -267,137 +265,5 @@ function BreedingCalendarPage() {
         />
       )}
     </PageContent>
-  );
-}
-
-function ReminderSettingsCard() {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const meQuery = useQuery(meQueryOptions());
-
-  const updateMutation = useMutation({
-    mutationFn: async (body: { breedingReminderDaysBefore1?: number | null; breedingReminderDaysBefore2?: number | null }) => {
-      const response = await apiClient.PATCH("/v1/me", { body });
-      if (response.error) throw new Error("Failed to update reminders");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["me"] }),
-  });
-
-  const reminderSelect = (
-    id: string,
-    label: string,
-    value: number | null | undefined,
-    onChange: (days: number | null) => void,
-  ) => (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
-      <select
-        id={id}
-        className="w-full rounded border px-3 py-2 text-sm"
-        value={value == null ? "off" : String(value)}
-        disabled={!meQuery.data || updateMutation.isPending}
-        onChange={(event) => onChange(event.target.value === "off" ? null : parseInt(event.target.value, 10))}
-      >
-        <option value="off">{t("breeding.reminderOff")}</option>
-        {REMINDER_DAY_OPTIONS.map((days) => (
-          <option key={days} value={days}>
-            {days === 0 ? t("breeding.reminderOnDay") : t("breeding.reminderDaysBefore", { count: days })}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("breeding.reminders")}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">{t("breeding.remindersDescription")}</p>
-        {reminderSelect("reminder1", t("breeding.reminder1"), meQuery.data?.breedingReminderDaysBefore1, (days) =>
-          updateMutation.mutate({ breedingReminderDaysBefore1: days }),
-        )}
-        {reminderSelect("reminder2", t("breeding.reminder2"), meQuery.data?.breedingReminderDaysBefore2, (days) =>
-          updateMutation.mutate({ breedingReminderDaysBefore2: days }),
-        )}
-        {updateMutation.isError && <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>}
-      </CardContent>
-    </Card>
-  );
-}
-
-function GestationSettingsCard() {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const meQuery = useQuery(meQueryOptions());
-  const isOwner = meQuery.data?.farmRole === "owner";
-  const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
-  const [gestationInputs, setGestationInputs] = useState<Partial<Record<AnimalType, string>>>({});
-
-  useEffect(() => {
-    if (!gestationSettingsQuery.data) return;
-    const inputs: Partial<Record<AnimalType, string>> = {};
-    for (const setting of gestationSettingsQuery.data) inputs[setting.animalType] = String(setting.gestationDays);
-    setGestationInputs(inputs);
-  }, [gestationSettingsQuery.data]);
-
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      const settings = (gestationSettingsQuery.data ?? []).map((setting) => {
-        const gestationDays = parseInt(gestationInputs[setting.animalType] ?? "", 10);
-        const isValidValue = Number.isFinite(gestationDays) && gestationDays > 0;
-        // An empty field resets the type to its default. An unchanged default stays a default, so later
-        // changes of the default still apply and it keeps its "default" label.
-        const keepsDefault = setting.isDefault && gestationDays === setting.gestationDays;
-        return {
-          animalType: setting.animalType,
-          gestationDays: isValidValue && !keepsDefault ? gestationDays : null,
-        };
-      });
-      const response = await apiClient.PUT("/v1/animals/breedingCalendar/gestationSettings", {
-        body: { settings },
-      });
-      if (response.error) throw new Error("Failed to save gestation settings");
-    },
-    // Expected birth dates depend on the gestation days
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["breeding"] }),
-  });
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("breeding.gestationDays")}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <p className="text-sm text-muted-foreground">
-          {isOwner ? t("breeding.gestationDescription") : t("breeding.onlyOwnerCanEdit")}
-        </p>
-        {gestationSettingsQuery.data?.map((setting) => (
-          <div key={setting.animalType} className="grid grid-cols-[1fr_6rem] items-center gap-3">
-            <Label htmlFor={`gestation-${setting.animalType}`} className="font-normal">
-              {t(`animals.types.${setting.animalType}`)}
-              {setting.isDefault && <span className="ml-1 text-muted-foreground">({t("breeding.default")})</span>}
-            </Label>
-            <Input
-              id={`gestation-${setting.animalType}`}
-              type="number"
-              min="1"
-              disabled={!isOwner}
-              value={gestationInputs[setting.animalType] ?? ""}
-              onChange={(event) =>
-                setGestationInputs((inputs) => ({ ...inputs, [setting.animalType]: event.target.value }))
-              }
-            />
-          </div>
-        ))}
-        {isOwner && (
-          <Button className="w-full" disabled={saveMutation.isPending} onClick={() => saveMutation.mutate()}>
-            {t("common.save")}
-          </Button>
-        )}
-        {saveMutation.isError && <p className="text-sm text-destructive">{t("breeding.saveFailed")}</p>}
-      </CardContent>
-    </Card>
   );
 }

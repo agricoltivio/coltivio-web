@@ -129,6 +129,7 @@ import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drug
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsMeadowsMeadowIdRouteImport } from './routes/_authed/animals/meadows_.$meadowId'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
+import { Route as AuthedAnimalsBreedingCalendarSettingsRouteImport } from './routes/_authed/animals/breeding-calendar_.settings'
 import { Route as AuthedAnimalsAnimalIdParasiteHistoryRouteImport } from './routes/_authed/animals/$animalId_.parasite-history'
 import { Route as AuthedAnimalsAnimalIdJournalRouteImport } from './routes/_authed/animals/$animalId_.journal'
 import { Route as AuthedAnimalsAnimalIdFamilyTreeRouteImport } from './routes/_authed/animals/$animalId_.family-tree'
@@ -831,6 +832,12 @@ const AuthedAnimalsHerdsHerdIdRoute =
     path: '/animals/herds/$herdId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedAnimalsBreedingCalendarSettingsRoute =
+  AuthedAnimalsBreedingCalendarSettingsRouteImport.update({
+    id: '/animals/breeding-calendar_/settings',
+    path: '/animals/breeding-calendar/settings',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedAnimalsAnimalIdParasiteHistoryRoute =
   AuthedAnimalsAnimalIdParasiteHistoryRouteImport.update({
     id: '/animals/$animalId_/parasite-history',
@@ -1120,6 +1127,7 @@ export interface FileRoutesByFullPath {
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/animals/$animalId/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/animals/breeding-calendar/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1267,6 +1275,7 @@ export interface FileRoutesByTo {
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/animals/breeding-calendar/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1424,6 +1433,7 @@ export interface FileRoutesById {
   '/_authed/animals/$animalId_/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/_authed/animals/$animalId_/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/_authed/animals/$animalId_/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/_authed/animals/breeding-calendar_/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/_authed/animals/meadows_/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1582,6 +1592,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/family-tree'
     | '/animals/$animalId/journal'
     | '/animals/$animalId/parasite-history'
+    | '/animals/breeding-calendar/settings'
     | '/animals/herds/$herdId'
     | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
@@ -1729,6 +1740,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/edit'
     | '/animals/$animalId/family-tree'
     | '/animals/$animalId/parasite-history'
+    | '/animals/breeding-calendar/settings'
     | '/animals/herds/$herdId'
     | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
@@ -1885,6 +1897,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/$animalId_/family-tree'
     | '/_authed/animals/$animalId_/journal'
     | '/_authed/animals/$animalId_/parasite-history'
+    | '/_authed/animals/breeding-calendar_/settings'
     | '/_authed/animals/herds_/$herdId'
     | '/_authed/animals/meadows_/$meadowId'
     | '/_authed/contacts/$contactId/edit'
@@ -2825,6 +2838,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsHerdsHerdIdRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/animals/breeding-calendar_/settings': {
+      id: '/_authed/animals/breeding-calendar_/settings'
+      path: '/animals/breeding-calendar/settings'
+      fullPath: '/animals/breeding-calendar/settings'
+      preLoaderRoute: typeof AuthedAnimalsBreedingCalendarSettingsRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/animals/$animalId_/parasite-history': {
       id: '/_authed/animals/$animalId_/parasite-history'
       path: '/animals/$animalId/parasite-history'
@@ -3345,6 +3365,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsAnimalIdFamilyTreeRoute: typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   AuthedAnimalsAnimalIdJournalRoute: typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   AuthedAnimalsAnimalIdParasiteHistoryRoute: typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  AuthedAnimalsBreedingCalendarSettingsRoute: typeof AuthedAnimalsBreedingCalendarSettingsRoute
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
   AuthedAnimalsMeadowsMeadowIdRoute: typeof AuthedAnimalsMeadowsMeadowIdRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
@@ -3448,6 +3469,8 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedAnimalsAnimalIdJournalRouteWithChildren,
   AuthedAnimalsAnimalIdParasiteHistoryRoute:
     AuthedAnimalsAnimalIdParasiteHistoryRoute,
+  AuthedAnimalsBreedingCalendarSettingsRoute:
+    AuthedAnimalsBreedingCalendarSettingsRoute,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
   AuthedAnimalsMeadowsMeadowIdRoute: AuthedAnimalsMeadowsMeadowIdRoute,
   AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,

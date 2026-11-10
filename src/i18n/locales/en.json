@@ -1955,7 +1955,7 @@
     "addWeightEntry": "Add new weight entry",
     "weightHistory": "Weight history",
     "notes": "Notes",
-    "weightPerAnimal": "Weight and effective amount per animal",
+    "weightPerAnimal": "Effective amount per animal",
     "heats": "Pregnancy",
     "heat": "In heat",
     "noHeats": "No entries",
@@ -1969,14 +1969,6 @@
     "event": "Event",
     "calendarTitle": "Breeding calendar",
     "noEntriesMonth": "No entries this month",
-    "reminders": "Push reminders",
-    "remindersDescription": "Reminders before expected births are sent to the Coltivio app on your mobile devices.",
-    "reminder1": "First reminder",
-    "reminder2": "Second reminder",
-    "reminderOff": "Off",
-    "reminderOnDay": "On the day of birth",
-    "reminderDaysBefore_one": "{{count}} day before",
-    "reminderDaysBefore_other": "{{count}} days before",
     "gestationDays": "Gestation length (days)",
     "gestationDescription": "Applies to the whole farm. An empty field resets to the default.",
     "onlyOwnerCanEdit": "Only farm owners can change the gestation length.",
@@ -1996,6 +1988,7 @@
     "sireOptional": "Sire (optional)",
     "sireExternalOptional": "External sire (optional)",
     "notesOptional": "Notes (optional)",
-    "saveFailed": "Saving failed"
+    "saveFailed": "Saving failed",
+    "settingsTitle": "Settings"
   }
 }
