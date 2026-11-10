@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { Trash2 } from "lucide-react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -66,6 +66,7 @@ function AnimalDetailPage() {
   const { animalId } = Route.useParams();
   const { returnTo } = Route.useSearch();
   const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [showDeceasedChildren, setShowDeceasedChildren] = useState(false);
   const [addOffspringOpen, setAddOffspringOpen] = useState(false);
@@ -159,7 +160,10 @@ function AnimalDetailPage() {
   const animal = animalQuery.data;
 
   return (
-    <PageContent title={animal.name} showBackButton backTo={() => navigate({ to: returnTo ?? "/animals" })}>
+    <PageContent title={animal.name} showBackButton backTo={() =>
+        // returnTo can carry a query string (the filtered list), which `to` doesn't take
+        returnTo ? router.history.push(returnTo) : navigate({ to: "/animals" })
+      }>
       {/* Header actions */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
