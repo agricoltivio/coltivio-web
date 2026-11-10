@@ -257,7 +257,7 @@
   "earTags": {
     "title": "Boucles d'oreille",
     "addRange": "Ajouter une plage",
-    "deleteRange": "Supprimer la plage",
+    "deleteRange": "Supprimer une plage",
     "number": "Numéro",
     "status": "Statut",
     "assigned": "Attribuée",
@@ -276,7 +276,21 @@
     "rangePreviewTotal": "{{total}} marques auriculaires",
     "rangeConflict": "Ces marques auriculaires existent déjà : {{numbers}}. Modifie le premier numéro ou le nombre.",
     "rangeConflictMore": "Ces marques auriculaires existent déjà : {{numbers}} et {{remaining}} autres. Modifie le premier numéro ou le nombre.",
-    "rangeTooLarge": "Au maximum {{max}} boucles d'oreille à la fois"
+    "rangeTooLarge": "Au maximum {{max}} boucles d'oreille à la fois",
+    "confirmDeleteRangeTitle": "Supprimer les boucles d'oreille ?",
+    "confirmDeleteRangeMessage_one": "{{count}} boucle d'oreille de la plage {{from}} à {{to}} sera supprimée. Les boucles attribuées sont conservées.",
+    "confirmDeleteRangeMessage_other": "{{count}} boucles d'oreille de la plage {{from}} à {{to}} seront supprimées. Les boucles attribuées sont conservées.",
+    "deleteRangeDoneTitle": "Boucles d'oreille supprimées",
+    "deleteRangeDone_one": "{{count}} boucle d'oreille supprimée.",
+    "deleteRangeDone_other": "{{count}} boucles d'oreille supprimées.",
+    "deleteRangeDoneSkipped_one": "{{count}} boucle d'oreille supprimée, {{skipped}} attribuées conservées.",
+    "deleteRangeDoneSkipped_other": "{{count}} boucles d'oreille supprimées, {{skipped}} attribuées conservées.",
+    "deleteRangePreviewCount_one": "{{count}} boucle d'oreille sera supprimée",
+    "deleteRangePreviewCount_other": "{{count}} boucles d'oreille seront supprimées",
+    "deleteRangePreviewNone": "Aucune boucle d'oreille libre dans cette plage",
+    "deleteRangeKept": "Attribuées, conservées : {{numbers}}",
+    "deleteRangeKeptMore": "Attribuées, conservées : {{numbers}} et {{remaining}} autres",
+    "deleteFailed": "La boucle d'oreille n'a pas pu être supprimée."
   },
   "auth": {
     "signIn": "Se connecter",

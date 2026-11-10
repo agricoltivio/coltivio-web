@@ -257,7 +257,7 @@
   "earTags": {
     "title": "Ear Tags",
     "addRange": "Add Range",
-    "deleteRange": "Delete Range",
+    "deleteRange": "Delete range",
     "number": "Number",
     "status": "Status",
     "assigned": "Assigned",
@@ -276,7 +276,21 @@
     "rangePreviewTotal": "{{total}} ear tags",
     "rangeConflict": "These ear tags already exist: {{numbers}}. Change the first number or the number of ear tags.",
     "rangeConflictMore": "These ear tags already exist: {{numbers}} and {{remaining}} more. Change the first number or the number of ear tags.",
-    "rangeTooLarge": "At most {{max}} ear tags at once"
+    "rangeTooLarge": "At most {{max}} ear tags at once",
+    "confirmDeleteRangeTitle": "Delete ear tags?",
+    "confirmDeleteRangeMessage_one": "{{count}} ear tag in the range {{from}} to {{to}} will be deleted. Assigned ear tags are kept.",
+    "confirmDeleteRangeMessage_other": "{{count}} ear tags in the range {{from}} to {{to}} will be deleted. Assigned ear tags are kept.",
+    "deleteRangeDoneTitle": "Ear tags deleted",
+    "deleteRangeDone_one": "{{count}} ear tag deleted.",
+    "deleteRangeDone_other": "{{count}} ear tags deleted.",
+    "deleteRangeDoneSkipped_one": "{{count}} ear tag deleted, {{skipped}} assigned kept.",
+    "deleteRangeDoneSkipped_other": "{{count}} ear tags deleted, {{skipped}} assigned kept.",
+    "deleteRangePreviewCount_one": "{{count}} ear tag will be deleted",
+    "deleteRangePreviewCount_other": "{{count}} ear tags will be deleted",
+    "deleteRangePreviewNone": "No unassigned ear tags in this range",
+    "deleteRangeKept": "Assigned, kept: {{numbers}}",
+    "deleteRangeKeptMore": "Assigned, kept: {{numbers}} and {{remaining}} more",
+    "deleteFailed": "The ear tag could not be deleted."
   },
   "auth": {
     "signIn": "Sign In",

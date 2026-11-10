@@ -276,7 +276,21 @@
     "rangePreviewTotal": "{{total}} Ohrmarken",
     "rangeConflict": "Diese Ohrmarken gibt es bereits: {{numbers}}. Passe die erste Nummer oder die Anzahl an.",
     "rangeConflictMore": "Diese Ohrmarken gibt es bereits: {{numbers}} und {{remaining}} weitere. Passe die erste Nummer oder die Anzahl an.",
-    "rangeTooLarge": "Höchstens {{max}} Ohrmarken auf einmal"
+    "rangeTooLarge": "Höchstens {{max}} Ohrmarken auf einmal",
+    "confirmDeleteRangeTitle": "Ohrmarken löschen?",
+    "confirmDeleteRangeMessage_one": "{{count}} Ohrmarke im Bereich {{from}} bis {{to}} wird gelöscht. Zugewiesene Ohrmarken bleiben.",
+    "confirmDeleteRangeMessage_other": "{{count}} Ohrmarken im Bereich {{from}} bis {{to}} werden gelöscht. Zugewiesene Ohrmarken bleiben.",
+    "deleteRangeDoneTitle": "Ohrmarken gelöscht",
+    "deleteRangeDone_one": "{{count}} Ohrmarke gelöscht.",
+    "deleteRangeDone_other": "{{count}} Ohrmarken gelöscht.",
+    "deleteRangeDoneSkipped_one": "{{count}} Ohrmarke gelöscht, {{skipped}} zugewiesene behalten.",
+    "deleteRangeDoneSkipped_other": "{{count}} Ohrmarken gelöscht, {{skipped}} zugewiesene behalten.",
+    "deleteRangePreviewCount_one": "{{count}} Ohrmarke wird gelöscht",
+    "deleteRangePreviewCount_other": "{{count}} Ohrmarken werden gelöscht",
+    "deleteRangePreviewNone": "Keine freien Ohrmarken in diesem Bereich",
+    "deleteRangeKept": "Zugewiesen, bleiben bestehen: {{numbers}}",
+    "deleteRangeKeptMore": "Zugewiesen, bleiben bestehen: {{numbers}} und {{remaining}} weitere",
+    "deleteFailed": "Die Ohrmarke konnte nicht gelöscht werden."
   },
   "auth": {
     "signIn": "Anmelden",

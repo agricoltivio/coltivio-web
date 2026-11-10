@@ -86,11 +86,10 @@ function EarTags() {
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: async (earTagNumber: string) => {
-      const response = await apiClient.DELETE("/v1/earTags/range", {
-        params: {
-          query: { fromNumber: earTagNumber, toNumber: earTagNumber },
-        },
+    // By id, so any number format works (imported numbers don't follow the range format)
+    mutationFn: async (earTagId: string) => {
+      const response = await apiClient.DELETE("/v1/earTags/byId/{earTagId}", {
+        params: { path: { earTagId } },
       });
       if (response.error) {
         throw new Error("Failed to delete ear tag");
@@ -115,9 +114,21 @@ function EarTags() {
 
   function handleConfirmDelete() {
     if (earTagToDelete) {
-      deleteMutation.mutate(earTagToDelete.number);
+      deleteMutation.mutate(earTagToDelete.id);
     }
   }
+
+  // Delete range mutation; the API skips tags that are assigned to an animal
+  const deleteRangeMutation = useMutation({
+    mutationFn: async ({ fromNumber, toNumber }: { fromNumber: string; toNumber: string }) => {
+      const response = await apiClient.DELETE("/v1/earTags/range", {
+        params: { query: { fromNumber, toNumber } },
+      });
+      if (response.error) throw new Error(t("common.error"));
+      return response.data.data;
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["earTags"] }),
+  });
 
   const columns = useMemo<ColumnDef<EarTag>[]>(
     () => [
@@ -191,6 +202,15 @@ function EarTags() {
       showBackButton={false}
       actions={
         canWriteAnimals && (
+          <div className="flex gap-2">
+          <DeleteRangeDialog
+            earTags={earTagsQuery.data?.result}
+            onSubmit={(fromNumber, toNumber) => deleteRangeMutation.mutate({ fromNumber, toNumber })}
+            onClose={() => deleteRangeMutation.reset()}
+            isPending={deleteRangeMutation.isPending}
+            submitError={deleteRangeMutation.error?.message ?? null}
+            result={deleteRangeMutation.data ?? null}
+          />
           <CreateRangeDialog
             open={createDialogOpen}
             onOpenChange={(isOpen) => {
@@ -206,6 +226,7 @@ function EarTags() {
             }
             isPending={createRangeMutation.isPending}
           />
+          </div>
         )
       }
     >
@@ -222,6 +243,10 @@ function EarTags() {
         }}
         defaultSorting={[{ id: "number", desc: false }]}
       />
+      {/* The confirmation dialog closes on click, so a failed delete is reported here */}
+      {deleteMutation.isError && (
+        <p className="mt-2 text-sm text-destructive">{t("earTags.deleteFailed")}</p>
+      )}
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -508,6 +533,211 @@ function CreateRangeDialog({
             </Button>
           </DialogFooter>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Kept (assigned) numbers listed in the delete preview; the rest is summarized as a count
+const MAX_LISTED_ASSIGNED = 10;
+
+// Existing tags in the range of `amount` numbers starting at `fromNumber` (numbered like the
+// API does it): unassigned ones get deleted, assigned ones are kept. Null while the input is
+// incomplete or invalid.
+function buildDeletePreview(fromNumberInput: string, amountInput: string, earTags: EarTag[]) {
+  const fromNumber = fromNumberInput.trim();
+  const match = fromNumber.match(EAR_TAG_NUMBER_PATTERN);
+  const amount = /^\d+$/.test(amountInput.trim()) ? parseInt(amountInput, 10) : 0;
+  if (!match || amount < 1) return null;
+  const [, prefix, digits] = match;
+  const firstValue = parseInt(digits, 10);
+  const lastValue = firstValue + amount - 1;
+  const formatNumber = (value: number) => `${prefix}${value.toString().padStart(digits.length, "0")}`;
+  const tagsInRange = earTags
+    .filter((earTag) => {
+      const existingMatch = earTag.number.match(EAR_TAG_NUMBER_PATTERN);
+      if (!existingMatch || existingMatch[1] !== prefix) return false;
+      const existingValue = parseInt(existingMatch[2], 10);
+      // Only an exact match counts, e.g. "CH0105" isn't "CH105"
+      return existingValue >= firstValue && existingValue <= lastValue && formatNumber(existingValue) === earTag.number;
+    })
+    .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
+  return {
+    fromNumber,
+    toNumber: formatNumber(lastValue),
+    amount,
+    deletableCount: tagsInRange.filter((earTag) => !earTag.animal).length,
+    assignedNumbers: tagsInRange.filter((earTag) => earTag.animal).map((earTag) => earTag.number),
+  };
+}
+
+function DeleteRangeDialog({
+  earTags,
+  onSubmit,
+  onClose,
+  isPending,
+  submitError,
+  result,
+}: {
+  // The farm's ear tags; undefined while loading
+  earTags: EarTag[] | undefined;
+  onSubmit: (fromNumber: string, toNumber: string) => void;
+  onClose: () => void;
+  isPending: boolean;
+  submitError: string | null;
+  result: { deletedCount: number; skippedAssigned: string[] } | null;
+}) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [fromNumber, setFromNumber] = useState("");
+  const [amount, setAmount] = useState("");
+  // Deleting is confirmed with the computed range first
+  const [confirming, setConfirming] = useState(false);
+
+  const trimmedFromNumber = fromNumber.trim();
+  const fromNumberInvalid = trimmedFromNumber.length > 0 && !EAR_TAG_NUMBER_PATTERN.test(trimmedFromNumber);
+  const preview = earTags ? buildDeletePreview(fromNumber, amount, earTags) : null;
+  const isTooLarge = !!preview && preview.amount > MAX_EAR_TAG_RANGE_SIZE;
+  const canDelete = !!preview && preview.deletableCount > 0 && !isTooLarge;
+  const listedAssigned = preview?.assignedNumbers.slice(0, MAX_LISTED_ASSIGNED) ?? [];
+  const remainingAssignedCount = (preview?.assignedNumbers.length ?? 0) - listedAssigned.length;
+
+  function handleOpenChange(isOpen: boolean) {
+    setOpen(isOpen);
+    if (isOpen) return;
+    setFromNumber("");
+    setAmount("");
+    setConfirming(false);
+    onClose();
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!preview || !canDelete) return;
+    if (!confirming) {
+      setConfirming(true);
+      return;
+    }
+    onSubmit(preview.fromNumber, preview.toNumber);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button variant="outline">{t("earTags.deleteRange")}</Button>
+      </DialogTrigger>
+      <DialogContent>
+        {result ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>{t("earTags.deleteRangeDoneTitle")}</DialogTitle>
+              <DialogDescription>
+                {result.skippedAssigned.length > 0
+                  ? t("earTags.deleteRangeDoneSkipped", {
+                      count: result.deletedCount,
+                      skipped: result.skippedAssigned.length,
+                    })
+                  : t("earTags.deleteRangeDone", { count: result.deletedCount })}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => handleOpenChange(false)}>{t("common.close")}</Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <DialogHeader>
+              <DialogTitle>{confirming ? t("earTags.confirmDeleteRangeTitle") : t("earTags.deleteRange")}</DialogTitle>
+              {confirming && preview && (
+                <DialogDescription>
+                  {t("earTags.confirmDeleteRangeMessage", {
+                    from: preview.fromNumber,
+                    to: preview.toNumber,
+                    count: preview.deletableCount,
+                  })}
+                </DialogDescription>
+              )}
+            </DialogHeader>
+
+            {!confirming && (
+              <div className="grid grid-cols-2 gap-4 py-4">
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="deleteFromNumber">{t("earTags.firstNumber")} *</FieldLabel>
+                    <Input
+                      id="deleteFromNumber"
+                      value={fromNumber}
+                      onChange={(event) => setFromNumber(event.target.value)}
+                      placeholder="201231"
+                      aria-invalid={fromNumberInvalid}
+                    />
+                    {fromNumberInvalid && <p className="text-sm text-destructive">{t("earTags.invalidNumber")}</p>}
+                  </Field>
+                </FieldGroup>
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="deleteAmount">{t("earTags.amount")} *</FieldLabel>
+                    <Input
+                      id="deleteAmount"
+                      type="number"
+                      min={1}
+                      max={MAX_EAR_TAG_RANGE_SIZE}
+                      step={1}
+                      value={amount}
+                      onChange={(event) => setAmount(event.target.value)}
+                      placeholder="50"
+                    />
+                  </Field>
+                </FieldGroup>
+                {preview && (
+                  <div className="col-span-2 rounded-md border bg-muted/40 p-4">
+                    <p className="text-sm text-muted-foreground">{t("earTags.rangePreviewTitle")}</p>
+                    <p className="mt-1 text-lg font-semibold">
+                      {t("earTags.rangePreviewRange", { from: preview.fromNumber, to: preview.toNumber })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {preview.deletableCount > 0
+                        ? t("earTags.deleteRangePreviewCount", { count: preview.deletableCount })
+                        : t("earTags.deleteRangePreviewNone")}
+                    </p>
+                    {isTooLarge && (
+                      <p className="mt-2 text-sm text-destructive">
+                        {t("earTags.rangeTooLarge", { max: MAX_EAR_TAG_RANGE_SIZE })}
+                      </p>
+                    )}
+                    {listedAssigned.length > 0 && (
+                      <p className="mt-2 text-sm text-amber-700">
+                        {remainingAssignedCount > 0
+                          ? t("earTags.deleteRangeKeptMore", {
+                              numbers: listedAssigned.join(", "),
+                              remaining: remainingAssignedCount,
+                            })
+                          : t("earTags.deleteRangeKept", { numbers: listedAssigned.join(", ") })}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {confirming && submitError && <p className="mt-4 text-sm text-destructive">{submitError}</p>}
+
+            <DialogFooter className={confirming ? "mt-4" : undefined}>
+              {confirming ? (
+                <Button type="button" variant="outline" onClick={() => setConfirming(false)}>
+                  {t("common.back")}
+                </Button>
+              ) : (
+                <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+                  {t("common.cancel")}
+                </Button>
+              )}
+              <Button type="submit" variant="destructive" disabled={!canDelete || isPending}>
+                {isPending ? t("common.loading") : t("common.delete")}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

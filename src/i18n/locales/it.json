@@ -276,7 +276,21 @@
     "rangePreviewTotal": "{{total}} marche auricolari",
     "rangeConflict": "Queste marche auricolari esistono già: {{numbers}}. Modifica il primo numero o la quantità.",
     "rangeConflictMore": "Queste marche auricolari esistono già: {{numbers}} e altre {{remaining}}. Modifica il primo numero o la quantità.",
-    "rangeTooLarge": "Al massimo {{max}} marche auricolari alla volta"
+    "rangeTooLarge": "Al massimo {{max}} marche auricolari alla volta",
+    "confirmDeleteRangeTitle": "Eliminare le marche auricolari?",
+    "confirmDeleteRangeMessage_one": "{{count}} marca auricolare nell'intervallo da {{from}} a {{to}} verrà eliminata. Le marche assegnate restano.",
+    "confirmDeleteRangeMessage_other": "{{count}} marche auricolari nell'intervallo da {{from}} a {{to}} verranno eliminate. Le marche assegnate restano.",
+    "deleteRangeDoneTitle": "Marche auricolari eliminate",
+    "deleteRangeDone_one": "{{count}} marca auricolare eliminata.",
+    "deleteRangeDone_other": "{{count}} marche auricolari eliminate.",
+    "deleteRangeDoneSkipped_one": "{{count}} marca auricolare eliminata, {{skipped}} assegnate mantenute.",
+    "deleteRangeDoneSkipped_other": "{{count}} marche auricolari eliminate, {{skipped}} assegnate mantenute.",
+    "deleteRangePreviewCount_one": "{{count}} marca auricolare verrà eliminata",
+    "deleteRangePreviewCount_other": "{{count}} marche auricolari verranno eliminate",
+    "deleteRangePreviewNone": "Nessuna marca auricolare libera in questo intervallo",
+    "deleteRangeKept": "Assegnate, restano: {{numbers}}",
+    "deleteRangeKeptMore": "Assegnate, restano: {{numbers}} e altre {{remaining}}",
+    "deleteFailed": "Non è stato possibile eliminare la marca auricolare."
   },
   "auth": {
     "signIn": "Accedi",
