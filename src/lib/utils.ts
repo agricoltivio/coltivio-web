@@ -34,3 +34,8 @@ export function toDayNumber(isoDate: string): number {
 export function formatDateOnly(isoDate: string, locale: string): string {
   return parseDateOnly(isoDate).toLocaleDateString(locale);
 }
+
+/** Rounds to 2 decimals, EPSILON so e.g. 1.005 rounds up. */
+export function round2(value: number): number {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}

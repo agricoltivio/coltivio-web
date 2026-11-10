@@ -10,7 +10,7 @@ import { plotsQueryOptions } from "@/api/plots.queries";
 import { TILLAGE_ACTIONS, type TillageAction, type Plot } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
-import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
+import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -241,20 +241,5 @@ function CreateTillage() {
         />
       </div>
     </PageContent>
-  );
-}
-
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start justify-between gap-4 px-3 py-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{value}</dd>
-    </div>
   );
 }

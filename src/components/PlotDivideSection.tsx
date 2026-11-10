@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { Plot } from "@/api/types";
-import { cn } from "@/lib/utils";
+import { cn, round2 } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
-function round2(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
 
 /** Sum of the current per-plot amounts (parsed), rounded to 2 decimals. */
 export function sumDivided(unitsByPlot: Record<string, string>, plotIds: string[]): number {

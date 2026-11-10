@@ -45,7 +45,9 @@
     "title": "Titolo",
     "date": "Data",
     "done": "Fatto",
-    "wizardStepOf": "Passo {{current}} di {{total}}"
+    "wizardStepOf": "Passo {{current}} di {{total}}",
+    "saveFailed": "Non ha funzionato. Riprova.",
+    "required": "Obbligatorio"
   },
   "nav": {
     "groups": {
@@ -109,7 +111,9 @@
     "treffpunkt": "Comunità",
     "myFarm": "La mia azienda",
     "invoiceSettings": "Impostazioni fattura",
-    "users": "Utenti"
+    "users": "Utenti",
+    "sowings": "Semina",
+    "seeds": "Sementi"
   },
   "animals": {
     "title": "Animali",
@@ -1176,6 +1180,46 @@
       "deselectAll": "Deseleziona tutto",
       "entries": "{{count}} voci"
     },
+    "sowings": {
+      "title": "Semina",
+      "create": "Registra semina",
+      "date": "Data",
+      "crop": "Coltura",
+      "selectCrop": "Seleziona coltura",
+      "seed": "Semente",
+      "noSeed": "Nessuna semente",
+      "amount": "Quantità",
+      "unit": "Unità",
+      "total": "Totale",
+      "rate": "Densità di semina",
+      "computedTotal": "Corrisponde a {{amount}} {{unit}} su {{area}}",
+      "computedRate": "Corrisponde a {{amount}} {{unit}} su {{area}}",
+      "deleteConfirm": "Vuoi davvero eliminare questa semina?",
+      "wizard": {
+        "steps": {
+          "crop": "Semente, coltura & data",
+          "plots": "Appezzamenti",
+          "config": "Configura semina",
+          "divide": "Suddividi",
+          "summary": "Riepilogo"
+        }
+      },
+      "units": {
+        "kg_per_ha": "kg/ha",
+        "g_per_m2": "g/m²",
+        "seeds_per_ha": "semi/ha",
+        "seeds_per_m2": "semi/m²",
+        "plants_per_ha": "piante/ha",
+        "plants_per_m2": "piante/m²",
+        "kg": "kg",
+        "g": "g",
+        "seeds": "semi",
+        "plants": "piante"
+      },
+      "seedOptional": "Semente (opzionale)",
+      "cropFromSeed": "La coltura è presa dalla semente.",
+      "amountInvalid": "La quantità deve essere maggiore di 0"
+    },
     "tillages": {
       "title": "Lavorazione del suolo",
       "create": "Registra lavorazione",
@@ -1370,6 +1414,32 @@
       "mineral": "Minerale",
       "organic": "Organico"
     }
+  },
+  "seeds": {
+    "title": "Sementi",
+    "createSeed": "Crea semente",
+    "editSeed": "Modifica semente",
+    "seedDetails": "Dettagli semente",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa semente? Anche i modelli con questa semente verranno eliminati.",
+    "name": "Nome",
+    "crop": "Coltura",
+    "quantityKind": "Misurato per",
+    "quantityKinds": {
+      "weight": "peso (kg, g)",
+      "count": "numero (semi, piante)"
+    },
+    "quantityKindHint": "Peso per sementi in kg/g, numero per semi o piantine.",
+    "quantityKindPermanent": "Non può essere modificato in seguito.",
+    "quantityKindLockedHint": "Il modo di misurazione non può essere modificato affinché le quantità restino sommabili. Crea una nuova semente.",
+    "defaultValuesDescription": "Precompilati quando si registra una nuova semina con questa semente e modificabili in quel momento.",
+    "defaultAmountOptional": "Quantità predefinita (opzionale)",
+    "defaultUnit": "Unità predefinita",
+    "defaultRate": "Densità di semina predefinita",
+    "description": "Descrizione",
+    "selectCrop": "Seleziona coltura",
+    "descriptionOptional": "Descrizione (opzionale)",
+    "defaultValuesOptional": "Valori predefiniti (opzionale)",
+    "deleteFailed": "La semente non può essere eliminata. Potrebbe essere ancora in uso."
   },
   "wiki": {
     "title": "Wiki",
