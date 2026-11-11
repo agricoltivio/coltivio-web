@@ -252,7 +252,8 @@
     "importCommitError": "L'importation a échoué. Veuillez réessayer.",
     "importStatus": "Statut",
     "colorOptional": "Couleur (facultative)",
-    "notesOptional": "Notes (facultatives)"
+    "notesOptional": "Notes (facultatives)",
+    "removeOffspringConfirm": "{{child}} ne sera plus enregistré comme descendant de {{parent}}. L'animal lui-même est conservé."
   },
   "earTags": {
     "title": "Boucles d'oreille",
@@ -2056,7 +2057,7 @@
     "noEntriesMonth": "Aucune entrée ce mois-ci",
     "gestationDays": "Durée de gestation (jours)",
     "gestationDescription": "S'applique à toute l'exploitation. Un champ vide rétablit la valeur par défaut.",
-    "onlyOwnerCanEdit": "Seuls les propriétaires de l'exploitation peuvent modifier la durée de gestation.",
+    "onlyOwnerCanEdit": "Seule la direction de l'exploitation peut modifier la durée de gestation.",
     "default": "par défaut",
     "effectiveAmount": "Quantité effective",
     "heatByType": {
@@ -2074,6 +2075,10 @@
     "sireExternalOptional": "Père externe (facultatif)",
     "notesOptional": "Notes (facultatives)",
     "saveFailed": "L'enregistrement a échoué",
-    "settingsTitle": "Réglages"
+    "settingsTitle": "Réglages",
+    "gestationDaysInvalid": "La durée de gestation doit être comprise entre 1 et 500 jours.",
+    "saved": "Enregistré",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant"
   }
 }

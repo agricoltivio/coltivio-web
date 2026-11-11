@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,25 @@ import { apiClient } from "@/api/client";
 import { gestationSettingsQueryOptions } from "@/api/breeding.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import type { AnimalType } from "@/api/types";
+
+// The API accepts 1 to 500 days
+const MIN_GESTATION_DAYS = 1;
+const MAX_GESTATION_DAYS = 500;
+
+// Empty resets to the default (null), anything else must be a whole number of days in range
+function parseGestationInput(input: string): number | null | "invalid" {
+  const trimmedInput = input.trim();
+  if (trimmedInput === "") return null;
+  if (!/^\d+$/.test(trimmedInput)) return "invalid";
+  const gestationDays = parseInt(trimmedInput, 10);
+  return gestationDays >= MIN_GESTATION_DAYS && gestationDays <= MAX_GESTATION_DAYS ? gestationDays : "invalid";
+}
+
+function toGestationInputs(settings: { animalType: AnimalType; gestationDays: number }[]) {
+  const inputs: Partial<Record<AnimalType, string>> = {};
+  for (const setting of settings) inputs[setting.animalType] = String(setting.gestationDays);
+  return inputs;
+}
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,30 +65,39 @@ function GestationSettingsCard() {
     Partial<Record<AnimalType, string>>
   >({});
 
+  const [showGestationErrors, setShowGestationErrors] = useState(false);
+
+  // Filled once from the server and again after saving, so a refetch (e.g. on window focus) doesn't
+  // overwrite unsaved edits
+  const gestationInputsInitialized = useRef(false);
   useEffect(() => {
-    if (!gestationSettingsQuery.data) return;
-    const inputs: Partial<Record<AnimalType, string>> = {};
-    for (const setting of gestationSettingsQuery.data)
-      inputs[setting.animalType] = String(setting.gestationDays);
-    setGestationInputs(inputs);
+    if (!gestationSettingsQuery.data || gestationInputsInitialized.current) return;
+    gestationInputsInitialized.current = true;
+    setGestationInputs(toGestationInputs(gestationSettingsQuery.data));
   }, [gestationSettingsQuery.data]);
+
+  const parsedGestationDays = new Map(
+    (gestationSettingsQuery.data ?? []).map((setting) => [
+      setting.animalType,
+      parseGestationInput(gestationInputs[setting.animalType] ?? ""),
+    ]),
+  );
+  const hasInvalidGestationInput = [...parsedGestationDays.values()].some(
+    (gestationDays) => gestationDays === "invalid",
+  );
 
   const saveMutation = useMutation({
     mutationFn: async () => {
       const settings = (gestationSettingsQuery.data ?? []).map((setting) => {
-        const gestationDays = parseInt(
-          gestationInputs[setting.animalType] ?? "",
-          10,
-        );
-        const isValidValue =
-          Number.isFinite(gestationDays) && gestationDays > 0;
+        const parsedDays = parsedGestationDays.get(setting.animalType);
+        const gestationDays = typeof parsedDays === "number" ? parsedDays : null;
         // An empty field resets the type to its default. An unchanged default stays a default, so later
         // changes of the default still apply and it keeps its "default" label.
         const keepsDefault =
           setting.isDefault && gestationDays === setting.gestationDays;
         return {
           animalType: setting.animalType,
-          gestationDays: isValidValue && !keepsDefault ? gestationDays : null,
+          gestationDays: keepsDefault ? null : gestationDays,
         };
       });
       const response = await apiClient.PUT(
@@ -79,10 +107,23 @@ function GestationSettingsCard() {
         },
       );
       if (response.error) throw new Error("Failed to save gestation settings");
+      return response.data.data.result;
     },
-    // Expected birth dates depend on the gestation days
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["breeding"] }),
+    onSuccess: (savedSettings) => {
+      setShowGestationErrors(false);
+      setGestationInputs(toGestationInputs(savedSettings));
+      // Expected birth dates depend on the gestation days
+      queryClient.invalidateQueries({ queryKey: ["breeding"] });
+    },
   });
+
+  function save() {
+    if (hasInvalidGestationInput) {
+      setShowGestationErrors(true);
+      return;
+    }
+    saveMutation.mutate();
+  }
 
   return (
     <>
@@ -115,8 +156,14 @@ function GestationSettingsCard() {
               <Input
                 id={`gestation-${setting.animalType}`}
                 type="number"
-                min="1"
+                min={MIN_GESTATION_DAYS}
+                max={MAX_GESTATION_DAYS}
+                step="1"
                 disabled={!isOwner}
+                aria-invalid={
+                  showGestationErrors &&
+                  parsedGestationDays.get(setting.animalType) === "invalid"
+                }
                 value={gestationInputs[setting.animalType] ?? ""}
                 onChange={(event) =>
                   setGestationInputs((inputs) => ({
@@ -127,6 +174,14 @@ function GestationSettingsCard() {
               />
             </div>
           ))}
+          {showGestationErrors && hasInvalidGestationInput && (
+            <p className="text-sm text-destructive">
+              {t("breeding.gestationDaysInvalid")}
+            </p>
+          )}
+          {saveMutation.isSuccess && !saveMutation.isPending && (
+            <p className="text-sm text-muted-foreground">{t("breeding.saved")}</p>
+          )}
           {saveMutation.isError && (
             <p className="text-sm text-destructive">
               {t("breeding.saveFailed")}
@@ -139,7 +194,7 @@ function GestationSettingsCard() {
         <div className="flex justify-end gap-3 pt-6">
           <Button
             disabled={saveMutation.isPending}
-            onClick={() => saveMutation.mutate()}
+            onClick={save}
           >
             {t("common.save")}
           </Button>

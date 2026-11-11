@@ -133,13 +133,13 @@ function BreedingCalendarPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <Button variant="ghost" size="icon" onClick={() => changeMonth(-1)} aria-label="previous month">
+                <Button variant="ghost" size="icon" onClick={() => changeMonth(-1)} aria-label={t("breeding.previousMonth")}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <CardTitle>
                   {new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(visibleMonth)}
                 </CardTitle>
-                <Button variant="ghost" size="icon" onClick={() => changeMonth(1)} aria-label="next month">
+                <Button variant="ghost" size="icon" onClick={() => changeMonth(1)} aria-label={t("breeding.nextMonth")}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>

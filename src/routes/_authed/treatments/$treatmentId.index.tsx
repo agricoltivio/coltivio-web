@@ -184,8 +184,11 @@ function TreatmentDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Weight of each animal at treatment time and the resulting amount for per-kg doses */}
-        {treatment.animalDoses?.some((animalDose) => animalDose.animalWeightKg != null) && (
+        {/* Weight of each animal at treatment time and the resulting amount for per-kg doses. Also shown for
+            amounts entered by hand for animals without a weight. */}
+        {treatment.animalDoses?.some(
+          (animalDose) => animalDose.animalWeightKg != null || animalDose.effectiveDoseValue != null,
+        ) && (
           <Card>
             <CardHeader>
               <CardTitle>{t("breeding.weightPerAnimal")}</CardTitle>

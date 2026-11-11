@@ -1,5 +1,7 @@
-import { toLocalDateString } from "@/lib/utils";
+import { formatDateOnly, toLocalDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { animalWeightsQueryOptions } from "@/api/breeding.queries";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import type { Treatment, Drug, Animal, DrugTreatment } from "@/api/types";
@@ -65,7 +67,7 @@ export function TreatmentForm({
   isSubmitting = false,
   defaultValues: initialDefaults,
 }: TreatmentFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     register,
@@ -127,18 +129,25 @@ export function TreatmentForm({
     return Math.round(weightKg * parsedDoseValue * 1000) / 1000;
   }
 
-  // Weight stored at treatment time (else the latest weight entry), not editable here. An amount that
-  // differs from stored dose × weight was entered by hand and stays until it is changed.
+  // Same weight the server uses (resolveAnimalDoses): the weight stored at treatment time as long as the
+  // start date is unchanged, else the latest weight entry on or before the start date (not the newest
+  // overall). Not editable here. An amount that differs from stored dose × weight was entered by hand and
+  // stays until it is changed.
   function doseInfo(animalId: string) {
     const animal = animals.find((candidate) => candidate.id === animalId);
     const storedDose = treatment?.animalDoses?.find((animalDose) => animalDose.animalId === animalId);
-    const weightKg = storedDose?.animalWeightKg ?? animal?.latestWeight?.weightKg ?? null;
+    const startDateChanged = !treatment || watchedStartDate !== treatment.startDate.split("T")[0];
+    const storedWeightKg = startDateChanged ? null : (storedDose?.animalWeightKg ?? null);
+    const weightOnDay = weightOnStartDateByAnimalId.get(animalId) ?? null;
+    const weightKg = storedWeightKg ?? weightOnDay?.weightKg ?? null;
+    // Date of the weight entry, none for a weight stored on the treatment
+    const weightDate = storedWeightKg != null ? null : (weightOnDay?.date ?? null);
     const storedEffectiveDoseValue = storedDose?.effectiveDoseValue ?? null;
     const isManual =
       storedEffectiveDoseValue != null &&
       storedEffectiveDoseValue !==
         computeEffectiveDoseValue(storedDose?.animalWeightKg ?? null, treatment?.drugDoseValue);
-    return { animal, weightKg, manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null };
+    return { animal, weightKg, weightDate, manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null };
   }
 
   function submitWithDoses(data: TreatmentFormData) {
@@ -148,6 +157,16 @@ export function TreatmentForm({
         data.drugDosePerUnit === "kg"
           ? data.animalIds.flatMap((animalId) => {
               const typedInput = effectiveDoseInputs[animalId];
+              // A cleared input falls back to dose × weight. It's sent as that value, otherwise the server
+              // would keep a stored amount.
+              if (typedInput !== undefined && typedInput.trim() === "") {
+                return [
+                  {
+                    animalId,
+                    effectiveDoseValue: computeEffectiveDoseValue(doseInfo(animalId).weightKg, data.drugDoseValue),
+                  },
+                ];
+              }
               if (typedInput !== undefined) {
                 const effectiveDoseValue = parseFloat(typedInput);
                 return [
@@ -168,6 +187,19 @@ export function TreatmentForm({
   }
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
+
+  // Weight history of the selected animals, for the weight on the start date (cached per animal)
+  const weightQueries = useQueries({
+    queries: watchedAnimalIds.map((animalId) => animalWeightsQueryOptions(animalId)),
+  });
+  const weightOnStartDateByAnimalId = new Map<string, { weightKg: number; date: string } | null>();
+  watchedAnimalIds.forEach((animalId, index) => {
+    const weights = weightQueries[index]?.data;
+    if (!weights) return;
+    // Sorted oldest first by date and creation, so the last one on or before the start date wins
+    const weightsOnOrBefore = weights.filter((weight) => weight.date.slice(0, 10) <= watchedStartDate);
+    weightOnStartDateByAnimalId.set(animalId, weightsOnOrBefore[weightsOnOrBefore.length - 1] ?? null);
+  });
   const watchedEndDate = watch("endDate");
 
   // Sync drug-derived fields when the user explicitly changes the drug (guarded by dirtyFields.drugId)
@@ -386,10 +418,10 @@ export function TreatmentForm({
               <div className="mb-3 text-sm font-medium">{t("breeding.weightPerAnimal")}</div>
               <div className="space-y-3">
                 {watchedAnimalIds.map((animalId) => {
-                  const { animal, weightKg, manualEffectiveDoseValue } = doseInfo(animalId);
+                  const { animal, weightKg, weightDate, manualEffectiveDoseValue } = doseInfo(animalId);
                   if (!animal) return null;
-                  const shownEffectiveDoseValue =
-                    manualEffectiveDoseValue ?? computeEffectiveDoseValue(weightKg, watchedDoseValue);
+                  const computedEffectiveDoseValue = computeEffectiveDoseValue(weightKg, watchedDoseValue);
+                  const shownEffectiveDoseValue = manualEffectiveDoseValue ?? computedEffectiveDoseValue;
                   const effectiveDoseInput =
                     effectiveDoseInputs[animalId] ??
                     (shownEffectiveDoseValue != null ? String(shownEffectiveDoseValue) : "");
@@ -401,7 +433,11 @@ export function TreatmentForm({
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="flex-1 text-sm text-muted-foreground">
-                          {weightKg != null ? `${weightKg} kg` : t("breeding.noWeight")}
+                          {weightKg == null
+                            ? t("breeding.noWeight")
+                            : weightDate
+                              ? `${weightKg} kg · ${formatDateOnly(weightDate, i18n.language)}`
+                              : `${weightKg} kg`}
                         </span>
                         <div className="flex w-44 items-center gap-1">
                           <Input
@@ -409,7 +445,12 @@ export function TreatmentForm({
                             step="any"
                             min="0"
                             aria-label={t("breeding.amount")}
-                            placeholder={t("breeding.amount")}
+                            // A cleared input falls back to dose × weight
+                            placeholder={
+                              computedEffectiveDoseValue != null
+                                ? String(computedEffectiveDoseValue)
+                                : t("breeding.amount")
+                            }
                             value={effectiveDoseInput}
                             onChange={(event) =>
                               setEffectiveDoseInputs((inputs) => ({ ...inputs, [animalId]: event.target.value }))

@@ -252,7 +252,8 @@
     "importCommitError": "Importazione fallita. Riprova.",
     "importStatus": "Stato",
     "colorOptional": "Colore (facoltativo)",
-    "notesOptional": "Note (facoltative)"
+    "notesOptional": "Note (facoltative)",
+    "removeOffspringConfirm": "{{child}} non sarà più registrato come discendente di {{parent}}. L'animale stesso viene mantenuto."
   },
   "earTags": {
     "title": "Marchi auricolari",
@@ -2056,7 +2057,7 @@
     "noEntriesMonth": "Nessuna voce in questo mese",
     "gestationDays": "Durata della gravidanza (giorni)",
     "gestationDescription": "Vale per tutta l'azienda. Un campo vuoto ripristina il valore predefinito.",
-    "onlyOwnerCanEdit": "Solo i titolari dell'azienda possono modificare la durata della gravidanza.",
+    "onlyOwnerCanEdit": "Solo la direzione dell'azienda può modificare la durata della gravidanza.",
     "default": "predefinito",
     "effectiveAmount": "Quantità effettiva",
     "heatByType": {
@@ -2074,6 +2075,10 @@
     "sireExternalOptional": "Padre esterno (facoltativo)",
     "notesOptional": "Note (facoltative)",
     "saveFailed": "Salvataggio non riuscito",
-    "settingsTitle": "Impostazioni"
+    "settingsTitle": "Impostazioni",
+    "gestationDaysInvalid": "La durata della gravidanza deve essere tra 1 e 500 giorni.",
+    "saved": "Salvato",
+    "previousMonth": "Mese precedente",
+    "nextMonth": "Mese successivo"
   }
 }

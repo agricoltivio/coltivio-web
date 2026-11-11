@@ -397,24 +397,47 @@ function AnimalDetailPage() {
                         </TableCell>
                       )}
                       {canWriteAnimals && (
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                            aria-label={t("animals.removeOffspring")}
-                            disabled={removeChildMutation.isPending}
-                            onClick={(event) => {
-                              // Don't navigate to the child
-                              event.stopPropagation();
-                              removeChildMutation.mutate({
-                                childId: child.id,
-                                parentSex: animal.sex,
-                              });
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        // Clicks inside the dialog bubble through the portal, so they mustn't reach the row
+                        // and navigate to the child
+                        <TableCell onClick={(event) => event.stopPropagation()}>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                aria-label={t("animals.removeOffspring")}
+                                disabled={removeChildMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent onClick={(event) => event.stopPropagation()}>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>{t("animals.removeOffspring")}</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  {t("animals.removeOffspringConfirm", {
+                                    child: child.name,
+                                    parent: animal.name,
+                                  })}
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() =>
+                                    removeChildMutation.mutate({
+                                      childId: child.id,
+                                      parentSex: animal.sex,
+                                    })
+                                  }
+                                  className="bg-destructive text-white hover:bg-destructive/90"
+                                >
+                                  {t("animals.removeOffspring")}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </TableCell>
                       )}
                     </TableRow>
@@ -614,8 +637,9 @@ function DetailItem({
 }
 
 // Pick existing animals as offspring: sets their motherId or fatherId to the parent,
-// depending on the parent's sex. Excludes the parent itself, its ancestors and
-// animals that already are its offspring.
+// depending on the parent's sex. Excludes the parent itself, its ancestors, animals that
+// already are its offspring, animals that already have a parent of that sex (the batch
+// update would overwrite it) and animals not born after the parent.
 function AddOffspringDialog({
   parent,
   onClose,
@@ -661,13 +685,16 @@ function AddOffspringDialog({
         (child) => child.id,
       ),
     );
+    const parentBirthDay = parent.dateOfBirth.slice(0, 10);
     return livingAnimalsQuery.data.result
       .filter(
         (candidate) =>
           candidate.type === parent.type &&
           candidate.id !== parent.id &&
           !existingChildIds.has(candidate.id) &&
-          !ancestorIds.has(candidate.id),
+          !ancestorIds.has(candidate.id) &&
+          (parent.sex === "female" ? candidate.motherId == null : candidate.fatherId == null) &&
+          candidate.dateOfBirth.slice(0, 10) > parentBirthDay,
       )
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [livingAnimalsQuery.data, familyTreeQuery.data, parent, ancestorIds]);

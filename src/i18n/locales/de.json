@@ -252,7 +252,8 @@
     "importCommitError": "Import fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "importStatus": "Status",
     "colorOptional": "Farbe (optional)",
-    "notesOptional": "Notizen (optional)"
+    "notesOptional": "Notizen (optional)",
+    "removeOffspringConfirm": "{{child}} ist danach nicht mehr als Nachkomme von {{parent}} erfasst. Das Tier selbst bleibt erhalten."
   },
   "earTags": {
     "title": "Ohrmarken",
@@ -266,7 +267,7 @@
     "confirmCreateTitle": "Ohrmarken erstellen?",
     "confirmCreateMessage": "Von {{from}} bis {{to}}\nTotal: {{total}} Ohrmarken",
     "rangeConflictServer": "Einige dieser Ohrmarken gibt es bereits. Es wurden keine Ohrmarken erstellt.",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Ohrmarke löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Ohrmarke wirklich löschen?",
     "deleteWarning": "Ohrmarken, die Tieren zugewiesen sind, werden übersprungen.",
     "skippedAssigned": "{{count}} Ohrmarken wurden übersprungen, da sie Tieren zugewiesen sind.",
     "firstNumber": "Erste Nummer",
@@ -2056,7 +2057,7 @@
     "noEntriesMonth": "Keine Einträge in diesem Monat",
     "gestationDays": "Trächtigkeitsdauer (Tage)",
     "gestationDescription": "Gilt für den ganzen Betrieb. Leeres Feld setzt den Standardwert.",
-    "onlyOwnerCanEdit": "Nur Betriebsinhaber können die Trächtigkeitsdauer ändern.",
+    "onlyOwnerCanEdit": "Nur die Betriebsleitung kann die Trächtigkeitsdauer ändern.",
     "default": "Standard",
     "effectiveAmount": "Effektive Menge",
     "heatByType": {
@@ -2074,6 +2075,10 @@
     "sireExternalOptional": "Externes Vatertier (optional)",
     "notesOptional": "Notizen (optional)",
     "saveFailed": "Speichern fehlgeschlagen",
-    "settingsTitle": "Einstellungen"
+    "settingsTitle": "Einstellungen",
+    "gestationDaysInvalid": "Die Trächtigkeitsdauer muss zwischen 1 und 500 Tagen liegen.",
+    "saved": "Gespeichert",
+    "previousMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat"
   }
 }

@@ -252,7 +252,8 @@
     "importCommitError": "Import failed. Please try again.",
     "importStatus": "Status",
     "colorOptional": "Color (optional)",
-    "notesOptional": "Notes (optional)"
+    "notesOptional": "Notes (optional)",
+    "removeOffspringConfirm": "{{child}} will no longer be recorded as offspring of {{parent}}. The animal itself is kept."
   },
   "earTags": {
     "title": "Ear Tags",
@@ -2056,7 +2057,7 @@
     "noEntriesMonth": "No entries this month",
     "gestationDays": "Gestation length (days)",
     "gestationDescription": "Applies to the whole farm. An empty field resets to the default.",
-    "onlyOwnerCanEdit": "Only farm owners can change the gestation length.",
+    "onlyOwnerCanEdit": "Only the farm management can change the gestation length.",
     "default": "default",
     "effectiveAmount": "Effective amount",
     "heatByType": {
@@ -2074,6 +2075,10 @@
     "sireExternalOptional": "External sire (optional)",
     "notesOptional": "Notes (optional)",
     "saveFailed": "Saving failed",
-    "settingsTitle": "Settings"
+    "settingsTitle": "Settings",
+    "gestationDaysInvalid": "The gestation length must be between 1 and 500 days.",
+    "saved": "Saved",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
   }
 }
