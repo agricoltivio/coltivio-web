@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { PlotColorModeToggle } from "@/components/PlotColorModeToggle";
 import { resolvePlotColor, type PlotColorMode } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { SWISSTOPO_TILE_BOUNDS } from "@/lib/swisstopo";
 import type { Plot } from "@/api/types";
 import { useTranslation } from "react-i18next";
 
@@ -90,6 +91,7 @@ export function PlotPickerMap({
         type: "raster",
         tiles: [SWISS_SATELLITE],
         tileSize: 256,
+        bounds: SWISSTOPO_TILE_BOUNDS,
         attribution: attribution.swisstopo,
       });
       map.addLayer({
@@ -104,6 +106,7 @@ export function PlotPickerMap({
         type: "raster",
         tiles: [SWISS_PIXELKARTE],
         tileSize: 256,
+        bounds: SWISSTOPO_TILE_BOUNDS,
         attribution: attribution.swisstopo,
       });
       map.addLayer({

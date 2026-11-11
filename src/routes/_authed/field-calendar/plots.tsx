@@ -61,6 +61,7 @@ import {
   type PlotColorMode,
 } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { SWISSTOPO_TILE_BOUNDS } from "@/lib/swisstopo";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { ArchivedAreaPanel } from "@/components/ArchivedAreaPanel";
 import { MeadowDetailPanel, MeadowFormDialog } from "@/components/MeadowMapPanels";
@@ -802,9 +803,9 @@ function PlotsMap() {
     const map = e.target;
     const attribution = mapAttribution(t, i18n.language);
 
-    map.addSource("satellite", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
+    map.addSource("satellite", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, bounds: SWISSTOPO_TILE_BOUNDS, attribution: attribution.swisstopo });
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite", layout: { visibility: activeLayerRef.current === "satellite" ? "visible" : "none" } });
-    map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, attribution: attribution.swisstopo });
+    map.addSource("pixelkarte", { type: "raster", tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"], tileSize: 256, bounds: SWISSTOPO_TILE_BOUNDS, attribution: attribution.swisstopo });
     map.addLayer({ id: "pixelkarte-layer", type: "raster", source: "pixelkarte", layout: { visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none" } });
 
     // Archived plots and meadows, below the active layers

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import type { components } from "@/api/schema";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { SWISSTOPO_TILE_BOUNDS } from "@/lib/swisstopo";
 
 type FieldEvent =
   components["schemas"]["GetV1FarmFieldEventsPositiveResponse"]["data"]["result"][number];
@@ -159,6 +160,7 @@ export function FieldworkMap({
       type: "raster",
       tiles: ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"],
       tileSize: 256,
+      bounds: SWISSTOPO_TILE_BOUNDS,
       attribution: attribution.swisstopo,
     });
     map.addLayer({ id: "satellite-layer", type: "raster", source: "satellite" });

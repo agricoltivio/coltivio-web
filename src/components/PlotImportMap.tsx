@@ -11,6 +11,7 @@ import { Layers } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { mapAttribution } from "@/lib/mapAttribution";
+import { SWISSTOPO_TILE_BOUNDS } from "@/lib/swisstopo";
 import type { Plot } from "@/api/types";
 
 const EMPTY_STYLE: maplibregl.StyleSpecification = {
@@ -150,6 +151,7 @@ export function PlotImportMap({
         type: "raster",
         tiles: [SWISS_SATELLITE],
         tileSize: 256,
+        bounds: SWISSTOPO_TILE_BOUNDS,
         attribution: attribution.swisstopo,
       });
       map.addLayer({
@@ -164,6 +166,7 @@ export function PlotImportMap({
         type: "raster",
         tiles: [SWISS_PIXELKARTE],
         tileSize: 256,
+        bounds: SWISSTOPO_TILE_BOUNDS,
         attribution: attribution.swisstopo,
       });
       map.addLayer({
