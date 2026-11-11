@@ -1,5 +1,7 @@
-import { toLocalDateString } from "@/lib/utils";
-import { useEffect } from "react";
+import { formatDateOnly, toLocalDateString } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { animalWeightsQueryOptions } from "@/api/breeding.queries";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import type { Treatment, Drug, Animal, DrugTreatment } from "@/api/types";
@@ -36,6 +38,8 @@ export interface TreatmentFormData {
   drugDoseUnit: DrugTreatment["doseUnit"] | null;
   drugDosePerUnit: DrugTreatment["dosePerUnit"] | null;
   drugReceivedFrom: string | null;
+  // Effective amounts the user entered for per-kg doses, other animals get dose × weight from the server
+  effectiveDoseOverrides?: { animalId: string; effectiveDoseValue: number | null }[];
 }
 
 type ComboboxOption = { value: string; label: string };
@@ -63,7 +67,7 @@ export function TreatmentForm({
   isSubmitting = false,
   defaultValues: initialDefaults,
 }: TreatmentFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     register,
@@ -113,8 +117,120 @@ export function TreatmentForm({
   });
 
   const watchedAnimalIds = watch("animalIds");
+  const watchedDoseValue = watch("drugDoseValue");
+  const watchedDoseUnit = watch("drugDoseUnit");
+  const watchedDosePerUnit = watch("drugDosePerUnit");
+  // Effective amounts the user typed, keyed by animal id
+  const [effectiveDoseInputs, setEffectiveDoseInputs] = useState<Record<string, string>>({});
+
+  function computeEffectiveDoseValue(weightKg: number | null, doseValue: number | string | null | undefined) {
+    const parsedDoseValue = typeof doseValue === "number" ? doseValue : parseFloat(doseValue ?? "");
+    if (weightKg == null || !Number.isFinite(parsedDoseValue)) return null;
+    return Math.round(weightKg * parsedDoseValue * 1000) / 1000;
+  }
+
+  // Same weight the server uses (resolveAnimalDoses): the weight stored at treatment time as long as the
+  // start date is unchanged, else the latest weight entry on or before the start date (not the newest
+  // overall). Not editable here. An amount that differs from stored dose × weight was entered by hand and
+  // stays until it is changed.
+  function doseInfo(animalId: string) {
+    const animal = animals.find((candidate) => candidate.id === animalId);
+    const storedDose = treatment?.animalDoses?.find((animalDose) => animalDose.animalId === animalId);
+    const startDateChanged = !treatment || watchedStartDate !== treatment.startDate.split("T")[0];
+    const storedWeightKg = startDateChanged ? null : (storedDose?.animalWeightKg ?? null);
+    const weightOnDay = weightOnStartDateByAnimalId.get(animalId) ?? null;
+    const weightKg = storedWeightKg ?? weightOnDay?.weightKg ?? null;
+    // Date of the weight entry, none for a weight stored on the treatment
+    const weightDate = storedWeightKg != null ? null : (weightOnDay?.date ?? null);
+    // A stored weight needs no lookup
+    const weightStatus =
+      storedWeightKg != null || weightOnStartDateByAnimalId.has(animalId)
+        ? "ready"
+        : weightsFailed
+          ? "error"
+          : "loading";
+    const storedEffectiveDoseValue = storedDose?.effectiveDoseValue ?? null;
+    const isManual =
+      storedEffectiveDoseValue != null &&
+      storedEffectiveDoseValue !==
+        computeEffectiveDoseValue(storedDose?.animalWeightKg ?? null, treatment?.drugDoseValue);
+    return {
+      animal,
+      weightKg,
+      weightDate,
+      weightStatus,
+      manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null,
+    };
+  }
+
+  // Typed amounts that aren't a number of at least 0 block saving, they'd otherwise clear the amount
+  const invalidAmountAnimalIds = new Set(
+    Object.entries(effectiveDoseInputs)
+      .filter(([, typedInput]) => {
+        if (typedInput.trim() === "") return false;
+        const typedValue = parseFloat(typedInput);
+        return !Number.isFinite(typedValue) || typedValue < 0;
+      })
+      .map(([animalId]) => animalId),
+  );
+  const [showAmountErrors, setShowAmountErrors] = useState(false);
+
+  function submitWithDoses(data: TreatmentFormData) {
+    if (
+      data.drugDosePerUnit === "kg" &&
+      data.animalIds.some((animalId) => invalidAmountAnimalIds.has(animalId))
+    ) {
+      setShowAmountErrors(true);
+      return;
+    }
+    onSubmit({
+      ...data,
+      effectiveDoseOverrides:
+        data.drugDosePerUnit === "kg"
+          ? data.animalIds.flatMap((animalId) => {
+              const typedInput = effectiveDoseInputs[animalId];
+              // A cleared input falls back to dose × weight. It's sent as that value, otherwise the server
+              // would keep a stored amount.
+              if (typedInput !== undefined && typedInput.trim() === "") {
+                return [
+                  {
+                    animalId,
+                    effectiveDoseValue: computeEffectiveDoseValue(doseInfo(animalId).weightKg, data.drugDoseValue),
+                  },
+                ];
+              }
+              if (typedInput !== undefined) {
+                // Validated above
+                return [{ animalId, effectiveDoseValue: parseFloat(typedInput) }];
+              }
+              const { manualEffectiveDoseValue } = doseInfo(animalId);
+              return manualEffectiveDoseValue != null
+                ? [{ animalId, effectiveDoseValue: manualEffectiveDoseValue }]
+                : [];
+            })
+          : undefined,
+    });
+  }
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
+
+  // Weight history of the selected animals, for the weight on the start date (cached per animal)
+  // One request per animal, so only for per-kg doses
+  const weightQueries = useQueries({
+    queries: watchedAnimalIds.map((animalId) => ({
+      ...animalWeightsQueryOptions(animalId),
+      enabled: watchedDosePerUnit === "kg",
+    })),
+  });
+  const weightsFailed = weightQueries.some((query) => query.isError);
+  const weightOnStartDateByAnimalId = new Map<string, { weightKg: number; date: string } | null>();
+  watchedAnimalIds.forEach((animalId, index) => {
+    const weights = weightQueries[index]?.data;
+    if (!weights) return;
+    // Sorted oldest first by date and creation, so the last one on or before the start date wins
+    const weightsOnOrBefore = weights.filter((weight) => weight.date.slice(0, 10) <= watchedStartDate);
+    weightOnStartDateByAnimalId.set(animalId, weightsOnOrBefore[weightsOnOrBefore.length - 1] ?? null);
+  });
   const watchedEndDate = watch("endDate");
 
   // Sync drug-derived fields when the user explicitly changes the drug (guarded by dirtyFields.drugId)
@@ -211,7 +327,7 @@ export function TreatmentForm({
   const showWaitingDates = !!watchedDrugId;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
+    <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-2xl">
       {/* Animals multi-select */}
       <FieldGroup>
         <Field>
@@ -233,7 +349,7 @@ export function TreatmentForm({
       </FieldGroup>
 
       {/* Date range */}
-      <FieldGroup className="flex-row mt-7">
+      <FieldGroup className="flex-row items-end mt-7">
         <Field className="max-w-48">
           <FieldLabel htmlFor="startDate">{t("treatments.startDate")} *</FieldLabel>
           <Input
@@ -304,7 +420,7 @@ export function TreatmentForm({
       {/* Dose fields and waiting dates (shown when drug is selected) */}
       {showWaitingDates && (
         <>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="drugDoseValue">{t("treatments.drugDoseValue")}</FieldLabel>
               <Input id="drugDoseValue" type="number" step="any" {...register("drugDoseValue")} />
@@ -328,13 +444,75 @@ export function TreatmentForm({
               </select>
             </Field>
           </FieldGroup>
+          {watchedDosePerUnit === "kg" && watchedAnimalIds.length > 0 && (
+            <div className="mt-7 rounded-md border p-4">
+              <div className="mb-3 text-sm font-medium">{t("breeding.weightPerAnimal")}</div>
+              <div className="space-y-3">
+                {watchedAnimalIds.map((animalId) => {
+                  const { animal, weightKg, weightDate, weightStatus, manualEffectiveDoseValue } = doseInfo(animalId);
+                  if (!animal) return null;
+                  const computedEffectiveDoseValue = computeEffectiveDoseValue(weightKg, watchedDoseValue);
+                  const shownEffectiveDoseValue = manualEffectiveDoseValue ?? computedEffectiveDoseValue;
+                  const effectiveDoseInput =
+                    effectiveDoseInputs[animalId] ??
+                    (shownEffectiveDoseValue != null ? String(shownEffectiveDoseValue) : "");
+                  return (
+                    <div key={animalId} className="space-y-1">
+                      {/* Own line so long ear tags and names stay readable */}
+                      <div className="text-sm font-medium">
+                        {animal.earTag?.number ? `${animal.earTag.number} - ${animal.name}` : animal.name}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="flex-1 text-sm text-muted-foreground">
+                          {weightStatus === "loading"
+                            ? "…"
+                            : weightStatus === "error"
+                              ? t("breeding.weightLoadFailed")
+                              : weightKg == null
+                            ? t("breeding.noWeight")
+                            : weightDate
+                              ? `${weightKg} kg · ${formatDateOnly(weightDate, i18n.language)}`
+                              : `${weightKg} kg`}
+                        </span>
+                        <div className="flex w-44 items-center gap-1">
+                          <Input
+                            type="number"
+                            step="any"
+                            min="0"
+                            aria-label={t("breeding.amount")}
+                            aria-invalid={showAmountErrors && invalidAmountAnimalIds.has(animalId)}
+                            // A cleared input falls back to dose × weight
+                            placeholder={
+                              computedEffectiveDoseValue != null
+                                ? String(computedEffectiveDoseValue)
+                                : t("breeding.amount")
+                            }
+                            value={effectiveDoseInput}
+                            onChange={(event) =>
+                              setEffectiveDoseInputs((inputs) => ({ ...inputs, [animalId]: event.target.value }))
+                            }
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {watchedDoseUnit ? t(`drugs.doseUnits.${watchedDoseUnit}`) : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {showAmountErrors && watchedAnimalIds.some((animalId) => invalidAmountAnimalIds.has(animalId)) && (
+                <p className="mt-3 text-sm text-destructive">{t("breeding.amountInvalid")}</p>
+              )}
+            </div>
+          )}
           <FieldGroup className="mt-7">
             <Field>
               <FieldLabel htmlFor="drugReceivedFrom">{t("treatments.drugReceivedFrom")}</FieldLabel>
               <Input id="drugReceivedFrom" type="text" {...register("drugReceivedFrom")} />
             </Field>
           </FieldGroup>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="milkUsableDate">
                 {t("treatments.milkUsableDate")}

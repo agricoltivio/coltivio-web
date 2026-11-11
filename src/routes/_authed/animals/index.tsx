@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useLocation, useNavigate, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
@@ -24,10 +24,19 @@ import ReactECharts from "echarts-for-react";
 import { CHART_COLORS, groupSmallPieSlices, pieTooltipFormatter } from "@/components/charts/chartUtils";
 import z from "zod";
 
+// The list state lives in the URL, so it's still there when coming back from an animal (or via browser back)
 const animalSearchSchema = z.object({
-  page: fallback(z.number(), 1).default(1),
+  page: fallback(z.number().int().min(1), 1).default(1),
   filter: fallback(z.string(), "").default(""),
+  onlyLiving: fallback(z.boolean(), true).default(true),
+  types: fallback(z.array(z.enum(ANIMAL_TYPES)), []).default([]),
+  dobFrom: fallback(z.string(), "").default(""),
+  dobTo: fallback(z.string(), "").default(""),
+  dodFrom: fallback(z.string(), "").default(""),
+  dodTo: fallback(z.string(), "").default(""),
+  deathReasons: fallback(z.array(z.enum(["died", "slaughtered"])), []).default([]),
 });
+type AnimalSearch = z.infer<typeof animalSearchSchema>;
 
 export const Route = createFileRoute("/_authed/animals/")({
   loader: ({ context: { queryClient } }) => {
@@ -41,37 +50,48 @@ function Animals() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
-  const [onlyLiving, setOnlyLiving] = useState(true);
+  const search = Route.useSearch();
+  const listHref = useLocation({ select: (location) => location.href });
   const animalsQuery = useQuery(animalsQueryOptions(false));
-  const [typeFilter, setTypeFilter] = useState<AnimalType[]>([]);
-  const [dobFrom, setDobFrom] = useState("");
-  const [dobTo, setDobTo] = useState("");
-  const [dodFrom, setDodFrom] = useState("");
-  const [dodTo, setDodTo] = useState("");
-  const [deathReasonFilter, setDeathReasonFilter] = useState<DeathReason[]>([]);
+  const { onlyLiving, dobFrom, dobTo, dodFrom, dodTo } = search;
+  const typeFilter: AnimalType[] = search.types;
+  const deathReasonFilter: DeathReason[] = search.deathReasons;
+
+  // Replace instead of push, so every keystroke in a filter doesn't add a history entry.
+  // A changed filter starts again on the first page.
+  function updateSearch(changes: Partial<AnimalSearch>) {
+    navigate({
+      to: ".",
+      search: (previous) => ({ ...previous, page: 1, ...changes }),
+      replace: true,
+    });
+  }
+  const setOnlyLiving = (value: boolean) => updateSearch({ onlyLiving: value });
+  const setTypeFilter = (value: AnimalType[]) => updateSearch({ types: value });
+  const setDobFrom = (value: string) => updateSearch({ dobFrom: value });
+  const setDobTo = (value: string) => updateSearch({ dobTo: value });
 
   // When a death-related filter is set, automatically fetch dead animals too
   function setDodFromWithAutoShow(value: string) {
-    setDodFrom(value);
-    if (value) setOnlyLiving(false);
+    updateSearch({ dodFrom: value, ...(value ? { onlyLiving: false } : {}) });
   }
   function setDodToWithAutoShow(value: string) {
-    setDodTo(value);
-    if (value) setOnlyLiving(false);
+    updateSearch({ dodTo: value, ...(value ? { onlyLiving: false } : {}) });
   }
   function setDeathReasonFilterWithAutoShow(value: DeathReason[]) {
-    setDeathReasonFilter(value);
-    if (value.length > 0) setOnlyLiving(false);
+    updateSearch({ deathReasons: value, ...(value.length > 0 ? { onlyLiving: false } : {}) });
   }
 
   function clearAllFilters() {
-    setTypeFilter([]);
-    setDobFrom("");
-    setDobTo("");
-    setDodFrom("");
-    setDodTo("");
-    setDeathReasonFilter([]);
-    setOnlyLiving(true);
+    updateSearch({
+      types: [],
+      dobFrom: "",
+      dobTo: "",
+      dodFrom: "",
+      dodTo: "",
+      deathReasons: [],
+      onlyLiving: true,
+    });
   }
 
   // --- Batch edit ---
@@ -154,6 +174,8 @@ function Animals() {
           <Link
             to="/animals/$animalId"
             params={{ animalId: row.original.id }}
+            // Back from the animal returns to this exact list, filters included
+            search={{ returnTo: listHref }}
             className={inlineLink}
             onClick={(e) => e.stopPropagation()}
           >
@@ -196,7 +218,8 @@ function Animals() {
         },
       },
     ],
-    [t, canWriteAnimals],
+    // listHref: the name links carry the current list URL for the way back
+    [t, canWriteAnimals, listHref],
   );
 
   const allAnimals = animalsQuery.data?.result ?? [];
@@ -271,6 +294,13 @@ function Animals() {
           );
         }}
         defaultSorting={[{ id: "type", desc: false }]}
+        searchValue={search.filter}
+        onSearchChange={(value) => updateSearch({ filter: value })}
+        // The URL counts pages from 1, the table from 0
+        pageIndex={search.page - 1}
+        onPageIndexChange={(pageIndex) =>
+          navigate({ to: ".", search: (previous) => ({ ...previous, page: pageIndex + 1 }), replace: true })
+        }
         filterSlot={
           <>
           {canWriteAnimals && selectedIds.length > 0 && (

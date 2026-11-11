@@ -14,6 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import {
@@ -44,15 +45,30 @@ export interface AnimalFormData {
   deathReason: DeathReason | null;
   registered: boolean;
   usage: AnimalUsage;
+  color: string;
+  notes: string;
 }
 
-type ComboboxOption = { value: string; label: string };
+// description is an optional secondary line (e.g. the ear tag number)
+type ComboboxOption = { value: string; label: string; description?: string };
+
+// Parent search matches both the name and the ear tag number
+function matchesParentOption(option: ComboboxOption, query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+  if (!normalizedQuery) return true;
+  return (
+    option.label.toLowerCase().includes(normalizedQuery) ||
+    (option.description?.toLowerCase().includes(normalizedQuery) ?? false)
+  );
+}
 
 export interface AnimalFormProps {
   animal?: AnimalDetail;
   earTagOptions: ComboboxOption[];
   motherOptions: ComboboxOption[];
   fatherOptions: ComboboxOption[];
+  // Presets for a new animal, e.g. the parent when creating offspring
+  initialValues?: Partial<AnimalFormData>;
   onSubmit: (data: AnimalFormData) => void;
   isSubmitting?: boolean;
 }
@@ -62,6 +78,7 @@ export function AnimalForm({
   earTagOptions,
   motherOptions,
   fatherOptions,
+  initialValues,
   onSubmit,
   isSubmitting = false,
 }: AnimalFormProps) {
@@ -86,6 +103,8 @@ export function AnimalForm({
             deathReason: animal.deathReason,
             registered: animal.registered,
             usage: animal.usage,
+            color: animal.color ?? "",
+            notes: animal.notes ?? "",
           }
         : {
             name: "",
@@ -99,6 +118,9 @@ export function AnimalForm({
             deathReason: null,
             registered: false,
             usage: "other" as AnimalUsage,
+            color: "",
+            notes: "",
+            ...initialValues,
           },
     });
 
@@ -197,7 +219,14 @@ export function AnimalForm({
                   <ComboboxList>
                     {(option) => (
                       <ComboboxItem key={option.value} value={option}>
-                        {option.label}
+                        <div className="flex flex-col">
+                          <span>{option.label}</span>
+                          {option.description && (
+                            <span className="text-xs text-muted-foreground">
+                              {option.description}
+                            </span>
+                          )}
+                        </div>
                       </ComboboxItem>
                     )}
                   </ComboboxList>
@@ -242,6 +271,10 @@ export function AnimalForm({
             )}
           />
           <Label htmlFor="registered">{t("animals.registered")}</Label>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="color">{t("animals.colorOptional")}</FieldLabel>
+          <Input id="color" type="text" {...register("color")} />
         </Field>
       </FieldGroup>
       <FieldGroup className="flex-row mt-7">
@@ -298,6 +331,7 @@ export function AnimalForm({
               <Combobox
                 items={motherOptions}
                 itemToStringValue={(item: ComboboxOption) => item.label}
+                filter={matchesParentOption}
                 value={
                   motherOptions.find((o) => o.value === field.value) || null
                 }
@@ -315,7 +349,14 @@ export function AnimalForm({
                   <ComboboxList>
                     {(option) => (
                       <ComboboxItem key={option.value} value={option}>
-                        {option.label}
+                        <div className="flex flex-col">
+                          <span>{option.label}</span>
+                          {option.description && (
+                            <span className="text-xs text-muted-foreground">
+                              {option.description}
+                            </span>
+                          )}
+                        </div>
                       </ComboboxItem>
                     )}
                   </ComboboxList>
@@ -335,6 +376,7 @@ export function AnimalForm({
               <Combobox
                 items={fatherOptions}
                 itemToStringValue={(item: ComboboxOption) => item.label}
+                filter={matchesParentOption}
                 value={
                   fatherOptions.find((o) => o.value === field.value) || null
                 }
@@ -352,7 +394,14 @@ export function AnimalForm({
                   <ComboboxList>
                     {(option) => (
                       <ComboboxItem key={option.value} value={option}>
-                        {option.label}
+                        <div className="flex flex-col">
+                          <span>{option.label}</span>
+                          {option.description && (
+                            <span className="text-xs text-muted-foreground">
+                              {option.description}
+                            </span>
+                          )}
+                        </div>
                       </ComboboxItem>
                     )}
                   </ComboboxList>
@@ -362,7 +411,12 @@ export function AnimalForm({
           />
         </Field>
 
-        {/* Actions */}
+      </FieldGroup>
+      <FieldGroup className="mt-7">
+        <Field>
+          <FieldLabel htmlFor="notes">{t("animals.notesOptional")}</FieldLabel>
+          <Textarea id="notes" rows={4} {...register("notes")} />
+        </Field>
       </FieldGroup>
       <div className="flex justify-end gap-3 pt-6">
         <Button type="submit" disabled={isSubmitting}>

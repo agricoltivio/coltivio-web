@@ -80,6 +80,7 @@ import { Route as AuthedAnimalsFamilyTreeRouteImport } from './routes/_authed/an
 import { Route as AuthedAnimalsExportRouteImport } from './routes/_authed/animals/export'
 import { Route as AuthedAnimalsEarTagsRouteImport } from './routes/_authed/animals/ear-tags'
 import { Route as AuthedAnimalsCreateRouteImport } from './routes/_authed/animals/create'
+import { Route as AuthedAnimalsBreedingCalendarRouteImport } from './routes/_authed/animals/breeding-calendar'
 import { Route as AuthedWikiMySubmissionsIndexRouteImport } from './routes/_authed/wiki/my-submissions/index'
 import { Route as AuthedWikiMyEntriesIndexRouteImport } from './routes/_authed/wiki/my-entries/index'
 import { Route as AuthedWikiAdminIndexRouteImport } from './routes/_authed/wiki/admin/index'
@@ -134,6 +135,7 @@ import { Route as AuthedDrugsDrugIdEditRouteImport } from './routes/_authed/drug
 import { Route as AuthedContactsContactIdEditRouteImport } from './routes/_authed/contacts/$contactId.edit'
 import { Route as AuthedAnimalsMeadowsMeadowIdRouteImport } from './routes/_authed/animals/meadows_.$meadowId'
 import { Route as AuthedAnimalsHerdsHerdIdRouteImport } from './routes/_authed/animals/herds_.$herdId'
+import { Route as AuthedAnimalsBreedingCalendarSettingsRouteImport } from './routes/_authed/animals/breeding-calendar_.settings'
 import { Route as AuthedAnimalsAnimalIdParasiteHistoryRouteImport } from './routes/_authed/animals/$animalId_.parasite-history'
 import { Route as AuthedAnimalsAnimalIdJournalRouteImport } from './routes/_authed/animals/$animalId_.journal'
 import { Route as AuthedAnimalsAnimalIdFamilyTreeRouteImport } from './routes/_authed/animals/$animalId_.family-tree'
@@ -546,6 +548,12 @@ const AuthedAnimalsCreateRoute = AuthedAnimalsCreateRouteImport.update({
   path: '/animals/create',
   getParentRoute: () => AuthedRouteRoute,
 } as any)
+const AuthedAnimalsBreedingCalendarRoute =
+  AuthedAnimalsBreedingCalendarRouteImport.update({
+    id: '/animals/breeding-calendar',
+    path: '/animals/breeding-calendar',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedWikiMySubmissionsIndexRoute =
   AuthedWikiMySubmissionsIndexRouteImport.update({
     id: '/wiki/my-submissions/',
@@ -867,6 +875,12 @@ const AuthedAnimalsHerdsHerdIdRoute =
     path: '/animals/herds/$herdId',
     getParentRoute: () => AuthedRouteRoute,
   } as any)
+const AuthedAnimalsBreedingCalendarSettingsRoute =
+  AuthedAnimalsBreedingCalendarSettingsRouteImport.update({
+    id: '/animals/breeding-calendar_/settings',
+    path: '/animals/breeding-calendar/settings',
+    getParentRoute: () => AuthedRouteRoute,
+  } as any)
 const AuthedAnimalsAnimalIdParasiteHistoryRoute =
   AuthedAnimalsAnimalIdParasiteHistoryRouteImport.update({
     id: '/animals/$animalId_/parasite-history',
@@ -1111,6 +1125,7 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1163,6 +1178,7 @@ export interface FileRoutesByFullPath {
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/animals/$animalId/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/animals/breeding-calendar/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1266,6 +1282,7 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/animals/create': typeof AuthedAnimalsCreateRoute
   '/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/animals/export': typeof AuthedAnimalsExportRoute
@@ -1316,6 +1333,7 @@ export interface FileRoutesByTo {
   '/animals/$animalId/edit': typeof AuthedAnimalsAnimalIdEditRoute
   '/animals/$animalId/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/animals/$animalId/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/animals/breeding-calendar/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/animals/herds/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/animals/meadows/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1427,6 +1445,7 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/token': typeof AuthTokenRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/_authed/animals/breeding-calendar': typeof AuthedAnimalsBreedingCalendarRoute
   '/_authed/animals/create': typeof AuthedAnimalsCreateRoute
   '/_authed/animals/ear-tags': typeof AuthedAnimalsEarTagsRoute
   '/_authed/animals/export': typeof AuthedAnimalsExportRoute
@@ -1479,6 +1498,7 @@ export interface FileRoutesById {
   '/_authed/animals/$animalId_/family-tree': typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   '/_authed/animals/$animalId_/journal': typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   '/_authed/animals/$animalId_/parasite-history': typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  '/_authed/animals/breeding-calendar_/settings': typeof AuthedAnimalsBreedingCalendarSettingsRoute
   '/_authed/animals/herds_/$herdId': typeof AuthedAnimalsHerdsHerdIdRoute
   '/_authed/animals/meadows_/$meadowId': typeof AuthedAnimalsMeadowsMeadowIdRoute
   '/_authed/contacts/$contactId/edit': typeof AuthedContactsContactIdEditRoute
@@ -1591,6 +1611,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/animals/breeding-calendar'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1643,6 +1664,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/family-tree'
     | '/animals/$animalId/journal'
     | '/animals/$animalId/parasite-history'
+    | '/animals/breeding-calendar/settings'
     | '/animals/herds/$herdId'
     | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
@@ -1746,6 +1768,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/animals/breeding-calendar'
     | '/animals/create'
     | '/animals/ear-tags'
     | '/animals/export'
@@ -1796,6 +1819,7 @@ export interface FileRouteTypes {
     | '/animals/$animalId/edit'
     | '/animals/$animalId/family-tree'
     | '/animals/$animalId/parasite-history'
+    | '/animals/breeding-calendar/settings'
     | '/animals/herds/$herdId'
     | '/animals/meadows/$meadowId'
     | '/contacts/$contactId/edit'
@@ -1906,6 +1930,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/token'
     | '/auth/verify'
+    | '/_authed/animals/breeding-calendar'
     | '/_authed/animals/create'
     | '/_authed/animals/ear-tags'
     | '/_authed/animals/export'
@@ -1958,6 +1983,7 @@ export interface FileRouteTypes {
     | '/_authed/animals/$animalId_/family-tree'
     | '/_authed/animals/$animalId_/journal'
     | '/_authed/animals/$animalId_/parasite-history'
+    | '/_authed/animals/breeding-calendar_/settings'
     | '/_authed/animals/herds_/$herdId'
     | '/_authed/animals/meadows_/$meadowId'
     | '/_authed/contacts/$contactId/edit'
@@ -2560,6 +2586,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAnimalsCreateRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
+    '/_authed/animals/breeding-calendar': {
+      id: '/_authed/animals/breeding-calendar'
+      path: '/animals/breeding-calendar'
+      fullPath: '/animals/breeding-calendar'
+      preLoaderRoute: typeof AuthedAnimalsBreedingCalendarRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
     '/_authed/wiki/my-submissions/': {
       id: '/_authed/wiki/my-submissions/'
       path: '/wiki/my-submissions'
@@ -2936,6 +2969,13 @@ declare module '@tanstack/react-router' {
       path: '/animals/herds/$herdId'
       fullPath: '/animals/herds/$herdId'
       preLoaderRoute: typeof AuthedAnimalsHerdsHerdIdRouteImport
+      parentRoute: typeof AuthedRouteRoute
+    }
+    '/_authed/animals/breeding-calendar_/settings': {
+      id: '/_authed/animals/breeding-calendar_/settings'
+      path: '/animals/breeding-calendar/settings'
+      fullPath: '/animals/breeding-calendar/settings'
+      preLoaderRoute: typeof AuthedAnimalsBreedingCalendarSettingsRouteImport
       parentRoute: typeof AuthedRouteRoute
     }
     '/_authed/animals/$animalId_/parasite-history': {
@@ -3430,6 +3470,7 @@ interface AuthedRouteRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedUsersRoute: typeof AuthedUsersRoute
+  AuthedAnimalsBreedingCalendarRoute: typeof AuthedAnimalsBreedingCalendarRoute
   AuthedAnimalsCreateRoute: typeof AuthedAnimalsCreateRoute
   AuthedAnimalsEarTagsRoute: typeof AuthedAnimalsEarTagsRoute
   AuthedAnimalsExportRoute: typeof AuthedAnimalsExportRoute
@@ -3466,6 +3507,7 @@ interface AuthedRouteRouteChildren {
   AuthedAnimalsAnimalIdFamilyTreeRoute: typeof AuthedAnimalsAnimalIdFamilyTreeRoute
   AuthedAnimalsAnimalIdJournalRoute: typeof AuthedAnimalsAnimalIdJournalRouteWithChildren
   AuthedAnimalsAnimalIdParasiteHistoryRoute: typeof AuthedAnimalsAnimalIdParasiteHistoryRoute
+  AuthedAnimalsBreedingCalendarSettingsRoute: typeof AuthedAnimalsBreedingCalendarSettingsRoute
   AuthedAnimalsHerdsHerdIdRoute: typeof AuthedAnimalsHerdsHerdIdRoute
   AuthedAnimalsMeadowsMeadowIdRoute: typeof AuthedAnimalsMeadowsMeadowIdRoute
   AuthedDrugsDrugIdEditRoute: typeof AuthedDrugsDrugIdEditRoute
@@ -3533,6 +3575,7 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedUsersRoute: AuthedUsersRoute,
+  AuthedAnimalsBreedingCalendarRoute: AuthedAnimalsBreedingCalendarRoute,
   AuthedAnimalsCreateRoute: AuthedAnimalsCreateRoute,
   AuthedAnimalsEarTagsRoute: AuthedAnimalsEarTagsRoute,
   AuthedAnimalsExportRoute: AuthedAnimalsExportRoute,
@@ -3575,6 +3618,8 @@ const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
     AuthedAnimalsAnimalIdJournalRouteWithChildren,
   AuthedAnimalsAnimalIdParasiteHistoryRoute:
     AuthedAnimalsAnimalIdParasiteHistoryRoute,
+  AuthedAnimalsBreedingCalendarSettingsRoute:
+    AuthedAnimalsBreedingCalendarSettingsRoute,
   AuthedAnimalsHerdsHerdIdRoute: AuthedAnimalsHerdsHerdIdRoute,
   AuthedAnimalsMeadowsMeadowIdRoute: AuthedAnimalsMeadowsMeadowIdRoute,
   AuthedDrugsDrugIdEditRoute: AuthedDrugsDrugIdEditRoute,

@@ -107,6 +107,7 @@ export const SECTIONS: readonly NavSection[] = [
       { labelKey: "nav.earTags", to: "/animals/ear-tags", groupKey: "registry" },
       { labelKey: "nav.herds", to: "/animals/herds", groupKey: "registry" },
       { labelKey: "nav.turnoutJournal", to: "/animals/turnout-journal", groupKey: "registry" },
+      { labelKey: "breeding.calendarTitle", to: "/animals/breeding-calendar", groupKey: "registry" },
       { labelKey: "nav.tvdImport", to: "/animals/import", groupKey: "registry" },
       { labelKey: "treatments.title", to: "/animals/treatments-journal", groupKey: "health" },
       { labelKey: "nav.drugs", to: "/drugs", groupKey: "health" },

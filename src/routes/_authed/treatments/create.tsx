@@ -51,6 +51,7 @@ function formDataToApiBody(data: TreatmentFormData) {
     drugDoseUnit: data.drugDoseUnit,
     drugDosePerUnit: data.drugDosePerUnit,
     drugReceivedFrom: data.drugReceivedFrom || null,
+    effectiveDoseOverrides: data.effectiveDoseOverrides,
   };
 }
 

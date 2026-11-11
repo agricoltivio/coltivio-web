@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -48,6 +48,11 @@ interface DataTableProps<TData> {
   rowSelection?: RowSelectionState;
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   filterSlot?: ReactNode;
+  // Optional controlled search text and page, e.g. to keep them in the URL. Uncontrolled when omitted.
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  pageIndex?: number;
+  onPageIndexChange?: (pageIndex: number) => void;
 }
 
 export function DataTable<TData>({
@@ -63,15 +68,43 @@ export function DataTable<TData>({
   rowSelection,
   onRowSelectionChange,
   filterSlot,
+  searchValue,
+  onSearchChange,
+  pageIndex: controlledPageIndex,
+  onPageIndexChange,
 }: DataTableProps<TData>) {
   const { t } = useTranslation();
 
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [localGlobalFilter, setLocalGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [localPagination, setLocalPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: defaultPageSize,
   });
+  const isSearchControlled = searchValue !== undefined;
+  const isPageControlled = controlledPageIndex !== undefined;
+  const globalFilter = isSearchControlled ? searchValue : localGlobalFilter;
+  const pagination: PaginationState = isPageControlled
+    ? { pageIndex: Math.max(0, controlledPageIndex), pageSize: localPagination.pageSize }
+    : localPagination;
+
+  // The table may pass an updater function instead of the value
+  const setGlobalFilter: OnChangeFn<string> = (updater) => {
+    const next = typeof updater === "function" ? updater(globalFilter) : updater;
+    if (isSearchControlled) {
+      onSearchChange?.(next);
+    } else {
+      setLocalGlobalFilter(next);
+    }
+  };
+
+  const setPagination: OnChangeFn<PaginationState> = (updater) => {
+    const next = typeof updater === "function" ? updater(pagination) : updater;
+    setLocalPagination(next);
+    if (isPageControlled && next.pageIndex !== pagination.pageIndex) {
+      onPageIndexChange?.(next.pageIndex);
+    }
+  };
 
   const table = useReactTable({
     data,
@@ -79,6 +112,8 @@ export function DataTable<TData>({
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     onGlobalFilterChange: setGlobalFilter,
+    // A controlled page must not be reset when the data loads, e.g. after a reload with ?page=3
+    autoResetPageIndex: isPageControlled ? false : undefined,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -93,6 +128,14 @@ export function DataTable<TData>({
       ...(rowSelection !== undefined ? { rowSelection } : {}),
     },
   });
+
+  // A controlled page past the end (the list shrank, or an old ?page= in the URL) goes to the last page.
+  // Only once data is there: while it loads the table has no pages, and a reload with ?page=3 must keep it.
+  const lastPageIndex = Math.max(0, table.getPageCount() - 1);
+  useEffect(() => {
+    if (!isPageControlled || data.length === 0) return;
+    if (controlledPageIndex > lastPageIndex) onPageIndexChange?.(lastPageIndex);
+  }, [isPageControlled, data.length, controlledPageIndex, lastPageIndex, onPageIndexChange]);
 
   const totalRows = table.getFilteredRowModel().rows.length;
   const pageCount = table.getPageCount();
