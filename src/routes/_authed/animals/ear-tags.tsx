@@ -92,7 +92,12 @@ function EarTags() {
         params: { path: { earTagId } },
       });
       if (response.error) {
-        throw new Error("Failed to delete ear tag");
+        // ear_tag_assigned: the tag was assigned to an animal in the meantime (e.g. in the app)
+        throw new Error(
+          response.error.code === "ear_tag_assigned"
+            ? t("earTags.deleteAssignedServer")
+            : t("earTags.deleteFailed"),
+        );
       }
       return response.data.data;
     },
@@ -101,6 +106,8 @@ function EarTags() {
       setDeleteDialogOpen(false);
       setEarTagToDelete(null);
     },
+    // The list may be stale, reload it so the tag no longer shows as available
+    onError: () => queryClient.invalidateQueries({ queryKey: ["earTags"] }),
   });
 
   function handleDeleteClick(
@@ -245,7 +252,7 @@ function EarTags() {
       />
       {/* The confirmation dialog closes on click, so a failed delete is reported here */}
       {deleteMutation.isError && (
-        <p className="mt-2 text-sm text-destructive">{t("earTags.deleteFailed")}</p>
+        <p className="mt-2 text-sm text-destructive">{deleteMutation.error.message}</p>
       )}
 
       {/* Delete confirmation dialog */}

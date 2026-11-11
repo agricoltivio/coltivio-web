@@ -253,7 +253,8 @@
     "importStatus": "Status",
     "colorOptional": "Farbe (optional)",
     "notesOptional": "Notizen (optional)",
-    "removeOffspringConfirm": "{{child}} ist danach nicht mehr als Nachkomme von {{parent}} erfasst. Das Tier selbst bleibt erhalten."
+    "removeOffspringConfirm": "{{child}} ist danach nicht mehr als Nachkomme von {{parent}} erfasst. Das Tier selbst bleibt erhalten.",
+    "addOffspringFailed": "Die Nachkommen konnten nicht hinzugefügt werden."
   },
   "earTags": {
     "title": "Ohrmarken",
@@ -291,7 +292,8 @@
     "deleteRangePreviewNone": "Keine freien Ohrmarken in diesem Bereich",
     "deleteRangeKept": "Zugewiesen, bleiben bestehen: {{numbers}}",
     "deleteRangeKeptMore": "Zugewiesen, bleiben bestehen: {{numbers}} und {{remaining}} weitere",
-    "deleteFailed": "Die Ohrmarke konnte nicht gelöscht werden."
+    "deleteFailed": "Die Ohrmarke konnte nicht gelöscht werden.",
+    "deleteAssignedServer": "Die Ohrmarke wurde inzwischen einem Tier zugewiesen und kann nicht gelöscht werden."
   },
   "auth": {
     "signIn": "Anmelden",
@@ -2079,6 +2081,9 @@
     "gestationDaysInvalid": "Die Trächtigkeitsdauer muss zwischen 1 und 500 Tagen liegen.",
     "saved": "Gespeichert",
     "previousMonth": "Vorheriger Monat",
-    "nextMonth": "Nächster Monat"
+    "nextMonth": "Nächster Monat",
+    "weightLoadFailed": "Gewicht konnte nicht geladen werden",
+    "amountInvalid": "Die Menge muss eine Zahl ab 0 sein.",
+    "calendarLoadFailed": "Der Kalender konnte nicht geladen werden."
   }
 }

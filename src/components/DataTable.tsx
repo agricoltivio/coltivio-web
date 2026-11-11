@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -85,7 +85,7 @@ export function DataTable<TData>({
   const isPageControlled = controlledPageIndex !== undefined;
   const globalFilter = isSearchControlled ? searchValue : localGlobalFilter;
   const pagination: PaginationState = isPageControlled
-    ? { pageIndex: controlledPageIndex, pageSize: localPagination.pageSize }
+    ? { pageIndex: Math.max(0, controlledPageIndex), pageSize: localPagination.pageSize }
     : localPagination;
 
   // The table may pass an updater function instead of the value
@@ -128,6 +128,14 @@ export function DataTable<TData>({
       ...(rowSelection !== undefined ? { rowSelection } : {}),
     },
   });
+
+  // A controlled page past the end (the list shrank, or an old ?page= in the URL) goes to the last page.
+  // Only once data is there: while it loads the table has no pages, and a reload with ?page=3 must keep it.
+  const lastPageIndex = Math.max(0, table.getPageCount() - 1);
+  useEffect(() => {
+    if (!isPageControlled || data.length === 0) return;
+    if (controlledPageIndex > lastPageIndex) onPageIndexChange?.(lastPageIndex);
+  }, [isPageControlled, data.length, controlledPageIndex, lastPageIndex, onPageIndexChange]);
 
   const totalRows = table.getFilteredRowModel().rows.length;
   const pageCount = table.getPageCount();

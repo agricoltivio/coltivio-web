@@ -746,6 +746,8 @@ function AddOffspringDialog({
   }
 
   const isLoading = livingAnimalsQuery.isLoading || familyTreeQuery.isLoading;
+  // Candidates are filtered with the family tree, without it the list would look empty
+  const loadFailed = livingAnimalsQuery.isError || familyTreeQuery.isError;
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -762,6 +764,10 @@ function AddOffspringDialog({
           {isLoading ? (
             <div className="py-6 text-center text-muted-foreground">
               {t("common.loading")}
+            </div>
+          ) : loadFailed ? (
+            <div className="py-6 text-center text-destructive">
+              {t("common.error")}
             </div>
           ) : visibleCandidates.length === 0 ? (
             <div className="py-6 text-center text-muted-foreground">
@@ -789,6 +795,9 @@ function AddOffspringDialog({
             ))
           )}
         </div>
+        {addOffspringMutation.isError && (
+          <p className="text-sm text-destructive">{t("animals.addOffspringFailed")}</p>
+        )}
         <DialogFooter className="sm:justify-between">
           {/* Create a new animal with this parent preset instead of picking an existing one */}
           <Button

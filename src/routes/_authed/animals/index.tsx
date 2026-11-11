@@ -26,7 +26,7 @@ import z from "zod";
 
 // The list state lives in the URL, so it's still there when coming back from an animal (or via browser back)
 const animalSearchSchema = z.object({
-  page: fallback(z.number(), 1).default(1),
+  page: fallback(z.number().int().min(1), 1).default(1),
   filter: fallback(z.string(), "").default(""),
   onlyLiving: fallback(z.boolean(), true).default(true),
   types: fallback(z.array(z.enum(ANIMAL_TYPES)), []).default([]),

@@ -253,7 +253,8 @@
     "importStatus": "Statut",
     "colorOptional": "Couleur (facultative)",
     "notesOptional": "Notes (facultatives)",
-    "removeOffspringConfirm": "{{child}} ne sera plus enregistré comme descendant de {{parent}}. L'animal lui-même est conservé."
+    "removeOffspringConfirm": "{{child}} ne sera plus enregistré comme descendant de {{parent}}. L'animal lui-même est conservé.",
+    "addOffspringFailed": "Les descendants n'ont pas pu être ajoutés."
   },
   "earTags": {
     "title": "Boucles d'oreille",
@@ -291,7 +292,8 @@
     "deleteRangePreviewNone": "Aucune boucle d'oreille libre dans cette plage",
     "deleteRangeKept": "Attribuées, conservées : {{numbers}}",
     "deleteRangeKeptMore": "Attribuées, conservées : {{numbers}} et {{remaining}} autres",
-    "deleteFailed": "La boucle d'oreille n'a pas pu être supprimée."
+    "deleteFailed": "La boucle d'oreille n'a pas pu être supprimée.",
+    "deleteAssignedServer": "La marque auriculaire a été attribuée à un animal entre-temps et ne peut pas être supprimée."
   },
   "auth": {
     "signIn": "Se connecter",
@@ -2079,6 +2081,9 @@
     "gestationDaysInvalid": "La durée de gestation doit être comprise entre 1 et 500 jours.",
     "saved": "Enregistré",
     "previousMonth": "Mois précédent",
-    "nextMonth": "Mois suivant"
+    "nextMonth": "Mois suivant",
+    "weightLoadFailed": "Le poids n'a pas pu être chargé",
+    "amountInvalid": "La quantité doit être un nombre supérieur ou égal à 0.",
+    "calendarLoadFailed": "Le calendrier n'a pas pu être chargé."
   }
 }

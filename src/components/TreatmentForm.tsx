@@ -142,15 +142,47 @@ export function TreatmentForm({
     const weightKg = storedWeightKg ?? weightOnDay?.weightKg ?? null;
     // Date of the weight entry, none for a weight stored on the treatment
     const weightDate = storedWeightKg != null ? null : (weightOnDay?.date ?? null);
+    // A stored weight needs no lookup
+    const weightStatus =
+      storedWeightKg != null || weightOnStartDateByAnimalId.has(animalId)
+        ? "ready"
+        : weightsFailed
+          ? "error"
+          : "loading";
     const storedEffectiveDoseValue = storedDose?.effectiveDoseValue ?? null;
     const isManual =
       storedEffectiveDoseValue != null &&
       storedEffectiveDoseValue !==
         computeEffectiveDoseValue(storedDose?.animalWeightKg ?? null, treatment?.drugDoseValue);
-    return { animal, weightKg, weightDate, manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null };
+    return {
+      animal,
+      weightKg,
+      weightDate,
+      weightStatus,
+      manualEffectiveDoseValue: isManual ? storedEffectiveDoseValue : null,
+    };
   }
 
+  // Typed amounts that aren't a number of at least 0 block saving, they'd otherwise clear the amount
+  const invalidAmountAnimalIds = new Set(
+    Object.entries(effectiveDoseInputs)
+      .filter(([, typedInput]) => {
+        if (typedInput.trim() === "") return false;
+        const typedValue = parseFloat(typedInput);
+        return !Number.isFinite(typedValue) || typedValue < 0;
+      })
+      .map(([animalId]) => animalId),
+  );
+  const [showAmountErrors, setShowAmountErrors] = useState(false);
+
   function submitWithDoses(data: TreatmentFormData) {
+    if (
+      data.drugDosePerUnit === "kg" &&
+      data.animalIds.some((animalId) => invalidAmountAnimalIds.has(animalId))
+    ) {
+      setShowAmountErrors(true);
+      return;
+    }
     onSubmit({
       ...data,
       effectiveDoseOverrides:
@@ -168,14 +200,8 @@ export function TreatmentForm({
                 ];
               }
               if (typedInput !== undefined) {
-                const effectiveDoseValue = parseFloat(typedInput);
-                return [
-                  {
-                    animalId,
-                    effectiveDoseValue:
-                      Number.isFinite(effectiveDoseValue) && effectiveDoseValue >= 0 ? effectiveDoseValue : null,
-                  },
-                ];
+                // Validated above
+                return [{ animalId, effectiveDoseValue: parseFloat(typedInput) }];
               }
               const { manualEffectiveDoseValue } = doseInfo(animalId);
               return manualEffectiveDoseValue != null
@@ -189,9 +215,14 @@ export function TreatmentForm({
   const watchedStartDate = watch("startDate");
 
   // Weight history of the selected animals, for the weight on the start date (cached per animal)
+  // One request per animal, so only for per-kg doses
   const weightQueries = useQueries({
-    queries: watchedAnimalIds.map((animalId) => animalWeightsQueryOptions(animalId)),
+    queries: watchedAnimalIds.map((animalId) => ({
+      ...animalWeightsQueryOptions(animalId),
+      enabled: watchedDosePerUnit === "kg",
+    })),
   });
+  const weightsFailed = weightQueries.some((query) => query.isError);
   const weightOnStartDateByAnimalId = new Map<string, { weightKg: number; date: string } | null>();
   watchedAnimalIds.forEach((animalId, index) => {
     const weights = weightQueries[index]?.data;
@@ -418,7 +449,7 @@ export function TreatmentForm({
               <div className="mb-3 text-sm font-medium">{t("breeding.weightPerAnimal")}</div>
               <div className="space-y-3">
                 {watchedAnimalIds.map((animalId) => {
-                  const { animal, weightKg, weightDate, manualEffectiveDoseValue } = doseInfo(animalId);
+                  const { animal, weightKg, weightDate, weightStatus, manualEffectiveDoseValue } = doseInfo(animalId);
                   if (!animal) return null;
                   const computedEffectiveDoseValue = computeEffectiveDoseValue(weightKg, watchedDoseValue);
                   const shownEffectiveDoseValue = manualEffectiveDoseValue ?? computedEffectiveDoseValue;
@@ -433,7 +464,11 @@ export function TreatmentForm({
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="flex-1 text-sm text-muted-foreground">
-                          {weightKg == null
+                          {weightStatus === "loading"
+                            ? "…"
+                            : weightStatus === "error"
+                              ? t("breeding.weightLoadFailed")
+                              : weightKg == null
                             ? t("breeding.noWeight")
                             : weightDate
                               ? `${weightKg} kg · ${formatDateOnly(weightDate, i18n.language)}`
@@ -445,6 +480,7 @@ export function TreatmentForm({
                             step="any"
                             min="0"
                             aria-label={t("breeding.amount")}
+                            aria-invalid={showAmountErrors && invalidAmountAnimalIds.has(animalId)}
                             // A cleared input falls back to dose × weight
                             placeholder={
                               computedEffectiveDoseValue != null
@@ -465,6 +501,9 @@ export function TreatmentForm({
                   );
                 })}
               </div>
+              {showAmountErrors && watchedAnimalIds.some((animalId) => invalidAmountAnimalIds.has(animalId)) && (
+                <p className="mt-3 text-sm text-destructive">{t("breeding.amountInvalid")}</p>
+              )}
             </div>
           )}
           <FieldGroup className="mt-7">

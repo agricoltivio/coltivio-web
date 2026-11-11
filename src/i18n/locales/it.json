@@ -253,7 +253,8 @@
     "importStatus": "Stato",
     "colorOptional": "Colore (facoltativo)",
     "notesOptional": "Note (facoltative)",
-    "removeOffspringConfirm": "{{child}} non sarà più registrato come discendente di {{parent}}. L'animale stesso viene mantenuto."
+    "removeOffspringConfirm": "{{child}} non sarà più registrato come discendente di {{parent}}. L'animale stesso viene mantenuto.",
+    "addOffspringFailed": "Non è stato possibile aggiungere i discendenti."
   },
   "earTags": {
     "title": "Marchi auricolari",
@@ -291,7 +292,8 @@
     "deleteRangePreviewNone": "Nessuna marca auricolare libera in questo intervallo",
     "deleteRangeKept": "Assegnate, restano: {{numbers}}",
     "deleteRangeKeptMore": "Assegnate, restano: {{numbers}} e altre {{remaining}}",
-    "deleteFailed": "Non è stato possibile eliminare la marca auricolare."
+    "deleteFailed": "Non è stato possibile eliminare la marca auricolare.",
+    "deleteAssignedServer": "La marca auricolare è stata nel frattempo assegnata a un animale e non può essere eliminata."
   },
   "auth": {
     "signIn": "Accedi",
@@ -2079,6 +2081,9 @@
     "gestationDaysInvalid": "La durata della gravidanza deve essere tra 1 e 500 giorni.",
     "saved": "Salvato",
     "previousMonth": "Mese precedente",
-    "nextMonth": "Mese successivo"
+    "nextMonth": "Mese successivo",
+    "weightLoadFailed": "Non è stato possibile caricare il peso",
+    "amountInvalid": "La quantità deve essere un numero maggiore o uguale a 0.",
+    "calendarLoadFailed": "Non è stato possibile caricare il calendario."
   }
 }

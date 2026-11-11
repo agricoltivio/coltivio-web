@@ -253,7 +253,8 @@
     "importStatus": "Status",
     "colorOptional": "Color (optional)",
     "notesOptional": "Notes (optional)",
-    "removeOffspringConfirm": "{{child}} will no longer be recorded as offspring of {{parent}}. The animal itself is kept."
+    "removeOffspringConfirm": "{{child}} will no longer be recorded as offspring of {{parent}}. The animal itself is kept.",
+    "addOffspringFailed": "The offspring couldn't be added."
   },
   "earTags": {
     "title": "Ear Tags",
@@ -291,7 +292,8 @@
     "deleteRangePreviewNone": "No unassigned ear tags in this range",
     "deleteRangeKept": "Assigned, kept: {{numbers}}",
     "deleteRangeKeptMore": "Assigned, kept: {{numbers}} and {{remaining}} more",
-    "deleteFailed": "The ear tag could not be deleted."
+    "deleteFailed": "The ear tag could not be deleted.",
+    "deleteAssignedServer": "The ear tag has been assigned to an animal in the meantime and can't be deleted."
   },
   "auth": {
     "signIn": "Sign In",
@@ -2079,6 +2081,9 @@
     "gestationDaysInvalid": "The gestation length must be between 1 and 500 days.",
     "saved": "Saved",
     "previousMonth": "Previous month",
-    "nextMonth": "Next month"
+    "nextMonth": "Next month",
+    "weightLoadFailed": "Weight couldn't be loaded",
+    "amountInvalid": "The amount must be a number of 0 or more.",
+    "calendarLoadFailed": "The calendar couldn't be loaded."
   }
 }

@@ -14,6 +14,7 @@ import {
 import type { AnimalDetail, AnimalHeat, AnimalWeight } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { formatDateOnly, parseDateOnly, toLocalDateString } from "@/lib/utils";
+import { resolveHeatOutcomes } from "@/lib/heatOutcomes";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -24,12 +25,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const LINE_COLOR = "#0f766e";
-
-// Calendar-day arithmetic in local time, adding milliseconds would land on the wrong day across DST changes
-function addDaysToDateOnly(isoDate: string, days: number): Date {
-  const date = parseDateOnly(isoDate);
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
-}
 
 // Weight entries change the latest weight on animals and the dose prefill in treatments
 function useInvalidateBreeding() {
@@ -223,7 +218,10 @@ function WeightEntryDialog({
   const [weightInput, setWeightInput] = useState(weight ? String(weight.weightKg) : "");
   const [notes, setNotes] = useState(weight?.notes ?? "");
   const weightKg = parseFloat(weightInput);
-  const isValid = date.length > 0 && Number.isFinite(weightKg) && weightKg > 0;
+  // A weighing can't be in the future (the input's max isn't enforced on typed dates); it would become the
+  // latest weight and the dose prefill
+  const isFutureDate = date > toLocalDateString(new Date());
+  const isValid = date.length > 0 && !isFutureDate && Number.isFinite(weightKg) && weightKg > 0;
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -420,6 +418,31 @@ export function HeatEntryDialog({
   const [sireId, setSireId] = useState(heat?.sireId ?? "");
   const [sireName, setSireName] = useState(heat?.sireName ?? "");
   const [notes, setNotes] = useState(heat?.notes ?? "");
+  // The animal's other heats decide the preview's outcome; cached when opened from the animal page
+  const heatsQuery = useQuery(animalHeatsQueryOptions(animal.id));
+
+  // Unchanged existing heats show the server's outcome, edited or new ones are previewed with the server's
+  // rule (heatOutcomes.ts) against the animal's other heats
+  const heatUnchanged = heat != null && heat.date.slice(0, 10) === date && heat.mated === mated;
+  let expectedBirthDate: Date | null = null;
+  let conceptionFailed = false;
+  if (heatUnchanged) {
+    expectedBirthDate = heat.expectedBirthDate ? parseDateOnly(heat.expectedBirthDate) : null;
+    conceptionFailed = heat.conceptionFailed ?? false;
+  } else if (mated && date && gestationDays) {
+    const previewHeatId = heat?.id ?? "preview";
+    const previewOutcome = resolveHeatOutcomes(
+      [
+        ...(heatsQuery.data ?? [])
+          .filter((otherHeat) => otherHeat.id !== heat?.id)
+          .map((otherHeat) => ({ id: otherHeat.id, date: parseDateOnly(otherHeat.date), mated: otherHeat.mated })),
+        { id: previewHeatId, date: parseDateOnly(date), mated },
+      ],
+      gestationDays,
+    ).get(previewHeatId);
+    expectedBirthDate = previewOutcome?.expectedBirthDate ?? null;
+    conceptionFailed = previewOutcome?.conceptionFailed ?? false;
+  }
 
   // Living males of the same type are offered as sire, plus the saved sire if it died since
   const sireCandidates = useMemo(
@@ -514,10 +537,12 @@ export function HeatEntryDialog({
                 <Label htmlFor="heatSireName">{t("breeding.sireExternalOptional")}</Label>
                 <Input id="heatSireName" value={sireName} onChange={(event) => setSireName(event.target.value)} />
               </div>
-              {date && gestationDays && (
+              {conceptionFailed && (
+                <p className="text-sm text-muted-foreground">{t("breeding.conceptionFailed")}</p>
+              )}
+              {expectedBirthDate && (
                 <div className="rounded-md border-l-4 border-primary bg-muted/40 px-3 py-2 text-sm">
-                  {t("breeding.expectedBirth")}:{" "}
-                  {addDaysToDateOnly(date, gestationDays).toLocaleDateString(i18n.language)}
+                  {t("breeding.expectedBirth")}: {expectedBirthDate.toLocaleDateString(i18n.language)}
                 </div>
               )}
             </>

@@ -196,7 +196,10 @@ function BreedingCalendarPage() {
 
           <Card>
             <CardContent>
-              {shownEvents.length === 0 ? (
+              {calendarQuery.isError ? (
+                // Not "no entries": the calendar couldn't be loaded
+                <div className="py-6 text-center text-destructive">{t("breeding.calendarLoadFailed")}</div>
+              ) : shownEvents.length === 0 ? (
                 <div className="py-6 text-center text-muted-foreground">{t("breeding.noEntriesMonth")}</div>
               ) : (
                 <Table>
