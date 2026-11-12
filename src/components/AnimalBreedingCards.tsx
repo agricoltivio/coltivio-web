@@ -6,6 +6,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { animalsQueryOptions } from "@/api/animals.queries";
+import { herdsQueryOptions } from "@/api/herds.queries";
+import { SelectAnimalsField } from "@/components/SelectAnimalsDialog";
 import {
   animalHeatsQueryOptions,
   animalWeightsQueryOptions,
@@ -323,15 +325,11 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
   const { t, i18n } = useTranslation();
   const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
   const heatsQuery = useQuery(animalHeatsQueryOptions(animal.id));
-  const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
   // All animals (dead sires included) to show the sire's name
   const allAnimalsQuery = useQuery(animalsQueryOptions(false));
   const animalNameById = new Map((allAnimalsQuery.data?.result ?? []).map((candidate) => [candidate.id, candidate.name]));
   // undefined: dialog closed, null: new entry, otherwise the entry being edited
   const [editedHeat, setEditedHeat] = useState<AnimalHeat | null | undefined>(undefined);
-  const gestationDays = gestationSettingsQuery.data?.find(
-    (setting) => setting.animalType === animal.type,
-  )?.gestationDays;
   const heats = heatsQuery.data ?? [];
 
   return (
@@ -389,7 +387,6 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
         <HeatEntryDialog
           animal={animal}
           heat={editedHeat}
-          gestationDays={gestationDays}
           onClose={() => setEditedHeat(undefined)}
         />
       )}
@@ -397,29 +394,47 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
   );
 }
 
-// Also opened from the breeding calendar, which only knows the animal's id and type
+// Also opened from the breeding calendar, which only knows the animal's id and type. Without an animal
+// (new heat from the calendar) the animals are picked in the dialog and the heat is created for all of them.
 export function HeatEntryDialog({
   animal,
   heat,
-  gestationDays,
   onClose,
 }: {
-  animal: { id: string; type: AnimalDetail["type"] };
+  animal: { id: string; type: AnimalDetail["type"] } | null;
   heat: AnimalHeat | null;
-  gestationDays: number | undefined;
   onClose: () => void;
 }) {
   const { t, i18n } = useTranslation();
   const invalidate = useInvalidateBreeding();
   // All animals, so a sire that died since the mating can still be shown
   const allAnimalsQuery = useQuery(animalsQueryOptions(false));
+  const herdsQuery = useQuery(herdsQueryOptions());
+  const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
+  const [pickedAnimalIds, setPickedAnimalIds] = useState<string[]>([]);
   const [date, setDate] = useState(heat ? heat.date.slice(0, 10) : toLocalDateString(new Date()));
   const [mated, setMated] = useState(heat?.mated ?? false);
   const [sireId, setSireId] = useState(heat?.sireId ?? "");
   const [sireName, setSireName] = useState(heat?.sireName ?? "");
   const [notes, setNotes] = useState(heat?.notes ?? "");
-  // The animal's other heats decide the preview's outcome; cached when opened from the animal page
-  const heatsQuery = useQuery(animalHeatsQueryOptions(animal.id));
+
+  const picksAnimals = animal === null;
+  const selectedAnimalIds = animal ? [animal.id] : pickedAnimalIds;
+  // Living females can get a heat; the picker allows one type, so the first animal's type is the type of all
+  const femaleCandidates = (allAnimalsQuery.data?.result ?? []).filter(
+    (candidate) => candidate.sex === "female" && candidate.dateOfDeath == null,
+  );
+  const animalType =
+    animal?.type ?? femaleCandidates.find((candidate) => candidate.id === pickedAnimalIds[0])?.type;
+  const gestationDays = gestationSettingsQuery.data?.find(
+    (setting) => setting.animalType === animalType,
+  )?.gestationDays;
+  // Outcome preview only for a single animal; its other heats decide it (cached when opened from the animal page)
+  const singleAnimalId = selectedAnimalIds.length === 1 ? selectedAnimalIds[0] : undefined;
+  const heatsQuery = useQuery({
+    ...animalHeatsQueryOptions(singleAnimalId ?? ""),
+    enabled: singleAnimalId !== undefined,
+  });
 
   // Unchanged existing heats show the server's outcome, edited or new ones are previewed with the server's
   // rule (heatOutcomes.ts) against the animal's other heats
@@ -429,7 +444,7 @@ export function HeatEntryDialog({
   if (heatUnchanged) {
     expectedBirthDate = heat.expectedBirthDate ? parseDateOnly(heat.expectedBirthDate) : null;
     conceptionFailed = heat.conceptionFailed ?? false;
-  } else if (mated && date && gestationDays) {
+  } else if (mated && date && gestationDays && singleAnimalId) {
     const previewHeatId = heat?.id ?? "preview";
     const previewOutcome = resolveHeatOutcomes(
       [
@@ -451,11 +466,12 @@ export function HeatEntryDialog({
         .filter(
           (candidate) =>
             candidate.sex === "male" &&
-            candidate.type === animal.type &&
+            candidate.type === animalType &&
+            !selectedAnimalIds.includes(candidate.id) &&
             (candidate.dateOfDeath == null || candidate.id === heat?.sireId),
         )
         .sort((a, b) => a.name.localeCompare(b.name)),
-    [allAnimalsQuery.data, animal.type, heat?.sireId],
+    [allAnimalsQuery.data, animalType, selectedAnimalIds, heat?.sireId],
   );
 
   const saveMutation = useMutation({
@@ -467,16 +483,25 @@ export function HeatEntryDialog({
         sireName: mated && sireName ? sireName : null,
         notes: notes || null,
       };
-      const response = heat
-        ? await apiClient.PATCH("/v1/animals/heats/byId/{heatId}", {
-            params: { path: { heatId: heat.id } },
-            body,
-          })
-        : await apiClient.POST("/v1/animals/byId/{animalId}/heats", {
-            params: { path: { animalId: animal.id } },
-            body,
-          });
-      if (response.error) throw new Error("Failed to save heat");
+      if (heat) {
+        const response = await apiClient.PATCH("/v1/animals/heats/byId/{heatId}", {
+          params: { path: { heatId: heat.id } },
+          body,
+        });
+        if (response.error) throw new Error("Failed to save heat");
+      } else if (animal) {
+        const response = await apiClient.POST("/v1/animals/byId/{animalId}/heats", {
+          params: { path: { animalId: animal.id } },
+          body,
+        });
+        if (response.error) throw new Error("Failed to save heat");
+      } else {
+        // All picked animals at once, all or nothing
+        const response = await apiClient.POST("/v1/animals/heats/batch", {
+          body: { animalIds: pickedAnimalIds, ...body },
+        });
+        if (response.error) throw new Error("Failed to save heats");
+      }
     },
     onSuccess: () => {
       invalidate();
@@ -504,8 +529,25 @@ export function HeatEntryDialog({
           <DialogTitle>{heat ? t("breeding.editHeat") : t("breeding.addHeat")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          {picksAnimals && (
+            <div className="space-y-2">
+              <Label>{t("treatments.selectAnimals")}</Label>
+              <SelectAnimalsField
+                animals={femaleCandidates}
+                herds={herdsQuery.data?.result ?? []}
+                value={pickedAnimalIds}
+                onValueChange={setPickedAnimalIds}
+                singleAnimalType
+                placeholder={t("treatments.selectAnimals")}
+              />
+            </div>
+          )}
           <div className="space-y-2">
-            <Label htmlFor="heatDate">{t("breeding.heatDate", { heat: t(`breeding.heatByType.${animal.type}`) })}</Label>
+            <Label htmlFor="heatDate">
+              {t("breeding.heatDate", {
+                heat: animalType ? t(`breeding.heatByType.${animalType}`) : t("breeding.heat"),
+              })}
+            </Label>
             <Input id="heatDate" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
           </div>
           <div className="flex items-center gap-2">
@@ -571,7 +613,10 @@ export function HeatEntryDialog({
             <Button variant="outline" onClick={onClose}>
               {t("common.cancel")}
             </Button>
-            <Button disabled={!date || saveMutation.isPending} onClick={() => saveMutation.mutate()}>
+            <Button
+              disabled={!date || selectedAnimalIds.length === 0 || saveMutation.isPending}
+              onClick={() => saveMutation.mutate()}
+            >
               {t("common.save")}
             </Button>
           </div>
