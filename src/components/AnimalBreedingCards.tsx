@@ -422,7 +422,7 @@ export function HeatEntryDialog({
   const [notes, setNotes] = useState(heat?.notes ?? "");
 
   const picksAnimals = animal === null;
-  const selectedAnimalIds = animal ? [animal.id] : pickedAnimalIds;
+  const selectedAnimalIds = useMemo(() => (animal ? [animal.id] : pickedAnimalIds), [animal, pickedAnimalIds]);
   // Living females can get a heat; the picker allows one type, so the first animal's type is the type of all
   const femaleCandidates = (allAnimalsQuery.data?.result ?? []).filter(
     (candidate) => candidate.sex === "female" && candidate.dateOfDeath == null,
@@ -482,7 +482,8 @@ export function HeatEntryDialog({
       const body = {
         date,
         mated,
-        sireId: mated && sireId ? sireId : null,
+        // Only a sire that is still offered: changing the animals (e.g. to another type) can leave a stale one
+        sireId: mated && sireCandidates.some((candidate) => candidate.id === sireId) ? sireId : null,
         sireName: mated && sireName ? sireName : null,
         notes: notes || null,
       };
