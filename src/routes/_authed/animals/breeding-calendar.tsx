@@ -272,7 +272,15 @@ function BreedingCalendarPage() {
           onClose={() => setEditedEntry(null)}
         />
       )}
-      {addingHeat && <HeatEntryDialog animal={null} heat={null} onClose={() => setAddingHeat(false)} />}
+      {/* On the selected day if there is one */}
+      {addingHeat && (
+        <HeatEntryDialog
+          animal={null}
+          heat={null}
+          initialDate={selectedDay ? toLocalDateString(selectedDay) : undefined}
+          onClose={() => setAddingHeat(false)}
+        />
+      )}
     </PageContent>
   );
 }

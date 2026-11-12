@@ -399,10 +399,13 @@ export function AnimalHeatsCard({ animal }: { animal: AnimalDetail }) {
 export function HeatEntryDialog({
   animal,
   heat,
+  initialDate,
   onClose,
 }: {
   animal: { id: string; type: AnimalDetail["type"] } | null;
   heat: AnimalHeat | null;
+  // "YYYY-MM-DD" for a new heat, e.g. the day selected in the calendar; defaults to today
+  initialDate?: string;
   onClose: () => void;
 }) {
   const { t, i18n } = useTranslation();
@@ -412,7 +415,7 @@ export function HeatEntryDialog({
   const herdsQuery = useQuery(herdsQueryOptions());
   const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
   const [pickedAnimalIds, setPickedAnimalIds] = useState<string[]>([]);
-  const [date, setDate] = useState(heat ? heat.date.slice(0, 10) : toLocalDateString(new Date()));
+  const [date, setDate] = useState(heat ? heat.date.slice(0, 10) : (initialDate ?? toLocalDateString(new Date())));
   const [mated, setMated] = useState(heat?.mated ?? false);
   const [sireId, setSireId] = useState(heat?.sireId ?? "");
   const [sireName, setSireName] = useState(heat?.sireName ?? "");
