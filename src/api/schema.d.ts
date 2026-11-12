@@ -2148,6 +2148,22 @@ export interface paths {
         patch: operations["PatchV1AnimalsWeightsByIdWeightId"];
         trace?: never;
     };
+    "/v1/animals/heats/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1AnimalsHeatsBatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/heats/byId/{heatId}": {
         parameters: {
             query?: never;
@@ -3815,7 +3831,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {
@@ -10111,6 +10127,42 @@ export interface components {
         };
         DeleteV1AnimalsWeightsByIdWeightIdPositiveResponse: {
             data: Record<string, never>;
+        };
+        PostV1AnimalsHeatsBatchPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    animalId: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    date: string;
+                    mated: boolean;
+                    sireId: string | null;
+                    sireName: string | null;
+                    notes: string | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    createdAt: string;
+                    createdBy: string | null;
+                }[];
+            };
+        };
+        PostV1AnimalsHeatsBatchRequestBody: {
+            animalIds: string[];
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            date: string;
+            mated?: boolean;
+            sireId?: string | null;
+            sireName?: string | null;
+            notes?: string | null;
         };
         PatchV1AnimalsHeatsByIdHeatIdPositiveResponse: {
             data: {
@@ -24849,6 +24901,40 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/animals/weights/byId/:weightId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsHeatsBatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/heats/batch Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsHeatsBatchRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/heats/batch Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsHeatsBatchPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/heats/batch Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

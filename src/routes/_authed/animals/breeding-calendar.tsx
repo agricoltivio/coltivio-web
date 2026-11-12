@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
-import { breedingCalendarQueryOptions, gestationSettingsQueryOptions } from "@/api/breeding.queries";
+import { ChevronLeft, ChevronRight, Plus, Settings } from "lucide-react";
+import { breedingCalendarQueryOptions } from "@/api/breeding.queries";
 import type { BreedingCalendarEntry } from "@/api/types";
 import { HeatEntryDialog } from "@/components/AnimalBreedingCards";
 import { PageContent } from "@/components/PageContent";
@@ -45,8 +45,9 @@ function BreedingCalendarPage() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   // Calendar entry whose heat is open in the dialog
   const [editedEntry, setEditedEntry] = useState<BreedingCalendarEntry | null>(null);
+  // New heat for one or several animals, picked in the dialog
+  const [addingHeat, setAddingHeat] = useState(false);
   const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
-  const gestationSettingsQuery = useQuery(gestationSettingsQueryOptions());
   const monthEnd = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 0);
 
   const calendarQuery = useQuery(
@@ -194,6 +195,14 @@ function BreedingCalendarPage() {
             </CardContent>
           </Card>
 
+          {canWriteAnimals && (
+            <div className="flex justify-end">
+              <Button onClick={() => setAddingHeat(true)}>
+                <Plus className="h-4 w-4" />
+                {t("breeding.addHeat")}
+              </Button>
+            </div>
+          )}
           <Card>
             <CardContent>
               {calendarQuery.isError ? (
@@ -260,11 +269,16 @@ function BreedingCalendarPage() {
         <HeatEntryDialog
           animal={{ id: editedEntry.animal.id, type: editedEntry.animal.type }}
           heat={editedEntry}
-          gestationDays={
-            gestationSettingsQuery.data?.find((setting) => setting.animalType === editedEntry.animal.type)
-              ?.gestationDays
-          }
           onClose={() => setEditedEntry(null)}
+        />
+      )}
+      {/* On the selected day if there is one */}
+      {addingHeat && (
+        <HeatEntryDialog
+          animal={null}
+          heat={null}
+          initialDate={selectedDay ? toLocalDateString(selectedDay) : undefined}
+          onClose={() => setAddingHeat(false)}
         />
       )}
     </PageContent>
