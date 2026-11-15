@@ -140,6 +140,7 @@ function CropProtectionProductDetailPage() {
               label={t("cropProtectionProducts.description")}
               value={product.description || "-"}
             />
+            <DetailItem label={t("common.registrationNumber")} value={product.registrationNumber || "-"} />
           </div>
         </CardContent>
       </Card>

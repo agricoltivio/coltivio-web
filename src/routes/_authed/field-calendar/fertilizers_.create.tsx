@@ -37,6 +37,7 @@ type FertilizerFormData = {
   type: FertilizerType;
   unit: FertilizerUnit;
   description: string;
+  registrationNumber: string;
 };
 
 function CreateFertilizerPage() {
@@ -52,7 +53,7 @@ function CreateFertilizerPage() {
         name: "",
         type: "mineral",
         unit: "kg",
-        description: "",
+        description: "", registrationNumber: "",
       },
     });
 
@@ -64,6 +65,8 @@ function CreateFertilizerPage() {
           type: data.type,
           unit: data.unit,
           description: data.description || undefined,
+          // An emptied field clears the number
+          registrationNumber: data.registrationNumber.trim() || null,
         },
       });
       if (response.error) {
@@ -139,6 +142,11 @@ function CreateFertilizerPage() {
         <div className="space-y-1">
           <Label htmlFor="description">{t("fertilizers.description")}</Label>
           <Textarea id="description" {...register("description")} />
+        </div>
+
+        <div className="space-y-1">
+          <Label htmlFor="registrationNumber">{t("common.registrationNumberOptional")}</Label>
+          <Input id="registrationNumber" {...register("registrationNumber")} />
         </div>
 
         <div className="flex gap-2 pt-2">
