@@ -544,6 +544,7 @@
     "drug": "Drug",
     "notes": "Notes",
     "milkUsableDate": "Milk Usable Date",
+    "mixedAnimalTypes": "A treatment can only contain animals of one type.",
     "drugNotDefinedForType": "This drug has no dose and waiting times for {{types}}. Please enter them manually.",
     "meatUsableDate": "Meat Usable Date",
     "organsUsableDate": "Organs Usable Date",

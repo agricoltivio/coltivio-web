@@ -107,6 +107,7 @@ function CreateTreatment() {
         isSubmitting={createMutation.isPending}
         defaultValues={{ animalIds: animalId ? [animalId] : [] }}
       />
+      {createMutation.isError && <p className="mt-4 text-sm text-destructive">{t("common.saveFailed")}</p>}
     </PageContent>
   );
 }
