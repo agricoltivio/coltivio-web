@@ -246,7 +246,11 @@ export function TreatmentForm({
 
   // One treatment covers one animal type (older ones may mix types, then the first animal's type counts)
   const selectedDrug = drugs.find((drug) => drug.id === watchedDrugId);
-  const animalType = animals.find((animal) => animal.id === watchedAnimalIds[0])?.type;
+  // The animal list only has living animals, a saved treatment also knows its animals that died since
+  const animalTypeById = new Map(
+    [...(treatment?.animals ?? []), ...animals].map((animal) => [animal.id, animal.type]),
+  );
+  const animalType = animalTypeById.get(watchedAnimalIds[0]);
   const drugTreatmentForType =
     selectedDrug && animalType
       ? selectedDrug.drugTreatment.find((drugTreatment) => drugTreatment.animalType === animalType)
@@ -303,9 +307,8 @@ export function TreatmentForm({
         setValue("drugDoseUnit", drugTreatmentForType.doseUnit);
         setValue("drugDosePerUnit", drugTreatmentForType.dosePerUnit);
       }
-      // No waiting time: no date, so none of a previous drug stays
+      // Usable from end date + waiting days, so the end date itself without waiting time (same as the app)
       const usableDate = (waitingDays: number) => {
-        if (waitingDays <= 0) return null;
         const date = new Date(watchedEndDate);
         date.setDate(date.getDate() + waitingDays);
         return toLocalDateString(date);
@@ -337,7 +340,7 @@ export function TreatmentForm({
   const mixedAnimalTypes =
     animalsChanged &&
     new Set(
-      watchedAnimalIds.map((animalId) => animals.find((animal) => animal.id === animalId)?.type).filter(Boolean),
+      watchedAnimalIds.map((animalId) => animalTypeById.get(animalId)).filter(Boolean),
     ).size > 1;
 
   return (
@@ -439,7 +442,7 @@ export function TreatmentForm({
           <AlertDescription>
             {t("treatments.drugNotDefinedForType", {
               // Plural names are capitalized labels; only German keeps that mid-sentence
-              types: i18n.language.startsWith("de")
+              type: i18n.language.startsWith("de")
                 ? t(`animals.typesPlural.${drugNotDefinedForType}`)
                 : t(`animals.typesPlural.${drugNotDefinedForType}`).toLocaleLowerCase(i18n.language),
             })}
@@ -635,12 +638,12 @@ export function TreatmentForm({
       <div className="flex justify-end gap-3 pt-6">
         <Button
           type="submit"
-          // Weights still loading would be stored as missing, the server no longer looks them up
+          // Weights still loading or failed to load would be stored as missing, the server no longer looks them up
           disabled={
             isSubmitting ||
             mixedAnimalTypes ||
             (watchedDosePerUnit === "kg" &&
-              watchedAnimalIds.some((animalId) => doseInfo(animalId).weightStatus === "loading"))
+              watchedAnimalIds.some((animalId) => doseInfo(animalId).weightStatus !== "ready"))
           }
         >
           {t("common.save")}
