@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { formatFertilizerUnit } from "@/api/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -173,7 +174,7 @@ function FertilizerApplicationDetail() {
   const selectedFertilizer = fertilizers.find(
     (fertilizer) => fertilizer.id === watchedFertilizerId,
   );
-  const fertilizerUnit = selectedFertilizer?.unit ?? app.fertilizer.unit;
+  const fertilizerUnit = formatFertilizerUnit(selectedFertilizer?.unit ?? app.fertilizer.unit);
   const amountPerUnitLabel =
     watchedUnit === "total_amount"
       ? `${t("fieldCalendar.fertilizerApplications.units.total_amount")} (${fertilizerUnit})`

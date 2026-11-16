@@ -55,6 +55,7 @@ export function toBaseAmount(
     case "ml": return { value: amount / 1000, type: "l" };
     case "l":  return { value: amount, type: "l" };
     case "hl": return { value: amount * 100, type: "l" };
+    case "m3": return { value: amount * 1000, type: "l" };
     default:   return { value: amount, type: "kg" };
   }
 }
