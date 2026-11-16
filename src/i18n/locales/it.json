@@ -544,6 +544,7 @@
     "drug": "Farmaco",
     "notes": "Note",
     "milkUsableDate": "Latte utilizzabile dal",
+    "drugNotDefinedForType": "Questo medicinale non ha dosaggio né tempi di attesa per {{types}}. Inseriscili manualmente.",
     "meatUsableDate": "Carne utilizzabile dal",
     "organsUsableDate": "Organi utilizzabili dal",
     "waitingDates": "Periodi di attesa",

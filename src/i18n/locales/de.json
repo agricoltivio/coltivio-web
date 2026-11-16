@@ -544,6 +544,7 @@
     "drug": "Medikament",
     "notes": "Notizen",
     "milkUsableDate": "Milch verwendbar ab",
+    "drugNotDefinedForType": "Für {{types}} sind bei diesem Medikament keine Dosierung und Absetzfristen hinterlegt. Bitte manuell erfassen.",
     "meatUsableDate": "Fleisch verwendbar ab",
     "organsUsableDate": "Organe verwendbar ab",
     "waitingDates": "Wartefristen",

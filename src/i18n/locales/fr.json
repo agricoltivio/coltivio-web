@@ -544,6 +544,7 @@
     "drug": "Médicament",
     "notes": "Notes",
     "milkUsableDate": "Lait utilisable à partir du",
+    "drugNotDefinedForType": "Ce médicament n'a pas de dosage ni de délais d'attente pour les {{types}}. Veuillez les saisir manuellement.",
     "meatUsableDate": "Viande utilisable à partir du",
     "organsUsableDate": "Organes utilisables à partir du",
     "waitingDates": "Délais d'attente",
