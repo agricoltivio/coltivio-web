@@ -46,7 +46,7 @@
     "date": "Date",
     "done": "Terminé",
     "wizardStepOf": "Étape {{current}} sur {{total}}",
-    "saveFailed": "Cela n'a pas fonctionné. Veuillez réessayer.",
+    "saveFailed": "Ça n'a pas fonctionné. Réessaie.",
     "required": "Obligatoire"
   },
   "nav": {
@@ -73,7 +73,7 @@
       "health": "Santé"
     },
     "animalsExport": "Export",
-    "tvdImport": "Import TVD",
+    "tvdImport": "Import BDTA",
     "dashboard": "Tableau de bord",
     "animals": "Animaux",
     "earTags": "Boucles auriculaires",
@@ -104,7 +104,7 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Mes entrées",
     "wikiMySubmissions": "Mes soumissions",
-    "wikiAdmin": "Wiki Admin",
+    "wikiAdmin": "Wiki admin",
     "tasks": "Tâches",
     "farmJournal": "Journal de l'exploitation",
     "membership": "Abonnement",
@@ -121,12 +121,12 @@
       "title": "Exporter les données animales",
       "description": "Télécharger le journal des traitements et des sorties au format Excel."
     },
-    "importOnboardingBody": "L'import nécessite un fichier Excel de la TVD. Procédez comme suit :",
-    "importOnboardingStepSelectType": "Sélectionnez l'espèce animale souhaitée",
-    "importOnboardingStepExport": "Exportez le cheptel via «Exporter les données» sous le tableau",
-    "importOnboardingPedigree": "Si vous souhaitez ajouter l'ascendance de vos animaux, importez en plus la liste de la vue «ascendance».",
-    "importOnboardingSync": "Vous pouvez importer les listes de la TVD autant de fois que vous le souhaitez pour mettre à jour vos animaux dans l'app.",
-    "importOnboardingSyncMergeHint": "Les animaux sont mis à jour sur la base de la marque auriculaire. Confirmez-le à chaque fois dans l'aperçu en fusionnant les animaux.",
+    "importOnboardingBody": "L'import nécessite un fichier Excel de la BDTA. Procède comme suit :",
+    "importOnboardingStepSelectType": "Sélectionne l'espèce animale souhaitée",
+    "importOnboardingStepExport": "Exporte le cheptel via « Exporter les données » sous le tableau",
+    "importOnboardingPedigree": "Si tu veux ajouter l'ascendance de tes animaux, importe en plus la liste de la vue « ascendance ».",
+    "importOnboardingSync": "Tu peux importer les listes de la BDTA autant de fois que tu veux pour mettre à jour tes animaux dans l'app.",
+    "importOnboardingSyncMergeHint": "Les animaux sont mis à jour sur la base de la marque auriculaire. Confirme-le à chaque fois dans l'aperçu en fusionnant les animaux.",
     "importOnboardingLearnMore": "En savoir plus",
     "createAnimal": "Créer un animal",
     "editAnimal": "Modifier l'animal",
@@ -169,7 +169,7 @@
     "grandparents": "Grands-parents",
     "parents": "Parents",
     "deceased": "Décédé",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet animal ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cet animal ?",
     "types": {
       "goat": "Chèvre",
       "sheep": "Mouton",
@@ -217,7 +217,7 @@
     "showLivingOnly": "Afficher les vivants uniquement",
     "import": "Importer",
     "importTitle": "Importer des animaux",
-    "importDescription": "Chargez un fichier Excel pour importer des animaux. Le fichier doit contenir des colonnes pour le numéro de boucle, le nom, la date de naissance, le sexe, la boucle de la mère et du père.",
+    "importDescription": "Charge un fichier Excel pour importer des animaux. Le fichier doit contenir des colonnes pour le numéro de marque auriculaire, le nom, la date de naissance, le sexe, la marque auriculaire de la mère et celle du père.",
     "importFile": "Fichier Excel",
     "skipHeaderRow": "Ignorer la ligne d'en-tête",
     "importTotal": "Total lignes",
@@ -228,9 +228,9 @@
     "importReason": "Raison",
     "importPreview": "Aperçu",
     "importPreviewTitle": "Aperçu de l'importation",
-    "importPreviewDesc": "Vérifiez les animaux avant l'import. Vous pouvez modifier des lignes ou les retirer de l'import.",
-    "importPreviewHasErrors": "Certaines lignes contiennent des erreurs. Modifiez-les ou retirez-les de l'import.",
-    "importPreviewHasConflicts": "Certaines lignes ont des conflits de boucle. Résolvez-les en fusionnant ou en supprimant les lignes concernées.",
+    "importPreviewDesc": "Vérifie les animaux avant l'import. Tu peux modifier des lignes ou les retirer de l'import.",
+    "importPreviewHasErrors": "Certaines lignes contiennent des erreurs. Modifie-les ou retire-les de l'import.",
+    "importPreviewHasConflicts": "Certaines lignes ont des conflits de marque auriculaire. Résous-les en fusionnant ou en supprimant les lignes concernées.",
     "importCommit": "Importer {{count}} animaux",
     "importBack": "Retour",
     "importCreated": "Créés",
@@ -243,16 +243,16 @@
     "importMergeAll": "Tout confirmer",
     "importUpdateCheckbox": "Mettre à jour",
     "importEarTagAssignedWarning": "Cette marque auriculaire est déjà assignée à un autre animal.",
-    "importConflictsFound": "{{count}} animal(aux) existe(nt) déjà. Confirmez lesquels doivent être mis à jour.",
+    "importConflictsFound": "{{count}} animal(aux) existe(nt) déjà. Confirme lesquels doivent être mis à jour.",
     "importEditRow": "Modifier la ligne",
     "importDeleteRow": "Supprimer la ligne",
     "importResultTitle": "Importation terminée",
     "importNoRows": "Toutes les lignes supprimées.",
-    "importPreviewError": "Impossible de charger l'aperçu. Vérifiez le fichier et réessayez.",
-    "importCommitError": "L'importation a échoué. Veuillez réessayer.",
+    "importPreviewError": "Impossible de charger l'aperçu. Vérifie le fichier et réessaie.",
+    "importCommitError": "L'importation a échoué. Réessaie.",
     "importStatus": "Statut",
-    "colorOptional": "Couleur (facultative)",
-    "notesOptional": "Notes (facultatives)",
+    "colorOptional": "Couleur (facultatif)",
+    "notesOptional": "Notes (facultatif)",
     "removeOffspringConfirm": "{{child}} ne sera plus enregistré comme descendant de {{parent}}. L'animal lui-même est conservé.",
     "addOffspringFailed": "Les descendants n'ont pas pu être ajoutés."
   },
@@ -268,7 +268,7 @@
     "confirmCreateTitle": "Créer des marques auriculaires ?",
     "confirmCreateMessage": "De {{from}} à {{to}}\nTotal : {{total}} marques auriculaires",
     "rangeConflictServer": "Certaines de ces marques auriculaires existent déjà. Aucune marque auriculaire n'a été créée.",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette boucle ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette marque auriculaire ?",
     "deleteWarning": "Les boucles attribuées à des animaux seront ignorées.",
     "skippedAssigned": "{{count}} boucles ont été ignorées car elles sont attribuées à des animaux.",
     "firstNumber": "Premier numéro",
@@ -308,10 +308,10 @@
     "noAccount": "Pas encore de compte ?",
     "haveAccount": "Déjà un compte ?",
     "resetPassword": "Réinitialiser le mot de passe",
-    "resetPasswordDescription": "Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "resetPasswordDescription": "Saisis ton adresse e-mail et nous t'enverrons un lien pour réinitialiser ton mot de passe.",
     "sendResetLink": "Envoyer le lien",
     "sending": "Envoi...",
-    "resetLinkSent": "Lien de réinitialisation envoyé ! Vérifiez vos e-mails.",
+    "resetLinkSent": "Lien de réinitialisation envoyé ! Vérifie tes e-mails.",
     "backToLogin": "Retour à la connexion",
     "newPassword": "Nouveau mot de passe",
     "setNewPassword": "Définir un nouveau mot de passe",
@@ -376,7 +376,7 @@
     "preferredCommunication": "Communication préférée",
     "labels": "Labels",
     "noLabels": "Pas de labels",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce contact ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce contact ?",
     "payments": "Paiements",
     "sponsorships": "Parrainages",
     "orders": "Commandes",
@@ -397,7 +397,7 @@
     "name": "Nom",
     "description": "Description",
     "yearlyCost": "Coût annuel",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce type de parrainage ?"
+    "deleteConfirm": "Veux-tu vraiment supprimer ce type de parrainage ?"
   },
   "sponsorships": {
     "title": "Parrainages",
@@ -417,7 +417,7 @@
     "active": "Actif",
     "ended": "Terminé",
     "showEnded": "Afficher les terminés",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce parrainage ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce parrainage ?",
     "noSponsorships": "Aucun parrainage"
   },
   "payments": {
@@ -432,7 +432,7 @@
     "currency": "Devise",
     "method": "Mode de paiement",
     "notes": "Notes",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce paiement ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce paiement ?",
     "noPayments": "Aucun paiement",
     "outstanding": "En attente",
     "methods": {
@@ -455,7 +455,7 @@
     "description": "Description",
     "active": "Actif",
     "inactive": "Inactif",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce produit ?",
     "categories": {
       "meat": "Viande",
       "vegetables": "Légumes",
@@ -488,7 +488,7 @@
     "total": "Total",
     "addItem": "Ajouter un article",
     "noItems": "Aucun article",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette commande ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette commande ?",
     "products": "Produits",
     "paid": "Payé",
     "createAsConfirmed": "Créer comme confirmé",
@@ -520,7 +520,7 @@
     "logoUploaded": "Logo téléchargé",
     "uploadLogo": "Télécharger le logo",
     "replaceLogo": "Remplacer le logo",
-    "selectInvoiceMode": "Comment souhaitez-vous télécharger les factures?",
+    "selectInvoiceMode": "Comment veux-tu télécharger les factures ?",
     "invoiceModeSingle": "Tout en un fichier (.docx)",
     "invoiceModeZip": "Un fichier par facture (.zip)",
     "filter": {
@@ -543,19 +543,19 @@
     "reason": "Raison",
     "drug": "Médicament",
     "notes": "Notes",
-    "milkUsableDate": "Lait utilisable à partir du",
-    "meatUsableDate": "Viande utilisable à partir du",
-    "organsUsableDate": "Organes utilisables à partir du",
+    "milkUsableDate": "Lait utilisable dès le",
+    "meatUsableDate": "Viande utilisable dès le",
+    "organsUsableDate": "Organes utilisables dès le",
     "waitingDates": "Délais d'attente",
     "isAntibiotic": "Antibiotique",
     "criticalAntibiotic": "Antibiotique critique",
     "antibiogramAvailable": "Antibiogramme disponible",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce traitement ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce traitement ?",
     "noTreatments": "Aucun traitement",
     "exportDialog": {
       "title": "Exporter les traitements",
       "description": "Télécharger le journal de traitements en tant que fichier Excel.",
-      "filterByAnimalType": "Filtrer par type d'animal (optionnel)"
+      "filterByAnimalType": "Filtrer par type d'animal (facultatif)"
     },
     "drugDoseValue": "Dose",
     "drugDoseUnit": "Unité",
@@ -577,13 +577,13 @@
     "doseValue": "Dose",
     "doseUnit": "Unité",
     "dosePerUnit": "Par",
-    "milkWaitingDays": "Jours d'attente lait",
-    "meatWaitingDays": "Jours d'attente viande",
-    "organsWaitingDays": "Jours d'attente organes",
+    "milkWaitingDays": "Délai d'attente lait (jours)",
+    "meatWaitingDays": "Délai d'attente viande (jours)",
+    "organsWaitingDays": "Délai d'attente organes (jours)",
     "isAntibiotic": "Antibiotique",
     "criticalAntibiotic": "Antibiotique critique",
     "receivedFrom": "Obtenu auprès de",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce médicament ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce médicament ?",
     "doseUnits": {
       "tablet": "Comprimé",
       "capsule": "Gélule",
@@ -611,7 +611,7 @@
     "animals": "Animaux",
     "noHerds": "Aucun troupeau défini",
     "noAnimals": "Aucun animal dans ce troupeau",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce troupeau ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce troupeau ?",
     "outdoorSchedules": "Plannings de sortie",
     "addSchedule": "Ajouter un planning",
     "editSchedule": "Modifier le planning",
@@ -630,7 +630,7 @@
       "monthly": "Mensuel",
       "yearly": "Annuel"
     },
-    "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce planning ?",
+    "deleteScheduleConfirm": "Veux-tu vraiment supprimer ce planning ?",
     "meadow": "Pâture",
     "noMeadow": "Aucune pâture",
     "repeatNone": "Aucune",
@@ -638,7 +638,7 @@
     "weekdaysRequired": "Sélectionne au moins un jour de la semaine.",
     "untilOptional": "Répéter jusqu'au",
     "endBeforeStart": "La date ne peut pas précéder la date de début.",
-    "changesApplyFrom": "Les changements s'appliquent dès le",
+    "changesApplyFrom": "Changements valables dès le",
     "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
     "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure."
   },
@@ -654,13 +654,13 @@
     "endDate": "Au",
     "animalCount": "Nombre d'animaux",
     "noEntries": "Aucune entrée",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette entrée ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette entrée ?",
     "manageGroups": "Gérer les groupes",
     "addGroup": "Ajouter un groupe",
     "editGroup": "Modifier le groupe",
     "groupName": "Nom",
     "groupDescription": "Description",
-    "deleteGroupConfirm": "Êtes-vous sûr de vouloir supprimer ce groupe ?",
+    "deleteGroupConfirm": "Veux-tu vraiment supprimer ce groupe ?",
     "noGroups": "Aucun groupe d'animaux défini",
     "month": "Mois",
     "year": "Année",
@@ -683,9 +683,9 @@
     "hero": {
       "headline": "Gestion agricole,\ncréée par des agriculteurs.",
       "sub": "Logiciel open source à but non lucratif pour les petites et moyennes exploitations. Pas d'investisseurs, pas de verrouillage — juste des outils qui fonctionnent vraiment.",
-      "testPhase": "L'app est actuellement en phase de test — essayez-la et partagez vos retours.",
+      "testPhase": "L'app est actuellement en phase de test — essaie-la et partage tes retours.",
       "ctaIos": "iOS TestFlight ↗",
-      "ctaAndroid": "Android Beta"
+      "ctaAndroid": "Android beta"
     },
     "story": {
       "headline": "Paperasse ? Chaos Excel ? Rattrapage le soir ?",
@@ -698,62 +698,62 @@
       "funding": "Plutôt que des licences coûteuses, nous misons sur un financement communautaire par contributions volontaires. Chaque soutien aide Coltivio à se développer et à rester librement accessible à tous les agriculteurs."
     },
     "mission": {
-      "title": "Notre Mission",
+      "title": "Notre mission",
       "independent": {
-        "title": "Indépendant & Sans But Lucratif",
+        "title": "Indépendant & sans but lucratif",
         "body": "Pas d'investisseurs, pas de capital-risque. Construit pour servir les agriculteurs, pas les actionnaires."
       },
       "community": {
-        "title": "Piloté par la Communauté",
+        "title": "Piloté par la communauté",
         "body": "Fait par des agriculteurs, pour des agriculteurs. Chaque fonctionnalité vient d'une vraie expérience terrain."
       },
       "openSource": {
-        "title": "Open Source",
-        "body": "Transparent, vérifiable et duplicable. Vos données, votre logiciel."
+        "title": "Open source",
+        "body": "Transparent, vérifiable et duplicable. Tes données, ton logiciel."
       }
     },
     "fieldwork": {
-      "title": "Travaux des Champs",
-      "sub": "Votre exploitation dans votre poche — L'App Mobile",
+      "title": "Travaux des champs",
+      "sub": "Ton exploitation dans ta poche — l'app mobile",
       "plots": {
         "title": "Gestion des surfaces",
-        "desc": "Saisie automatique de vos surfaces. Adaptez-les à vos besoins — divisez, fusionnez ou dessinez de nouvelles parcelles, exactement comme il vous faut."
+        "desc": "Saisie automatique de tes surfaces. Adapte-les à tes besoins — divise, fusionne ou dessine de nouveaux champs, exactement comme il te faut."
       },
       "calendar": {
-        "title": "Calendrier des champs",
+        "title": "Calendrier cultural",
         "desc": "Une vue d'ensemble unifiée de toutes les activités de terrain planifiées et réalisées."
       },
       "protection": {
         "title": "Planification de la rotation des cultures",
-        "desc": "Planifiez vos rotations culturales facilement grâce aux schémas récurrents, la détection automatique des conflits et des violations des délais d'attente — et visualisez le résultat en temps réel dans le calendrier."
+        "desc": "Planifie tes rotations de cultures facilement grâce aux schémas récurrents, à la détection automatique des conflits et des violations des temps d'attente — et visualise le résultat en temps réel dans le calendrier."
       },
       "harvest": {
         "title": "Travaux des champs",
-        "desc": "Enregistrez vos travaux des champs en quelques étapes — labour, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place."
+        "desc": "Enregistre tes travaux des champs en quelques étapes — travail du sol, épandage d'engrais, protection des cultures ou récolte, tout noté immédiatement sur place."
       },
       "export": {
         "title": "Export",
-        "desc": "Exportez le calendrier des champs sous forme de fichier Excel optimisé, prêt pour votre prochaine inspection officielle."
+        "desc": "Exporte le calendrier cultural sous forme de fichier Excel optimisé, prêt pour ton prochain contrôle officiel."
       }
     },
     "animals": {
       "title": "Élevage",
-      "sub": "Suivi complet du cheptel dans votre poche.",
+      "sub": "Suivi complet du cheptel dans ta poche.",
       "import": {
         "title": "Cheptel",
-        "desc": "Tout votre cheptel en un coup d'œil. Créez des troupeaux avec des sorties et des temps de pâturage définis. Importez les animaux via l'export des listes animaux depuis TVD."
+        "desc": "Tout ton cheptel en un coup d'œil. Crée des troupeaux avec des sorties et des temps de pâture définis. Importe les animaux via l'export des listes d'animaux depuis la BDTA."
       },
       "treatments": {
         "title": "Journal des traitements",
-        "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente (Absetzfristen) lait et viande sont calculés automatiquement avec alertes avant expiration."
+        "desc": "Journal complet des médicaments par animal : produit, dose, motif et vétérinaire. Les délais d'attente lait et viande sont calculés automatiquement avec alertes avant expiration."
       },
       "herds": {
-        "title": "Troupeaux & Plannings",
-        "desc": "Organisez les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suivez les cycles de reproduction, les mises bas attendues et les plans d'alimentation sur tout le troupeau."
+        "title": "Troupeaux & plannings",
+        "desc": "Organise les animaux en groupes flexibles pour l'alimentation, la reproduction ou le pâturage. Suis les cycles de reproduction, les mises bas attendues et les plans d'alimentation de tout le troupeau."
       },
       "turnout": {
         "title": "Journal de pâturage",
-        "desc": "Journal de pâturage généré automatiquement en fonction des troupeaux configurés. Configurez-le une fois et oubliez-le."
+        "desc": "Journal des sorties généré automatiquement à partir des troupeaux configurés. Configure-le une fois et oublie-le."
       },
       "export": {
         "title": "Export pour contrôles",
@@ -761,19 +761,19 @@
       }
     },
     "customize": {
-      "headline": "Conçu autour de votre journée — pas l'inverse",
-      "sub": "Le temps est précieux à la ferme. Coltivio s'efface — configurez-le une fois selon votre façon de travailler et oubliez le reste.",
+      "headline": "Conçu autour de ta journée — pas l'inverse",
+      "sub": "Le temps est précieux à la ferme. Coltivio s'efface — configure-le une fois selon ta façon de travailler et oublie le reste.",
       "speedDial": {
         "title": "4 actions rapides",
-        "desc": "Enregistrez les quatre actions les plus utilisées comme raccourcis sur votre écran d'accueil. Notez immédiatement un traitement, une récolte ou un épandage d'engrais."
+        "desc": "Enregistre les quatre actions les plus utilisées comme raccourcis sur ton écran d'accueil. Note immédiatement un traitement, une récolte ou un épandage d'engrais."
       },
       "modules": {
-        "title": "Affichez uniquement ce dont vous avez besoin",
-        "desc": "Affichez uniquement les fonctions dont vous avez besoin. Pas de protection des cultures ? Masquez-la simplement. La récolte est votre priorité ? Remontez-la en tête de liste. Entièrement adapté à vos besoins."
+        "title": "Affiche uniquement ce dont tu as besoin",
+        "desc": "Affiche uniquement les fonctions dont tu as besoin. Pas de protection des cultures ? Masque-la simplement. La récolte est ta priorité ? Remonte-la en tête de liste. Entièrement adapté à tes besoins."
       },
       "dashboard": {
-        "title": "Votre tableau de bord, votre choix",
-        "desc": "Choisissez quelles cartes apparaissent sur votre tableau de bord pour que les informations les plus importantes soient toujours visibles."
+        "title": "Ton tableau de bord, ton choix",
+        "desc": "Choisis quelles cartes apparaissent sur ton tableau de bord pour que les informations les plus importantes soient toujours visibles."
       },
       "noNoise": {
         "title": "Zéro superflu",
@@ -782,43 +782,43 @@
     },
     "newsletter": {
       "title": "Newsletter",
-      "sub": "Nous vous informons sur l'association AgriColtivio et sur les nouvelles fonctionnalités. Vous pouvez vous désabonner à tout moment.",
-      "placeholder": "votre@email.ch",
+      "sub": "Nous t'informons sur l'association AgriColtivio et les nouvelles fonctionnalités. Tu peux te désabonner à tout moment.",
+      "placeholder": "ton@email.ch",
       "cta": "S'inscrire",
-      "success": "Merci pour votre inscription ! Nous vous tiendrons informé.",
-      "error": "Une erreur s'est produite. Veuillez réessayer."
+      "success": "Merci pour ton inscription ! Nous te tiendrons informé.",
+      "error": "Une erreur s'est produite. Réessaie."
     },
     "demo": {
       "title": "Voir en action"
     },
     "webapp": {
       "label": "Quand le téléphone n'est pas le bon outil — L'application Web",
-      "title": "Le Compagnon Bureau",
+      "title": "Le compagnon bureau",
       "body": "Mêmes données, écran plus grand.",
       "contacts": {
         "title": "Gestion des contacts",
-        "desc": "Gérez tous vos contacts agricoles. Ajoutez des labels pour savoir qui est intéressé par un colis de viande ou veut aider pendant la récolte."
+        "desc": "Gère tous tes contacts agricoles. Ajoute des labels pour savoir qui est intéressé par un colis de viande ou veut aider pendant la récolte."
       },
       "orders": {
         "title": "Carnet de commandes",
-        "desc": "Enregistrez les commandes de vos contacts et suivez si elles ont été livrées et payées."
+        "desc": "Enregistre les commandes de tes contacts et suis si elles ont été livrées et payées."
       },
       "sponsorships": {
         "title": "Gestion des parrainages",
-        "desc": "Gérez vos parrainages d'animaux en un coup d'œil : qui parraine quel animal, quel programme est actif — et le paiement est-il arrivé ? Envoyez des newsletters personnalisées directement à tous les parrains."
+        "desc": "Gère tes parrainages d'animaux en un coup d'œil : qui parraine quel animal, quel programme est actif — et le paiement est-il arrivé ? Envoie des newsletters personnalisées directement à tous les parrains."
       }
     },
     "oss": {
-      "title": "Open Source",
-      "body": "Construit en public. Contribuez, forkez ou utilisez simplement. Sans conditions.",
+      "title": "Open source",
+      "body": "Construit en public. Contribue, forke ou utilise-le simplement. Sans conditions.",
       "github": "Voir sur GitHub"
     },
     "footer": {
       "tagline": "Gestion agricole open source",
       "openApp": "Ouvrir l'App",
       "github": "GitHub",
-      "iosBeta": "iOS Bêta",
-      "androidBeta": "Android Bêta"
+      "iosBeta": "iOS bêta",
+      "androidBeta": "Android bêta"
     }
   },
   "fieldCalendar": {
@@ -852,7 +852,7 @@
       "enterMerge": "Fusionner",
       "enterSplit": "Diviser",
       "colorMode": {
-        "plot": "Parcelle",
+        "plot": "Champ",
         "crop": "Culture",
         "usage": "Utilisation",
         "cutting": "Date de coupe"
@@ -1083,31 +1083,31 @@
         "998": "Autres surfaces hors zone agricole et pâturages d'alpage"
       },
       "import": {
-        "title": "Importer des parcelles",
+        "title": "Importer des champs",
         "previewTitle": "Aperçu de l'import",
         "summaryTitle": "Résumé",
-        "onboardingHeading": "Importer des parcelles depuis un shapefile",
+        "onboardingHeading": "Importer des champs depuis un shapefile",
         "onboardingBody": "Exporte tes surfaces depuis le système cantonal (p. ex. Acorda, LAWIS) sous forme de shapefile et télécharge le ZIP ici.",
         "onboardingFilesHint": "Le ZIP doit contenir exactement un fichier .shp et son fichier .dbf (.prj, .shx et .cpg sont facultatifs).",
         "file": "Fichier ZIP",
         "preview": "Aperçu",
         "previewError": "Le fichier n'a pas pu être lu.",
         "commitError": "L'import a échoué.",
-        "previewDesc": "Vérifie les parcelles sur la carte et dans la liste. Clique sur une parcelle pour la modifier. Les parcelles qui se chevauchent ne peuvent pas être importées.",
+        "previewDesc": "Vérifie les champs sur la carte et dans la liste. Clique sur un champ pour le modifier. Les champs qui se chevauchent ne peuvent pas être importés.",
         "selectedCount": "{{selected}} sur {{total}} seront importées",
         "selectAll": "Tout sélectionner",
         "deselectAll": "Tout désélectionner",
         "unnamed": "(sans nom)",
-        "editRow": "Modifier la parcelle",
-        "noRows": "Aucune parcelle.",
+        "editRow": "Modifier le champ",
+        "noRows": "Aucun champ.",
         "noGeometry": "Pas de géométrie – import impossible.",
-        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. Les parcelles qui se chevauchent ne peuvent pas être importées.",
+        "conflictWarning": "Chevauche : <bold>{{plots}}</bold>. Les champs qui se chevauchent ne peuvent pas être importés.",
         "name": "Nom",
-        "summaryDesc": "{{count}} parcelles ({{size}}) seront importées.",
+        "summaryDesc": "{{count}} champs ({{size}}) seront importés.",
         "total": "Total",
-        "cuttingDateHint": "Les dates de fauche ne sont pas importées et peuvent être définies plus tard par parcelle.",
-        "commit_one": "Importer {{count}} parcelle",
-        "commit_other": "Importer {{count}} parcelles",
+        "cuttingDateHint": "Les dates de fauche ne sont pas importées et peuvent être définies plus tard par champ.",
+        "commit_one": "Importer {{count}} champ",
+        "commit_other": "Importer {{count}} champs",
         "status": {
           "conflict": "Chevauchement"
         },
@@ -1122,7 +1122,7 @@
         "includeInImport": "Importer",
         "completeness": {
           "partial": "Tous les attributs n'ont pas pu être lus dans le fichier. Vérifie les noms, numéros de parcelle et utilisations.",
-          "geometries_only": "Seuls les contours des parcelles ont pu être lus – les noms, numéros de parcelle et utilisations manquent. Complète-les si nécessaire.",
+          "geometries_only": "Seuls les contours des champs ont pu être lus – les noms, numéros de parcelle et utilisations manquent. Complète-les si nécessaire.",
           "defaultUsage": "Les utilisations manquantes sont définies sur « Autres prairies permanentes »."
         },
         "supportHint": "Un problème avec l'import ? Contacte <mail>support@coltivio.ch</mail>.",
@@ -1139,7 +1139,7 @@
         },
         "formatDetected": "Format reconnu : {{label}}",
         "overlays": {
-          "summary": "{{count}} surfaces superposées (arbres, bandes culturales extensives) sont enregistrées séparément et n'apparaissent pas comme parcelles.",
+          "summary": "{{count}} surfaces superposées (arbres, bandes culturales extensives) sont enregistrées séparément et n'apparaissent pas comme champs.",
           "alreadyPresent": "{{count}} d'entre elles existent déjà et sont ignorées.",
           "present": "déjà présente"
         },
@@ -1152,20 +1152,20 @@
         "summaryOverlays": "Surfaces superposées : {{count}} seront enregistrées, {{present}} déjà présentes."
       },
       "delete": {
-        "button": "Supprimer la parcelle",
+        "button": "Supprimer le champ",
         "title": "Supprimer « {{name}} » ?",
-        "confirm": "La parcelle et toutes les données associées, comme les rotations et les entrées de journal, seront définitivement supprimées. Cette action est irréversible.",
-        "error": "La parcelle n'a pas pu être supprimée."
+        "confirm": "Le champ et toutes les données associées, comme les rotations et les entrées de journal, seront définitivement supprimés. Cette action est irréversible.",
+        "error": "Le champ n'a pas pu être supprimé."
       },
       "importButton": "Importer",
       "emptyState": {
-        "title": "Pas encore de parcelles",
+        "title": "Pas encore de champs",
         "body": "Importe-les depuis le système cantonal (p. ex. Acorda, LAWIS) ou dessine-les sur la carte."
       },
       "errors": {
-        "selfIntersecting": "Les bords de la parcelle ne doivent pas se croiser.",
-        "invalid_geometry": "La parcelle n'a pas de surface. Dessine au moins trois points distincts.",
-        "saveFailed": "La parcelle n'a pas pu être enregistrée."
+        "selfIntersecting": "Les bords du champ ne doivent pas se croiser.",
+        "invalid_geometry": "Le champ n'a pas de surface. Dessine au moins trois points distincts.",
+        "saveFailed": "Le champ n'a pas pu être enregistré."
       }
     },
     "cropRotations": {
@@ -1187,7 +1187,7 @@
       "overlapsWith": "Chevauchement avec {{crop}}",
       "waitingTimeViolation": "Délai d'attente de {{years}} an(s) avec {{crop}} non respecté",
       "resolveWaitingTimeViolations": "Certains délais d'attente ne sont pas respectés",
-      "resolveConflicts": "Veuillez résoudre les conflits avant d'enregistrer",
+      "resolveConflicts": "Résous les conflits avant d'enregistrer",
       "savePlan": "Enregistrer le plan",
       "new": "Nouveau",
       "addRecurrence": "Ajouter une récurrence",
@@ -1201,14 +1201,14 @@
       "drafts": "Brouillons",
       "createDraft": "Nouveau brouillon",
       "draftName": "Nom du brouillon",
-      "selectPlots": "Sélectionner des parcelles",
+      "selectPlots": "Sélectionner des champs",
       "selectPlotsHint": "Les rotations actuelles seront copiées dans le brouillon",
       "noDrafts": "Aucun brouillon pour l'instant",
       "applyDraft": "Appliquer le brouillon",
-      "applyDraftConfirm": "Appliquer ce brouillon en production? Les parcelles avec des entrées dans ce brouillon seront écrasées.",
+      "applyDraftConfirm": "Appliquer ce brouillon en production ? Les champs avec des entrées dans ce brouillon seront écrasés.",
       "deleteDraft": "Supprimer le brouillon",
-      "deleteDraftConfirm": "Voulez-vous vraiment supprimer ce brouillon?",
-      "editPlots": "Modifier les parcelles",
+      "deleteDraftConfirm": "Veux-tu vraiment supprimer ce brouillon ?",
+      "editPlots": "Modifier les champs",
       "editSelected": "Modifier la sélection",
       "selectAll": "Tout sélectionner",
       "deselectAll": "Tout désélectionner",
@@ -1228,11 +1228,11 @@
       "rate": "Densité de semis",
       "computedTotal": "Correspond à {{amount}} {{unit}} sur {{area}}",
       "computedRate": "Correspond à {{amount}} {{unit}} sur {{area}}",
-      "deleteConfirm": "Voulez-vous vraiment supprimer ce semis ?",
+      "deleteConfirm": "Veux-tu vraiment supprimer ce semis ?",
       "wizard": {
         "steps": {
           "crop": "Semence, culture & date",
-          "plots": "Parcelles",
+          "plots": "Champs",
           "config": "Configurer le semis",
           "divide": "Répartir",
           "summary": "Résumé"
@@ -1250,7 +1250,7 @@
         "seeds": "graines",
         "plants": "plants"
       },
-      "seedOptional": "Semence (optionnel)",
+      "seedOptional": "Semence (facultatif)",
       "cropFromSeed": "La culture est reprise de la semence.",
       "amountInvalid": "La quantité doit être supérieure à 0"
     },
@@ -1274,7 +1274,7 @@
         "flame_weeding": "Désherbage thermique",
         "custom": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer ce travail du sol?",
+      "deleteConfirm": "Veux-tu vraiment supprimer ce travail du sol ?",
       "wizard": {
         "steps": {
           "plots": "Champs",
@@ -1315,7 +1315,7 @@
         "other": "Autre",
         "none": "Aucun"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette récolte?",
+      "deleteConfirm": "Veux-tu vraiment supprimer cette récolte ?",
       "wizard": {
         "steps": {
           "crop": "Culture et date",
@@ -1352,7 +1352,7 @@
         "spread": "Épandage",
         "other": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette fertilisation?",
+      "deleteConfirm": "Veux-tu vraiment supprimer cette fertilisation ?",
       "wizard": {
         "steps": {
           "fertilizer": "Engrais et date",
@@ -1380,7 +1380,7 @@
         "injecting": "Injection",
         "other": "Autre"
       },
-      "deleteConfirm": "Voulez-vous vraiment supprimer cette application phytosanitaire?",
+      "deleteConfirm": "Veux-tu vraiment supprimer cette application phytosanitaire ?",
       "wizard": {
         "steps": {
           "product": "Produit et date",
@@ -1399,8 +1399,8 @@
       "today": "Aujourd'hui"
     },
     "exportDialog": {
-      "title": "Exporter le calendrier des champs",
-      "description": "Télécharger le calendrier des champs en tant que fichier Excel.",
+      "title": "Exporter le calendrier cultural",
+      "description": "Télécharger le calendrier cultural en tant que fichier Excel.",
       "sections": "Sections"
     }
   },
@@ -1409,7 +1409,7 @@
     "createCrop": "Créer une culture",
     "editCrop": "Modifier la culture",
     "cropDetails": "Détails de la culture",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette culture?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette culture ?",
     "name": "Nom",
     "category": "Catégorie",
     "variety": "Variété",
@@ -1429,7 +1429,7 @@
     "createCropFamily": "Créer une famille de cultures",
     "editCropFamily": "Modifier la famille de cultures",
     "familyDetails": "Détails de la famille",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette famille de cultures?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette famille de cultures ?",
     "name": "Nom",
     "waitingTimeInYears": "Temps d'attente (années)",
     "additionalNotes": "Notes supplémentaires"
@@ -1439,7 +1439,7 @@
     "createFertilizer": "Créer un engrais",
     "editFertilizer": "Modifier l'engrais",
     "fertilizerDetails": "Détails de l'engrais",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet engrais?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cet engrais ?",
     "name": "Nom",
     "type": "Type",
     "unit": "Unité",
@@ -1454,7 +1454,7 @@
     "createSeed": "Créer une semence",
     "editSeed": "Modifier la semence",
     "seedDetails": "Détails de la semence",
-    "deleteConfirm": "Voulez-vous vraiment supprimer cette semence ? Les modèles avec cette semence seront également supprimés.",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette semence ? Les modèles avec cette semence seront également supprimés.",
     "name": "Nom",
     "crop": "Culture",
     "quantityKind": "Mesuré par",
@@ -1464,15 +1464,15 @@
     },
     "quantityKindHint": "Poids pour les semences en kg/g, nombre pour les graines ou plants.",
     "quantityKindPermanent": "Ne peut pas être modifié par la suite.",
-    "quantityKindLockedHint": "Le mode de mesure ne peut pas être modifié afin que les quantités restent additionnables. Créez une nouvelle semence.",
+    "quantityKindLockedHint": "Le mode de mesure ne peut pas être modifié afin que les quantités restent additionnables. Crée une nouvelle semence.",
     "defaultValuesDescription": "Pré-remplies lors de la saisie d'un nouveau semis avec cette semence et modifiables à ce moment-là.",
-    "defaultAmountOptional": "Quantité par défaut (optionnel)",
+    "defaultAmountOptional": "Quantité par défaut (facultatif)",
     "defaultUnit": "Unité par défaut",
     "defaultRate": "Densité de semis par défaut",
     "description": "Description",
     "selectCrop": "Choisir une culture",
-    "descriptionOptional": "Description (optionnel)",
-    "defaultValuesOptional": "Valeurs par défaut (optionnel)",
+    "descriptionOptional": "Description (facultatif)",
+    "defaultValuesOptional": "Valeurs par défaut (facultatif)",
     "deleteFailed": "La semence n'a pas pu être supprimée. Elle est peut-être encore utilisée."
   },
   "wiki": {
@@ -1504,9 +1504,9 @@
     "reviewNotes": "Notes de révision",
     "noEntries": "Aucune entrée",
     "noReviewItems": "Aucune demande en attente",
-    "privateNote": "Cette entrée est privée et uniquement visible par vous.",
+    "privateNote": "Cette entrée est privée et visible uniquement par toi.",
     "submitNote": "La soumission enverra cette entrée pour révision publique.",
-    "deleteConfirm": "Voulez-vous vraiment supprimer cette entrée?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette entrée ?",
     "status": {
       "draft": "Brouillon",
       "submitted": "Soumis",
@@ -1553,7 +1553,7 @@
     "createProduct": "Créer un produit",
     "editProduct": "Modifier le produit",
     "productDetails": "Détails du produit",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce produit?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce produit ?",
     "name": "Nom",
     "unit": "Unité",
     "description": "Description"
@@ -1571,7 +1571,7 @@
     "addLabel": "Ajouter une étiquette",
     "markDone": "Marquer comme terminé",
     "markTodo": "Rouvrir",
-    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette tâche?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette tâche ?",
     "filter": {
       "overdue": "En retard",
       "allAssignees": "Tous les assignés",
@@ -1604,14 +1604,14 @@
       "itemName": "Nom de l'élément",
       "itemDueDate": "Date d'échéance",
       "generate": "Générer une liste de contrôle",
-      "generateHint": "Générez une liste de contrôle à partir de vos animaux, troupeaux ou parcelles.",
+      "generateHint": "Génère une liste de contrôle à partir de tes animaux, troupeaux ou champs.",
       "entityTypes": {
         "animal": "Animal",
         "animalPlural": "Animaux",
         "herd": "Troupeau",
         "herdPlural": "Troupeaux",
-        "plot": "Parcelle",
-        "plotPlural": "Parcelles"
+        "plot": "Champ",
+        "plotPlural": "Champs"
       }
     },
     "pin": "Épingler",
@@ -1624,21 +1624,21 @@
   "onboarding": {
     "welcome": {
       "heading": "Bienvenue chez Coltivio !",
-      "subheading": "Comment souhaitez-vous commencer ?",
+      "subheading": "Comment veux-tu commencer ?",
       "create_farm": "Créer une nouvelle ferme",
       "join_farm": "Rejoindre une ferme"
     },
     "join": {
       "heading": "Rejoindre une ferme",
-      "subheading": "Entrez le code d'invitation reçu par e-mail.",
+      "subheading": "Entre le code d'invitation reçu par e-mail.",
       "code_label": "Code d'invitation",
-      "email_info": "Le code a été envoyé à une adresse e-mail spécifique. Elle doit correspondre à l'adresse e-mail de votre compte, sinon le code ne fonctionnera pas.",
+      "email_info": "Le code a été envoyé à une adresse e-mail précise. Elle doit correspondre à l'adresse e-mail de ton compte, sinon le code ne fonctionnera pas.",
       "submit": "Rejoindre",
       "invalid_code": "Code invalide ou expiré."
     },
     "create": {
       "name": {
-        "heading": "Comment s'appelle votre ferme ?",
+        "heading": "Comment s'appelle ta ferme ?",
         "label": "Nom de la ferme"
       },
       "location": {
@@ -1647,7 +1647,7 @@
         "placeholder": "Rechercher une adresse..."
       },
       "federal_id": {
-        "heading": "Votre numéro d'exploitation agricole",
+        "heading": "Ton numéro d'exploitation",
         "label": "Numéro d'exploitation",
         "skip": "Passer"
       },
@@ -1668,20 +1668,20 @@
     },
     "picker": {
       "heading": "Choisir une ferme",
-      "subheading": "Vous appartenez à plusieurs fermes. Choisissez celle avec laquelle vous souhaitez travailler."
+      "subheading": "Tu appartiens à plusieurs fermes. Choisis celle avec laquelle tu veux travailler."
     },
     "leave": {
       "action": "Quitter la ferme",
       "title": "Quitter la ferme ?",
-      "description": "Vous perdrez l'accès à « {{farm}} ». Une nouvelle invitation sera nécessaire pour la rejoindre.",
-      "lastMember": "Vous êtes le seul membre restant et ne pouvez pas quitter la ferme. Supprimez plutôt la ferme.",
+      "description": "Tu perdras l'accès à « {{farm}} ». Une nouvelle invitation sera nécessaire pour la rejoindre.",
+      "lastMember": "Tu es le seul membre restant et ne peux pas quitter la ferme. Supprime plutôt la ferme.",
       "confirm": "Quitter"
     },
     "delete": {
       "action": "Supprimer la ferme",
       "title": "Supprimer la ferme ?",
       "description": "« {{farm}} » et toutes ses données seront définitivement supprimées. Cela concerne aussi tous les autres membres.",
-      "confirmPrompt": "Saisissez le nom de la ferme « {{farm}} » pour confirmer.",
+      "confirmPrompt": "Saisis le nom de la ferme « {{farm}} » pour confirmer.",
       "confirm": "Supprimer définitivement"
     }
   },
@@ -1711,13 +1711,13 @@
       "acceptLabel": "J'ai lu les statuts et je les accepte.",
       "confirmButton": "Continuer",
       "autoRenewalLabel": "Renouvellement automatique",
-      "autoRenewalNote": "Twint n'est pas pris en charge pour le renouvellement automatique. Choisissez le paiement unique pour payer avec Twint."
+      "autoRenewalNote": "Twint n'est pas pris en charge pour le renouvellement automatique. Choisis le paiement unique pour payer avec Twint."
     },
     "status": {
       "active": "Membre actif",
       "featureAccess": "Accès aux fonctionnalités membres",
       "validUntil": "Valide jusqu'au",
-      "autoRenewsOn": "Votre adhésion sera automatiquement renouvelée le {{date}}.",
+      "autoRenewsOn": "Ton adhésion sera automatiquement renouvelée le {{date}}.",
       "cancelledByUser": "Tu as quitté l'association AgriColtivio. Tu conserves l'accès aux fonctionnalités membres jusqu'au {{date}} et peux retirer ta démission gratuitement jusque-là.",
       "expired": "Ton adhésion a expiré le {{date}}.",
       "expiredInGrace": "Ton adhésion a expiré le {{date}}. Renouvelle-la pour conserver l'accès."
@@ -1764,14 +1764,14 @@
       "cta": "Devenir membre"
     },
     "expiredDialog": {
-      "title": "Votre abonnement a expiré",
-      "description": "Si vous souhaitez rester membre d'AgriColtivio et profiter des fonctionnalités supplémentaires, vous pouvez vous réabonner à tout moment et reprendre là où vous en étiez.",
+      "title": "Ton abonnement a expiré",
+      "description": "Si tu veux rester membre d'AgriColtivio et profiter des fonctionnalités supplémentaires, tu peux te réabonner à tout moment et reprendre là où tu en étais.",
       "cta": "Devenir membre"
     },
     "membershipSuccess": {
       "title": "Bienvenue sur AgriColtivio !",
-      "description": "Merci de rejoindre AgriColtivio. Avec votre adhésion, vous contribuez à maintenir ce projet en vie et rejoignez une communauté d'agriculteurs qui s'engagent pour une agriculture équitable et ouverte.",
-      "treffpunkt": "Nous vous invitons chaleureusement à participer au Treffpunkt – partagez vos retours, suggérez de nouvelles fonctionnalités ou posez vos questions.",
+      "description": "Merci de rejoindre AgriColtivio. Avec ton adhésion, tu contribues à maintenir ce projet en vie et rejoins une communauté d'agriculteurs qui s'engagent pour une agriculture équitable et ouverte.",
+      "treffpunkt": "Nous t'invitons chaleureusement à participer au Treffpunkt – partage tes retours, suggère de nouvelles fonctionnalités ou pose tes questions.",
       "features": "La communauté Treffpunkt est maintenant disponible – échange avec d'autres agricultrices et agriculteurs.",
       "communityCta": "Aller à la communauté",
       "close": "Fermer"
@@ -1805,8 +1805,8 @@
     "noThreads": "Aucun sujet pour l'instant",
     "closeThread": "Fermer le sujet",
     "reopenThread": "Rouvrir le sujet",
-    "deleteConfirm": "Voulez-vous vraiment supprimer ce sujet?",
-    "deleteReplyConfirm": "Voulez-vous vraiment supprimer cette réponse?",
+    "deleteConfirm": "Veux-tu vraiment supprimer ce sujet ?",
+    "deleteReplyConfirm": "Veux-tu vraiment supprimer cette réponse ?",
     "pinned": "Épinglé",
     "editThread": "Modifier le sujet",
     "editReply": "Modifier la réponse",
@@ -1833,13 +1833,13 @@
     "addComment": "Ajouter un commentaire",
     "subscribe": "S'abonner",
     "unsubscribe": "Se désabonner",
-    "subscribeHint": "Recevez un e-mail lorsque quelqu'un répond à ce sujet."
+    "subscribeHint": "Reçois un e-mail quand quelqu'un répond à ce sujet."
   },
   "journal": {
     "title": "Journal",
     "add": "Ajouter une entrée",
     "noEntries": "Aucune entrée",
-    "deleteConfirm": "Voulez-vous vraiment supprimer cette entrée de journal ?",
+    "deleteConfirm": "Veux-tu vraiment supprimer cette entrée de journal ?",
     "content": "Contenu",
     "viewAll": "Voir tout",
     "images": "Images"
@@ -1872,10 +1872,10 @@
   "meadows": {
     "newMeadow": "Nouvelle pâture",
     "editMeadow": "Modifier la pâture",
-    "selectPlots": "Sélectionner des parcelles",
+    "selectPlots": "Sélectionner des champs",
     "drawInstead": "Dessiner",
-    "selectPlotsInstruction": "Clique sur les parcelles qui font partie de la pâture",
-    "noPlotsSelected": "Aucune parcelle sélectionnée",
+    "selectPlotsInstruction": "Clique sur les champs qui font partie de la pâture",
+    "noPlotsSelected": "Aucun champ sélectionné",
     "fenceLength": "Longueur de clôture (env.)",
     "currentAnimals": "Animaux actuels",
     "currentHerds": "Troupeaux actuels",
@@ -1896,7 +1896,7 @@
       "title": "Calques",
       "satellite": "Satellite",
       "map": "Carte",
-      "plots": "Parcelles",
+      "plots": "Champs",
       "meadows": "Pâtures",
       "parcels": "Parcelles cadastrales"
     }
@@ -1909,14 +1909,14 @@
     "archivedSince": "Dans les archives depuis le {{date}}",
     "archivedInfo": "N'est plus affiché sur la carte ni lors de nouvelles saisies. Toutes les données sont conservées.",
     "plotConfirmTitle": "Archiver « {{name}} » ?",
-    "plotInfo": "Les parcelles archivées ne sont plus affichées sur la carte ni lors de nouvelles saisies. Toutes les saisies existantes sont conservées et tu peux restaurer la parcelle à tout moment.",
-    "plotDeleteHint": "Si tu n'exploites plus cette parcelle, tu peux aussi simplement l'archiver pour conserver toutes ses saisies.",
+    "plotInfo": "Les champs archivés ne sont plus affichés sur la carte ni lors de nouvelles saisies. Toutes les saisies existantes sont conservées et tu peux restaurer le champ à tout moment.",
+    "plotDeleteHint": "Si tu n'exploites plus ce champ, tu peux aussi simplement l'archiver pour conserver toutes ses saisies.",
     "meadowConfirmTitle": "Archiver la pâture « {{name}} » ?",
     "meadowInfo": "Les pâtures archivées ne sont plus affichées sur la carte ni lors de nouvelles périodes en plein air. Toutes les données sont conservées et tu peux restaurer la pâture à tout moment.",
     "meadowDeleteHint": "Si tu n'utilises plus cette pâture, tu peux aussi simplement l'archiver pour conserver toutes ses données.",
     "layer": "Archivés",
     "plotRestoreTitle": "Restaurer « {{name}} » ?",
-    "plotRestoreWarning": "La parcelle réapparaît sur la carte et lors des nouvelles saisies. Si de nouvelles parcelles ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
+    "plotRestoreWarning": "Le champ réapparaît sur la carte et lors des nouvelles saisies. Si de nouveaux champs ont été saisis sur cette surface depuis l'archivage, ils peuvent se chevaucher.",
     "meadowRestoreTitle": "Restaurer la pâture « {{name}} » ?",
     "meadowRestoreWarning": "La pâture réapparaît sur la carte et lors des nouvelles périodes en plein air. Si de nouvelles pâtures ont été saisies sur cette surface depuis l'archivage, elles peuvent se chevaucher.",
     "meadowActiveSchedulesTitle": "Archivage impossible",
@@ -2075,7 +2075,7 @@
     "conceptionFailed": "Non fécondée",
     "sireOptional": "Père (facultatif)",
     "sireExternalOptional": "Père externe (facultatif)",
-    "notesOptional": "Notes (facultatives)",
+    "notesOptional": "Notes (facultatif)",
     "saveFailed": "L'enregistrement a échoué",
     "settingsTitle": "Réglages",
     "gestationDaysInvalid": "La durée de gestation doit être comprise entre 1 et 500 jours.",
