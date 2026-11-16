@@ -82,6 +82,7 @@ export function TreatmentForm({
     control,
     watch,
     setValue,
+    getValues,
     formState: { dirtyFields },
   } = useForm<TreatmentFormData>({
     defaultValues: treatment
@@ -312,14 +313,23 @@ export function TreatmentForm({
         setValue("drugDosePerUnit", drugTreatmentForType.dosePerUnit);
       }
       // Usable from end date + waiting days, so the end date itself without waiting time (same as the app)
-      const usableDate = (waitingDays: number) => {
-        const date = new Date(watchedEndDate);
+      const usableDate = (endDate: string, waitingDays: number) => {
+        const date = new Date(endDate);
         date.setDate(date.getDate() + waitingDays);
         return toLocalDateString(date);
       };
-      setValue("milkUsableDate", usableDate(drugTreatmentForType.milkWaitingDays));
-      setValue("meatUsableDate", usableDate(drugTreatmentForType.meatWaitingDays));
-      setValue("organsUsableDate", usableDate(drugTreatmentForType.organsWaitingDays));
+      const waitingDaysByField = [
+        ["milkUsableDate", drugTreatmentForType.milkWaitingDays],
+        ["meatUsableDate", drugTreatmentForType.meatWaitingDays],
+        ["organsUsableDate", drugTreatmentForType.organsWaitingDays],
+      ] as const;
+      for (const [field, waitingDays] of waitingDaysByField) {
+        // On an end date change only the dates still at their proposal move along. A date changed by hand
+        // (e.g. a longer withdrawal on vet instruction) or cleared stays.
+        if (drugChanged || animalTypeChanged || getValues(field) === usableDate(previous.endDate, waitingDays)) {
+          setValue(field, usableDate(watchedEndDate, waitingDays));
+        }
+      }
     } else if (animalType && (drugChanged || animalTypeChanged)) {
       // Nothing to propose, don't keep the values of a previously selected drug or animal type
       setValue("drugDoseValue", null);
@@ -329,7 +339,7 @@ export function TreatmentForm({
       setValue("meatUsableDate", null);
       setValue("organsUsableDate", null);
     }
-  }, [watchedDrugId, selectedDrug, drugTreatmentForType, animalType, watchedEndDate, dirtyFields.drugId, setValue]);
+  }, [watchedDrugId, selectedDrug, drugTreatmentForType, animalType, watchedEndDate, dirtyFields.drugId, getValues, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 
