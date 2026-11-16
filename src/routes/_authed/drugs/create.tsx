@@ -3,22 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
-import { DrugForm, type DrugFormData } from "@/components/DrugForm";
+import { DrugForm, drugFormDataToApiBody, type DrugFormData } from "@/components/DrugForm";
 
 export const Route = createFileRoute("/_authed/drugs/create")({
   component: CreateDrug,
 });
-
-function formDataToApiBody(data: DrugFormData) {
-  return {
-    name: data.name,
-    notes: data.notes || undefined,
-    isAntibiotic: data.isAntibiotic,
-    criticalAntibiotic: data.criticalAntibiotic,
-    receivedFrom: data.receivedFrom,
-    drugTreatment: data.drugTreatment,
-  };
-}
 
 function CreateDrug() {
   const { t } = useTranslation();
@@ -28,7 +17,7 @@ function CreateDrug() {
   const createMutation = useMutation({
     mutationFn: async (data: DrugFormData) => {
       const response = await apiClient.POST("/v1/drugs", {
-        body: formDataToApiBody(data),
+        body: drugFormDataToApiBody(data),
       });
       if (response.error) {
         throw new Error("Failed to create drug");

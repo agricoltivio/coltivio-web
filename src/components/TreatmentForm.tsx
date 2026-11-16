@@ -12,8 +12,10 @@ import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { SelectAnimalsField } from "@/components/SelectAnimalsDialog";
+import { CreateDrugDialog } from "@/components/CreateDrugDialog";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { TriangleAlert } from "lucide-react";
+import { Plus, TriangleAlert } from "lucide-react";
 import {
   Combobox,
   ComboboxInput,
@@ -71,6 +73,8 @@ export function TreatmentForm({
   defaultValues: initialDefaults,
 }: TreatmentFormProps) {
   const { t, i18n } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
+  const [createDrugOpen, setCreateDrugOpen] = useState(false);
 
   const {
     register,
@@ -344,6 +348,7 @@ export function TreatmentForm({
     ).size > 1;
 
   return (
+    <>
     <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-2xl">
       {/* Animals multi-select */}
       <FieldGroup>
@@ -401,8 +406,8 @@ export function TreatmentForm({
       </FieldGroup>
 
       {/* Drug */}
-      <FieldGroup className="mt-7">
-        <Field>
+      <FieldGroup className="mt-7 flex-row items-end gap-2">
+        <Field className="flex-1">
           <FieldLabel htmlFor="drugId">{t("treatments.drug")}</FieldLabel>
           <Controller
             name="drugId"
@@ -435,6 +440,18 @@ export function TreatmentForm({
             )}
           />
         </Field>
+        {canWriteAnimals && (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label={t("drugs.createDrug")}
+            title={t("drugs.createDrug")}
+            onClick={() => setCreateDrugOpen(true)}
+          >
+            <Plus />
+          </Button>
+        )}
       </FieldGroup>
       {drugNotDefinedForType && (
         <Alert className="mt-4">
@@ -650,5 +667,13 @@ export function TreatmentForm({
         </Button>
       </div>
     </form>
+    {/* Outside the form: the drug form's submit would otherwise also submit the treatment */}
+    <CreateDrugDialog
+      open={createDrugOpen}
+      onOpenChange={setCreateDrugOpen}
+      // Selected like a pick in the list, its values are proposed once it's in the drug list
+      onCreated={(drugId) => setValue("drugId", drugId, { shouldDirty: true })}
+    />
+    </>
   );
 }
