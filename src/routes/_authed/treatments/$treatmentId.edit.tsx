@@ -46,6 +46,7 @@ function formDataToApiBody(data: TreatmentFormData) {
     drugDoseUnit: data.drugDoseUnit,
     drugDosePerUnit: data.drugDosePerUnit,
     drugReceivedFrom: data.drugReceivedFrom || null,
+    animalWeights: data.animalWeights,
     effectiveDoseOverrides: data.effectiveDoseOverrides,
   };
 }
@@ -100,6 +101,7 @@ function EditTreatment() {
         onSubmit={(data) => updateMutation.mutate(data)}
         isSubmitting={updateMutation.isPending}
       />
+      {updateMutation.isError && <p className="mt-4 text-sm text-destructive">{t("common.saveFailed")}</p>}
     </PageContent>
   );
 }

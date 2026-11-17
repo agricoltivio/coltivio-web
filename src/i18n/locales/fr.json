@@ -546,6 +546,8 @@
     "drug": "Médicament",
     "notes": "Notes",
     "milkUsableDate": "Lait utilisable dès le",
+    "mixedAnimalTypes": "Un traitement ne peut contenir que des animaux d'une seule espèce.",
+    "drugNotDefinedForType": "Ce médicament n'a pas de dosage ni de délais d'attente pour les {{type}}. Saisis-les manuellement.",
     "meatUsableDate": "Viande utilisable dès le",
     "organsUsableDate": "Organes utilisables dès le",
     "waitingDates": "Délais d'attente",

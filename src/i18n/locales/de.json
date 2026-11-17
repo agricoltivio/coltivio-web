@@ -546,6 +546,8 @@
     "drug": "Medikament",
     "notes": "Notizen",
     "milkUsableDate": "Milch verwendbar ab",
+    "mixedAnimalTypes": "Eine Behandlung kann nur Tiere einer Tierart enthalten.",
+    "drugNotDefinedForType": "Für {{type}} sind bei diesem Medikament keine Dosierung und Absetzfristen hinterlegt. Bitte manuell erfassen.",
     "meatUsableDate": "Fleisch verwendbar ab",
     "organsUsableDate": "Organe verwendbar ab",
     "waitingDates": "Absetzfristen",

@@ -19,6 +19,9 @@ export const Route = createRootRouteWithContext<ColtivioRouterContext>()({
       <TanStackDevtools
         config={{
           position: "bottom-right",
+          // No keyboard shortcuts: they fire while typing capitals in forms (Shift) and swallow keystrokes.
+          // The devtools still open via their button.
+          openHotkey: [],
         }}
         plugins={[
           {
