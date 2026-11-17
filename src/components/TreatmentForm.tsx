@@ -281,8 +281,18 @@ export function TreatmentForm({
     if (!previous) return;
     const drugChanged = previous.drugId !== drugId;
     // Animals finishing loading is no change, picking animals after the drug is
+    // An older treatment may mix types: removing animals there switches between types it already had, which
+    // keeps its saved values instead of replacing them with the drug's values for the remaining type
+    const savedAnimalTypes = new Set<string>(treatment?.animals.map((animal) => animal.type) ?? []);
+    const switchedWithinSavedTypes =
+      previous.animalType !== undefined &&
+      animalType !== undefined &&
+      savedAnimalTypes.has(previous.animalType) &&
+      savedAnimalTypes.has(animalType);
     const animalTypeChanged =
-      previous.animalType !== animalType && (previous.animalType !== undefined || !!dirtyFields.drugId);
+      previous.animalType !== animalType &&
+      (previous.animalType !== undefined || !!dirtyFields.drugId) &&
+      !switchedWithinSavedTypes;
     const endDateChanged = previous.endDate !== watchedEndDate;
     if (!drugChanged && !animalTypeChanged && !endDateChanged) return;
 
@@ -339,7 +349,7 @@ export function TreatmentForm({
       setValue("meatUsableDate", null);
       setValue("organsUsableDate", null);
     }
-  }, [watchedDrugId, selectedDrug, drugTreatmentForType, animalType, watchedEndDate, dirtyFields.drugId, getValues, setValue]);
+  }, [watchedDrugId, selectedDrug, drugTreatmentForType, animalType, watchedEndDate, dirtyFields.drugId, treatment, getValues, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 
