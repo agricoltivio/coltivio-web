@@ -2,7 +2,7 @@
   "name": "coltivio-web",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@11.28.7",
   "license": "AGPL-3.0-only",
   "author": "Coltivio",
   "scripts": {
@@ -103,5 +103,8 @@
     "vitest": "^3.0.5",
     "web-vitals": "^5.1.0",
     "wrangler": "^4.67.0"
+  },
+  "engines": {
+    "node": ">=22.22"
   }
 }
