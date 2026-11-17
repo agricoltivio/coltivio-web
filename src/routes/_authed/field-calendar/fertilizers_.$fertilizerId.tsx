@@ -140,6 +140,7 @@ function FertilizerDetailPage() {
               label={t("fertilizers.description")}
               value={fertilizer.description || "-"}
             />
+            <DetailItem label={t("common.registrationNumber")} value={fertilizer.registrationNumber || "-"} />
           </div>
         </CardContent>
       </Card>
