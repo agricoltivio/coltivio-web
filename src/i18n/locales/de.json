@@ -46,8 +46,10 @@
     "date": "Datum",
     "done": "Fertig",
     "wizardStepOf": "Schritt {{current}} von {{total}}",
-    "saveFailed": "Das hat nicht geklappt. Bitte versuchen Sie es erneut.",
-    "required": "Pflichtfeld"
+    "saveFailed": "Das hat nicht geklappt. Bitte versuche es erneut.",
+    "required": "Pflichtfeld",
+    "registrationNumber": "Zulassungsnummer",
+    "registrationNumberOptional": "Zulassungsnummer (optional)"
   },
   "nav": {
     "groups": {
@@ -98,7 +100,7 @@
     "settings": "Einstellungen",
     "crops": "Kulturen",
     "cropFamilies": "Kulturfamilien",
-    "fertilizers": "Düngemittel",
+    "fertilizers": "Dünger",
     "cropProtectionProducts": "Pflanzenschutzmittel",
     "fieldCalendarExport": "Export",
     "wiki": "Wiki",
@@ -166,10 +168,10 @@
     "viewProfile": "Profil öffnen",
     "familyTree": "Stammbaum",
     "familyTreeTitle": "Stammbaum",
-    "grandparents": "Großeltern",
+    "grandparents": "Grosseltern",
     "parents": "Eltern",
     "deceased": "Verstorben",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Tier löschen möchten?",
+    "deleteConfirm": "Möchtest du dieses Tier wirklich löschen?",
     "types": {
       "goat": "Ziege",
       "sheep": "Schaf",
@@ -217,7 +219,7 @@
     "batchApply": "Auf {{count}} Tier(e) anwenden",
     "import": "Importieren",
     "importTitle": "Tiere importieren",
-    "importDescription": "Laden Sie eine Excel-Datei hoch, um Tiere zu importieren. Die Datei sollte Spalten für Ohrmarkennummer, Name, Geburtsdatum, Geschlecht, Mutter-Ohrmarke und Vater-Ohrmarke enthalten.",
+    "importDescription": "Lade eine Excel-Datei hoch, um Tiere zu importieren. Die Datei sollte Spalten für Ohrmarkennummer, Name, Geburtsdatum, Geschlecht, Mutter-Ohrmarke und Vater-Ohrmarke enthalten.",
     "importFile": "Excel-Datei",
     "skipHeaderRow": "Kopfzeile überspringen",
     "importTotal": "Total Zeilen",
@@ -230,7 +232,7 @@
     "importPreviewTitle": "Import-Vorschau",
     "importPreviewDesc": "Überprüfe die Tiere vor dem Import. Du kannst Zeilen bearbeiten oder aus dem Import entfernen.",
     "importPreviewHasErrors": "Einige Zeilen haben Fehler. Bearbeite sie oder entferne sie aus dem Import.",
-    "importPreviewHasConflicts": "Einige Zeilen haben Ohrmarken-Konflikte. Lösen Sie diese durch Zusammenführen oder Entfernen der betroffenen Zeilen.",
+    "importPreviewHasConflicts": "Einige Zeilen haben Ohrmarken-Konflikte. Löse diese durch Zusammenführen oder Entfernen der betroffenen Zeilen.",
     "importCommit": "{{count}} Tiere importieren",
     "importBack": "Zurück",
     "importCreated": "Erstellt",
@@ -248,8 +250,8 @@
     "importDeleteRow": "Zeile löschen",
     "importResultTitle": "Import abgeschlossen",
     "importNoRows": "Alle Zeilen entfernt.",
-    "importPreviewError": "Vorschau konnte nicht geladen werden. Überprüfen Sie die Datei und versuchen Sie es erneut.",
-    "importCommitError": "Import fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "importPreviewError": "Vorschau konnte nicht geladen werden. Überprüfe die Datei und versuche es erneut.",
+    "importCommitError": "Import fehlgeschlagen. Bitte versuche es erneut.",
     "importStatus": "Status",
     "colorOptional": "Farbe (optional)",
     "notesOptional": "Notizen (optional)",
@@ -308,10 +310,10 @@
     "noAccount": "Noch kein Konto?",
     "haveAccount": "Bereits ein Konto?",
     "resetPassword": "Passwort zurücksetzen",
-    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "resetPasswordDescription": "Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
     "sendResetLink": "Link senden",
     "sending": "Senden...",
-    "resetLinkSent": "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihre E-Mails.",
+    "resetLinkSent": "Link zum Zurücksetzen gesendet! Überprüfe deine E-Mails.",
     "backToLogin": "Zurück zur Anmeldung",
     "newPassword": "Neues Passwort",
     "setNewPassword": "Neues Passwort setzen",
@@ -376,7 +378,7 @@
     "preferredCommunication": "Bevorzugte Kommunikation",
     "labels": "Labels",
     "noLabels": "Keine Labels",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Kontakt löschen möchten?",
+    "deleteConfirm": "Möchtest du diesen Kontakt wirklich löschen?",
     "payments": "Zahlungen",
     "sponsorships": "Patenschaften",
     "orders": "Bestellungen",
@@ -397,7 +399,7 @@
     "name": "Name",
     "description": "Beschreibung",
     "yearlyCost": "Jahreskosten",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Patenschaftstyp löschen möchten?"
+    "deleteConfirm": "Möchtest du diesen Patenschaftstyp wirklich löschen?"
   },
   "sponsorships": {
     "title": "Patenschaften",
@@ -417,7 +419,7 @@
     "active": "Aktiv",
     "ended": "Beendet",
     "showEnded": "Beendete anzeigen",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Patenschaft löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Patenschaft wirklich löschen?",
     "noSponsorships": "Keine Patenschaften"
   },
   "payments": {
@@ -432,7 +434,7 @@
     "currency": "Währung",
     "method": "Zahlungsart",
     "notes": "Notizen",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Zahlung löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Zahlung wirklich löschen?",
     "noPayments": "Keine Zahlungen",
     "outstanding": "Ausstehend",
     "methods": {
@@ -455,7 +457,7 @@
     "description": "Beschreibung",
     "active": "Aktiv",
     "inactive": "Inaktiv",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Produkt löschen möchten?",
+    "deleteConfirm": "Möchtest du dieses Produkt wirklich löschen?",
     "categories": {
       "meat": "Fleisch",
       "vegetables": "Gemüse",
@@ -488,7 +490,7 @@
     "total": "Total",
     "addItem": "Position hinzufügen",
     "noItems": "Keine Positionen",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Bestellung löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Bestellung wirklich löschen?",
     "products": "Produkte",
     "paid": "Bezahlt",
     "createAsConfirmed": "Als bestätigt erfassen",
@@ -548,11 +550,11 @@
     "drugNotDefinedForType": "Für {{type}} sind bei diesem Medikament keine Dosierung und Absetzfristen hinterlegt. Bitte manuell erfassen.",
     "meatUsableDate": "Fleisch verwendbar ab",
     "organsUsableDate": "Organe verwendbar ab",
-    "waitingDates": "Wartefristen",
+    "waitingDates": "Absetzfristen",
     "isAntibiotic": "Antibiotikum",
     "criticalAntibiotic": "Kritisches Antibiotikum",
     "antibiogramAvailable": "Antibiogramm vorhanden",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Behandlung löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Behandlung wirklich löschen?",
     "noTreatments": "Keine Behandlungen",
     "exportDialog": {
       "title": "Behandlungen exportieren",
@@ -579,13 +581,13 @@
     "doseValue": "Dosis",
     "doseUnit": "Einheit",
     "dosePerUnit": "Pro",
-    "milkWaitingDays": "Wartetage Milch",
-    "meatWaitingDays": "Wartetage Fleisch",
-    "organsWaitingDays": "Wartetage Organe",
+    "milkWaitingDays": "Absetzfrist Milch (Tage)",
+    "meatWaitingDays": "Absetzfrist Fleisch (Tage)",
+    "organsWaitingDays": "Absetzfrist Organe (Tage)",
     "isAntibiotic": "Antibiotikum",
     "criticalAntibiotic": "Kritisches Antibiotikum",
     "receivedFrom": "Bezugsquelle",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Medikament löschen möchten?",
+    "deleteConfirm": "Möchtest du dieses Medikament wirklich löschen?",
     "doseUnits": {
       "tablet": "Tablette",
       "capsule": "Kapsel",
@@ -613,7 +615,7 @@
     "animals": "Tiere",
     "noHerds": "Noch keine Herden definiert",
     "noAnimals": "Keine Tiere in dieser Herde",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Herde löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Herde wirklich löschen?",
     "outdoorSchedules": "Auslaufpläne",
     "addSchedule": "Zeitplan hinzufügen",
     "editSchedule": "Zeitplan bearbeiten",
@@ -632,7 +634,7 @@
       "monthly": "Monatlich",
       "yearly": "Jährlich"
     },
-    "deleteScheduleConfirm": "Sind Sie sicher, dass Sie diesen Zeitplan löschen möchten?",
+    "deleteScheduleConfirm": "Möchtest du diesen Zeitplan wirklich löschen?",
     "meadow": "Weidefläche",
     "noMeadow": "Keine Weidefläche",
     "repeatNone": "Keine",
@@ -656,13 +658,13 @@
     "endDate": "Bis",
     "animalCount": "Anzahl Tiere",
     "noEntries": "Keine Einträge",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
+    "deleteConfirm": "Möchtest du diesen Eintrag wirklich löschen?",
     "manageGroups": "Gruppen verwalten",
     "addGroup": "Gruppe hinzufügen",
     "editGroup": "Gruppe bearbeiten",
     "groupName": "Name",
     "groupDescription": "Beschreibung",
-    "deleteGroupConfirm": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?",
+    "deleteGroupConfirm": "Möchtest du diese Gruppe wirklich löschen?",
     "noGroups": "Noch keine Tiergruppen definiert",
     "month": "Monat",
     "year": "Jahr",
@@ -747,7 +749,7 @@
       },
       "treatments": {
         "title": "Behandlungsjournal",
-        "desc": "Vollständiges Medikamentenprotokoll pro Tier: Präparat, Dosis, Grund und Tierarzt. Milch- und Fleischwartezeiten werden automatisch berechnet und mit Absetzfristen angezeigt."
+        "desc": "Vollständiges Medikamentenprotokoll pro Tier: Präparat, Dosis, Grund und Tierarzt. Absetzfristen für Milch und Fleisch werden automatisch berechnet und angezeigt."
       },
       "herds": {
         "title": "Herden & Pläne",
@@ -870,8 +872,8 @@
       },
       "create": {
         "toolbar": "Auf der Karte klicken, um Punkte zu setzen",
-        "toolbarReady": "{{count}} Punkt(e) — Polygon schließen wenn bereit",
-        "closePolygon": "Schließen",
+        "toolbarReady": "{{count}} Punkt(e) — Polygon schliessen wenn bereit",
+        "closePolygon": "Schliessen",
         "confirm": "Speichern",
         "dialog": {
           "title": "Neuer Schlag",
@@ -882,10 +884,10 @@
         "toolbar": "Auf der Karte klicken, um eine Trennlinie zu zeichnen",
         "toolbarHasLine": "{{count}} Punkt(e) gesetzt",
         "toolbarArea": "Auf der Karte klicken, um eine Schnittfläche zu zeichnen",
-        "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schließen zum Anwenden",
+        "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schliessen zum Anwenden",
         "toolLine": "Linie",
         "toolArea": "Fläche",
-        "closePolygon": "Schließen",
+        "closePolygon": "Schliessen",
         "applyCut": "Schneiden",
         "confirmSplit": "Speichern",
         "piecesCount": "{{count}} Teile",
@@ -1230,7 +1232,7 @@
       "rate": "Saatstärke",
       "computedTotal": "Entspricht {{amount}} {{unit}} auf {{area}}",
       "computedRate": "Entspricht {{amount}} {{unit}} auf {{area}}",
-      "deleteConfirm": "Möchten Sie diese Saat wirklich löschen?",
+      "deleteConfirm": "Möchtest du diese Saat wirklich löschen?",
       "wizard": {
         "steps": {
           "crop": "Saatgut, Kultur & Datum",
@@ -1276,7 +1278,7 @@
         "flame_weeding": "Abflammen",
         "custom": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Bodenbearbeitung wirklich löschen?",
+      "deleteConfirm": "Möchtest du diese Bodenbearbeitung wirklich löschen?",
       "wizard": {
         "steps": {
           "plots": "Schläge",
@@ -1317,7 +1319,7 @@
         "other": "Sonstiges",
         "none": "Keine"
       },
-      "deleteConfirm": "Möchten Sie diese Ernte wirklich löschen?",
+      "deleteConfirm": "Möchtest du diese Ernte wirklich löschen?",
       "wizard": {
         "steps": {
           "crop": "Kultur & Datum",
@@ -1334,8 +1336,8 @@
       "title": "Düngung",
       "create": "Düngung erfassen",
       "date": "Datum",
-      "fertilizer": "Düngemittel",
-      "selectFertilizer": "Düngemittel auswählen",
+      "fertilizer": "Dünger",
+      "selectFertilizer": "Dünger auswählen",
       "selectMethod": "Methode auswählen",
       "numberOfUnitsWith": "Anzahl {{unit}}",
       "unit": "Ausbringungseinheit",
@@ -1354,10 +1356,10 @@
         "spread": "Streuen",
         "other": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Düngung wirklich löschen?",
+      "deleteConfirm": "Möchtest du diese Düngung wirklich löschen?",
       "wizard": {
         "steps": {
-          "fertilizer": "Düngemittel & Datum",
+          "fertilizer": "Dünger & Datum",
           "config": "Konfiguration",
           "quantity": "Menge",
           "plots": "Schläge",
@@ -1382,7 +1384,7 @@
         "injecting": "Injizieren",
         "other": "Sonstiges"
       },
-      "deleteConfirm": "Möchten Sie diese Pflanzenschutzapplikation wirklich löschen?",
+      "deleteConfirm": "Möchtest du diese Pflanzenschutzapplikation wirklich löschen?",
       "wizard": {
         "steps": {
           "product": "Produkt & Datum",
@@ -1411,7 +1413,7 @@
     "createCrop": "Kultur erstellen",
     "editCrop": "Kultur bearbeiten",
     "cropDetails": "Kulturdetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Kultur löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Kultur wirklich löschen?",
     "name": "Name",
     "category": "Kategorie",
     "variety": "Sorte",
@@ -1431,17 +1433,17 @@
     "createCropFamily": "Kulturfamilie erstellen",
     "editCropFamily": "Kulturfamilie bearbeiten",
     "familyDetails": "Familiendetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie diese Kulturfamilie löschen möchten?",
+    "deleteConfirm": "Möchtest du diese Kulturfamilie wirklich löschen?",
     "name": "Name",
     "waitingTimeInYears": "Wartezeit (Jahre)",
     "additionalNotes": "Zusätzliche Notizen"
   },
   "fertilizers": {
-    "title": "Düngemittel",
-    "createFertilizer": "Düngemittel erstellen",
-    "editFertilizer": "Düngemittel bearbeiten",
-    "fertilizerDetails": "Düngemitteldetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Düngemittel löschen möchten?",
+    "title": "Dünger",
+    "createFertilizer": "Dünger erstellen",
+    "editFertilizer": "Dünger bearbeiten",
+    "fertilizerDetails": "Düngerdetails",
+    "deleteConfirm": "Möchtest du diesen Dünger wirklich löschen?",
     "name": "Name",
     "type": "Typ",
     "unit": "Einheit",
@@ -1456,7 +1458,7 @@
     "createSeed": "Saatgut erstellen",
     "editSeed": "Saatgut bearbeiten",
     "seedDetails": "Saatgutdetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Saatgut löschen möchten? Die Vorlagen mit diesem Saatgut werden ebenfalls gelöscht.",
+    "deleteConfirm": "Möchtest du dieses Saatgut wirklich löschen? Die Vorlagen mit diesem Saatgut werden ebenfalls gelöscht.",
     "name": "Name",
     "crop": "Kultur",
     "quantityKind": "Mengenangabe",
@@ -1466,7 +1468,7 @@
     },
     "quantityKindHint": "Gewicht für Saatgut in kg/g, Stückzahl für Körner oder Setzlinge.",
     "quantityKindPermanent": "Kann später nicht geändert werden.",
-    "quantityKindLockedHint": "Die Mengenangabe kann nicht geändert werden, damit Mengen summierbar bleiben. Erstellen Sie dafür ein neues Saatgut.",
+    "quantityKindLockedHint": "Die Mengenangabe kann nicht geändert werden, damit Mengen summierbar bleiben. Erstelle dafür ein neues Saatgut.",
     "defaultValuesDescription": "Werden beim Erfassen einer neuen Saat mit diesem Saatgut vorausgefüllt und können dort angepasst werden.",
     "defaultAmountOptional": "Standardmenge (optional)",
     "defaultUnit": "Standardeinheit",
@@ -1555,7 +1557,7 @@
     "createProduct": "Pflanzenschutzmittel erstellen",
     "editProduct": "Pflanzenschutzmittel bearbeiten",
     "productDetails": "Produktdetails",
-    "deleteConfirm": "Sind Sie sicher, dass Sie dieses Pflanzenschutzmittel löschen möchten?",
+    "deleteConfirm": "Möchtest du dieses Pflanzenschutzmittel wirklich löschen?",
     "name": "Name",
     "unit": "Einheit",
     "description": "Beschreibung"
@@ -1573,7 +1575,7 @@
     "addLabel": "Label hinzufügen",
     "markDone": "Als erledigt markieren",
     "markTodo": "Als offen markieren",
-    "deleteConfirm": "Möchten Sie diese Aufgabe wirklich löschen?",
+    "deleteConfirm": "Möchtest du diese Aufgabe wirklich löschen?",
     "filter": {
       "overdue": "Überfällig",
       "allAssignees": "Alle Personen",
@@ -1640,7 +1642,7 @@
     },
     "create": {
       "name": {
-        "heading": "Wie heißt dein Hof?",
+        "heading": "Wie heisst dein Hof?",
         "label": "Hofname"
       },
       "location": {

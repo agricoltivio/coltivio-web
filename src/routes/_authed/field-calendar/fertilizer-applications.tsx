@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { formatFertilizerUnit } from "@/api/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -229,7 +230,7 @@ function FertilizerApplications() {
         accessorFn: (row) => row.numberOfUnits * row.amountPerUnit,
         header: t("fieldCalendar.harvests.amount"),
         cell: ({ row }) =>
-          `${(row.original.numberOfUnits * row.original.amountPerUnit).toFixed(1)} ${row.original.fertilizer.unit}`,
+          `${(row.original.numberOfUnits * row.original.amountPerUnit).toFixed(1)} ${formatFertilizerUnit(row.original.fertilizer.unit)}`,
       },
       {
         accessorKey: "size",

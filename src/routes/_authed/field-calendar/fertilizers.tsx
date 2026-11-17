@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { formatFertilizerUnit } from "@/api/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -46,7 +47,7 @@ function FertilizersPage() {
         accessorKey: "unit",
         header: t("fertilizers.unit"),
         cell: ({ row }) => (
-          <span className="text-muted-foreground">{row.getValue("unit")}</span>
+          <span className="text-muted-foreground">{formatFertilizerUnit(row.getValue<string>("unit"))}</span>
         ),
         enableSorting: false,
       },

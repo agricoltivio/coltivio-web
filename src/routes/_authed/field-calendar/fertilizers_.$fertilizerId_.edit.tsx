@@ -9,6 +9,7 @@ import {
   FERTILIZER_UNITS,
   type FertilizerType,
   type FertilizerUnit,
+  formatFertilizerUnit,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ type FertilizerFormData = {
   type: FertilizerType;
   unit: FertilizerUnit;
   description: string;
+  registrationNumber: string;
 };
 
 function EditFertilizerPage() {
@@ -56,6 +58,7 @@ function EditFertilizerPage() {
         type: fertilizer.type,
         unit: fertilizer.unit,
         description: fertilizer.description ?? "",
+      registrationNumber: fertilizer.registrationNumber ?? "",
       },
     });
 
@@ -70,6 +73,8 @@ function EditFertilizerPage() {
             type: data.type,
             unit: data.unit,
             description: data.description || undefined,
+          // An emptied field clears the number
+          registrationNumber: data.registrationNumber.trim() || null,
           },
         },
       );
@@ -138,7 +143,7 @@ function EditFertilizerPage() {
             <SelectContent>
               {FERTILIZER_UNITS.map((unit) => (
                 <SelectItem key={unit} value={unit}>
-                  {unit}
+                  {formatFertilizerUnit(unit)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -148,6 +153,11 @@ function EditFertilizerPage() {
         <div className="space-y-1">
           <Label htmlFor="description">{t("fertilizers.description")}</Label>
           <Textarea id="description" {...register("description")} />
+        </div>
+
+        <div className="space-y-1">
+          <Label htmlFor="registrationNumber">{t("common.registrationNumberOptional")}</Label>
+          <Input id="registrationNumber" {...register("registrationNumber")} />
         </div>
 
         <div className="flex gap-2 pt-2">

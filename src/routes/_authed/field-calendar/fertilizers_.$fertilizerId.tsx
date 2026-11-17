@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { formatFertilizerUnit } from "@/api/types";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -135,11 +136,12 @@ function FertilizerDetailPage() {
               label={t("fertilizers.type")}
               value={t(`fertilizers.types.${fertilizer.type}`)}
             />
-            <DetailItem label={t("fertilizers.unit")} value={fertilizer.unit} />
+            <DetailItem label={t("fertilizers.unit")} value={formatFertilizerUnit(fertilizer.unit)} />
             <DetailItem
               label={t("fertilizers.description")}
               value={fertilizer.description || "-"}
             />
+            <DetailItem label={t("common.registrationNumber")} value={fertilizer.registrationNumber || "-"} />
           </div>
         </CardContent>
       </Card>
