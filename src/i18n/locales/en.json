@@ -47,7 +47,9 @@
     "done": "Done",
     "wizardStepOf": "Step {{current}} of {{total}}",
     "saveFailed": "That didn't work. Please try again.",
-    "required": "Required"
+    "required": "Required",
+    "registrationNumber": "Registration number",
+    "registrationNumberOptional": "Registration number (optional)"
   },
   "nav": {
     "groups": {

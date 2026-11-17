@@ -26,6 +26,8 @@ pnpm generate:api-types  # Regenerate src/api/schema.d.ts from openapi.json
 
 **UI:** shadcn/ui components (Radix primitives + Tailwind v4). Shared form components in `src/components/`. Generic `DataTable` uses TanStack Table.
 
+**Form fields:** mark optional fields with "(optional)" in the label, in all four locales (`… (optional)`, `… (facultatif/facultative)`, `… (facoltativo/facoltativa)`, `… (optional)`), and leave required fields unmarked. Don't add new `*` markers for required fields; existing ones are being replaced (issue #47).
+
 ## Environment variables
 
 ```

@@ -5,6 +5,7 @@ import { apiClient } from "@/api/client";
 import { farmUsersQueryOptions } from "@/api/user.queries";
 import { PageContent } from "@/components/PageContent";
 import { TaskForm, type TaskFormData } from "@/components/TaskForm";
+import { monthlyAnchorDay } from "@/lib/taskRecurrence";
 
 export const Route = createFileRoute("/_authed/tasks/create")({
   loader: ({ context: { queryClient } }) => {
@@ -27,6 +28,7 @@ function buildApiBody(data: TaskFormData) {
           until: data.recurrence.until
             ? data.recurrence.until
             : undefined,
+          byMonthDay: monthlyAnchorDay(data.recurrence.frequency, data.dueDate),
         }
       : undefined,
     links: [],

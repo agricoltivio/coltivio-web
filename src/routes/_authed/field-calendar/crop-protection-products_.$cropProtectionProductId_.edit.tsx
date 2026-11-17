@@ -36,6 +36,7 @@ type ProductFormData = {
   name: string;
   unit: CropProtectionProductUnit;
   description: string;
+  registrationNumber: string;
 };
 
 function EditCropProtectionProductPage() {
@@ -53,6 +54,7 @@ function EditCropProtectionProductPage() {
       name: product.name,
       unit: product.unit,
       description: product.description ?? "",
+      registrationNumber: product.registrationNumber ?? "",
     },
   });
 
@@ -66,6 +68,8 @@ function EditCropProtectionProductPage() {
             name: data.name,
             unit: data.unit,
             description: data.description || undefined,
+          // An emptied field clears the number
+          registrationNumber: data.registrationNumber.trim() || null,
           },
         },
       );
@@ -129,6 +133,11 @@ function EditCropProtectionProductPage() {
             {t("cropProtectionProducts.description")}
           </Label>
           <Textarea id="description" {...register("description")} />
+        </div>
+
+        <div className="space-y-1">
+          <Label htmlFor="registrationNumber">{t("common.registrationNumberOptional")}</Label>
+          <Input id="registrationNumber" placeholder="W-1234" {...register("registrationNumber")} />
         </div>
 
         <div className="flex gap-2 pt-2">

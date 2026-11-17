@@ -47,7 +47,9 @@
     "done": "Fatto",
     "wizardStepOf": "Passo {{current}} di {{total}}",
     "saveFailed": "Non ha funzionato. Riprova.",
-    "required": "Obbligatorio"
+    "required": "Obbligatorio",
+    "registrationNumber": "Numero di omologazione",
+    "registrationNumberOptional": "Numero di omologazione (facoltativo)"
   },
   "nav": {
     "groups": {

@@ -47,7 +47,9 @@
     "done": "Fertig",
     "wizardStepOf": "Schritt {{current}} von {{total}}",
     "saveFailed": "Das hat nicht geklappt. Bitte versuche es erneut.",
-    "required": "Pflichtfeld"
+    "required": "Pflichtfeld",
+    "registrationNumber": "Zulassungsnummer",
+    "registrationNumberOptional": "Zulassungsnummer (optional)"
   },
   "nav": {
     "groups": {
