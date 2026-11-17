@@ -166,7 +166,7 @@
     "viewProfile": "Profil öffnen",
     "familyTree": "Stammbaum",
     "familyTreeTitle": "Stammbaum",
-    "grandparents": "Großeltern",
+    "grandparents": "Grosseltern",
     "parents": "Eltern",
     "deceased": "Verstorben",
     "deleteConfirm": "Möchtest du dieses Tier wirklich löschen?",
@@ -868,8 +868,8 @@
       },
       "create": {
         "toolbar": "Auf der Karte klicken, um Punkte zu setzen",
-        "toolbarReady": "{{count}} Punkt(e) — Polygon schließen wenn bereit",
-        "closePolygon": "Schließen",
+        "toolbarReady": "{{count}} Punkt(e) — Polygon schliessen wenn bereit",
+        "closePolygon": "Schliessen",
         "confirm": "Speichern",
         "dialog": {
           "title": "Neuer Schlag",
@@ -880,10 +880,10 @@
         "toolbar": "Auf der Karte klicken, um eine Trennlinie zu zeichnen",
         "toolbarHasLine": "{{count}} Punkt(e) gesetzt",
         "toolbarArea": "Auf der Karte klicken, um eine Schnittfläche zu zeichnen",
-        "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schließen zum Anwenden",
+        "toolbarAreaReady": "{{count}} Punkt(e) — Fläche schliessen zum Anwenden",
         "toolLine": "Linie",
         "toolArea": "Fläche",
-        "closePolygon": "Schließen",
+        "closePolygon": "Schliessen",
         "applyCut": "Schneiden",
         "confirmSplit": "Speichern",
         "piecesCount": "{{count}} Teile",
@@ -1638,7 +1638,7 @@
     },
     "create": {
       "name": {
-        "heading": "Wie heißt dein Hof?",
+        "heading": "Wie heisst dein Hof?",
         "label": "Hofname"
       },
       "location": {
