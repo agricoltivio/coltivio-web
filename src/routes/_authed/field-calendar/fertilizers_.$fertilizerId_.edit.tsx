@@ -9,6 +9,7 @@ import {
   FERTILIZER_UNITS,
   type FertilizerType,
   type FertilizerUnit,
+  formatFertilizerUnit,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -142,7 +143,7 @@ function EditFertilizerPage() {
             <SelectContent>
               {FERTILIZER_UNITS.map((unit) => (
                 <SelectItem key={unit} value={unit}>
-                  {unit}
+                  {formatFertilizerUnit(unit)}
                 </SelectItem>
               ))}
             </SelectContent>

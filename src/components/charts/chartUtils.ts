@@ -36,7 +36,8 @@ export function pickDisplayUnit(
     if (maxValue >= 1) return { divisor: 1, label: "kg" };
     return { divisor: 0.001, label: "g" };
   }
-  // litres
+  // litres; from 1000 l in m³, e.g. slurry (300 m³ instead of 3000 hl)
+  if (maxValue >= 1000) return { divisor: 1000, label: "m³" };
   if (maxValue >= 100) return { divisor: 100, label: "hl" };
   if (maxValue >= 1) return { divisor: 1, label: "l" };
   return { divisor: 0.001, label: "ml" };
@@ -55,6 +56,7 @@ export function toBaseAmount(
     case "ml": return { value: amount / 1000, type: "l" };
     case "l":  return { value: amount, type: "l" };
     case "hl": return { value: amount * 100, type: "l" };
+    case "m3": return { value: amount * 1000, type: "l" };
     default:   return { value: amount, type: "kg" };
   }
 }

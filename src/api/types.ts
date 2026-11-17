@@ -176,7 +176,12 @@ export type FertilizerType = Fertilizer["type"];
 export type FertilizerUnit = Fertilizer["unit"];
 
 export const FERTILIZER_TYPES: FertilizerType[] = ["mineral", "organic"];
-export const FERTILIZER_UNITS: FertilizerUnit[] = ["l", "kg", "dt", "t"];
+export const FERTILIZER_UNITS: FertilizerUnit[] = ["l", "kg", "dt", "t", "m3"];
+
+// Fertilizer units are shown as stored, except cubic metres
+export function formatFertilizerUnit(unit: string): string {
+  return unit === "m3" ? "m³" : unit;
+}
 
 export type CropProtectionProduct =
   components["schemas"]["GetV1CropProtectionProductsPositiveResponse"]["data"]["result"][number];

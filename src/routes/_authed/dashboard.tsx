@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatFertilizerUnit } from "@/api/types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
@@ -220,7 +221,7 @@ function RouteComponent() {
           position: "right",
           formatter: (params: { dataIndex: number }) => {
             const f = fertilizerApplications.byFertilizer[params.dataIndex];
-            return `${f.totalAmount} ${f.unit}`;
+            return `${f.totalAmount} ${formatFertilizerUnit(f.unit)}`;
           },
           fontSize: 11,
         },
