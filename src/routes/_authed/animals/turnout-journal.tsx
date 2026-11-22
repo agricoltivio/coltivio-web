@@ -21,7 +21,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  useYearTimeline,
+  YearTimelineHeader,
+  YearTimelineNavigation,
+  YearTimelineZoomControls,
+} from "@/components/YearTimelineControls";
 
 export const Route = createFileRoute("/_authed/animals/turnout-journal")({
   loader: ({ context: { queryClient } }) => {
@@ -72,7 +77,10 @@ const LANE_HEIGHT = 32;
 
 function TurnoutJournal() {
   const { t } = useTranslation();
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  // Year, zoom (months / weeks) and "Today", shared with the herd timeline
+  const timeline = useYearTimeline();
+  const selectedYear = timeline.year;
+  const setSelectedYear = timeline.setYear;
   const [view, setView] = useState<JournalView>("categories");
 
   const [exportOpen, setExportOpen] = useState(false);
@@ -117,23 +125,8 @@ function TurnoutJournal() {
 
   const yearStart = new Date(selectedYear, 0, 1);
   const totalDays = daysInYear(selectedYear);
-  // 4px per day
-  const dayWidth = 4;
+  const dayWidth = timeline.pxPerDay;
   const timelineWidth = totalDays * dayWidth;
-
-  // Generate month labels for header
-  const months = Array.from({ length: 12 }, (_, i) => {
-    const d = new Date(selectedYear, i, 1);
-    const dayOffset = Math.floor(
-      (d.getTime() - yearStart.getTime()) / (1000 * 60 * 60 * 24),
-    );
-    const daysInMonth = new Date(selectedYear, i + 1, 0).getDate();
-    return {
-      name: d.toLocaleString("default", { month: "short" }),
-      left: dayOffset * dayWidth,
-      width: daysInMonth * dayWidth,
-    };
-  });
 
   // Category rows (only categories with data, or all as placeholders) or one
   // row per meadow with lanes for herds there at the same time
@@ -160,26 +153,28 @@ function TurnoutJournal() {
 
   return (
     <PageContent title={t("turnoutJournal.title")} showBackButton={false}>
-      <div className="flex items-center justify-between mb-4">
-        {/* Year navigation */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setSelectedYear((y) => y - 1)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-lg font-semibold w-16 text-center">{selectedYear}</span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setSelectedYear((y) => y + 1)}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex items-center gap-2">
+      {/* Actions on their own line, the controls of the chart directly above it */}
+      <div className="flex justify-end gap-2 mb-3">
+        <Button variant="outline" onClick={() => {
+          setExportFromDate(`${selectedYear}-01-01`);
+          setExportToDate(`${selectedYear}-12-31`);
+          setExportOpen(true);
+        }}>
+          {t("common.export")}
+        </Button>
+        <Button variant="outline" asChild>
+          <Link to="/animals/herds">{t("turnoutJournal.manageHerds")}</Link>
+        </Button>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+        {/* Year navigation and today */}
+        <YearTimelineNavigation
+          year={selectedYear}
+          onYearChange={setSelectedYear}
+          onToday={timeline.goToToday}
+        />
+        <div className="flex flex-wrap items-center gap-2">
+          <YearTimelineZoomControls zoom={timeline.zoom} onZoomChange={timeline.changeZoom} />
           {/* Category or meadow rows */}
           <div className="flex rounded-md border overflow-hidden">
             {JOURNAL_VIEWS.map((option) => (
@@ -199,16 +194,6 @@ function TurnoutJournal() {
               </button>
             ))}
           </div>
-          <Button variant="outline" onClick={() => {
-            setExportFromDate(`${selectedYear}-01-01`);
-            setExportToDate(`${selectedYear}-12-31`);
-            setExportOpen(true);
-          }}>
-            {t("common.export")}
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/animals/herds">{t("turnoutJournal.manageHerds")} →</Link>
-          </Button>
         </div>
       </div>
 
@@ -273,20 +258,10 @@ function TurnoutJournal() {
           </div>
 
           {/* Scrollable timeline area */}
-          <div className="overflow-x-auto flex-1 min-w-0">
+          <div ref={timeline.scrollerRef} className="overflow-x-auto flex-1 min-w-0">
             <div style={{ width: timelineWidth }} className="relative">
-              {/* Month headers */}
-              <div className="flex h-8 border-b relative">
-                {months.map((month) => (
-                  <div
-                    key={month.name}
-                    className="absolute h-full flex items-center border-r text-xs text-muted-foreground px-1"
-                    style={{ left: month.left, width: month.width }}
-                  >
-                    {month.name}
-                  </div>
-                ))}
-              </div>
+              {/* Month headers, week starts when zoomed in */}
+              <YearTimelineHeader labels={timeline.headerLabels} />
 
               {/* Rows; meadow rows grow by one lane per overlapping herd */}
               {rows.map((row) => (
