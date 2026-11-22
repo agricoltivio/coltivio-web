@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildHerdYearBars, subtractDayRanges } from "./herdTimeline";
+import { buildHerdYearBars, herdBarOnDay, subtractDayRanges } from "./herdTimeline";
 
 // Day of the year 2026 (Jan 1 = 0)
 function day(month: number, dayOfMonth: number) {
@@ -86,5 +86,15 @@ describe("buildHerdYearBars", () => {
       ["stable", true, day(6, 10), day(6, 12)],
       ["pasture", false, day(6, 13), day(9, 30)],
     ]);
+  });
+});
+
+describe("herdBarOnDay", () => {
+  it("returns the exception on its day, the schedule around it and null outside", () => {
+    const schedules = [schedule("2026-11-02", "2026-11-30")];
+    const overrides = [override("2026-11-22", "2026-11-22", "stable")];
+    expect(herdBarOnDay(schedules, overrides, new Date(2026, 10, 22))?.type).toBe("stable");
+    expect(herdBarOnDay(schedules, overrides, new Date(2026, 10, 23))?.type).toBe("pasture");
+    expect(herdBarOnDay(schedules, overrides, new Date(2026, 11, 1))).toBeNull();
   });
 });

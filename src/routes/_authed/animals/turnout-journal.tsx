@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { TurnoutJournalHerdsTable } from "@/components/TurnoutJournalHerdsTable";
 import {
   useYearTimeline,
   YearTimelineHeader,
@@ -161,9 +162,6 @@ function TurnoutJournal() {
           setExportOpen(true);
         }}>
           {t("common.export")}
-        </Button>
-        <Button variant="outline" asChild>
-          <Link to="/animals/herds">{t("turnoutJournal.manageHerds")}</Link>
         </Button>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -334,6 +332,9 @@ function TurnoutJournal() {
           })}
         </p>
       )}
+
+      {/* Herds with what they do today; "Manage herds" lives here */}
+      <TurnoutJournalHerdsTable />
     </PageContent>
   );
 }

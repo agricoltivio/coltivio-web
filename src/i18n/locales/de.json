@@ -653,7 +653,8 @@
       "hint": "Tage, an denen die Herde etwas anderes machte als geplant, z.B. wegen Unwetter im Stall. Eine Ausnahme geht dem Auslauf an diesen Tagen vor.",
       "none": "Keine Ausnahmen",
       "overlap": "Die Ausnahme überschneidet sich mit einer anderen Ausnahme dieser Herde.",
-      "deleteConfirm": "Diese Ausnahme wirklich löschen?"
+      "deleteConfirm": "Diese Ausnahme wirklich löschen?",
+      "single": "Ausnahme"
     }
   },
   "turnoutJournal": {

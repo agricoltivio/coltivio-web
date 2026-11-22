@@ -192,3 +192,19 @@ export function buildHerdYearBars(
 
   return [...scheduleBars, ...overrideBars].sort((a, b) => a.startDay - b.startDay);
 }
+
+// What the herd does on that day: the bar covering it (exception or schedule), null when
+// nothing is planned
+export function herdBarOnDay(
+  schedules: ScheduleForTimeline[],
+  overrides: OverrideForTimeline[],
+  date: Date,
+): HerdTimelineBar | null {
+  const year = date.getFullYear();
+  const day = differenceInCalendarDays(date, new Date(year, 0, 1));
+  return (
+    buildHerdYearBars(schedules, overrides, year).find(
+      (bar) => bar.startDay <= day && day <= bar.endDay,
+    ) ?? null
+  );
+}

@@ -653,7 +653,8 @@
       "hint": "Jours où le troupeau a fait autre chose que prévu, p. ex. à l'étable à cause d'un orage. Une exception prime sur la sortie ces jours-là.",
       "none": "Aucune exception",
       "overlap": "L'exception chevauche une autre exception de ce troupeau.",
-      "deleteConfirm": "Vraiment supprimer cette exception ?"
+      "deleteConfirm": "Vraiment supprimer cette exception ?",
+      "single": "Exception"
     }
   },
   "turnoutJournal": {
