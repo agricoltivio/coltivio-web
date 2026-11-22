@@ -644,7 +644,10 @@
     "endBeforeStart": "La date ne peut pas précéder la date de début.",
     "changesApplyFrom": "Changements valables dès le",
     "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
-    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure."
+    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure.",
+    "errors": {
+      "outdoor_schedule_overlap": "La sortie chevauche une autre sortie de ce troupeau."
+    }
   },
   "turnoutJournal": {
     "title": "Journal de pâturage",

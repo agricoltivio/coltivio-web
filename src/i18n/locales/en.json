@@ -789,7 +789,10 @@
     "endBeforeStart": "The date can't be before the start date.",
     "changesApplyFrom": "Changes apply from",
     "changesSummary": "{{added}} added, {{removed}} removed. From which date does this apply?",
-    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date."
+    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date.",
+    "errors": {
+      "outdoor_schedule_overlap": "The outdoor schedule overlaps another schedule of this herd."
+    }
   },
   "turnoutJournal": {
     "title": "Turnout journal",

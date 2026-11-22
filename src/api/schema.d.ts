@@ -3831,7 +3831,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire" | "invalid_date_range" | "crop_rotation_overlap" | "outdoor_schedule_overlap";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {
