@@ -222,7 +222,12 @@ export function OverrideFormDialog({
                     id="overrideStartDate"
                     type="date"
                     value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={(e) => {
+                      const nextStart = e.target.value;
+                      setStartDate(nextStart);
+                      // Moving the start past the end moves the end along (one day)
+                      if (nextStart && endDate && endDate < nextStart) setEndDate(nextStart);
+                    }}
                     required
                   />
                 </Field>

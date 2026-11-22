@@ -78,23 +78,29 @@ export function HerdScheduleTimeline({
             )}
             {bars.map((bar) => {
               const label = t(`herds.scheduleTypes.${bar.type}`);
+              const left = bar.startDay * pxPerDay;
+              const width = Math.max((bar.endDay - bar.startDay + 1) * pxPerDay, 3);
+              // Planned part (after today) lighter, like in the turnout journal
+              const plannedFrom = Math.min(Math.max((todayDay + 1) * pxPerDay - left, 0), width);
               return (
                 <button
                   type="button"
                   key={`${bar.id}-${bar.startDay}`}
                   onClick={() => openBar(bar.id, bar.isOverride)}
-                  className={`absolute rounded-sm opacity-85 hover:opacity-100 ${TYPE_COLORS[bar.type]} ${
+                  className={`absolute overflow-hidden rounded-sm opacity-85 hover:opacity-100 ${TYPE_COLORS[bar.type]} ${
                     bar.isOverride ? "z-10 ring-2 ring-foreground" : ""
-                  } ${bar.startDay > todayDay ? "opacity-50" : ""}`}
-                  style={{
-                    left: bar.startDay * pxPerDay,
-                    width: Math.max((bar.endDay - bar.startDay + 1) * pxPerDay, 3),
-                    top: 6,
-                    height: ROW_HEIGHT - 12,
-                  }}
+                  }`}
+                  style={{ left, width, top: 6, height: ROW_HEIGHT - 12 }}
                   title={bar.notes ? `${label}: ${bar.notes}` : label}
                   aria-label={bar.notes ? `${label}: ${bar.notes}` : label}
-                />
+                >
+                  {plannedFrom < width && (
+                    <span
+                      className="absolute top-0 bottom-0 border-2 border-l-0 border-dashed border-white/80 bg-white/55"
+                      style={{ left: plannedFrom, right: 0 }}
+                    />
+                  )}
+                </button>
               );
             })}
           </div>
