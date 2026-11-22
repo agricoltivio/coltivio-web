@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { herdsQueryOptions } from "@/api/herds.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
 import { outdoorJournalQueryOptions } from "@/api/outdoorJournal.queries";
 import {
   buildCategoryRows,
+  buildHerdRows,
   buildMeadowRows,
   daysInYear,
 } from "@/lib/turnoutJournalTimeline";
@@ -70,8 +72,15 @@ function getCategoryColorForRow(rowKey: string): string {
   return category ? getCategoryColor(category) : "bg-gray-500";
 }
 
-type JournalView = "categories" | "meadows";
-const JOURNAL_VIEWS: JournalView[] = ["categories", "meadows"];
+type JournalView = "categories" | "herds" | "meadows";
+const JOURNAL_VIEWS: JournalView[] = ["categories", "herds", "meadows"];
+
+// Herd view: colors per type like the herd timeline
+const HERD_VIEW_TYPE_COLORS = {
+  pasture: "bg-green-600",
+  exercise_yard: "bg-amber-500",
+  stable: "bg-slate-500",
+} as const;
 
 // Height of one timeline line; meadow rows have one per overlapping herd
 const LANE_HEIGHT = 32;
@@ -80,6 +89,9 @@ function TurnoutJournal() {
   const { t } = useTranslation();
   // Year, zoom (months / weeks) and "Today", shared with the herd timeline
   const timeline = useYearTimeline();
+  const navigate = useNavigate();
+  // Herd view rows (cached, the herds table below uses the same query)
+  const herdsQuery = useQuery(herdsQueryOptions());
   const selectedYear = timeline.year;
   const setSelectedYear = timeline.setYear;
   const [view, setView] = useState<JournalView>("categories");
@@ -138,11 +150,13 @@ function TurnoutJournal() {
   const rows =
     view === "meadows"
       ? buildMeadowRows(data?.meadowEntries ?? [], selectedYear)
-      : buildCategoryRows(
-          entries,
-          presentCategories.length > 0 ? presentCategories : CATEGORIES,
-          selectedYear,
-        );
+      : view === "herds"
+        ? buildHerdRows(herdsQuery.data?.result ?? [], selectedYear)
+        : buildCategoryRows(
+            entries,
+            presentCategories.length > 0 ? presentCategories : CATEGORIES,
+            selectedYear,
+          );
   const todayDay =
     new Date().getFullYear() === selectedYear
       ? Math.floor(
@@ -188,7 +202,9 @@ function TurnoutJournal() {
               >
                 {option === "meadows"
                   ? t("turnoutJournal.viewMeadows")
-                  : t("turnoutJournal.viewCategories")}
+                  : option === "herds"
+                    ? t("turnoutJournal.viewHerds")
+                    : t("turnoutJournal.viewCategories")}
               </button>
             ))}
           </div>
@@ -276,24 +292,45 @@ function TurnoutJournal() {
                       Math.max(todayDay * dayWidth - left, 0),
                       width,
                     );
+                    const typeLabel = bar.scheduleType
+                      ? t(`herds.scheduleTypes.${bar.scheduleType}`)
+                      : "";
                     const color =
-                      view === "meadows"
-                        ? bar.scheduleType === "exercise_yard"
-                          ? "bg-amber-500"
-                          : "bg-green-600"
-                        : getCategoryColorForRow(row.key);
+                      view === "herds"
+                        ? HERD_VIEW_TYPE_COLORS[bar.scheduleType ?? "pasture"]
+                        : view === "meadows"
+                          ? bar.scheduleType === "exercise_yard"
+                            ? "bg-amber-500"
+                            : "bg-green-600"
+                          : getCategoryColorForRow(row.key);
                     const title =
-                      view === "meadows"
-                        ? `${bar.herdName}: ${bar.animalCount} ${t("turnoutJournal.animals")}`
-                        : `${row.label}: ${bar.animalCount} ${t("turnoutJournal.animals")}`;
+                      view === "herds"
+                        ? bar.isOverride
+                          ? `${typeLabel} (${t("herds.overrides.single")})`
+                          : typeLabel
+                        : view === "meadows"
+                          ? `${bar.herdName}: ${bar.animalCount} ${t("turnoutJournal.animals")}`
+                          : `${row.label}: ${bar.animalCount} ${t("turnoutJournal.animals")}`;
                     const label =
-                      view === "meadows"
-                        ? `${bar.herdName} (${bar.animalCount})`
-                        : String(bar.animalCount);
+                      view === "herds"
+                        ? typeLabel
+                        : view === "meadows"
+                          ? `${bar.herdName} (${bar.animalCount})`
+                          : String(bar.animalCount);
+                    const herdId = bar.herdId;
                     return (
                       <div
                         key={index}
-                        className={`absolute rounded-sm ${color} opacity-80 flex items-center justify-center overflow-hidden`}
+                        // Herd view: exceptions outlined, a bar opens its herd
+                        className={`absolute rounded-sm ${color} opacity-80 flex items-center justify-center overflow-hidden ${
+                          view === "herds" && bar.isOverride ? "z-10 ring-2 ring-foreground" : ""
+                        } ${view === "herds" && herdId ? "cursor-pointer hover:opacity-100" : ""}`}
+                        onClick={
+                          view === "herds" && herdId
+                            ? () =>
+                                navigate({ to: "/animals/herds/$herdId", params: { herdId } })
+                            : undefined
+                        }
                         style={{
                           left,
                           width,

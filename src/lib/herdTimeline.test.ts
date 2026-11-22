@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { buildHerdRows } from "./turnoutJournalTimeline";
 import { buildHerdYearBars, herdBarOnDay, subtractDayRanges } from "./herdTimeline";
 
 // Day of the year 2026 (Jan 1 = 0)
@@ -96,5 +97,26 @@ describe("herdBarOnDay", () => {
     expect(herdBarOnDay(schedules, overrides, new Date(2026, 10, 22))?.type).toBe("stable");
     expect(herdBarOnDay(schedules, overrides, new Date(2026, 10, 23))?.type).toBe("pasture");
     expect(herdBarOnDay(schedules, overrides, new Date(2026, 11, 1))).toBeNull();
+  });
+});
+
+describe("buildHerdRows", () => {
+  it("one row per herd by name, exclusive end days, exceptions marked", () => {
+    const rows = buildHerdRows(
+      [
+        { id: "h2", name: "Ziegen", animals: [{}], outdoorSchedules: [schedule("2026-11-02", "2026-11-30")] },
+        {
+          id: "h1",
+          name: "Kühe",
+          animals: [],
+          outdoorSchedules: [],
+          outdoorScheduleOverrides: [override("2026-03-01", "2026-03-01", "stable")],
+        },
+      ],
+      2026,
+    );
+    expect(rows.map((row) => row.label)).toEqual(["Kühe", "Ziegen"]);
+    expect(rows[0].bars[0]).toMatchObject({ startDay: day(3, 1), endDay: day(3, 1) + 1, isOverride: true, scheduleType: "stable" });
+    expect(rows[1].bars[0]).toMatchObject({ startDay: day(11, 2), endDay: day(11, 30) + 1, herdId: "h2", animalCount: 1 });
   });
 });

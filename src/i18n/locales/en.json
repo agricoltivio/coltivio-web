@@ -834,7 +834,8 @@
       "description": "Download the turnout journal as an Excel file."
     },
     "viewCategories": "Categories",
-    "viewMeadows": "Meadows"
+    "viewMeadows": "Meadows",
+    "viewHerds": "Herds"
   },
   "fieldCalendar": {
     "divide": {

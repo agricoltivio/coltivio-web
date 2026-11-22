@@ -3,6 +3,7 @@ import type {
   OutdoorJournalMeadowEntry,
 } from "@/api/types";
 import { MS_PER_DAY, toDayNumber } from "@/lib/utils";
+import { buildHerdYearBars } from "@/lib/herdTimeline";
 
 type CategoryEntry = OutdoorJournalData["entries"][number];
 
@@ -11,9 +12,12 @@ export type TimelineBar = {
   startDay: number;
   endDay: number;
   animalCount: number;
-  // Herd shown on the bar (meadow view only)
+  // Herd shown on the bar (meadow view) or of the row (herd view)
   herdName?: string;
+  herdId?: string;
   scheduleType?: OutdoorJournalMeadowEntry["type"];
+  // Herd view: an exception (outlined), which takes precedence over the schedule
+  isOverride?: boolean;
   // Sub-line within the row when bars overlap (0 = top)
   lane: number;
 };
@@ -159,4 +163,37 @@ export function buildMeadowRows(
   return rows.sort(
     (a, b) => lastDay(b) - lastDay(a) || a.label.localeCompare(b.label),
   );
+}
+
+type HerdForRows = {
+  id: string;
+  name: string;
+  animals: unknown[];
+  outdoorSchedules: Parameters<typeof buildHerdYearBars>[0];
+  outdoorScheduleOverrides?: Parameters<typeof buildHerdYearBars>[1];
+};
+
+// Herd view: one row per herd (by name) with its schedules and exceptions in that year,
+// colored by type like the herd timeline
+export function buildHerdRows(herds: HerdForRows[], year: number): TimelineRow[] {
+  return [...herds]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((herd) => ({
+      key: herd.id,
+      label: herd.name,
+      laneCount: 1,
+      bars: buildHerdYearBars(herd.outdoorSchedules, herd.outdoorScheduleOverrides ?? [], year).map(
+        (bar) => ({
+          startDay: bar.startDay,
+          // herd timeline bars have an inclusive end, the journal an exclusive one
+          endDay: bar.endDay + 1,
+          animalCount: herd.animals.length,
+          herdName: herd.name,
+          herdId: herd.id,
+          scheduleType: bar.type,
+          isOverride: bar.isOverride,
+          lane: 0,
+        }),
+      ),
+    }));
 }

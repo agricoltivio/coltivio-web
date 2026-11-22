@@ -689,7 +689,8 @@
       "description": "Auslaufjournal als Excel-Datei herunterladen."
     },
     "viewCategories": "Kategorien",
-    "viewMeadows": "Weideflächen"
+    "viewMeadows": "Weideflächen",
+    "viewHerds": "Herden"
   },
   "landing": {
     "nav": {

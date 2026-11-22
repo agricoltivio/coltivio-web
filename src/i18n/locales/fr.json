@@ -689,7 +689,8 @@
       "description": "Télécharger le journal de sorties en tant que fichier Excel."
     },
     "viewCategories": "Catégories",
-    "viewMeadows": "Pâtures"
+    "viewMeadows": "Pâtures",
+    "viewHerds": "Troupeaux"
   },
   "landing": {
     "nav": {

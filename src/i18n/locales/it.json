@@ -689,7 +689,8 @@
       "description": "Scarica il diario di uscita come file Excel."
     },
     "viewCategories": "Categorie",
-    "viewMeadows": "Aree di pascolo"
+    "viewMeadows": "Aree di pascolo",
+    "viewHerds": "Mandrie"
   },
   "landing": {
     "nav": {
