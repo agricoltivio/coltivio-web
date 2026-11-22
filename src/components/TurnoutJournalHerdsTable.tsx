@@ -12,13 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { herdBarOnDay, type HerdTimelineType } from "@/lib/herdTimeline";
+import { HERD_TYPE_COLORS as TYPE_COLORS, herdBarOnDay } from "@/lib/herdTimeline";
 
-const TYPE_COLORS: Record<HerdTimelineType, string> = {
-  pasture: "bg-green-600",
-  exercise_yard: "bg-amber-500",
-  stable: "bg-slate-500",
-};
 
 // Herds below the turnout journal with what each one does today (schedules with the
 // exceptions applied). Herds with something planned today come first; a row opens the herd.

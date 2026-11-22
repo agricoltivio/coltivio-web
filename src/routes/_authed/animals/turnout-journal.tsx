@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { herdsQueryOptions } from "@/api/herds.queries";
+import { HERD_TYPE_COLORS } from "@/lib/herdTimeline";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "@/api/client";
@@ -75,12 +76,6 @@ function getCategoryColorForRow(rowKey: string): string {
 type JournalView = "categories" | "herds" | "meadows";
 const JOURNAL_VIEWS: JournalView[] = ["categories", "herds", "meadows"];
 
-// Herd view: colors per type like the herd timeline
-const HERD_VIEW_TYPE_COLORS = {
-  pasture: "bg-green-600",
-  exercise_yard: "bg-amber-500",
-  stable: "bg-slate-500",
-} as const;
 
 // Height of one timeline line; meadow rows have one per overlapping herd
 const LANE_HEIGHT = 32;
@@ -297,7 +292,7 @@ function TurnoutJournal() {
                       : "";
                     const color =
                       view === "herds"
-                        ? HERD_VIEW_TYPE_COLORS[bar.scheduleType ?? "pasture"]
+                        ? HERD_TYPE_COLORS[bar.scheduleType ?? "pasture"]
                         : view === "meadows"
                           ? bar.scheduleType === "exercise_yard"
                             ? "bg-amber-500"
@@ -329,6 +324,19 @@ function TurnoutJournal() {
                           view === "herds" && herdId
                             ? () =>
                                 navigate({ to: "/animals/herds/$herdId", params: { herdId } })
+                            : undefined
+                        }
+                        // Reachable by keyboard / screen reader when it opens the herd
+                        role={view === "herds" && herdId ? "button" : undefined}
+                        tabIndex={view === "herds" && herdId ? 0 : undefined}
+                        onKeyDown={
+                          view === "herds" && herdId
+                            ? (event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  navigate({ to: "/animals/herds/$herdId", params: { herdId } });
+                                }
+                              }
                             : undefined
                         }
                         style={{

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { OutdoorSchedule, OutdoorScheduleOverride } from "@/api/types";
-import { buildHerdYearBars, type HerdTimelineType } from "@/lib/herdTimeline";
+import { buildHerdYearBars, HERD_TYPE_COLORS as TYPE_COLORS } from "@/lib/herdTimeline";
 import {
   useYearTimeline,
   YearTimelineHeader,
@@ -10,12 +10,6 @@ import {
 
 const ROW_HEIGHT = 36;
 
-// Same colors as the turnout journal's meadow view, plus grey for stable time
-const TYPE_COLORS: Record<HerdTimelineType, string> = {
-  pasture: "bg-green-600",
-  exercise_yard: "bg-amber-500",
-  stable: "bg-slate-500",
-};
 
 // One herd's year: schedule bars colored by type, exceptions outlined on top (they take
 // precedence over the schedule on their days). Clicking a bar opens it.

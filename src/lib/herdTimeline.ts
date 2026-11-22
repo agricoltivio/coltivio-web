@@ -16,6 +16,14 @@ import { parseDateOnly } from "@/lib/utils";
 
 export type HerdTimelineType = "pasture" | "exercise_yard" | "stable";
 
+// Bar / dot colors per type (Tailwind), the same as the turnout journal's meadow view plus
+// grey for stable time
+export const HERD_TYPE_COLORS: Record<HerdTimelineType, string> = {
+  pasture: "bg-green-600",
+  exercise_yard: "bg-amber-500",
+  stable: "bg-slate-500",
+};
+
 type ScheduleForTimeline = {
   id: string;
   startDate: string;
