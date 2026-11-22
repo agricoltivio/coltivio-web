@@ -13,6 +13,7 @@ import {
   DeleteOverrideDialog,
   OverrideFormDialog,
 } from "@/components/OutdoorScheduleOverrideDialogs";
+import { HerdScheduleTimeline } from "@/components/HerdScheduleTimeline";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
 import {
@@ -200,7 +201,26 @@ function HerdDetailPage() {
               </div>
             )}
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Year view of the schedules with the exceptions applied */}
+            {(herd.outdoorSchedules.length > 0 ||
+              (herd.outdoorScheduleOverrides ?? []).length > 0) && (
+              <HerdScheduleTimeline
+                schedules={herd.outdoorSchedules}
+                overrides={herd.outdoorScheduleOverrides ?? []}
+                onScheduleClick={
+                  canWriteAnimals
+                    ? (schedule) => {
+                        setEditSchedule(schedule);
+                        setScheduleDialogOpen(true);
+                      }
+                    : undefined
+                }
+                onOverrideClick={
+                  canWriteAnimals ? (override) => setEditOverride(override) : undefined
+                }
+              />
+            )}
             {herd.outdoorSchedules.length === 0 ? (
               <div className="py-4 text-center text-muted-foreground">
                 {t("herds.noSchedules")}
