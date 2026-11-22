@@ -2356,6 +2356,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/animals/herds/byId/{herdId}/outdoorScheduleOverrides": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides"];
+        put?: never;
+        post: operations["PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides"];
+        delete?: never;
+        options?: never;
+        head: operations["HeadV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides"];
+        patch?: never;
+        trace?: never;
+    };
     "/v1/animals/herds/outdoorSchedules/byId/{outdoorScheduleId}": {
         parameters: {
             query?: never;
@@ -2370,6 +2386,22 @@ export interface paths {
         options?: never;
         head: operations["HeadV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleId"];
         patch: operations["PatchV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleId"];
+        trace?: never;
+    };
+    "/v1/animals/herds/outdoorScheduleOverrides/byId/{outdoorScheduleOverrideId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId"];
+        options?: never;
+        head: operations["HeadV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId"];
+        patch: operations["PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId"];
         trace?: never;
     };
     "/v1/earTags": {
@@ -3831,7 +3863,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire" | "invalid_date_range" | "crop_rotation_overlap" | "outdoor_schedule_overlap" | "outdoor_schedule_override_overlap";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {
@@ -4652,7 +4684,7 @@ export interface components {
                     herdId: string;
                     herdName: string;
                     /** @enum {string} */
-                    type: "pasture" | "exercise_yard";
+                    type: "pasture" | "exercise_yard" | "stable";
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -10457,7 +10489,7 @@ export interface components {
                     herdId: string;
                     herdName: string;
                     /** @enum {string} */
-                    type: "pasture" | "exercise_yard";
+                    type: "pasture" | "exercise_yard" | "stable";
                     /**
                      * Format: date-time
                      * @description YYYY-MM-DDTHH:mm:ss.sssZ
@@ -10537,7 +10569,7 @@ export interface components {
                          */
                         endDate: string | null;
                         /** @enum {string} */
-                        type: "pasture" | "exercise_yard";
+                        type: "pasture" | "exercise_yard" | "stable";
                         notes: string | null;
                         recurrence: {
                             id: string;
@@ -10549,6 +10581,30 @@ export interface components {
                             until: string | null;
                             count: number | null;
                         } | null;
+                    }[];
+                    outdoorScheduleOverrides?: {
+                        id: string;
+                        farmId: string;
+                        herdId: string;
+                        meadowId: string | null;
+                        meadow?: {
+                            id: string;
+                            name: string;
+                            size: number;
+                        } | null;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        startDate: string;
+                        /**
+                         * Format: date-time
+                         * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                         */
+                        endDate: string;
+                        /** @enum {string} */
+                        type: "pasture" | "exercise_yard" | "stable";
+                        notes: string | null;
                     }[];
                 }[];
                 count: number;
@@ -10576,7 +10632,7 @@ export interface components {
                  */
                 endDate?: string | null;
                 /** @enum {string} */
-                type: "pasture" | "exercise_yard";
+                type: "pasture" | "exercise_yard" | "stable";
                 notes?: string | null;
                 meadowId?: string | null;
                 recurrence?: {
@@ -10670,7 +10726,7 @@ export interface components {
                      */
                     endDate: string | null;
                     /** @enum {string} */
-                    type: "pasture" | "exercise_yard";
+                    type: "pasture" | "exercise_yard" | "stable";
                     notes: string | null;
                     recurrence: {
                         id: string;
@@ -10682,6 +10738,30 @@ export interface components {
                         until: string | null;
                         count: number | null;
                     } | null;
+                }[];
+                outdoorScheduleOverrides?: {
+                    id: string;
+                    farmId: string;
+                    herdId: string;
+                    meadowId: string | null;
+                    meadow?: {
+                        id: string;
+                        name: string;
+                        size: number;
+                    } | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    /** @enum {string} */
+                    type: "pasture" | "exercise_yard" | "stable";
+                    notes: string | null;
                 }[];
             };
         };
@@ -10707,7 +10787,7 @@ export interface components {
                  */
                 endDate?: string | null;
                 /** @enum {string} */
-                type: "pasture" | "exercise_yard";
+                type: "pasture" | "exercise_yard" | "stable";
                 notes?: string | null;
                 meadowId?: string | null;
                 recurrence?: {
@@ -10752,7 +10832,7 @@ export interface components {
                      */
                     endDate: string | null;
                     /** @enum {string} */
-                    type: "pasture" | "exercise_yard";
+                    type: "pasture" | "exercise_yard" | "stable";
                     notes: string | null;
                     recurrence: {
                         id: string;
@@ -10790,7 +10870,7 @@ export interface components {
                  */
                 endDate: string | null;
                 /** @enum {string} */
-                type: "pasture" | "exercise_yard";
+                type: "pasture" | "exercise_yard" | "stable";
                 notes: string | null;
                 recurrence: {
                     id: string;
@@ -10816,7 +10896,7 @@ export interface components {
              */
             endDate?: string | null;
             /** @enum {string} */
-            type: "pasture" | "exercise_yard";
+            type: "pasture" | "exercise_yard" | "stable";
             notes?: string | null;
             meadowId?: string | null;
             recurrence?: {
@@ -10828,6 +10908,77 @@ export interface components {
                 until?: string | null;
                 count?: number | null;
             } | null;
+        };
+        GetV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesPositiveResponse: {
+            data: {
+                result: {
+                    id: string;
+                    farmId: string;
+                    herdId: string;
+                    meadowId: string | null;
+                    meadow?: {
+                        id: string;
+                        name: string;
+                        size: number;
+                    } | null;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    startDate: string;
+                    /**
+                     * Format: date-time
+                     * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                     */
+                    endDate: string;
+                    /** @enum {string} */
+                    type: "pasture" | "exercise_yard" | "stable";
+                    notes: string | null;
+                }[];
+                count: number;
+            };
+        };
+        PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                /** @enum {string} */
+                type: "pasture" | "exercise_yard" | "stable";
+                notes: string | null;
+            };
+        };
+        PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate: string;
+            /** @enum {string} */
+            type: "pasture" | "exercise_yard" | "stable";
+            notes?: string | null;
+            meadowId?: string | null;
         };
         GetV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleIdPositiveResponse: {
             data: {
@@ -10851,7 +11002,7 @@ export interface components {
                  */
                 endDate: string | null;
                 /** @enum {string} */
-                type: "pasture" | "exercise_yard";
+                type: "pasture" | "exercise_yard" | "stable";
                 notes: string | null;
                 recurrence: {
                     id: string;
@@ -10887,7 +11038,7 @@ export interface components {
                  */
                 endDate: string | null;
                 /** @enum {string} */
-                type: "pasture" | "exercise_yard";
+                type: "pasture" | "exercise_yard" | "stable";
                 notes: string | null;
                 recurrence: {
                     id: string;
@@ -10913,7 +11064,7 @@ export interface components {
              */
             endDate?: string | null;
             /** @enum {string} */
-            type?: "pasture" | "exercise_yard";
+            type?: "pasture" | "exercise_yard" | "stable";
             notes?: string | null;
             meadowId?: string | null;
             recurrence?: {
@@ -10927,6 +11078,77 @@ export interface components {
             } | null;
         };
         DeleteV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        GetV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                /** @enum {string} */
+                type: "pasture" | "exercise_yard" | "stable";
+                notes: string | null;
+            };
+        };
+        PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse: {
+            data: {
+                id: string;
+                farmId: string;
+                herdId: string;
+                meadowId: string | null;
+                meadow?: {
+                    id: string;
+                    name: string;
+                    size: number;
+                } | null;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                startDate: string;
+                /**
+                 * Format: date-time
+                 * @description YYYY-MM-DDTHH:mm:ss.sssZ
+                 */
+                endDate: string;
+                /** @enum {string} */
+                type: "pasture" | "exercise_yard" | "stable";
+                notes: string | null;
+            };
+        };
+        PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdRequestBody: {
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            startDate?: string;
+            /**
+             * Format: date-time
+             * @description YYYY-MM-DDTHH:mm:ss.sssZ
+             */
+            endDate?: string;
+            /** @enum {string} */
+            type?: "pasture" | "exercise_yard" | "stable";
+            notes?: string | null;
+            meadowId?: string | null;
+        };
+        DeleteV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse: {
             data: Record<string, never>;
         };
         GetV1EarTagsPositiveResponse: {
@@ -25880,6 +26102,103 @@ export interface operations {
             };
         };
     };
+    GetV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Parameter */
+                herdId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description POST /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Parameter */
+                herdId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description POST /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Request body */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverrides: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Parameter */
+                herdId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/herds/byId/:herdId/outdoorScheduleOverrides Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetV1AnimalsHerdsOutdoorSchedulesByIdOutdoorScheduleId: {
         parameters: {
             query?: never;
@@ -25999,6 +26318,135 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/animals/herds/outdoorSchedules/byId/:outdoorScheduleId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    GetV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description GET /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Parameter */
+                outdoorScheduleOverrideId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GET /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse"];
+                };
+            };
+            /** @description GET /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Parameter */
+                outdoorScheduleOverrideId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    HeadV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description HEAD /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Parameter */
+                outdoorScheduleOverrideId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HEAD /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description HEAD /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description PATCH /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Parameter */
+                outdoorScheduleOverrideId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        /** @description PATCH /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Request body */
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdRequestBody"];
+            };
+        };
+        responses: {
+            /** @description PATCH /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PatchV1AnimalsHerdsOutdoorScheduleOverridesByIdOutdoorScheduleOverrideIdPositiveResponse"];
+                };
+            };
+            /** @description PATCH /v1/animals/herds/outdoorScheduleOverrides/byId/:outdoorScheduleOverrideId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;

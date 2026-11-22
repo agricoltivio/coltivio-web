@@ -623,7 +623,8 @@
     "scheduleType": "Tipo",
     "scheduleTypes": {
       "pasture": "Pascolo",
-      "exercise_yard": "Paddock"
+      "exercise_yard": "Paddock",
+      "stable": "Stalla"
     },
     "startDate": "Dal",
     "endDate": "Al",
@@ -644,7 +645,16 @@
     "endBeforeStart": "La data non può precedere la data di inizio.",
     "changesApplyFrom": "Modifiche valide dal",
     "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
-    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva."
+    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva.",
+    "overrides": {
+      "title": "Eccezioni",
+      "add": "Aggiungi eccezione",
+      "edit": "Modifica eccezione",
+      "hint": "Giorni in cui la mandria ha fatto altro rispetto al previsto, p. es. in stalla a causa di un temporale. Un'eccezione prevale sul programma di uscita in quei giorni.",
+      "none": "Nessuna eccezione",
+      "overlap": "L'eccezione si sovrappone a un'altra eccezione di questa mandria.",
+      "deleteConfirm": "Eliminare davvero questa eccezione?"
+    }
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",

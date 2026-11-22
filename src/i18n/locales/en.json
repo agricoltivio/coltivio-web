@@ -768,7 +768,8 @@
     "scheduleType": "Type",
     "scheduleTypes": {
       "pasture": "Pasture",
-      "exercise_yard": "Exercise yard"
+      "exercise_yard": "Exercise yard",
+      "stable": "Stable"
     },
     "startDate": "From",
     "endDate": "To",
@@ -789,7 +790,16 @@
     "endBeforeStart": "The date can't be before the start date.",
     "changesApplyFrom": "Changes apply from",
     "changesSummary": "{{added}} added, {{removed}} removed. From which date does this apply?",
-    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date."
+    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date.",
+    "overrides": {
+      "title": "Exceptions",
+      "add": "Add exception",
+      "edit": "Edit exception",
+      "hint": "Days on which the herd did something else than planned, e.g. in the stable because of a storm. An exception takes precedence over the outdoor schedule on those days.",
+      "none": "No exceptions",
+      "overlap": "The exception overlaps another exception of this herd.",
+      "deleteConfirm": "Really delete this exception?"
+    }
   },
   "turnoutJournal": {
     "title": "Turnout journal",

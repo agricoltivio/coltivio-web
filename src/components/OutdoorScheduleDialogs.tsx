@@ -243,7 +243,7 @@ export function ScheduleFormDialog({
       // Each selected weekday is a one-day stay, repeated every week
       return {
         type: scheduleType,
-        meadowId,
+        meadowId: scheduleType === "stable" ? null : meadowId,
         startDate,
         endDate: startDate,
         notes: notes || null,
@@ -259,7 +259,7 @@ export function ScheduleFormDialog({
     }
     return {
       type: scheduleType,
-      meadowId,
+      meadowId: scheduleType === "stable" ? null : meadowId,
       startDate,
       endDate: endDate || null,
       notes: notes || null,
@@ -354,7 +354,11 @@ export function ScheduleFormDialog({
                   <Select
                     value={scheduleType}
                     onValueChange={(value) => {
-                      if (value === "pasture" || value === "exercise_yard") {
+                      if (
+                        value === "pasture" ||
+                        value === "exercise_yard" ||
+                        value === "stable"
+                      ) {
                         setScheduleType(value);
                       }
                     }}
@@ -369,10 +373,15 @@ export function ScheduleFormDialog({
                       <SelectItem value="exercise_yard">
                         {t("herds.scheduleTypes.exercise_yard")}
                       </SelectItem>
+                      <SelectItem value="stable">
+                        {t("herds.scheduleTypes.stable")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </Field>
               </FieldGroup>
+              {/* Stable time is inside, it has no meadow */}
+              {scheduleType !== "stable" && (
               <FieldGroup>
                 <Field>
                   <FieldLabel htmlFor="scheduleMeadow">
@@ -425,6 +434,7 @@ export function ScheduleFormDialog({
                   </div>
                 </Field>
               </FieldGroup>
+              )}
             </div>
 
             {/* Repeat — decides which date fields follow */}
