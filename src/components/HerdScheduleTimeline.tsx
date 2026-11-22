@@ -5,7 +5,6 @@ import {
   useYearTimeline,
   YearTimelineHeader,
   YearTimelineNavigation,
-  YearTimelineZoomControls,
 } from "@/components/YearTimelineControls";
 
 const ROW_HEIGHT = 36;
@@ -54,9 +53,10 @@ export function HerdScheduleTimeline({
         <YearTimelineNavigation
           year={year}
           onYearChange={timeline.setYear}
+          zoom={timeline.zoom}
+          onZoomChange={timeline.changeZoom}
           onToday={timeline.goToToday}
         />
-        <YearTimelineZoomControls zoom={timeline.zoom} onZoomChange={timeline.changeZoom} />
       </div>
 
       <div ref={timeline.scrollerRef} className="overflow-x-auto rounded-md border">

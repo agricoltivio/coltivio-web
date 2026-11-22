@@ -91,19 +91,23 @@ export function useYearTimeline() {
   };
 }
 
-// ‹ 2026 › Today
+// ‹ 2026 › [Months | Weeks] Today
 export function YearTimelineNavigation({
   year,
   onYearChange,
+  zoom,
+  onZoomChange,
   onToday,
 }: {
   year: number;
   onYearChange: (year: number) => void;
+  zoom: YearTimelineZoom;
+  onZoomChange: (zoom: YearTimelineZoom) => void;
   onToday: () => void;
 }) {
   const { t } = useTranslation();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <Button
         variant="outline"
         size="icon"
@@ -121,6 +125,7 @@ export function YearTimelineNavigation({
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
+      <YearTimelineZoomControls zoom={zoom} onZoomChange={onZoomChange} />
       <Button variant="outline" size="sm" onClick={onToday}>
         {t("fieldCalendar.timeline.today")}
       </Button>

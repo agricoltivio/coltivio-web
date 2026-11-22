@@ -29,7 +29,6 @@ import {
   useYearTimeline,
   YearTimelineHeader,
   YearTimelineNavigation,
-  YearTimelineZoomControls,
 } from "@/components/YearTimelineControls";
 
 export const Route = createFileRoute("/_authed/animals/turnout-journal")({
@@ -178,10 +177,11 @@ function TurnoutJournal() {
         <YearTimelineNavigation
           year={selectedYear}
           onYearChange={setSelectedYear}
+          zoom={timeline.zoom}
+          onZoomChange={timeline.changeZoom}
           onToday={timeline.goToToday}
         />
         <div className="flex flex-wrap items-center gap-2">
-          <YearTimelineZoomControls zoom={timeline.zoom} onZoomChange={timeline.changeZoom} />
           {/* Category or meadow rows */}
           <div className="flex rounded-md border overflow-hidden">
             {JOURNAL_VIEWS.map((option) => (
