@@ -651,7 +651,6 @@
       "add": "Aggiungi eccezione",
       "edit": "Modifica eccezione",
       "hint": "Giorni in cui la mandria ha fatto altro rispetto al previsto, p. es. in stalla a causa di un temporale. Un'eccezione prevale sul programma di uscita in quei giorni.",
-      "none": "Nessuna eccezione",
       "overlap": "L'eccezione si sovrappone a un'altra eccezione di questa mandria.",
       "deleteConfirm": "Eliminare davvero questa eccezione?",
       "single": "Eccezione"

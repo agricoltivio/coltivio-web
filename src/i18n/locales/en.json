@@ -796,7 +796,6 @@
       "add": "Add exception",
       "edit": "Edit exception",
       "hint": "Days on which the herd did something else than planned, e.g. in the stable because of a storm. An exception takes precedence over the outdoor schedule on those days.",
-      "none": "No exceptions",
       "overlap": "The exception overlaps another exception of this herd.",
       "deleteConfirm": "Really delete this exception?",
       "single": "Exception"
