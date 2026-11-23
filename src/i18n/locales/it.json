@@ -259,6 +259,12 @@
     "addOffspringFailed": "Non è stato possibile aggiungere i discendenti."
   },
   "earTags": {
+    "prefix": "Prefisso",
+    "prefixPlaceholder": "p.es. CH o CH 120.",
+    "invalidDigits": "Solo cifre, lettere e caratteri vanno nel prefisso",
+    "editEarTag": "Modifica marca auricolare",
+    "assignedTo": "Assegnata a {{name}}",
+    "numberTaken": "Questo numero esiste già.",
     "title": "Marchi auricolari",
     "addRange": "Aggiungi intervallo",
     "deleteRange": "Elimina intervallo",
