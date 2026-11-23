@@ -1,9 +1,8 @@
-import { useState, useRef } from "react";
-import { processImageFile } from "@/lib/processImage";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { X, ImageUp, Loader2 } from "lucide-react";
+import { X } from "lucide-react";
 import {
   headingsPlugin,
   listsPlugin,
@@ -23,10 +22,9 @@ import {
   codeMirrorPlugin,
   InsertCodeBlock,
   imagePlugin,
-  usePublisher,
-  insertImage$,
 } from "@mdxeditor/editor";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
+import { MarkdownImageUploadButton } from "@/components/MarkdownImageUploadButton";
 import "@mdxeditor/editor/style.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,57 +38,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { wikiCategoriesQueryOptions, wikiTagsQueryOptions } from "@/api/wiki.queries";
+import {
+  wikiCategoriesQueryOptions,
+  wikiTagsQueryOptions,
+} from "@/api/wiki.queries";
 import { apiClient } from "@/api/client";
 import type { WikiEntry, WikiCategory, WikiTag } from "@/api/types";
 
 const LOCALES = ["de", "en", "it", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
-
-// Must be rendered inside MDXEditor's toolbar so it has access to the editor realm
-function ImageUploadButton({ onUpload }: { onUpload: (file: File) => Promise<string> }) {
-  const insertImage = usePublisher(insertImage$);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
-  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploading(true);
-    try {
-      const processed = await processImageFile(file);
-      const url = await onUpload(processed);
-      insertImage({ src: url, altText: "" });
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Image upload failed");
-    } finally {
-      setIsUploading(false);
-      e.target.value = "";
-    }
-  }
-
-  return (
-    <label
-      title="Upload image"
-      className="cursor-pointer flex items-center justify-center w-8 h-8 rounded hover:bg-accent"
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*,.heic,.heif"
-        hidden
-        disabled={isUploading}
-        onChange={handleFileChange}
-      />
-      {isUploading ? (
-        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-      ) : (
-        <ImageUp className="h-4 w-4" />
-      )}
-    </label>
-  );
-}
-
 
 export interface WikiEntryFormData {
   // Pre-generated UUID so images can be uploaded before the entry is saved
@@ -110,7 +66,11 @@ export interface WikiEntryFormProps {
   isSubmitting?: boolean;
 }
 
-export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEntryFormProps) {
+export function WikiEntryForm({
+  entry,
+  onSubmit,
+  isSubmitting = false,
+}: WikiEntryFormProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language.slice(0, 2);
   const queryClient = useQueryClient();
@@ -130,14 +90,15 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
   // Use the existing entry ID or pre-generate one so images can be uploaded before save
   const entryId = entry?.id ?? crypto.randomUUID();
 
-  const { register, handleSubmit, control, watch, setValue } = useForm<WikiEntryFormData>({
-    defaultValues: {
-      entryId,
-      categoryId: entry?.categoryId ?? "",
-      tagIds: entry?.tags.map((t) => t.tagId) ?? [],
-      translations: defaultTranslations,
-    },
-  });
+  const { register, handleSubmit, control, watch, setValue } =
+    useForm<WikiEntryFormData>({
+      defaultValues: {
+        entryId,
+        categoryId: entry?.categoryId ?? "",
+        tagIds: entry?.tags.map((t) => t.tagId) ?? [],
+        translations: defaultTranslations,
+      },
+    });
 
   // file is already processed (HEIC converted, resized, compressed) by the caller
   async function handleImageUpload(file: File): Promise<string> {
@@ -166,7 +127,10 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
   // Create a new tag on the fly and add its id to the selection
   const createTagMutation = useMutation({
     mutationFn: async (name: string) => {
-      const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const slug = name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
       const response = await apiClient.POST("/v1/wiki/tags", {
         body: { name, slug },
       });
@@ -182,7 +146,10 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
 
   function toggleTag(tagId: string) {
     if (tagIds.includes(tagId)) {
-      setValue("tagIds", tagIds.filter((id) => id !== tagId));
+      setValue(
+        "tagIds",
+        tagIds.filter((id) => id !== tagId),
+      );
     } else {
       setValue("tagIds", [...tagIds, tagId]);
     }
@@ -191,7 +158,9 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
   function handleAddTag() {
     const name = newTagName.trim();
     if (!name) return;
-    const existing = allTags.find((tag) => tag.name.toLowerCase() === name.toLowerCase());
+    const existing = allTags.find(
+      (tag) => tag.name.toLowerCase() === name.toLowerCase(),
+    );
     if (existing) {
       if (!tagIds.includes(existing.id)) {
         setValue("tagIds", [...tagIds, existing.id]);
@@ -204,7 +173,10 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
 
   // Resolve category name for display using current i18n language
   function getCategoryName(category: WikiCategory) {
-    return category.translations.find((tr) => tr.locale === lang)?.name ?? category.slug;
+    return (
+      category.translations.find((tr) => tr.locale === lang)?.name ??
+      category.slug
+    );
   }
 
   function getTagById(id: string): WikiTag | undefined {
@@ -260,7 +232,12 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
               type="text"
               value={newTagName}
               onChange={(e) => setNewTagName(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTag(); } }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddTag();
+                }
+              }}
               placeholder={t("wiki.newTag")}
               className="max-w-48"
             />
@@ -281,7 +258,11 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
                 return tag ? (
                   <Badge key={id} variant="secondary" className="gap-1">
                     {tag.name}
-                    <button type="button" onClick={() => toggleTag(id)} className="ml-1 hover:text-destructive">
+                    <button
+                      type="button"
+                      onClick={() => toggleTag(id)}
+                      className="ml-1 hover:text-destructive"
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
@@ -306,7 +287,9 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
           {LOCALES.map((locale, idx) => (
             <TabsContent key={locale} value={locale} className="mt-4 space-y-4">
               <Field>
-                <FieldLabel htmlFor={`title-${locale}`}>{t("wiki.title_field")}</FieldLabel>
+                <FieldLabel htmlFor={`title-${locale}`}>
+                  {t("wiki.title_field")}
+                </FieldLabel>
                 <Input
                   id={`title-${locale}`}
                   type="text"
@@ -353,7 +336,9 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
                                 <CreateLink />
                                 <InsertTable />
                                 <InsertCodeBlock />
-                                <ImageUploadButton onUpload={handleImageUpload} />
+                                <MarkdownImageUploadButton
+                                  onUpload={handleImageUpload}
+                                />
                               </>
                             ),
                           }),
