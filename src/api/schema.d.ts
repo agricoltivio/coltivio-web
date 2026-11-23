@@ -3812,6 +3812,38 @@ export interface paths {
         patch: operations["PatchV1ForumRepliesByIdReplyId"];
         trace?: never;
     };
+    "/v1/forum/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostV1ForumImages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/forum/images/byId/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteV1ForumImagesByIdImageId"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3863,7 +3895,7 @@ export interface components {
         GetV1LayersPlotsBboxNegativeResponse: {
             error: string;
             /** @enum {string} */
-            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire" | "invalid_date_range" | "crop_rotation_overlap" | "outdoor_schedule_overlap" | "outdoor_schedule_override_overlap";
+            code?: "invalid_geometry" | "sowing_unit_mismatch" | "seed_not_found" | "sowing_crop_mismatch" | "sowing_crop_required" | "crop_not_found" | "plot_not_found" | "seed_default_amount_without_unit" | "ear_tag_range_conflict" | "invalid_ear_tag_range" | "ear_tag_assigned" | "invalid_sire" | "invalid_date_range" | "crop_rotation_overlap" | "outdoor_schedule_overlap" | "outdoor_schedule_override_overlap" | "invalid_image" | "invalid_image_reference" | "too_many_pending_images";
         };
         GetV1LayersPlotsFarmsFederalFarmIdOnlyPositiveResponse: {
             data: {
@@ -15510,6 +15542,21 @@ export interface components {
             body: string;
         };
         DeleteV1ForumRepliesByIdReplyIdPositiveResponse: {
+            data: Record<string, never>;
+        };
+        PostV1ForumImagesPositiveResponse: {
+            data: {
+                id: string;
+                url: string;
+                width: number;
+                height: number;
+            };
+        };
+        PostV1ForumImagesRequestBody: {
+            /** Format: binary */
+            file: string;
+        };
+        DeleteV1ForumImagesByIdImageIdPositiveResponse: {
             data: Record<string, never>;
         };
     };
@@ -32248,6 +32295,72 @@ export interface operations {
                 };
             };
             /** @description PATCH /v1/forum/replies/byId/:replyId Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    PostV1ForumImages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description POST /v1/forum/images Request body */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PostV1ForumImagesRequestBody"];
+            };
+        };
+        responses: {
+            /** @description POST /v1/forum/images Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostV1ForumImagesPositiveResponse"];
+                };
+            };
+            /** @description POST /v1/forum/images Negative response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetV1LayersPlotsBboxNegativeResponse"];
+                };
+            };
+        };
+    };
+    DeleteV1ForumImagesByIdImageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description DELETE /v1/forum/images/byId/:imageId Parameter */
+                imageId: components["schemas"]["GetV1LayersPlotsBboxParameterXmin"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DELETE /v1/forum/images/byId/:imageId Positive response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteV1ForumImagesByIdImageIdPositiveResponse"];
+                };
+            };
+            /** @description DELETE /v1/forum/images/byId/:imageId Negative response */
             400: {
                 headers: {
                     [name: string]: unknown;
