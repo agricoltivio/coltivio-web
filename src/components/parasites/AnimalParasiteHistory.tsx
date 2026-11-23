@@ -135,7 +135,8 @@ export function AnimalParasiteHistory({
       <TableBody>
         {timelineEntries.map((entry) => (
           <TableRow key={entry.key} className="cursor-pointer" onClick={entry.onOpen}>
-            <TableCell className="w-32 text-muted-foreground">
+            {/* Embedded: flush with the card's title and charts, without the cell's left padding */}
+            <TableCell className={`w-32 text-muted-foreground${embedded ? " pl-0" : ""}`}>
               {formatDateOnly(entry.date, locale)}
             </TableCell>
             <TableCell>
@@ -154,69 +155,74 @@ export function AnimalParasiteHistory({
   );
 
   return (
-      <div className="space-y-6">
-        {!historyQuery.isLoading && timelineEntries.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            {t("parasiteChecks.noChecks")}
-          </p>
-        )}
+    <div className="space-y-6">
+      {!historyQuery.isLoading && timelineEntries.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          {t("parasiteChecks.noChecks")}
+        </p>
+      )}
 
-        {/* All charts in one carousel: FAMACHA first, then one per parasite */}
-        {(fecCharts.length > 0 || famachaPoints.length > 0) && (
-          <ChartCarouselCard
-            className={embedded ? "border-0 py-0 shadow-none" : undefined}
-            pages={[
-              ...(famachaPoints.length > 0
-                ? [
-                    {
-                      key: "famacha",
-                      title: t("parasiteChecks.methods.famacha"),
-                      content: (
-                        <TimelineChart
-                          points={famachaPoints}
-                          treatmentDates={treatmentDates}
-                          seriesName={t("parasiteChecks.famachaScore")}
-                          famachaScale
-                        />
-                      ),
-                    },
-                  ]
-                : []),
-              ...fecCharts.map(({ parasiteType, points, graded }) => ({
-                key: parasiteType,
-                title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${graded ? t("parasiteChecks.grade") : t(parasiteCountUnitKey(parasiteType))})`,
-                content: (
-                  <TimelineChart
-                    points={points}
-                    treatmentDates={treatmentDates}
-                    seriesName={t(
-                      `parasiteChecks.parasiteTypes.${parasiteType}`,
-                    )}
-                    unitLabel={
-                      graded ? undefined : t(parasiteCountUnitKey(parasiteType))
-                    }
-                    gradeScale={graded}
-                  />
-                ),
-              })),
-            ]}
-          />
-        )}
+      {/* All charts in one carousel: FAMACHA first, then one per parasite */}
+      {(fecCharts.length > 0 || famachaPoints.length > 0) && (
+        <ChartCarouselCard
+          // Embedded: no frame and no inner padding, the animal card already has both
+          className={
+            embedded
+              ? "border-0 py-0 shadow-none [&>[data-slot=card-content]]:px-0 [&>[data-slot=card-header]]:px-0"
+              : undefined
+          }
+          pages={[
+            ...(famachaPoints.length > 0
+              ? [
+                  {
+                    key: "famacha",
+                    title: t("parasiteChecks.methods.famacha"),
+                    content: (
+                      <TimelineChart
+                        points={famachaPoints}
+                        treatmentDates={treatmentDates}
+                        seriesName={t("parasiteChecks.famachaScore")}
+                        famachaScale
+                      />
+                    ),
+                  },
+                ]
+              : []),
+            ...fecCharts.map(({ parasiteType, points, graded }) => ({
+              key: parasiteType,
+              title: `${t(`parasiteChecks.parasiteTypes.${parasiteType}`)} (${graded ? t("parasiteChecks.grade") : t(parasiteCountUnitKey(parasiteType))})`,
+              content: (
+                <TimelineChart
+                  points={points}
+                  treatmentDates={treatmentDates}
+                  seriesName={t(
+                    `parasiteChecks.parasiteTypes.${parasiteType}`,
+                  )}
+                  unitLabel={
+                    graded ? undefined : t(parasiteCountUnitKey(parasiteType))
+                  }
+                  gradeScale={graded}
+                />
+              ),
+            })),
+          ]}
+        />
+      )}
 
-        {timelineEntries.length > 0 &&
-          (embedded ? (
-            <div>
-              <h3 className="mb-2 text-sm font-medium">{t("parasiteChecks.timeline")}</h3>
-              {timelineTable}
-            </div>
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("parasiteChecks.timeline")}</CardTitle>
-              </CardHeader>
-              <CardContent>{timelineTable}</CardContent>
-            </Card>
-          ))}
-      </div>
+      {timelineEntries.length > 0 &&
+        (embedded ? (
+          <div>
+            <h3 className="mb-2 text-sm font-medium">{t("parasiteChecks.timeline")}</h3>
+            {timelineTable}
+          </div>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("parasiteChecks.timeline")}</CardTitle>
+            </CardHeader>
+            <CardContent>{timelineTable}</CardContent>
+          </Card>
+        ))}
+    </div>
   );
 }
