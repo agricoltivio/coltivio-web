@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { meadowsQueryOptions } from "@/api/meadows.queries";
 import { parseDateOnly } from "@/lib/utils";
 import type { OutdoorSchedule, OutdoorScheduleInput } from "@/api/types";
 import { apiClient } from "@/api/client";
+import { ApiError } from "@/api/apiError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
@@ -284,7 +286,7 @@ export function ScheduleFormDialog({
           body,
         },
       );
-      if (response.error) throw new Error("Failed to create schedule");
+      if (response.error) throw new ApiError("Failed to create schedule", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -305,7 +307,7 @@ export function ScheduleFormDialog({
           body,
         },
       );
-      if (response.error) throw new Error("Failed to update schedule");
+      if (response.error) throw new ApiError("Failed to update schedule", response.error.code);
       return response.data.data;
     },
     onSuccess: () => {
@@ -581,8 +583,13 @@ export function ScheduleFormDialog({
               </Field>
             </FieldGroup>
           </div>
-          {(createMutation.isError || updateMutation.isError) && (
-            <p className="text-sm text-destructive">{t("common.error")}</p>
+          {(createMutation.error ?? updateMutation.error) && (
+            <p className="text-sm text-destructive">
+              {scheduleSaveErrorMessage(
+                createMutation.error ?? updateMutation.error,
+                t,
+              )}
+            </p>
           )}
           <DialogFooter>
             <Button
@@ -664,4 +671,13 @@ export function DeleteScheduleDialog({
       </AlertDialogContent>
     </AlertDialog>
   );
+}
+
+// Message for a failed schedule save, specific when the API returned an error code (e.g. an
+// overlapping schedule). Falls back to the generic message for codes this version doesn't know.
+function scheduleSaveErrorMessage(error: Error | null, t: TFunction) {
+  const fallback = t("common.error");
+  return error instanceof ApiError && error.code
+    ? t(`herds.errors.${error.code}`, { defaultValue: fallback })
+    : fallback;
 }
