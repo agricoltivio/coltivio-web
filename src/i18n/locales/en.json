@@ -1,6 +1,8 @@
 {
   "common": {
     "loading": "Loading...",
+    "uploadImage": "Upload image",
+    "imageUploadFailed": "The image could not be uploaded.",
     "error": "Error",
     "save": "Save",
     "cancel": "Cancel",
@@ -1837,7 +1839,13 @@
     "addComment": "Add a comment",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "subscribeHint": "Get an email when someone replies to this post."
+    "subscribeHint": "Get an email when someone replies to this post.",
+    "errors": {
+      "saveFailed": "The post could not be saved.",
+      "invalid_image": "The file is not a supported image (JPEG, PNG, WebP, GIF, HEIC) or larger than 15 MB.",
+      "invalid_image_reference": "Images have to be uploaded with the image button. Images from other websites or other posts are not possible.",
+      "too_many_pending_images": "You uploaded many images that are not in a post yet. Save a post first or try again tomorrow."
+    }
   },
   "journal": {
     "title": "Journal",

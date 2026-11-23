@@ -153,7 +153,8 @@ code {
 /* MDXEditor (rich text). Its built-in theming is unreliable, so drive it
    explicitly: an editing surface stays a light "paper" card in both themes,
    while read-only rendered markdown follows the app theme. Keyed off the
-   contenteditable state of the inner Lexical surface. */
+   contenteditable state of the inner Lexical surface. An image in an editing
+   surface is a non-editable node, so read-only means "nothing editable". */
 .mdxeditor:has([contenteditable="true"]) {
   --basePageBg: #ffffff;
   --baseBase: #ffffff;
@@ -168,7 +169,7 @@ code {
   color: #1a1e1f;
 }
 
-.mdxeditor:has([contenteditable="false"]) {
+.mdxeditor:not(:has([contenteditable="true"])) {
   --baseText: var(--foreground);
   --baseTextContrast: var(--foreground);
   --baseBg: var(--muted);
@@ -176,11 +177,11 @@ code {
   background: transparent;
   color: var(--foreground);
 }
-.mdxeditor:has([contenteditable="false"]) [contenteditable="false"] {
+.mdxeditor:not(:has([contenteditable="true"])) [contenteditable="false"] {
   padding: 0;
   color: var(--foreground);
 }
-.mdxeditor:has([contenteditable="false"]) a {
+.mdxeditor:not(:has([contenteditable="true"])) a {
   color: var(--primary);
 }
 
@@ -198,3 +199,8 @@ code {
 .mdxeditor p { margin-top: 0; margin-bottom: 0.75em; }
 .mdxeditor strong { font-weight: 700; }
 .mdxeditor em { font-style: italic; }
+
+/* Images in Treffpunkt posts and editors: never wider than the post */
+.mdxeditor img { max-width: 100%; height: auto; border-radius: 0.375rem; }
+/* Shown posts open an image full size on click */
+.forum-post-body img { cursor: zoom-in; }

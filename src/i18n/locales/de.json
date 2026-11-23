@@ -1,6 +1,8 @@
 {
   "common": {
     "loading": "Laden...",
+    "uploadImage": "Bild hochladen",
+    "imageUploadFailed": "Das Bild konnte nicht hochgeladen werden.",
     "error": "Fehler",
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -1837,7 +1839,13 @@
     "addComment": "Kommentar hinzufügen",
     "subscribe": "Abonnieren",
     "unsubscribe": "Abbestellen",
-    "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet."
+    "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet.",
+    "errors": {
+      "saveFailed": "Der Beitrag konnte nicht gespeichert werden.",
+      "invalid_image": "Die Datei ist kein unterstütztes Bild (JPEG, PNG, WebP, GIF, HEIC) oder grösser als 15 MB.",
+      "invalid_image_reference": "Bilder müssen über den Bild-Knopf hochgeladen werden. Bilder von anderen Webseiten oder aus anderen Beiträgen sind nicht möglich.",
+      "too_many_pending_images": "Du hast viele Bilder hochgeladen, die noch in keinem Beitrag sind. Speichere zuerst einen Beitrag oder versuche es morgen wieder."
+    }
   },
   "journal": {
     "title": "Journal",
