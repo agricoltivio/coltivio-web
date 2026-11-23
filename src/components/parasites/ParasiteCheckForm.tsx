@@ -60,7 +60,8 @@ export function ParasiteCheckForm({
 }: {
   // Set when editing
   check?: ParasiteCheck;
-  defaults?: { previousCheckId?: string };
+  // previousCheckId: a re-check; animalIds: preselected animals (e.g. from an animal's page)
+  defaults?: { previousCheckId?: string; animalIds?: string[] };
   // All animals incl. dead ones (for names and to leave out dead ones in re-checks)
   animals: Animal[];
   herds: { id: string; name: string }[];
@@ -81,7 +82,9 @@ export function ParasiteCheckForm({
     check ? check.date.slice(0, 10) : toLocalDateString(new Date()),
   );
   const [animalIds, setAnimalIds] = useState<string[]>(
-    check?.animals.map((checkAnimal) => checkAnimal.animalId) ?? [],
+    check?.animals.map((checkAnimal) => checkAnimal.animalId) ??
+      defaults?.animalIds ??
+      [],
   );
   const [famachaScores, setFamachaScores] = useState<
     Record<string, number | null>

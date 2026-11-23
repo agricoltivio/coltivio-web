@@ -153,6 +153,11 @@ export function TimelineChart({
   const minTime = Math.min(...timestamps);
   const maxTime = Math.max(...timestamps);
   const isZoomed = sortedPoints.length > VISIBLE_POINTS;
+  // A short range (e.g. a single check) has several ticks in the same month: label them with
+  // the day, and give a single date a week on each side instead of an axis of a few hours
+  const DAY_MS = 86_400_000;
+  const isShortRange = maxTime - minTime < 60 * DAY_MS;
+  const isSingleDate = maxTime === minTime;
 
   // Only treatments within the data range, an old unrelated one would stretch the axis
   const visibleTreatmentTimes = treatmentDates
@@ -195,14 +200,21 @@ export function TimelineChart({
       type: "time",
       // Fewer ticks in half-width cards; labels that would still collide are hidden
       splitNumber: 4,
+      // Ticks on whole days, otherwise a few checks days apart repeat the same day label
+      minInterval: DAY_MS,
+      ...(isSingleDate
+        ? { min: minTime - 7 * DAY_MS, max: maxTime + 7 * DAY_MS }
+        : {}),
       axisLabel: {
         hideOverlap: true,
         fontSize: 10,
         formatter: (value: number) =>
-          new Date(value).toLocaleDateString(i18n.language, {
-            month: "short",
-            year: "2-digit",
-          }),
+          new Date(value).toLocaleDateString(
+            i18n.language,
+            isShortRange
+              ? { day: "numeric", month: "short" }
+              : { month: "short", year: "2-digit" },
+          ),
       },
     },
     yAxis: famachaScale
