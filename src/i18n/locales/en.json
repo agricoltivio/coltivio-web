@@ -799,6 +799,9 @@
       "overlap": "The exception overlaps another exception of this herd.",
       "deleteConfirm": "Really delete this exception?",
       "single": "Exception"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "The outdoor schedule overlaps another schedule of this herd."
     }
   },
   "turnoutJournal": {

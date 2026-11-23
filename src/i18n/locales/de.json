@@ -654,6 +654,9 @@
       "overlap": "Die Ausnahme überschneidet sich mit einer anderen Ausnahme dieser Herde.",
       "deleteConfirm": "Diese Ausnahme wirklich löschen?",
       "single": "Ausnahme"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Der Zeitplan überschneidet sich mit einem anderen Zeitplan dieser Herde."
     }
   },
   "turnoutJournal": {

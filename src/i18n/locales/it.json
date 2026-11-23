@@ -654,6 +654,9 @@
       "overlap": "L'eccezione si sovrappone a un'altra eccezione di questa mandria.",
       "deleteConfirm": "Eliminare davvero questa eccezione?",
       "single": "Eccezione"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Il piano si sovrappone a un altro piano di questa mandria."
     }
   },
   "turnoutJournal": {

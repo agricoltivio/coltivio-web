@@ -654,6 +654,9 @@
       "overlap": "L'exception chevauche une autre exception de ce troupeau.",
       "deleteConfirm": "Vraiment supprimer cette exception ?",
       "single": "Exception"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Le planning chevauche un autre planning de ce troupeau."
     }
   },
   "turnoutJournal": {
