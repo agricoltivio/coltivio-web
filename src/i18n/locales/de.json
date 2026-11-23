@@ -229,6 +229,7 @@
     "importRow": "Zeile",
     "importReason": "Grund",
     "importPreview": "Vorschau",
+    "importSelectType": "Bitte Tierart wählen",
     "importPreviewTitle": "Import-Vorschau",
     "importPreviewDesc": "Überprüfe die Tiere vor dem Import. Du kannst Zeilen bearbeiten oder aus dem Import entfernen.",
     "importPreviewHasErrors": "Einige Zeilen haben Fehler. Bearbeite sie oder entferne sie aus dem Import.",

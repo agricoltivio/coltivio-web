@@ -101,7 +101,8 @@ function ImportAnimals() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState<Step>("upload");
-  const [animalType, setAnimalType] = useState<AnimalType>("goat");
+  // No default: a preselected type got imported by accident when it wasn't changed
+  const [animalType, setAnimalType] = useState<AnimalType | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const skipHeaderRow = true;
   const [previewRows, setPreviewRows] = useState<LocalPreviewRow[]>([]);
@@ -180,6 +181,7 @@ function ImportAnimals() {
           mergeAnimalId: row.mergeAnimalId ?? undefined,
         }));
 
+      if (!animalType) throw new Error(t("animals.importSelectType"));
       const response = await apiClient.POST("/v1/animals/import/commit", {
         body: { type: animalType, rows },
       });
@@ -269,11 +271,13 @@ function ImportAnimals() {
             <Field>
               <FieldLabel htmlFor="animalType">{t("animals.type")} *</FieldLabel>
               <Select
-                value={animalType}
-                onValueChange={(value) => setAnimalType(value as AnimalType)}
+                value={animalType ?? ""}
+                onValueChange={(value) =>
+                  setAnimalType(ANIMAL_TYPES.find((type) => type === value) ?? null)
+                }
               >
                 <SelectTrigger id="animalType">
-                  <SelectValue />
+                  <SelectValue placeholder={t("animals.importSelectType")} />
                 </SelectTrigger>
                 <SelectContent>
                   {ANIMAL_TYPES.map((type) => (
@@ -312,7 +316,7 @@ function ImportAnimals() {
             </Button>
             <Button
               onClick={() => previewMutation.mutate()}
-              disabled={!selectedFile || previewMutation.isPending}
+              disabled={!animalType || !selectedFile || previewMutation.isPending}
             >
               {previewMutation.isPending ? t("common.loading") : t("animals.importPreview")}
             </Button>

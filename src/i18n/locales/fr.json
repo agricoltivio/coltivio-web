@@ -229,6 +229,7 @@
     "importRow": "Ligne",
     "importReason": "Raison",
     "importPreview": "Aperçu",
+    "importSelectType": "Veuillez choisir l'espèce",
     "importPreviewTitle": "Aperçu de l'importation",
     "importPreviewDesc": "Vérifie les animaux avant l'import. Tu peux modifier des lignes ou les retirer de l'import.",
     "importPreviewHasErrors": "Certaines lignes contiennent des erreurs. Modifie-les ou retire-les de l'import.",
