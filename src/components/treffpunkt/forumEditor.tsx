@@ -122,12 +122,14 @@ export function forumReadPlugins() {
   ];
 }
 
-// Clicking an image in a shown post opens it full size in a new tab
-export function openClickedImage(event: React.MouseEvent<HTMLElement>) {
-  if (!(event.target instanceof HTMLImageElement)) return;
-  // Older bodies may still contain any src, only open web URLs
+// The image clicked in a shown post, or null for other clicks. Only http(s) images: older bodies may
+// still contain any src.
+export function clickedImage(
+  event: React.MouseEvent<HTMLElement>,
+): { url: string; alt: string } | null {
+  if (!(event.target instanceof HTMLImageElement)) return null;
   const imageUrl = new URL(event.target.src, window.location.href);
-  if (imageUrl.protocol === "https:" || imageUrl.protocol === "http:") {
-    window.open(imageUrl.href, "_blank", "noopener,noreferrer");
-  }
+  if (imageUrl.protocol !== "https:" && imageUrl.protocol !== "http:")
+    return null;
+  return { url: imageUrl.href, alt: event.target.alt };
 }

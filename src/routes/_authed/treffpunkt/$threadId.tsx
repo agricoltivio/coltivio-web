@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
 import type { MDXEditorMethods } from "@mdxeditor/editor";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
+import { ForumImageDialog } from "@/components/treffpunkt/ForumImageDialog";
 import "@mdxeditor/editor/style.css";
 import { Pin, MoreHorizontal, Bell, BellOff } from "lucide-react";
 import { apiClient } from "@/api/client";
@@ -12,7 +13,7 @@ import {
   forumErrorMessage,
   forumReadPlugins,
   forumWritePlugins,
-  openClickedImage,
+  clickedImage,
 } from "@/components/treffpunkt/forumEditor";
 import {
   forumThreadQueryOptions,
@@ -135,6 +136,15 @@ function ThreadDetail() {
   const [replyBody, setReplyBody] = useState("");
   const [replyFocused, setReplyFocused] = useState(false);
   const replyEditorRef = useRef<MDXEditorMethods>(null);
+  // Image of a post shown full size in a modal
+  const [openImage, setOpenImage] = useState<{
+    url: string;
+    alt: string;
+  } | null>(null);
+  function openImageOnClick(event: React.MouseEvent<HTMLElement>) {
+    const image = clickedImage(event);
+    if (image) setOpenImage(image);
+  }
 
   const isOwner = me?.id === thread?.createdBy;
   const isForumModerator = me?.isForumModerator ?? false;
@@ -468,7 +478,7 @@ function ThreadDetail() {
             ) : (
               // MDXEditor only reads `markdown` on mount, so key by content to
               // force a remount when the body changes after an edit.
-              <div className="forum-post-body" onClick={openClickedImage}>
+              <div className="forum-post-body" onClick={openImageOnClick}>
                 <MarkdownEditor
                   key={`thread-body:${thread.body}`}
                   readOnly
@@ -567,7 +577,7 @@ function ThreadDetail() {
                     </div>
                   </div>
                 ) : (
-                  <div className="forum-post-body" onClick={openClickedImage}>
+                  <div className="forum-post-body" onClick={openImageOnClick}>
                     <MarkdownEditor
                       key={`reply-body:${reply.id}:${reply.body}`}
                       readOnly
@@ -624,6 +634,7 @@ function ThreadDetail() {
           </div>
         </div>
       )}
+      <ForumImageDialog image={openImage} onClose={() => setOpenImage(null)} />
     </PageContent>
   );
 }

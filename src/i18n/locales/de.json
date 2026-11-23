@@ -1840,6 +1840,7 @@
     "subscribe": "Abonnieren",
     "unsubscribe": "Abbestellen",
     "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet.",
+    "image": "Bild",
     "errors": {
       "saveFailed": "Der Beitrag konnte nicht gespeichert werden.",
       "invalid_image": "Die Datei ist kein unterstütztes Bild (JPEG, PNG, WebP, GIF, HEIC) oder grösser als 15 MB.",

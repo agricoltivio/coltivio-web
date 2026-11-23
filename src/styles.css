@@ -203,7 +203,7 @@ code {
 
 /* Images in Markdown: never wider than the text, and capped in height so a
    portrait photo doesn't fill the screen. Keeps the aspect ratio, small images
-   stay small. Full size opens on click in shown Treffpunkt posts. */
+   stay small. Full size opens in a modal on click in shown Treffpunkt posts. */
 .mdxeditor img {
   display: block;
   width: auto;

@@ -1840,6 +1840,7 @@
     "subscribe": "Iscriviti",
     "unsubscribe": "Annulla iscrizione",
     "subscribeHint": "Ricevi un'e-mail quando qualcuno risponde a questo post.",
+    "image": "Immagine",
     "errors": {
       "saveFailed": "Non è stato possibile salvare il post.",
       "invalid_image": "Il file non è un'immagine supportata (JPEG, PNG, WebP, GIF, HEIC) o supera i 15 MB.",

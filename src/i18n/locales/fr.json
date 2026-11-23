@@ -1840,6 +1840,7 @@
     "subscribe": "S'abonner",
     "unsubscribe": "Se désabonner",
     "subscribeHint": "Reçois un e-mail quand quelqu'un répond à ce sujet.",
+    "image": "Image",
     "errors": {
       "saveFailed": "La publication n'a pas pu être enregistrée.",
       "invalid_image": "Le fichier n'est pas une image prise en charge (JPEG, PNG, WebP, GIF, HEIC) ou dépasse 15 Mo.",
