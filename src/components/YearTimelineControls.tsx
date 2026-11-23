@@ -1,3 +1,4 @@
+import { differenceInCalendarDays } from "date-fns";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -12,10 +13,9 @@ type HeaderLabel = { x: number; label: string };
 
 export type YearTimelineZoom = "months" | "weeks";
 
-const MS_PER_DAY = 86_400_000;
-
-function dayOfYear(date: Date, year: number) {
-  return Math.floor((date.getTime() - new Date(year, 0, 1).getTime()) / MS_PER_DAY);
+// Calendar days, so the hour of a summer time switch doesn't shift the day
+export function dayOfYear(date: Date, year: number) {
+  return differenceInCalendarDays(date, new Date(year, 0, 1));
 }
 
 export function useYearTimeline() {
@@ -25,7 +25,9 @@ export function useYearTimeline() {
   const [scrollRequest, setScrollRequest] = useState(0);
   const scrollerRef = useRef<HTMLDivElement>(null);
   // Day of the year to center after the next render; opens on today
-  const pendingCenterDayRef = useRef<number | null>(dayOfYear(new Date(), currentYear));
+  const pendingCenterDayRef = useRef<number | null>(
+    dayOfYear(new Date(), currentYear),
+  );
 
   const { i18n } = useTranslation();
   const pxPerDay = getScaleForZoomLevel(zoom);
@@ -42,7 +44,10 @@ export function useYearTimeline() {
     } else if (zoom === "weeks" && date.getDay() === 1) {
       headerLabels.push({
         x: day * pxPerDay,
-        label: date.toLocaleString(i18n.language, { day: "2-digit", month: "short" }),
+        label: date.toLocaleString(i18n.language, {
+          day: "2-digit",
+          month: "short",
+        }),
       });
     }
   }
@@ -51,7 +56,10 @@ export function useYearTimeline() {
     const scroller = scrollerRef.current;
     const centerDay = pendingCenterDayRef.current;
     if (!scroller || centerDay === null) return;
-    scroller.scrollLeft = Math.max(0, centerDay * pxPerDay - scroller.clientWidth / 2);
+    scroller.scrollLeft = Math.max(
+      0,
+      centerDay * pxPerDay - scroller.clientWidth / 2,
+    );
     pendingCenterDayRef.current = null;
   }, [year, zoom, scrollRequest, pxPerDay]);
 
@@ -61,14 +69,25 @@ export function useYearTimeline() {
     const scroller = scrollerRef.current;
     if (scroller) {
       const firstVisibleDay = scroller.scrollLeft / pxPerDay;
-      const lastVisibleDay = (scroller.scrollLeft + scroller.clientWidth) / pxPerDay;
-      const todayDay = year === currentYear ? dayOfYear(new Date(), year) : null;
+      const lastVisibleDay =
+        (scroller.scrollLeft + scroller.clientWidth) / pxPerDay;
+      const todayDay =
+        year === currentYear ? dayOfYear(new Date(), year) : null;
       pendingCenterDayRef.current =
-        todayDay !== null && todayDay >= firstVisibleDay && todayDay <= lastVisibleDay
+        todayDay !== null &&
+        todayDay >= firstVisibleDay &&
+        todayDay <= lastVisibleDay
           ? todayDay
           : (firstVisibleDay + lastVisibleDay) / 2;
     }
     setZoom(nextZoom);
+  }
+
+  // Switch to another year and open it on the given day
+  function changeYear(nextYear: number, centerDay: number) {
+    pendingCenterDayRef.current = centerDay;
+    setYear(nextYear);
+    setScrollRequest((request) => request + 1);
   }
 
   function goToToday() {
@@ -80,6 +99,7 @@ export function useYearTimeline() {
   return {
     year,
     setYear,
+    changeYear,
     zoom,
     changeZoom,
     goToToday,
@@ -151,8 +171,12 @@ export function YearTimelineZoomControls({
         if (value === "months" || value === "weeks") onZoomChange(value);
       }}
     >
-      <ToggleGroupItem value="months">{t("fieldCalendar.timeline.months")}</ToggleGroupItem>
-      <ToggleGroupItem value="weeks">{t("fieldCalendar.timeline.weeks")}</ToggleGroupItem>
+      <ToggleGroupItem value="months">
+        {t("fieldCalendar.timeline.months")}
+      </ToggleGroupItem>
+      <ToggleGroupItem value="weeks">
+        {t("fieldCalendar.timeline.weeks")}
+      </ToggleGroupItem>
     </ToggleGroup>
   );
 }

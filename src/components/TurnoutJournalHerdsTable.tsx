@@ -12,8 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { HERD_TYPE_COLORS as TYPE_COLORS, herdBarOnDay } from "@/lib/herdTimeline";
-
+import {
+  HERD_TYPE_COLORS as TYPE_COLORS,
+  herdBarOnDay,
+} from "@/lib/herdTimeline";
 
 // Herds below the turnout journal with what each one does today (schedules with the
 // exceptions applied). Herds with something planned today come first; a row opens the herd.
@@ -51,8 +53,18 @@ export function TurnoutJournalHerdsTable() {
         </div>
       </CardHeader>
       <CardContent>
-        {rows.length === 0 ? (
-          <div className="py-4 text-center text-muted-foreground">{t("herds.noHerds")}</div>
+        {herdsQuery.isPending ? (
+          <div className="py-4 text-center text-muted-foreground">
+            {t("common.loading")}
+          </div>
+        ) : herdsQuery.isError ? (
+          <div className="py-4 text-center text-destructive">
+            {t("common.error")}
+          </div>
+        ) : rows.length === 0 ? (
+          <div className="py-4 text-center text-muted-foreground">
+            {t("herds.noHerds")}
+          </div>
         ) : (
           <Table>
             <TableHeader>
@@ -69,11 +81,16 @@ export function TurnoutJournalHerdsTable() {
                   key={herd.id}
                   className="cursor-pointer"
                   onClick={() =>
-                    navigate({ to: "/animals/herds/$herdId", params: { herdId: herd.id } })
+                    navigate({
+                      to: "/animals/herds/$herdId",
+                      params: { herdId: herd.id },
+                    })
                   }
                 >
                   <TableCell className="font-medium">{herd.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{herd.animals.length}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {herd.animals.length}
+                  </TableCell>
                   <TableCell>
                     {bar ? (
                       <span className="flex items-center gap-2">
@@ -93,7 +110,9 @@ export function TurnoutJournalHerdsTable() {
                       <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{meadowName ?? "-"}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {meadowName ?? "-"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

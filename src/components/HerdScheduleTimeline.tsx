@@ -1,14 +1,17 @@
 import { useTranslation } from "react-i18next";
 import type { OutdoorSchedule, OutdoorScheduleOverride } from "@/api/types";
-import { buildHerdYearBars, HERD_TYPE_COLORS as TYPE_COLORS } from "@/lib/herdTimeline";
+import {
+  buildHerdYearBars,
+  HERD_TYPE_COLORS as TYPE_COLORS,
+} from "@/lib/herdTimeline";
 import {
   useYearTimeline,
+  dayOfYear,
   YearTimelineHeader,
   YearTimelineNavigation,
 } from "@/components/YearTimelineControls";
 
 const ROW_HEIGHT = 36;
-
 
 // One herd's year: schedule bars colored by type, exceptions outlined on top (they take
 // precedence over the schedule on their days). Clicking a bar opens it.
@@ -30,12 +33,28 @@ export function HerdScheduleTimeline({
   const today = new Date();
   const todayDay =
     today.getFullYear() === year
-      ? Math.floor((today.getTime() - new Date(year, 0, 1).getTime()) / 86_400_000)
+      ? dayOfYear(today, year)
       : today.getFullYear() > year
         ? totalDays
         : -1;
 
   const bars = buildHerdYearBars(schedules, overrides, year);
+
+  // The current year opens on today, other years on their first bar
+  function changeYear(nextYear: number) {
+    const firstBarDay = Math.min(
+      ...buildHerdYearBars(schedules, overrides, nextYear).map(
+        (bar) => bar.startDay,
+      ),
+    );
+    const centerDay =
+      nextYear === today.getFullYear()
+        ? dayOfYear(today, nextYear)
+        : Number.isFinite(firstBarDay)
+          ? firstBarDay
+          : 0;
+    timeline.changeYear(nextYear, centerDay);
+  }
 
   function openBar(id: string, isOverride: boolean) {
     if (isOverride) {
@@ -52,14 +71,17 @@ export function HerdScheduleTimeline({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <YearTimelineNavigation
           year={year}
-          onYearChange={timeline.setYear}
+          onYearChange={changeYear}
           zoom={timeline.zoom}
           onZoomChange={timeline.changeZoom}
           onToday={timeline.goToToday}
         />
       </div>
 
-      <div ref={timeline.scrollerRef} className="overflow-x-auto rounded-md border">
+      <div
+        ref={timeline.scrollerRef}
+        className="overflow-x-auto rounded-md border"
+      >
         <div style={{ width: timeline.timelineWidth }} className="relative">
           <YearTimelineHeader labels={timeline.headerLabels} />
           <div className="relative" style={{ height: ROW_HEIGHT }}>
@@ -73,9 +95,15 @@ export function HerdScheduleTimeline({
             {bars.map((bar) => {
               const label = t(`herds.scheduleTypes.${bar.type}`);
               const left = bar.startDay * pxPerDay;
-              const width = Math.max((bar.endDay - bar.startDay + 1) * pxPerDay, 3);
-              // Planned part (after today) lighter, like in the turnout journal
-              const plannedFrom = Math.min(Math.max((todayDay + 1) * pxPerDay - left, 0), width);
+              const width = Math.max(
+                (bar.endDay - bar.startDay + 1) * pxPerDay,
+                3,
+              );
+              // Planned part (from today on) lighter, like in the turnout journal
+              const plannedFrom = Math.min(
+                Math.max(todayDay * pxPerDay - left, 0),
+                width,
+              );
               return (
                 <button
                   type="button"
@@ -105,7 +133,9 @@ export function HerdScheduleTimeline({
       <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         {(["pasture", "exercise_yard", "stable"] as const).map((type) => (
           <span key={type} className="flex items-center gap-1">
-            <span className={`inline-block h-3 w-3 rounded-sm ${TYPE_COLORS[type]}`} />
+            <span
+              className={`inline-block h-3 w-3 rounded-sm ${TYPE_COLORS[type]}`}
+            />
             {t(`herds.scheduleTypes.${type}`)}
           </span>
         ))}
