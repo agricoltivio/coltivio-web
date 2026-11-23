@@ -623,7 +623,8 @@
     "scheduleType": "Type",
     "scheduleTypes": {
       "pasture": "Pâturage",
-      "exercise_yard": "Cour d'exercice"
+      "exercise_yard": "Cour d'exercice",
+      "stable": "Étable"
     },
     "startDate": "Du",
     "endDate": "Au",
@@ -645,6 +646,15 @@
     "changesApplyFrom": "Changements valables dès le",
     "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
     "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure.",
+    "overrides": {
+      "title": "Exceptions",
+      "add": "Ajouter une exception",
+      "edit": "Modifier l'exception",
+      "hint": "Jours où le troupeau a fait autre chose que prévu, p. ex. à l'étable à cause d'un orage. Une exception prime sur la sortie ces jours-là.",
+      "overlap": "L'exception chevauche une autre exception de ce troupeau.",
+      "deleteConfirm": "Vraiment supprimer cette exception ?",
+      "single": "Exception"
+    },
     "errors": {
       "outdoor_schedule_overlap": "Le planning chevauche un autre planning de ce troupeau."
     }
@@ -681,7 +691,8 @@
       "description": "Télécharger le journal de sorties en tant que fichier Excel."
     },
     "viewCategories": "Catégories",
-    "viewMeadows": "Pâtures"
+    "viewMeadows": "Pâtures",
+    "viewHerds": "Troupeaux"
   },
   "landing": {
     "nav": {

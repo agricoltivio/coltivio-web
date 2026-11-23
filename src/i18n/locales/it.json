@@ -623,7 +623,8 @@
     "scheduleType": "Tipo",
     "scheduleTypes": {
       "pasture": "Pascolo",
-      "exercise_yard": "Paddock"
+      "exercise_yard": "Paddock",
+      "stable": "Stalla"
     },
     "startDate": "Dal",
     "endDate": "Al",
@@ -645,6 +646,15 @@
     "changesApplyFrom": "Modifiche valide dal",
     "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
     "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva.",
+    "overrides": {
+      "title": "Eccezioni",
+      "add": "Aggiungi eccezione",
+      "edit": "Modifica eccezione",
+      "hint": "Giorni in cui la mandria ha fatto altro rispetto al previsto, p. es. in stalla a causa di un temporale. Un'eccezione prevale sul programma di uscita in quei giorni.",
+      "overlap": "L'eccezione si sovrappone a un'altra eccezione di questa mandria.",
+      "deleteConfirm": "Eliminare davvero questa eccezione?",
+      "single": "Eccezione"
+    },
     "errors": {
       "outdoor_schedule_overlap": "Il piano si sovrappone a un altro piano di questa mandria."
     }
@@ -681,7 +691,8 @@
       "description": "Scarica il diario di uscita come file Excel."
     },
     "viewCategories": "Categorie",
-    "viewMeadows": "Aree di pascolo"
+    "viewMeadows": "Aree di pascolo",
+    "viewHerds": "Mandrie"
   },
   "landing": {
     "nav": {
