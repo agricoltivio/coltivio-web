@@ -101,7 +101,8 @@ function ImportAnimals() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState<Step>("upload");
-  const [animalType, setAnimalType] = useState<AnimalType>("goat");
+  // No default: a preselected type got imported by accident when it wasn't changed
+  const [animalType, setAnimalType] = useState<AnimalType | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const skipHeaderRow = true;
   const [previewRows, setPreviewRows] = useState<LocalPreviewRow[]>([]);
@@ -180,6 +181,7 @@ function ImportAnimals() {
           mergeAnimalId: row.mergeAnimalId ?? undefined,
         }));
 
+      if (!animalType) throw new Error(t("animals.importSelectType"));
       const response = await apiClient.POST("/v1/animals/import/commit", {
         body: { type: animalType, rows },
       });
@@ -269,11 +271,13 @@ function ImportAnimals() {
             <Field>
               <FieldLabel htmlFor="animalType">{t("animals.type")} *</FieldLabel>
               <Select
-                value={animalType}
-                onValueChange={(value) => setAnimalType(value as AnimalType)}
+                value={animalType ?? ""}
+                onValueChange={(value) =>
+                  setAnimalType(ANIMAL_TYPES.find((type) => type === value) ?? null)
+                }
               >
                 <SelectTrigger id="animalType">
-                  <SelectValue />
+                  <SelectValue placeholder={t("animals.importSelectType")} />
                 </SelectTrigger>
                 <SelectContent>
                   {ANIMAL_TYPES.map((type) => (
@@ -312,7 +316,7 @@ function ImportAnimals() {
             </Button>
             <Button
               onClick={() => previewMutation.mutate()}
-              disabled={!selectedFile || previewMutation.isPending}
+              disabled={!animalType || !selectedFile || previewMutation.isPending}
             >
               {previewMutation.isPending ? t("common.loading") : t("animals.importPreview")}
             </Button>
@@ -415,6 +419,29 @@ function ImportAnimals() {
     <PageContent title={t("animals.importPreviewTitle")} showBackButton>
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">{t("animals.importPreviewDesc")}</p>
+
+        {/* The chosen type, changeable right here: the preview doesn't depend on it, so the
+            row edits, removals and merges are kept */}
+        <div className="flex items-center gap-2 text-sm">
+          <label htmlFor="previewAnimalType">{t("animals.importAs")}</label>
+          <Select
+            value={animalType ?? ""}
+            onValueChange={(value) =>
+              setAnimalType(ANIMAL_TYPES.find((type) => type === value) ?? null)
+            }
+          >
+            <SelectTrigger id="previewAnimalType" className="w-48">
+              <SelectValue placeholder={t("animals.importSelectType")} />
+            </SelectTrigger>
+            <SelectContent>
+              {ANIMAL_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {t(`animals.types.${type}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {hasBlockingErrors && (
           <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3">
@@ -528,6 +555,8 @@ function ImportAnimals() {
               setStep("upload");
               setPreviewRows([]);
               previewMutation.reset();
+              // The file input comes back empty, so the file has to be picked again
+              setSelectedFile(null);
             }}
           >
             {t("animals.importBack")}
