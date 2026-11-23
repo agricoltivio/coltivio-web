@@ -20,6 +20,8 @@ import {
 export const Route = createFileRoute("/_authed/parasite-checks/create")({
   validateSearch: z.object({
     previousCheckId: z.string().optional(),
+    // Opened from an animal's page: the animal is preselected and saving returns there
+    animalId: z.string().optional(),
   }),
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(animalsQueryOptions(false));
@@ -35,7 +37,7 @@ function CreateParasiteCheckPage() {
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { previousCheckId } = Route.useSearch();
+  const { previousCheckId, animalId } = Route.useSearch();
 
   const animalsQuery = useQuery(animalsQueryOptions(false));
   const herdsQuery = useQuery(herdsQueryOptions());
@@ -65,6 +67,15 @@ function CreateParasiteCheckPage() {
           params: { checkId: createdCheck.previousCheckId },
           replace: true,
         });
+        return;
+      }
+      // Opened from an animal's page: back there
+      if (animalId) {
+        if (router.history.canGoBack()) {
+          router.history.back();
+        } else {
+          navigate({ to: "/animals/$animalId", params: { animalId }, replace: true });
+        }
         return;
       }
       // A base check returns to the overview, showing its animal type
@@ -102,7 +113,10 @@ function CreateParasiteCheckPage() {
   return (
     <PageContent title={t("parasiteChecks.newCheck")} showBackButton>
       <ParasiteCheckForm
-        defaults={{ previousCheckId }}
+        defaults={{
+          previousCheckId,
+          animalIds: animalId ? [animalId] : undefined,
+        }}
         animals={animalsQuery.data.result}
         herds={herdsQuery.data?.result ?? []}
         treatments={treatmentsQuery.data?.result ?? []}
