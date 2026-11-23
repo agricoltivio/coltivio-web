@@ -153,9 +153,10 @@ code {
 /* MDXEditor (rich text). Its built-in theming is unreliable, so drive it
    explicitly: an editing surface stays a light "paper" card in both themes,
    while read-only rendered markdown follows the app theme. Keyed off the
-   contenteditable state of the inner Lexical surface. An image in an editing
-   surface is a non-editable node, so read-only means "nothing editable". */
-.mdxeditor:has([contenteditable="true"]) {
+   contenteditable state of the Lexical surface itself (not of nodes inside it:
+   images are non-editable in an editor, CodeMirror blocks stay editable in a
+   read-only one). */
+.mdxeditor:has(.mdxeditor-root-contenteditable > div > [contenteditable="true"]) {
   --basePageBg: #ffffff;
   --baseBase: #ffffff;
   --baseBg: #ffffff;
@@ -169,7 +170,7 @@ code {
   color: #1a1e1f;
 }
 
-.mdxeditor:not(:has([contenteditable="true"])) {
+.mdxeditor:has(.mdxeditor-root-contenteditable > div > [contenteditable="false"]) {
   --baseText: var(--foreground);
   --baseTextContrast: var(--foreground);
   --baseBg: var(--muted);
@@ -177,11 +178,11 @@ code {
   background: transparent;
   color: var(--foreground);
 }
-.mdxeditor:not(:has([contenteditable="true"])) [contenteditable="false"] {
+.mdxeditor:has(.mdxeditor-root-contenteditable > div > [contenteditable="false"]) [contenteditable="false"] {
   padding: 0;
   color: var(--foreground);
 }
-.mdxeditor:not(:has([contenteditable="true"])) a {
+.mdxeditor:has(.mdxeditor-root-contenteditable > div > [contenteditable="false"]) a {
   color: var(--primary);
 }
 
@@ -200,7 +201,21 @@ code {
 .mdxeditor strong { font-weight: 700; }
 .mdxeditor em { font-style: italic; }
 
-/* Images in Treffpunkt posts and editors: never wider than the post */
-.mdxeditor img { max-width: 100%; height: auto; border-radius: 0.375rem; }
-/* Shown posts open an image full size on click */
+/* Images in Markdown: never wider than the text, and capped in height so a
+   portrait photo doesn't fill the screen. Keeps the aspect ratio, small images
+   stay small. Full size opens on click in shown Treffpunkt posts. */
+.mdxeditor img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+  border-radius: 0.375rem;
+}
+/* Image wrappers are inline blocks: several images in a row line up at the top with a gap */
+.mdxeditor div:has(> div > img) {
+  vertical-align: top;
+  margin: 0 0.5rem 0.5rem 0;
+}
 .forum-post-body img { cursor: zoom-in; }
