@@ -646,7 +646,7 @@
     "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
     "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva.",
     "errors": {
-      "outdoor_schedule_overlap": "Il programma di uscita si sovrappone a un altro programma di questa mandria."
+      "outdoor_schedule_overlap": "Il piano si sovrappone a un altro piano di questa mandria."
     }
   },
   "turnoutJournal": {

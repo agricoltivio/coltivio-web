@@ -646,7 +646,7 @@
     "changesSummary": "{{added}} hinzugefügt, {{removed}} entfernt. Ab welchem Datum gilt das?",
     "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum.",
     "errors": {
-      "outdoor_schedule_overlap": "Der Auslauf überschneidet sich mit einem anderen Auslauf dieser Herde."
+      "outdoor_schedule_overlap": "Der Zeitplan überschneidet sich mit einem anderen Zeitplan dieser Herde."
     }
   },
   "turnoutJournal": {
