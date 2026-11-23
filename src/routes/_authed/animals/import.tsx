@@ -423,14 +423,14 @@ function ImportAnimals() {
         {/* The chosen type, changeable right here: the preview doesn't depend on it, so the
             row edits, removals and merges are kept */}
         <div className="flex items-center gap-2 text-sm">
-          <span>{t("animals.importAs")}</span>
+          <label htmlFor="previewAnimalType">{t("animals.importAs")}</label>
           <Select
             value={animalType ?? ""}
             onValueChange={(value) =>
               setAnimalType(ANIMAL_TYPES.find((type) => type === value) ?? null)
             }
           >
-            <SelectTrigger className="w-48">
+            <SelectTrigger id="previewAnimalType" className="w-48">
               <SelectValue placeholder={t("animals.importSelectType")} />
             </SelectTrigger>
             <SelectContent>
