@@ -230,7 +230,7 @@
     "importReason": "Reason",
     "importPreview": "Preview",
     "importSelectType": "Please select the animal type",
-    "importAsType": "Imported as: {{type}}",
+    "importAs": "Import as",
     "importPreviewTitle": "Import preview",
     "importPreviewDesc": "Review the animals before importing. You can edit rows or remove them from the import.",
     "importPreviewHasErrors": "Some rows have errors. Edit them or remove them from the import.",

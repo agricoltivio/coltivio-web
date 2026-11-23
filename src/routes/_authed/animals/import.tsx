@@ -420,17 +420,28 @@ function ImportAnimals() {
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">{t("animals.importPreviewDesc")}</p>
 
-        {/* The chosen type, so a wrong pick is noticed before importing */}
-        {animalType && (
-          <div className="flex items-center gap-2 text-sm">
-            <span>
-              {t("animals.importAsType", { type: t(`animals.types.${animalType}`) })}
-            </span>
-            <Button variant="link" size="sm" className="h-auto p-0" onClick={() => setStep("upload")}>
-              {t("common.edit")}
-            </Button>
-          </div>
-        )}
+        {/* The chosen type, changeable right here: the preview doesn't depend on it, so the
+            row edits, removals and merges are kept */}
+        <div className="flex items-center gap-2 text-sm">
+          <span>{t("animals.importAs")}</span>
+          <Select
+            value={animalType ?? ""}
+            onValueChange={(value) =>
+              setAnimalType(ANIMAL_TYPES.find((type) => type === value) ?? null)
+            }
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder={t("animals.importSelectType")} />
+            </SelectTrigger>
+            <SelectContent>
+              {ANIMAL_TYPES.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {t(`animals.types.${type}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {hasBlockingErrors && (
           <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3">
@@ -544,6 +555,8 @@ function ImportAnimals() {
               setStep("upload");
               setPreviewRows([]);
               previewMutation.reset();
+              // The file input comes back empty, so the file has to be picked again
+              setSelectedFile(null);
             }}
           >
             {t("animals.importBack")}
