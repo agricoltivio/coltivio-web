@@ -263,6 +263,12 @@
     "addOffspringFailed": "The offspring couldn't be added."
   },
   "earTags": {
+    "prefix": "Prefix",
+    "prefixPlaceholder": "e.g. CH or CH 120.",
+    "invalidDigits": "Digits only, letters and characters go into the prefix",
+    "editEarTag": "Edit ear tag",
+    "assignedTo": "Assigned to {{name}}",
+    "numberTaken": "This number already exists.",
     "title": "Ear tags",
     "addRange": "Add range",
     "deleteRange": "Delete range",

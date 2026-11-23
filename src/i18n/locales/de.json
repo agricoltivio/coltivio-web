@@ -263,6 +263,12 @@
     "addOffspringFailed": "Die Nachkommen konnten nicht hinzugefügt werden."
   },
   "earTags": {
+    "prefix": "Präfix",
+    "prefixPlaceholder": "z.B. CH oder CH 120.",
+    "invalidDigits": "Nur Ziffern, Buchstaben und Zeichen gehören ins Präfix",
+    "editEarTag": "Ohrmarke bearbeiten",
+    "assignedTo": "Zugewiesen an {{name}}",
+    "numberTaken": "Diese Nummer gibt es schon.",
     "title": "Ohrmarken",
     "addRange": "Bereich hinzufügen",
     "deleteRange": "Bereich löschen",

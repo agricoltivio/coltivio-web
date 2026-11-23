@@ -30,9 +30,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import {
+  buildEarTagRange,
+  EAR_TAG_RANGE_DIGITS_PATTERN,
+  type EarTagRange,
+  MAX_EAR_TAG_RANGE_SIZE,
+} from "@/lib/earTagRange";
 
 export const Route = createFileRoute("/_authed/animals/ear-tags")({
   loader: ({ context: { queryClient } }) => {
@@ -50,18 +56,42 @@ function EarTags() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [earTagToDelete, setEarTagToDelete] = useState<EarTag | null>(null);
+  // Ear tag whose number is being changed
+  const [earTagToEdit, setEarTagToEdit] = useState<EarTag | null>(null);
+
+  // Changes the number of one ear tag, also of an assigned one (the animal keeps it)
+  const updateNumberMutation = useMutation({
+    mutationFn: async ({ earTagId, number }: { earTagId: string; number: string }) => {
+      const response = await apiClient.PATCH("/v1/earTags/byId/{earTagId}", {
+        params: { path: { earTagId } },
+        body: { number },
+      });
+      if (response.error) {
+        throw new Error(
+          response.error.code === "ear_tag_number_taken"
+            ? t("earTags.numberTaken")
+            : t("common.error"),
+        );
+      }
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["earTags"] });
+      queryClient.invalidateQueries({ queryKey: ["animals"] });
+      setEarTagToEdit(null);
+    },
+  });
 
   // Create range mutation
   const createRangeMutation = useMutation({
-    mutationFn: async ({
-      fromNumber,
-      toNumber,
-    }: {
-      fromNumber: string;
-      toNumber: string;
-    }) => {
+    // Digits of the range with the prefix separate
+    mutationFn: async (range: EarTagRange) => {
       const response = await apiClient.POST("/v1/earTags/range", {
-        body: { fromNumber, toNumber },
+        body: {
+          fromNumber: range.fromDigits,
+          toNumber: range.toDigits,
+          prefix: range.prefix || undefined,
+        },
       });
       if (response.error) {
         // Conflicts are checked in the dialog; the API still rejects them if tags were
@@ -127,9 +157,15 @@ function EarTags() {
 
   // Delete range mutation; the API skips tags that are assigned to an animal
   const deleteRangeMutation = useMutation({
-    mutationFn: async ({ fromNumber, toNumber }: { fromNumber: string; toNumber: string }) => {
+    mutationFn: async (range: EarTagRange) => {
       const response = await apiClient.DELETE("/v1/earTags/range", {
-        params: { query: { fromNumber, toNumber } },
+        params: {
+          query: {
+            fromNumber: range.fromDigits,
+            toNumber: range.toDigits,
+            prefix: range.prefix || undefined,
+          },
+        },
       });
       if (response.error) throw new Error(t("common.error"));
       return response.data.data;
@@ -183,6 +219,19 @@ function EarTags() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={() => {
+                    updateNumberMutation.reset();
+                    setEarTagToEdit(earTag);
+                  }}
+                  title={t("earTags.editEarTag")}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+              {canWriteAnimals && (
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={(e) => handleDeleteClick(earTag, e)}
                   disabled={isAssigned}
@@ -212,7 +261,7 @@ function EarTags() {
           <div className="flex gap-2">
           <DeleteRangeDialog
             earTags={earTagsQuery.data?.result}
-            onSubmit={(fromNumber, toNumber) => deleteRangeMutation.mutate({ fromNumber, toNumber })}
+            onSubmit={(range) => deleteRangeMutation.mutate(range)}
             onClose={() => deleteRangeMutation.reset()}
             isPending={deleteRangeMutation.isPending}
             submitError={deleteRangeMutation.error?.message ?? null}
@@ -228,9 +277,7 @@ function EarTags() {
               (earTag) => earTag.number,
             )}
             submitError={createRangeMutation.error?.message ?? null}
-            onSubmit={(fromNumber, toNumber) =>
-              createRangeMutation.mutate({ fromNumber, toNumber })
-            }
+            onSubmit={(range) => createRangeMutation.mutate(range)}
             isPending={createRangeMutation.isPending}
           />
           </div>
@@ -253,6 +300,18 @@ function EarTags() {
       {/* The confirmation dialog closes on click, so a failed delete is reported here */}
       {deleteMutation.isError && (
         <p className="mt-2 text-sm text-destructive">{deleteMutation.error.message}</p>
+      )}
+
+      {earTagToEdit && (
+        <EditEarTagDialog
+          earTag={earTagToEdit}
+          onClose={() => setEarTagToEdit(null)}
+          onSubmit={(number) =>
+            updateNumberMutation.mutate({ earTagId: earTagToEdit.id, number })
+          }
+          isPending={updateNumberMutation.isPending}
+          submitError={updateNumberMutation.error?.message ?? null}
+        />
       )}
 
       {/* Delete confirmation dialog */}
@@ -286,62 +345,29 @@ function EarTags() {
   );
 }
 
-// Same format the API expects: optional letter prefix + number, e.g. "CH001" or "201231"
-const EAR_TAG_NUMBER_PATTERN = /^([A-Za-z]*)(\d+)$/;
-
 // Conflicting numbers listed in the preview; the rest is summarized as a count
 const MAX_LISTED_CONFLICTS = 10;
-// Largest range the API creates at once
-const MAX_EAR_TAG_RANGE_SIZE = 1000;
 
-type EarTagRangePreview = {
-  fromNumber: string;
-  toNumber: string;
-  amount: number;
+type EarTagRangePreview = EarTagRange & {
   // Existing tags inside the range, sorted
   conflictingNumbers: string[];
 };
 
-// The range of `amount` tags starting at `fromNumber`, numbered like the API does it:
-// same prefix, zero padded to the start number's length, e.g. ("CH001", 50) -> CH001..CH050.
-// Conflicts are found by checking each existing tag against the range, so a large
-// amount doesn't build a large list. Null while the input is incomplete or invalid.
+// The range of `amount` tags starting at the first number, and the existing tags in it.
+// Null while the input is incomplete or invalid.
 function buildRangePreview(
+  prefixInput: string,
   fromNumberInput: string,
   amountInput: string,
   existingNumbers: string[],
 ): EarTagRangePreview | null {
-  const fromNumber = fromNumberInput.trim();
-  const match = fromNumber.match(EAR_TAG_NUMBER_PATTERN);
-  const amount = /^\d+$/.test(amountInput.trim())
-    ? parseInt(amountInput, 10)
-    : 0;
-  if (!match || amount < 1) return null;
-  const [, prefix, digits] = match;
-  const firstValue = parseInt(digits, 10);
-  const lastValue = firstValue + amount - 1;
-  const formatNumber = (value: number) =>
-    `${prefix}${value.toString().padStart(digits.length, "0")}`;
-
-  const conflictingNumbers = existingNumbers
-    .filter((existingNumber) => {
-      const existingMatch = existingNumber.match(EAR_TAG_NUMBER_PATTERN);
-      if (!existingMatch || existingMatch[1] !== prefix) return false;
-      const existingValue = parseInt(existingMatch[2], 10);
-      // Only an exact match counts, e.g. "CH0105" isn't "CH105"
-      return (
-        existingValue >= firstValue &&
-        existingValue <= lastValue &&
-        formatNumber(existingValue) === existingNumber
-      );
-    })
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-
+  const range = buildEarTagRange(prefixInput, fromNumberInput, amountInput);
+  if (!range) return null;
   return {
-    fromNumber,
-    toNumber: formatNumber(lastValue),
-    amount,
-    conflictingNumbers,
+    ...range,
+    conflictingNumbers: existingNumbers
+      .filter(range.contains)
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
   };
 }
 
@@ -356,13 +382,14 @@ function CreateRangeDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (fromNumber: string, toNumber: string) => void;
+  onSubmit: (range: EarTagRange) => void;
   isPending: boolean;
   // Numbers of the farm's ear tags; undefined while loading
   existingNumbers: string[] | undefined;
   submitError: string | null;
 }) {
   const { t } = useTranslation();
+  const [prefix, setPrefix] = useState("");
   const [fromNumber, setFromNumber] = useState("");
   const [amount, setAmount] = useState("");
   // Creating a wrong range produces many tags that are tedious to clean up, so the
@@ -372,10 +399,10 @@ function CreateRangeDialog({
   const trimmedFromNumber = fromNumber.trim();
   const fromNumberInvalid =
     trimmedFromNumber.length > 0 &&
-    !EAR_TAG_NUMBER_PATTERN.test(trimmedFromNumber);
+    !EAR_TAG_RANGE_DIGITS_PATTERN.test(trimmedFromNumber);
   // Live preview of the range below the inputs, including overlaps with existing tags
   const preview = existingNumbers
-    ? buildRangePreview(fromNumber, amount, existingNumbers)
+    ? buildRangePreview(prefix, fromNumber, amount, existingNumbers)
     : null;
   const listedConflicts =
     preview?.conflictingNumbers.slice(0, MAX_LISTED_CONFLICTS) ?? [];
@@ -393,12 +420,13 @@ function CreateRangeDialog({
       setConfirming(true);
       return;
     }
-    onSubmit(preview.fromNumber, preview.toNumber);
+    onSubmit(preview);
   }
 
   // Reset whenever the dialog closes, also when the parent closes it after creating
   useEffect(() => {
     if (open) return;
+    setPrefix("");
     setFromNumber("");
     setAmount("");
     setConfirming(false);
@@ -430,6 +458,18 @@ function CreateRangeDialog({
 
           {!confirming && (
             <div className="grid grid-cols-2 gap-4 py-4">
+              {/* Text in front of the numbers, e.g. "CH" or "CH 120." */}
+              <FieldGroup className="col-span-2">
+                <Field>
+                  <FieldLabel htmlFor="prefix">{t("earTags.prefix")}</FieldLabel>
+                  <Input
+                    id="prefix"
+                    value={prefix}
+                    onChange={(e) => setPrefix(e.target.value)}
+                    placeholder={t("earTags.prefixPlaceholder")}
+                  />
+                </Field>
+              </FieldGroup>
               <FieldGroup>
                 <Field>
                   <FieldLabel htmlFor="fromNumber">
@@ -439,12 +479,13 @@ function CreateRangeDialog({
                     id="fromNumber"
                     value={fromNumber}
                     onChange={(e) => setFromNumber(e.target.value)}
-                    placeholder="201231"
+                    placeholder="001"
+                    inputMode="numeric"
                     aria-invalid={fromNumberInvalid}
                   />
                   {fromNumberInvalid && (
                     <p className="text-sm text-destructive">
-                      {t("earTags.invalidNumber")}
+                      {t("earTags.invalidDigits")}
                     </p>
                   )}
                 </Field>
@@ -548,31 +589,21 @@ function CreateRangeDialog({
 // Kept (assigned) numbers listed in the delete preview; the rest is summarized as a count
 const MAX_LISTED_ASSIGNED = 10;
 
-// Existing tags in the range of `amount` numbers starting at `fromNumber` (numbered like the
-// API does it): unassigned ones get deleted, assigned ones are kept. Null while the input is
-// incomplete or invalid.
-function buildDeletePreview(fromNumberInput: string, amountInput: string, earTags: EarTag[]) {
-  const fromNumber = fromNumberInput.trim();
-  const match = fromNumber.match(EAR_TAG_NUMBER_PATTERN);
-  const amount = /^\d+$/.test(amountInput.trim()) ? parseInt(amountInput, 10) : 0;
-  if (!match || amount < 1) return null;
-  const [, prefix, digits] = match;
-  const firstValue = parseInt(digits, 10);
-  const lastValue = firstValue + amount - 1;
-  const formatNumber = (value: number) => `${prefix}${value.toString().padStart(digits.length, "0")}`;
+// Existing tags in the range: unassigned ones get deleted, assigned ones are kept. Null while the
+// input is incomplete or invalid.
+function buildDeletePreview(
+  prefixInput: string,
+  fromNumberInput: string,
+  amountInput: string,
+  earTags: EarTag[],
+) {
+  const range = buildEarTagRange(prefixInput, fromNumberInput, amountInput);
+  if (!range) return null;
   const tagsInRange = earTags
-    .filter((earTag) => {
-      const existingMatch = earTag.number.match(EAR_TAG_NUMBER_PATTERN);
-      if (!existingMatch || existingMatch[1] !== prefix) return false;
-      const existingValue = parseInt(existingMatch[2], 10);
-      // Only an exact match counts, e.g. "CH0105" isn't "CH105"
-      return existingValue >= firstValue && existingValue <= lastValue && formatNumber(existingValue) === earTag.number;
-    })
+    .filter((earTag) => range.contains(earTag.number))
     .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
   return {
-    fromNumber,
-    toNumber: formatNumber(lastValue),
-    amount,
+    ...range,
     deletableCount: tagsInRange.filter((earTag) => !earTag.animal).length,
     assignedNumbers: tagsInRange.filter((earTag) => earTag.animal).map((earTag) => earTag.number),
   };
@@ -588,7 +619,7 @@ function DeleteRangeDialog({
 }: {
   // The farm's ear tags; undefined while loading
   earTags: EarTag[] | undefined;
-  onSubmit: (fromNumber: string, toNumber: string) => void;
+  onSubmit: (range: EarTagRange) => void;
   onClose: () => void;
   isPending: boolean;
   submitError: string | null;
@@ -596,14 +627,15 @@ function DeleteRangeDialog({
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [prefix, setPrefix] = useState("");
   const [fromNumber, setFromNumber] = useState("");
   const [amount, setAmount] = useState("");
   // Deleting is confirmed with the computed range first
   const [confirming, setConfirming] = useState(false);
 
   const trimmedFromNumber = fromNumber.trim();
-  const fromNumberInvalid = trimmedFromNumber.length > 0 && !EAR_TAG_NUMBER_PATTERN.test(trimmedFromNumber);
-  const preview = earTags ? buildDeletePreview(fromNumber, amount, earTags) : null;
+  const fromNumberInvalid = trimmedFromNumber.length > 0 && !EAR_TAG_RANGE_DIGITS_PATTERN.test(trimmedFromNumber);
+  const preview = earTags ? buildDeletePreview(prefix, fromNumber, amount, earTags) : null;
   const isTooLarge = !!preview && preview.amount > MAX_EAR_TAG_RANGE_SIZE;
   const canDelete = !!preview && preview.deletableCount > 0 && !isTooLarge;
   const listedAssigned = preview?.assignedNumbers.slice(0, MAX_LISTED_ASSIGNED) ?? [];
@@ -612,6 +644,7 @@ function DeleteRangeDialog({
   function handleOpenChange(isOpen: boolean) {
     setOpen(isOpen);
     if (isOpen) return;
+    setPrefix("");
     setFromNumber("");
     setAmount("");
     setConfirming(false);
@@ -625,7 +658,7 @@ function DeleteRangeDialog({
       setConfirming(true);
       return;
     }
-    onSubmit(preview.fromNumber, preview.toNumber);
+    onSubmit(preview);
   }
 
   return (
@@ -668,6 +701,17 @@ function DeleteRangeDialog({
 
             {!confirming && (
               <div className="grid grid-cols-2 gap-4 py-4">
+                <FieldGroup className="col-span-2">
+                  <Field>
+                    <FieldLabel htmlFor="deletePrefix">{t("earTags.prefix")}</FieldLabel>
+                    <Input
+                      id="deletePrefix"
+                      value={prefix}
+                      onChange={(event) => setPrefix(event.target.value)}
+                      placeholder={t("earTags.prefixPlaceholder")}
+                    />
+                  </Field>
+                </FieldGroup>
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="deleteFromNumber">{t("earTags.firstNumber")} *</FieldLabel>
@@ -675,10 +719,11 @@ function DeleteRangeDialog({
                       id="deleteFromNumber"
                       value={fromNumber}
                       onChange={(event) => setFromNumber(event.target.value)}
-                      placeholder="201231"
+                      placeholder="001"
+                      inputMode="numeric"
                       aria-invalid={fromNumberInvalid}
                     />
-                    {fromNumberInvalid && <p className="text-sm text-destructive">{t("earTags.invalidNumber")}</p>}
+                    {fromNumberInvalid && <p className="text-sm text-destructive">{t("earTags.invalidDigits")}</p>}
                   </Field>
                 </FieldGroup>
                 <FieldGroup>
@@ -745,6 +790,73 @@ function DeleteRangeDialog({
             </DialogFooter>
           </form>
         )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Changes the number of one ear tag, e.g. a typo or a format the range didn't cover
+function EditEarTagDialog({
+  earTag,
+  onClose,
+  onSubmit,
+  isPending,
+  submitError,
+}: {
+  earTag: EarTag;
+  onClose: () => void;
+  onSubmit: (number: string) => void;
+  isPending: boolean;
+  submitError: string | null;
+}) {
+  const { t } = useTranslation();
+  const [number, setNumber] = useState(earTag.number);
+  const trimmedNumber = number.trim();
+  const canSave = trimmedNumber.length > 0 && trimmedNumber !== earTag.number;
+
+  return (
+    <Dialog
+      open={true}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) onClose();
+      }}
+    >
+      <DialogContent>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (canSave) onSubmit(trimmedNumber);
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>{t("earTags.editEarTag")}</DialogTitle>
+            {earTag.animal && (
+              <DialogDescription>
+                {t("earTags.assignedTo", { name: earTag.animal.name })}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <FieldGroup className="py-4">
+            <Field>
+              <FieldLabel htmlFor="editEarTagNumber">{t("earTags.number")} *</FieldLabel>
+              <Input
+                id="editEarTagNumber"
+                value={number}
+                onChange={(event) => setNumber(event.target.value)}
+                autoFocus
+              />
+            </Field>
+          </FieldGroup>
+          {submitError && <p className="mb-4 text-sm text-destructive">{submitError}</p>}
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              {t("common.cancel")}
+            </Button>
+            <Button type="submit" disabled={!canSave || isPending}>
+              {isPending ? t("common.loading") : t("common.save")}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

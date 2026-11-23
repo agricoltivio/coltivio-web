@@ -263,6 +263,12 @@
     "addOffspringFailed": "Les descendants n'ont pas pu être ajoutés."
   },
   "earTags": {
+    "prefix": "Préfixe",
+    "prefixPlaceholder": "p.ex. CH ou CH 120.",
+    "invalidDigits": "Chiffres uniquement, les lettres et caractères vont dans le préfixe",
+    "editEarTag": "Modifier la marque auriculaire",
+    "assignedTo": "Attribuée à {{name}}",
+    "numberTaken": "Ce numéro existe déjà.",
     "title": "Boucles d'oreille",
     "addRange": "Ajouter une plage",
     "deleteRange": "Supprimer une plage",
