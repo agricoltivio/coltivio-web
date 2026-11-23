@@ -3,27 +3,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  thematicBreakPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  tablePlugin,
-  codeBlockPlugin,
-  markdownShortcutPlugin,
-  toolbarPlugin,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  BlockTypeSelect,
-  CreateLink,
-  InsertTable,
-  InsertCodeBlock,
-} from "@mdxeditor/editor";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import "@mdxeditor/editor/style.css";
 import { apiClient } from "@/api/client";
+import { ApiError } from "@/api/apiError";
+import {
+  forumErrorMessage,
+  forumWritePlugins,
+} from "@/components/treffpunkt/forumEditor";
 import type { ForumThreadType } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
@@ -70,12 +57,18 @@ function CreateThread() {
       const response = await apiClient.POST("/v1/forum/threads", {
         body: { title: data.title, type: data.type, body: bodyMarkdown },
       });
-      if (response.error) throw new Error("Failed to create thread");
+      if (response.error)
+        throw new ApiError(response.error.error, response.error.code);
       return response.data.data;
     },
+    onError: (error) =>
+      alert(forumErrorMessage(error, t("treffpunkt.errors.saveFailed"), t)),
     onSuccess: (thread) => {
       queryClient.invalidateQueries({ queryKey: ["forum", "threads"] });
-      navigate({ to: "/treffpunkt/$threadId", params: { threadId: thread.id } });
+      navigate({
+        to: "/treffpunkt/$threadId",
+        params: { threadId: thread.id },
+      });
     },
   });
 
@@ -91,11 +84,10 @@ function CreateThread() {
       >
         <FieldGroup>
           <Field>
-            <FieldLabel htmlFor="title">{t("treffpunkt.threadTitle")} *</FieldLabel>
-            <Input
-              id="title"
-              {...register("title", { required: true })}
-            />
+            <FieldLabel htmlFor="title">
+              {t("treffpunkt.threadTitle")} *
+            </FieldLabel>
+            <Input id="title" {...register("title", { required: true })} />
           </Field>
         </FieldGroup>
 
@@ -129,29 +121,7 @@ function CreateThread() {
             <MarkdownEditor
               markdown={bodyMarkdown}
               onChange={setBodyMarkdown}
-              plugins={[
-                headingsPlugin(),
-                listsPlugin(),
-                quotePlugin(),
-                thematicBreakPlugin(),
-                linkPlugin(),
-                linkDialogPlugin(),
-                tablePlugin(),
-                codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
-                markdownShortcutPlugin(),
-                toolbarPlugin({
-                  toolbarContents: () => (
-                    <>
-                      <UndoRedo />
-                      <BoldItalicUnderlineToggles />
-                      <BlockTypeSelect />
-                      <CreateLink />
-                      <InsertTable />
-                      <InsertCodeBlock />
-                    </>
-                  ),
-                }),
-              ]}
+              plugins={forumWritePlugins(t)}
             />
           </div>
         </Field>

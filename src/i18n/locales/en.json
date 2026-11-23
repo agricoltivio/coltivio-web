@@ -6,6 +6,8 @@
     "deleteConfirmTitle": "Really delete?",
     "deleteConfirmMessage": "This can't be undone.",
     "loading": "Loading...",
+    "uploadImage": "Upload image",
+    "imageUploadFailed": "The image could not be uploaded.",
     "error": "Error",
     "save": "Save",
     "cancel": "Cancel",
@@ -234,6 +236,8 @@
     "importRow": "Row",
     "importReason": "Reason",
     "importPreview": "Preview",
+    "importSelectType": "Please select the animal type",
+    "importAs": "Import as",
     "importPreviewTitle": "Import preview",
     "importPreviewDesc": "Review the animals before importing. You can edit rows or remove them from the import.",
     "importPreviewHasErrors": "Some rows have errors. Edit them or remove them from the import.",
@@ -264,6 +268,12 @@
     "addOffspringFailed": "The offspring couldn't be added."
   },
   "earTags": {
+    "prefix": "Prefix",
+    "prefixPlaceholder": "e.g. CH or CH 120.",
+    "invalidDigits": "Digits only, letters and characters go into the prefix",
+    "editEarTag": "Edit ear tag",
+    "assignedTo": "Assigned to {{name}}",
+    "numberTaken": "This number already exists.",
     "title": "Ear tags",
     "addRange": "Add range",
     "deleteRange": "Delete range",
@@ -773,7 +783,8 @@
     "scheduleType": "Type",
     "scheduleTypes": {
       "pasture": "Pasture",
-      "exercise_yard": "Exercise yard"
+      "exercise_yard": "Exercise yard",
+      "stable": "Stable"
     },
     "startDate": "From",
     "endDate": "To",
@@ -794,7 +805,19 @@
     "endBeforeStart": "The date can't be before the start date.",
     "changesApplyFrom": "Changes apply from",
     "changesSummary": "{{added}} added, {{removed}} removed. From which date does this apply?",
-    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date."
+    "membershipDateTooEarly": "The date is before an animal joined its current herd. Please pick a later date.",
+    "overrides": {
+      "title": "Exceptions",
+      "add": "Add exception",
+      "edit": "Edit exception",
+      "hint": "Days on which the herd did something else than planned, e.g. in the stable because of a storm. An exception takes precedence over the outdoor schedule on those days.",
+      "overlap": "The exception overlaps another exception of this herd.",
+      "deleteConfirm": "Really delete this exception?",
+      "single": "Exception"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "The outdoor schedule overlaps another schedule of this herd."
+    }
   },
   "turnoutJournal": {
     "title": "Turnout journal",
@@ -828,7 +851,8 @@
       "description": "Download the turnout journal as an Excel file."
     },
     "viewCategories": "Categories",
-    "viewMeadows": "Meadows"
+    "viewMeadows": "Meadows",
+    "viewHerds": "Herds"
   },
   "fieldCalendar": {
     "divide": {
@@ -1842,7 +1866,14 @@
     "addComment": "Add a comment",
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
-    "subscribeHint": "Get an email when someone replies to this post."
+    "subscribeHint": "Get an email when someone replies to this post.",
+    "image": "Image",
+    "errors": {
+      "saveFailed": "The post could not be saved.",
+      "invalid_image": "The file is not a supported image (JPEG, PNG, WebP, GIF, HEIC) or larger than 15 MB.",
+      "invalid_image_reference": "Images have to be uploaded with the image button. Images from other websites or other posts are not possible.",
+      "too_many_pending_images": "You uploaded many images that are not in a post yet. Save a post first or try again tomorrow."
+    }
   },
   "journal": {
     "title": "Journal",

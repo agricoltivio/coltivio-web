@@ -2,30 +2,23 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useRef, useState } from "react";
-import {
-  type MDXEditorMethods,
-  headingsPlugin,
-  listsPlugin,
-  quotePlugin,
-  thematicBreakPlugin,
-  linkPlugin,
-  linkDialogPlugin,
-  tablePlugin,
-  codeBlockPlugin,
-  markdownShortcutPlugin,
-  toolbarPlugin,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  BlockTypeSelect,
-  CreateLink,
-  InsertTable,
-  InsertCodeBlock,
-} from "@mdxeditor/editor";
+import type { MDXEditorMethods } from "@mdxeditor/editor";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
+import { ForumImageDialog } from "@/components/treffpunkt/ForumImageDialog";
 import "@mdxeditor/editor/style.css";
 import { Pin, MoreHorizontal, Bell, BellOff } from "lucide-react";
 import { apiClient } from "@/api/client";
-import { forumThreadQueryOptions, forumRepliesQueryOptions } from "@/api/forum.queries";
+import { ApiError } from "@/api/apiError";
+import {
+  forumErrorMessage,
+  forumReadPlugins,
+  forumWritePlugins,
+  clickedImage,
+} from "@/components/treffpunkt/forumEditor";
+import {
+  forumThreadQueryOptions,
+  forumRepliesQueryOptions,
+} from "@/api/forum.queries";
 import { meQueryOptions } from "@/api/user.queries";
 import { farmQueryOptions } from "@/api/farm.queries";
 import type { ForumReply } from "@/api/types";
@@ -55,9 +48,13 @@ function EntryCard({
   return (
     <div className="overflow-hidden rounded-lg border bg-card">
       <div className="flex items-center justify-between gap-2 border-b border-primary/15 bg-accent px-3 py-2 text-accent-foreground">
-        <div className="flex min-w-0 flex-1 items-center gap-2">{headerLeft}</div>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {headerLeft}
+        </div>
         {headerRight ? (
-          <div className="flex shrink-0 items-center gap-1.5">{headerRight}</div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            {headerRight}
+          </div>
         ) : null}
       </div>
       <div className="px-4 py-3">{children}</div>
@@ -139,6 +136,15 @@ function ThreadDetail() {
   const [replyBody, setReplyBody] = useState("");
   const [replyFocused, setReplyFocused] = useState(false);
   const replyEditorRef = useRef<MDXEditorMethods>(null);
+  // Image of a post shown full size in a modal
+  const [openImage, setOpenImage] = useState<{
+    url: string;
+    alt: string;
+  } | null>(null);
+  function openImageOnClick(event: React.MouseEvent<HTMLElement>) {
+    const image = clickedImage(event);
+    if (image) setOpenImage(image);
+  }
 
   const isOwner = me?.id === thread?.createdBy;
   const isForumModerator = me?.isForumModerator ?? false;
@@ -146,15 +152,23 @@ function ThreadDetail() {
   // ── Thread mutations ───────────────────────────────────────────────
   const updateThreadMutation = useMutation({
     mutationFn: async (body: string) => {
-      const response = await apiClient.PATCH("/v1/forum/threads/byId/{threadId}", {
-        params: { path: { threadId } },
-        body: { body },
-      });
-      if (response.error) throw new Error("Failed to update thread");
+      const response = await apiClient.PATCH(
+        "/v1/forum/threads/byId/{threadId}",
+        {
+          params: { path: { threadId } },
+          body: { body },
+        },
+      );
+      if (response.error)
+        throw new ApiError(response.error.error, response.error.code);
       return response.data.data;
     },
+    onError: (error) =>
+      alert(forumErrorMessage(error, t("treffpunkt.errors.saveFailed"), t)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forum", "threads", "byId", threadId],
+      });
       setEditingThread(false);
     },
   });
@@ -182,7 +196,9 @@ function ThreadDetail() {
       if (response.error) throw new Error("Failed to update status");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forum", "threads", "byId", threadId],
+      });
       queryClient.invalidateQueries({ queryKey: ["forum", "threads"] });
     },
   });
@@ -196,7 +212,9 @@ function ThreadDetail() {
       if (response.error) throw new Error("Failed to update pin");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forum", "threads", "byId", threadId],
+      });
       queryClient.invalidateQueries({ queryKey: ["forum", "threads"] });
     },
   });
@@ -210,7 +228,9 @@ function ThreadDetail() {
       if (response.error) throw new Error("Failed to update subscription");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forum", "threads", "byId", threadId],
+      });
     },
   });
 
@@ -221,12 +241,17 @@ function ThreadDetail() {
         "/v1/forum/threads/byId/{threadId}/replies",
         { params: { path: { threadId } }, body: { body } },
       );
-      if (response.error) throw new Error("Failed to create reply");
+      if (response.error)
+        throw new ApiError(response.error.error, response.error.code);
       return response.data.data;
     },
+    onError: (error) =>
+      alert(forumErrorMessage(error, t("treffpunkt.errors.saveFailed"), t)),
     onSuccess: () => {
       // Replying subscribes the author, so the thread's isSubscribed changes too.
-      queryClient.invalidateQueries({ queryKey: ["forum", "threads", "byId", threadId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forum", "threads", "byId", threadId],
+      });
       setReplyBody("");
       setReplyFocused(false);
       replyEditorRef.current?.setMarkdown("");
@@ -234,14 +259,26 @@ function ThreadDetail() {
   });
 
   const updateReplyMutation = useMutation({
-    mutationFn: async ({ replyId, body }: { replyId: string; body: string }) => {
-      const response = await apiClient.PATCH("/v1/forum/replies/byId/{replyId}", {
-        params: { path: { replyId } },
-        body: { body },
-      });
-      if (response.error) throw new Error("Failed to update reply");
+    mutationFn: async ({
+      replyId,
+      body,
+    }: {
+      replyId: string;
+      body: string;
+    }) => {
+      const response = await apiClient.PATCH(
+        "/v1/forum/replies/byId/{replyId}",
+        {
+          params: { path: { replyId } },
+          body: { body },
+        },
+      );
+      if (response.error)
+        throw new ApiError(response.error.error, response.error.code);
       return response.data.data;
     },
+    onError: (error) =>
+      alert(forumErrorMessage(error, t("treffpunkt.errors.saveFailed"), t)),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["forum", "threads", "byId", threadId, "replies"],
@@ -252,9 +289,12 @@ function ThreadDetail() {
 
   const deleteReplyMutation = useMutation({
     mutationFn: async (replyId: string) => {
-      const response = await apiClient.DELETE("/v1/forum/replies/byId/{replyId}", {
-        params: { path: { replyId } },
-      });
+      const response = await apiClient.DELETE(
+        "/v1/forum/replies/byId/{replyId}",
+        {
+          params: { path: { replyId } },
+        },
+      );
       if (response.error) throw new Error("Failed to delete reply");
     },
     onSuccess: () => {
@@ -272,55 +312,30 @@ function ThreadDetail() {
   });
   function timeAgo(date: string | unknown): string {
     if (!date || typeof date !== "string") return "";
-    const diffSeconds = Math.round((new Date(date).getTime() - Date.now()) / 1000);
+    const diffSeconds = Math.round(
+      (new Date(date).getTime() - Date.now()) / 1000,
+    );
     const abs = Math.abs(diffSeconds);
-    if (abs < 3600) return relativeTimeFormat.format(Math.round(diffSeconds / 60), "minute");
-    if (abs < 86400) return relativeTimeFormat.format(Math.round(diffSeconds / 3600), "hour");
-    if (abs < 604800) return relativeTimeFormat.format(Math.round(diffSeconds / 86400), "day");
-    if (abs < 2592000) return relativeTimeFormat.format(Math.round(diffSeconds / 604800), "week");
+    if (abs < 3600)
+      return relativeTimeFormat.format(Math.round(diffSeconds / 60), "minute");
+    if (abs < 86400)
+      return relativeTimeFormat.format(Math.round(diffSeconds / 3600), "hour");
+    if (abs < 604800)
+      return relativeTimeFormat.format(Math.round(diffSeconds / 86400), "day");
+    if (abs < 2592000)
+      return relativeTimeFormat.format(
+        Math.round(diffSeconds / 604800),
+        "week",
+      );
     if (abs < 31536000)
-      return relativeTimeFormat.format(Math.round(diffSeconds / 2592000), "month");
-    return relativeTimeFormat.format(Math.round(diffSeconds / 31536000), "year");
-  }
-
-  // Shared plugin set for write-mode editors (no image plugin)
-  function writePlugins() {
-    return [
-      headingsPlugin(),
-      listsPlugin(),
-      quotePlugin(),
-      thematicBreakPlugin(),
-      linkPlugin(),
-      linkDialogPlugin(),
-      tablePlugin(),
-      codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
-      markdownShortcutPlugin(),
-      toolbarPlugin({
-        toolbarContents: () => (
-          <>
-            <UndoRedo />
-            <BoldItalicUnderlineToggles />
-            <BlockTypeSelect />
-            <CreateLink />
-            <InsertTable />
-            <InsertCodeBlock />
-          </>
-        ),
-      }),
-    ];
-  }
-
-  // Read-only plugin set (no toolbar, no image)
-  function readPlugins() {
-    return [
-      headingsPlugin(),
-      listsPlugin(),
-      quotePlugin(),
-      thematicBreakPlugin(),
-      linkPlugin(),
-      tablePlugin(),
-      codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
-    ];
+      return relativeTimeFormat.format(
+        Math.round(diffSeconds / 2592000),
+        "month",
+      );
+    return relativeTimeFormat.format(
+      Math.round(diffSeconds / 31536000),
+      "year",
+    );
   }
 
   return (
@@ -353,7 +368,9 @@ function ThreadDetail() {
               variant="outline"
               size="sm"
               onClick={() =>
-                statusMutation.mutate(thread.status === "open" ? "closed" : "open")
+                statusMutation.mutate(
+                  thread.status === "open" ? "closed" : "open",
+                )
               }
               disabled={statusMutation.isPending}
             >
@@ -438,7 +455,7 @@ function ThreadDetail() {
                     key={`edit-thread-${threadId}`}
                     markdown={editThreadBody}
                     onChange={setEditThreadBody}
-                    plugins={writePlugins()}
+                    plugins={forumWritePlugins(t)}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -461,12 +478,14 @@ function ThreadDetail() {
             ) : (
               // MDXEditor only reads `markdown` on mount, so key by content to
               // force a remount when the body changes after an edit.
-              <MarkdownEditor
-                key={`thread-body:${thread.body}`}
-                readOnly
-                markdown={thread.body}
-                plugins={readPlugins()}
-              />
+              <div className="forum-post-body" onClick={openImageOnClick}>
+                <MarkdownEditor
+                  key={`thread-body:${thread.body}`}
+                  readOnly
+                  markdown={thread.body}
+                  plugins={forumReadPlugins()}
+                />
+              </div>
             )}
           </EntryCard>
         </div>
@@ -474,7 +493,8 @@ function ThreadDetail() {
         {/* Replies */}
         {(replies as ForumReply[]).map((reply) => {
           const isReplyOwner = me?.id === reply.createdBy;
-          const isReplyByThreadAuthor = reply.createdBy != null && reply.createdBy === thread.createdBy;
+          const isReplyByThreadAuthor =
+            reply.createdBy != null && reply.createdBy === thread.createdBy;
           const isEditingThis = editingReplyId === reply.id;
 
           return (
@@ -488,14 +508,18 @@ function ThreadDetail() {
                       {forumAuthorName(reply.creator, t)}
                     </span>{" "}
                     <span className="text-muted-foreground">
-                      {t("treffpunkt.entryReplied")} · {timeAgo(reply.createdAt)}
+                      {t("treffpunkt.entryReplied")} ·{" "}
+                      {timeAgo(reply.createdAt)}
                     </span>
                   </span>
                 }
                 headerRight={
                   <>
                     {isReplyByThreadAuthor && (
-                      <Badge variant="secondary" className="shrink-0 font-normal">
+                      <Badge
+                        variant="secondary"
+                        className="shrink-0 font-normal"
+                      >
                         {t("treffpunkt.authorBadge")}
                       </Badge>
                     )}
@@ -509,7 +533,9 @@ function ThreadDetail() {
                           setEditingReplyId(reply.id);
                         }}
                         onDelete={() => {
-                          if (window.confirm(t("treffpunkt.deleteReplyConfirm"))) {
+                          if (
+                            window.confirm(t("treffpunkt.deleteReplyConfirm"))
+                          ) {
                             deleteReplyMutation.mutate(reply.id);
                           }
                         }}
@@ -525,7 +551,7 @@ function ThreadDetail() {
                         key={`edit-reply-${reply.id}`}
                         markdown={editReplyBody}
                         onChange={setEditReplyBody}
-                        plugins={writePlugins()}
+                        plugins={forumWritePlugins(t)}
                       />
                     </div>
                     <div className="flex gap-2">
@@ -551,12 +577,14 @@ function ThreadDetail() {
                     </div>
                   </div>
                 ) : (
-                  <MarkdownEditor
-                    key={`reply-body:${reply.id}:${reply.body}`}
-                    readOnly
-                    markdown={reply.body}
-                    plugins={readPlugins()}
-                  />
+                  <div className="forum-post-body" onClick={openImageOnClick}>
+                    <MarkdownEditor
+                      key={`reply-body:${reply.id}:${reply.body}`}
+                      readOnly
+                      markdown={reply.body}
+                      plugins={forumReadPlugins()}
+                    />
+                  </div>
                 )}
               </EntryCard>
             </div>
@@ -579,7 +607,7 @@ function ThreadDetail() {
                 ref={replyEditorRef}
                 markdown={replyBody}
                 onChange={setReplyBody}
-                plugins={writePlugins()}
+                plugins={forumWritePlugins(t)}
               />
             </div>
             {(replyFocused || replyBody.trim()) && (
@@ -606,6 +634,7 @@ function ThreadDetail() {
           </div>
         </div>
       )}
+      <ForumImageDialog image={openImage} onClose={() => setOpenImage(null)} />
     </PageContent>
   );
 }

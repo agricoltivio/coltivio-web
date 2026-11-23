@@ -14,6 +14,7 @@ import {
 import type { AnimalDetail } from "@/api/types";
 import { animalJournalQueryOptions } from "@/api/animalJournal.queries";
 import { AnimalHeatsCard, AnimalWeightCard } from "@/components/AnimalBreedingCards";
+import { AnimalParasiteHistory } from "@/components/parasites/AnimalParasiteHistory";
 import { useFeatureAccess } from "@/lib/useFeatureAccess";
 import { inlineLink } from "@/lib/ui";
 import { PageContent } from "@/components/PageContent";
@@ -182,11 +183,6 @@ function AnimalDetailPage() {
               search={{ type: animal.type, focusId: animal.id }}
             >
               {t("animals.familyTree")}
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/animals/$animalId/parasite-history" params={{ animalId }}>
-              {t("parasiteChecks.parasiteHistory")}
             </Link>
           </Button>
           {canWriteAnimals && (
@@ -527,6 +523,32 @@ function AnimalDetailPage() {
                 {t("treatments.noTreatments")}
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Parasite history inline, like treatments; a new check preselects this animal */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("parasiteChecks.parasiteHistory")}</CardTitle>
+            {canWriteAnimals && (
+              <CardAction>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    navigate({
+                      to: "/parasite-checks/create",
+                      search: { animalId: animal.id },
+                    })
+                  }
+                >
+                  {t("parasiteChecks.newCheck")}
+                </Button>
+              </CardAction>
+            )}
+          </CardHeader>
+          <CardContent>
+            <AnimalParasiteHistory animalId={animalId} embedded />
           </CardContent>
         </Card>
 

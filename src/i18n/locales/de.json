@@ -6,6 +6,8 @@
     "deleteConfirmTitle": "Wirklich löschen?",
     "deleteConfirmMessage": "Das kann nicht rückgängig gemacht werden.",
     "loading": "Laden...",
+    "uploadImage": "Bild hochladen",
+    "imageUploadFailed": "Das Bild konnte nicht hochgeladen werden.",
     "error": "Fehler",
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -234,6 +236,8 @@
     "importRow": "Zeile",
     "importReason": "Grund",
     "importPreview": "Vorschau",
+    "importSelectType": "Bitte Tierart wählen",
+    "importAs": "Importieren als",
     "importPreviewTitle": "Import-Vorschau",
     "importPreviewDesc": "Überprüfe die Tiere vor dem Import. Du kannst Zeilen bearbeiten oder aus dem Import entfernen.",
     "importPreviewHasErrors": "Einige Zeilen haben Fehler. Bearbeite sie oder entferne sie aus dem Import.",
@@ -264,6 +268,12 @@
     "addOffspringFailed": "Die Nachkommen konnten nicht hinzugefügt werden."
   },
   "earTags": {
+    "prefix": "Präfix",
+    "prefixPlaceholder": "z.B. CH oder CH 120.",
+    "invalidDigits": "Nur Ziffern, Buchstaben und Zeichen gehören ins Präfix",
+    "editEarTag": "Ohrmarke bearbeiten",
+    "assignedTo": "Zugewiesen an {{name}}",
+    "numberTaken": "Diese Nummer gibt es schon.",
     "title": "Ohrmarken",
     "addRange": "Bereich hinzufügen",
     "deleteRange": "Bereich löschen",
@@ -628,7 +638,8 @@
     "scheduleType": "Typ",
     "scheduleTypes": {
       "pasture": "Weide",
-      "exercise_yard": "Laufhof"
+      "exercise_yard": "Laufhof",
+      "stable": "Stall"
     },
     "startDate": "Von",
     "endDate": "Bis",
@@ -649,7 +660,19 @@
     "endBeforeStart": "Das Datum darf nicht vor dem Startdatum liegen.",
     "changesApplyFrom": "Änderungen gelten ab",
     "changesSummary": "{{added}} hinzugefügt, {{removed}} entfernt. Ab welchem Datum gilt das?",
-    "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum."
+    "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum.",
+    "overrides": {
+      "title": "Ausnahmen",
+      "add": "Ausnahme hinzufügen",
+      "edit": "Ausnahme bearbeiten",
+      "hint": "Tage, an denen die Herde etwas anderes machte als geplant, z.B. wegen Unwetter im Stall. Eine Ausnahme geht dem Auslauf an diesen Tagen vor.",
+      "overlap": "Die Ausnahme überschneidet sich mit einer anderen Ausnahme dieser Herde.",
+      "deleteConfirm": "Diese Ausnahme wirklich löschen?",
+      "single": "Ausnahme"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Der Zeitplan überschneidet sich mit einem anderen Zeitplan dieser Herde."
+    }
   },
   "turnoutJournal": {
     "title": "Auslaufjournal",
@@ -683,7 +706,8 @@
       "description": "Auslaufjournal als Excel-Datei herunterladen."
     },
     "viewCategories": "Kategorien",
-    "viewMeadows": "Weideflächen"
+    "viewMeadows": "Weideflächen",
+    "viewHerds": "Herden"
   },
   "landing": {
     "nav": {
@@ -1842,7 +1866,14 @@
     "addComment": "Kommentar hinzufügen",
     "subscribe": "Abonnieren",
     "unsubscribe": "Abbestellen",
-    "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet."
+    "subscribeHint": "Erhalte eine E-Mail, wenn jemand auf diesen Beitrag antwortet.",
+    "image": "Bild",
+    "errors": {
+      "saveFailed": "Der Beitrag konnte nicht gespeichert werden.",
+      "invalid_image": "Die Datei ist kein unterstütztes Bild (JPEG, PNG, WebP, GIF, HEIC) oder grösser als 15 MB.",
+      "invalid_image_reference": "Bilder müssen über den Bild-Knopf hochgeladen werden. Bilder von anderen Webseiten oder aus anderen Beiträgen sind nicht möglich.",
+      "too_many_pending_images": "Du hast viele Bilder hochgeladen, die noch in keinem Beitrag sind. Speichere zuerst einen Beitrag oder versuche es morgen wieder."
+    }
   },
   "journal": {
     "title": "Journal",

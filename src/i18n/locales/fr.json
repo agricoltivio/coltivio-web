@@ -6,6 +6,8 @@
     "deleteConfirmTitle": "Vraiment supprimer ?",
     "deleteConfirmMessage": "Cette action est irréversible.",
     "loading": "Chargement...",
+    "uploadImage": "Télécharger une image",
+    "imageUploadFailed": "L'image n'a pas pu être téléchargée.",
     "error": "Erreur",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -234,6 +236,8 @@
     "importRow": "Ligne",
     "importReason": "Raison",
     "importPreview": "Aperçu",
+    "importSelectType": "Veuillez choisir l'espèce",
+    "importAs": "Importer comme",
     "importPreviewTitle": "Aperçu de l'importation",
     "importPreviewDesc": "Vérifie les animaux avant l'import. Tu peux modifier des lignes ou les retirer de l'import.",
     "importPreviewHasErrors": "Certaines lignes contiennent des erreurs. Modifie-les ou retire-les de l'import.",
@@ -264,6 +268,12 @@
     "addOffspringFailed": "Les descendants n'ont pas pu être ajoutés."
   },
   "earTags": {
+    "prefix": "Préfixe",
+    "prefixPlaceholder": "p.ex. CH ou CH 120.",
+    "invalidDigits": "Chiffres uniquement, les lettres et caractères vont dans le préfixe",
+    "editEarTag": "Modifier la marque auriculaire",
+    "assignedTo": "Attribuée à {{name}}",
+    "numberTaken": "Ce numéro existe déjà.",
     "title": "Boucles d'oreille",
     "addRange": "Ajouter une plage",
     "deleteRange": "Supprimer une plage",
@@ -628,7 +638,8 @@
     "scheduleType": "Type",
     "scheduleTypes": {
       "pasture": "Pâturage",
-      "exercise_yard": "Cour d'exercice"
+      "exercise_yard": "Cour d'exercice",
+      "stable": "Étable"
     },
     "startDate": "Du",
     "endDate": "Au",
@@ -649,7 +660,19 @@
     "endBeforeStart": "La date ne peut pas précéder la date de début.",
     "changesApplyFrom": "Changements valables dès le",
     "changesSummary": "{{added}} ajoutés, {{removed}} retirés. À partir de quelle date ?",
-    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure."
+    "membershipDateTooEarly": "La date est antérieure à l'entrée d'un animal dans son troupeau actuel. Choisis une date ultérieure.",
+    "overrides": {
+      "title": "Exceptions",
+      "add": "Ajouter une exception",
+      "edit": "Modifier l'exception",
+      "hint": "Jours où le troupeau a fait autre chose que prévu, p. ex. à l'étable à cause d'un orage. Une exception prime sur la sortie ces jours-là.",
+      "overlap": "L'exception chevauche une autre exception de ce troupeau.",
+      "deleteConfirm": "Vraiment supprimer cette exception ?",
+      "single": "Exception"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Le planning chevauche un autre planning de ce troupeau."
+    }
   },
   "turnoutJournal": {
     "title": "Journal de pâturage",
@@ -683,7 +706,8 @@
       "description": "Télécharger le journal de sorties en tant que fichier Excel."
     },
     "viewCategories": "Catégories",
-    "viewMeadows": "Pâtures"
+    "viewMeadows": "Pâtures",
+    "viewHerds": "Troupeaux"
   },
   "landing": {
     "nav": {
@@ -1842,7 +1866,14 @@
     "addComment": "Ajouter un commentaire",
     "subscribe": "S'abonner",
     "unsubscribe": "Se désabonner",
-    "subscribeHint": "Reçois un e-mail quand quelqu'un répond à ce sujet."
+    "subscribeHint": "Reçois un e-mail quand quelqu'un répond à ce sujet.",
+    "image": "Image",
+    "errors": {
+      "saveFailed": "La publication n'a pas pu être enregistrée.",
+      "invalid_image": "Le fichier n'est pas une image prise en charge (JPEG, PNG, WebP, GIF, HEIC) ou dépasse 15 Mo.",
+      "invalid_image_reference": "Les images doivent être téléchargées avec le bouton image. Les images d'autres sites web ou d'autres publications ne sont pas possibles.",
+      "too_many_pending_images": "Tu as téléchargé beaucoup d'images qui ne sont encore dans aucune publication. Enregistre d'abord une publication ou réessaie demain."
+    }
   },
   "journal": {
     "title": "Journal",
