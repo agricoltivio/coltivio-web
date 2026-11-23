@@ -74,7 +74,11 @@ function CreateParasiteCheckPage() {
         if (router.history.canGoBack()) {
           router.history.back();
         } else {
-          navigate({ to: "/animals/$animalId", params: { animalId }, replace: true });
+          navigate({
+            to: "/animals/$animalId",
+            params: { animalId },
+            replace: true,
+          });
         }
         return;
       }

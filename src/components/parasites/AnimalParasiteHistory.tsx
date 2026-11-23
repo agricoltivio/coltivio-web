@@ -134,19 +134,29 @@ export function AnimalParasiteHistory({
     <Table>
       <TableBody>
         {timelineEntries.map((entry) => (
-          <TableRow key={entry.key} className="cursor-pointer" onClick={entry.onOpen}>
+          <TableRow
+            key={entry.key}
+            className="cursor-pointer"
+            onClick={entry.onOpen}
+          >
             {/* Embedded: flush with the card's title and charts, without the cell's left padding */}
-            <TableCell className={`w-32 text-muted-foreground${embedded ? " pl-0" : ""}`}>
+            <TableCell
+              className={`w-32 text-muted-foreground${embedded ? " pl-0" : ""}`}
+            >
               {formatDateOnly(entry.date, locale)}
             </TableCell>
             <TableCell>
               <div className="font-medium">{entry.title}</div>
               {entry.subtitle && (
-                <div className="text-xs text-muted-foreground">{entry.subtitle}</div>
+                <div className="text-xs text-muted-foreground">
+                  {entry.subtitle}
+                </div>
               )}
             </TableCell>
             <TableCell className="w-12">
-              {entry.famachaScore !== null && <FamachaBadge score={entry.famachaScore} />}
+              {entry.famachaScore !== null && (
+                <FamachaBadge score={entry.famachaScore} />
+              )}
             </TableCell>
           </TableRow>
         ))}
@@ -195,9 +205,7 @@ export function AnimalParasiteHistory({
                 <TimelineChart
                   points={points}
                   treatmentDates={treatmentDates}
-                  seriesName={t(
-                    `parasiteChecks.parasiteTypes.${parasiteType}`,
-                  )}
+                  seriesName={t(`parasiteChecks.parasiteTypes.${parasiteType}`)}
                   unitLabel={
                     graded ? undefined : t(parasiteCountUnitKey(parasiteType))
                   }
@@ -212,7 +220,9 @@ export function AnimalParasiteHistory({
       {timelineEntries.length > 0 &&
         (embedded ? (
           <div>
-            <h3 className="mb-2 text-sm font-medium">{t("parasiteChecks.timeline")}</h3>
+            <h3 className="mb-2 text-sm font-medium">
+              {t("parasiteChecks.timeline")}
+            </h3>
             {timelineTable}
           </div>
         ) : (

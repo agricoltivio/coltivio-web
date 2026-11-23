@@ -200,14 +200,20 @@ export function TimelineChart({
       type: "time",
       // Fewer ticks in half-width cards; labels that would still collide are hidden
       splitNumber: 4,
-      ...(isSingleDate ? { min: minTime - 7 * DAY_MS, max: maxTime + 7 * DAY_MS } : {}),
+      // Ticks on whole days, otherwise a few checks days apart repeat the same day label
+      minInterval: DAY_MS,
+      ...(isSingleDate
+        ? { min: minTime - 7 * DAY_MS, max: maxTime + 7 * DAY_MS }
+        : {}),
       axisLabel: {
         hideOverlap: true,
         fontSize: 10,
         formatter: (value: number) =>
           new Date(value).toLocaleDateString(
             i18n.language,
-            isShortRange ? { day: "numeric", month: "short" } : { month: "short", year: "2-digit" },
+            isShortRange
+              ? { day: "numeric", month: "short" }
+              : { month: "short", year: "2-digit" },
           ),
       },
     },
