@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface ScopedPaymentFormData {
   date: string;
@@ -35,7 +36,7 @@ export function ScopedPaymentForm({
 }: ScopedPaymentFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control } = useForm<ScopedPaymentFormData>({
+  const { register, handleSubmit, control, formState: { isDirty } } = useForm<ScopedPaymentFormData>({
     defaultValues: payment
       ? {
           date: payment.date.split("T")[0],
@@ -116,6 +117,7 @@ export function ScopedPaymentForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

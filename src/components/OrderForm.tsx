@@ -15,6 +15,7 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type ComboboxOption = { value: string; label: string };
 
@@ -54,7 +55,7 @@ export function OrderForm({
 }: OrderFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control, setValue } = useForm<OrderFormData>({
+  const { register, handleSubmit, control, setValue, formState: { isDirty } } = useForm<OrderFormData>({
     defaultValues: {
       contactId: defaultValues?.contactId || "",
       orderDate: defaultValues?.orderDate || toLocalDateString(new Date()),
@@ -266,6 +267,7 @@ export function OrderForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

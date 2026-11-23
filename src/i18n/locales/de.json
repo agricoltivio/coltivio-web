@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Verwerfen",
+    "discardChangesTitle": "Änderungen verwerfen?",
+    "discardChangesMessage": "Deine Änderungen sind noch nicht gespeichert und gehen verloren.",
+    "deleteConfirmTitle": "Wirklich löschen?",
+    "deleteConfirmMessage": "Das kann nicht rückgängig gemacht werden.",
     "loading": "Laden...",
     "error": "Fehler",
     "save": "Speichern",

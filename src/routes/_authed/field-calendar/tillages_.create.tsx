@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const STEPS = ["plots", "details", "summary"] as const;
 type WizardStep = (typeof STEPS)[number];
@@ -65,7 +66,7 @@ function CreateTillage() {
   const plotsQuery = useQuery(plotsQueryOptions());
   const plots = plotsQuery.data?.result ?? [];
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       action: "plowing",
@@ -240,6 +241,7 @@ function CreateTillage() {
           onSave={() => createMutation.mutate(getValues())}
         />
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

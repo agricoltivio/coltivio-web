@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/tillages_/$tillageId",
@@ -56,7 +57,7 @@ function TillageDetail() {
   const tillageQuery = useQuery(tillageQueryOptions(tillageId));
   const tillage = tillageQuery.data;
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       action: "plowing",
       customAction: "",
@@ -232,6 +233,7 @@ function TillageDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

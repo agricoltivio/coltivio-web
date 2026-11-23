@@ -46,6 +46,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type CropProtectionMethod = NonNullable<CropProtectionApplication["method"]>;
 type ApplicationUnit = FertilizerApplication["unit"];
@@ -105,7 +106,7 @@ function EditCropProtectionApplication() {
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
   const app = appQuery.data;
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       productId: "",
       dateTime: "",
@@ -503,6 +504,7 @@ function EditCropProtectionApplication() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

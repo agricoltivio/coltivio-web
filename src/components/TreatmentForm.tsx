@@ -24,6 +24,7 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface TreatmentFormData {
   animalIds: string[];
@@ -83,7 +84,7 @@ export function TreatmentForm({
     watch,
     setValue,
     getValues,
-    formState: { dirtyFields },
+    formState: { isDirty, dirtyFields },
   } = useForm<TreatmentFormData>({
     defaultValues: treatment
       ? {
@@ -694,6 +695,7 @@ export function TreatmentForm({
       // Selected like a pick in the list, its values are proposed once it's in the drug list
       onCreated={(drugId) => setValue("drugId", drugId, { shouldDirty: true })}
     />
+      <DiscardChangesPrompt when={isDirty} />
     </>
   );
 }

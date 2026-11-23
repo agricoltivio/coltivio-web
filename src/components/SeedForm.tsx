@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { unitsForQuantityKind } from "@/lib/sowingUnits";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // Radix Select doesn't allow an empty item value
 const NONE = "none";
@@ -59,7 +60,7 @@ export function SeedForm({
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
   } = useForm<SeedFormData>({
     defaultValues,
   });
@@ -226,6 +227,7 @@ export function SeedForm({
           {submitLabel}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

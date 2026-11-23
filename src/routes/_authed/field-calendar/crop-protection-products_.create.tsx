@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const searchSchema = z.object({ returnTo: z.string().optional() });
 
@@ -44,7 +45,7 @@ function CreateCropProtectionProductPage() {
   const queryClient = useQueryClient();
   const { returnTo } = Route.useSearch();
 
-  const { register, handleSubmit, setValue, watch } = useForm<ProductFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<ProductFormData>({
     defaultValues: { name: "", unit: "ml", description: "", registrationNumber: "" },
   });
 
@@ -141,6 +142,7 @@ function CreateCropProtectionProductPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

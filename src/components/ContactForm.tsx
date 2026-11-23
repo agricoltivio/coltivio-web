@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface ContactFormData {
   firstName: string;
@@ -45,7 +46,7 @@ export function ContactForm({
   const { t } = useTranslation();
   const [labelInput, setLabelInput] = useState("");
 
-  const { register, handleSubmit, control, watch, setValue } =
+  const { register, handleSubmit, control, watch, setValue, formState: { isDirty } } =
     useForm<ContactFormData>({
       defaultValues: contact
         ? {
@@ -224,6 +225,7 @@ export function ContactForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

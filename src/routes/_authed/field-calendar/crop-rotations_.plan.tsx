@@ -33,6 +33,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { TimelineRotation, ZoomLevel } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // --- Domain types ---
 
@@ -220,6 +221,8 @@ export const Route = createFileRoute(
 // --- Main component ---
 
 function PlanMultipleCropRotations() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -320,7 +323,10 @@ function PlanMultipleCropRotations() {
               plotName={plot?.name ?? plotId}
               crops={crops}
               rotations={plotRotations[plotId] ?? []}
-              onRotationsChange={(rotations) => updatePlotRotations(plotId, rotations)}
+              onRotationsChange={(rotations, byUser) => {
+                if (byUser) setHasUserChanges(true);
+                updatePlotRotations(plotId, rotations);
+              }}
             />
           );
         })}
@@ -349,6 +355,7 @@ function PlanMultipleCropRotations() {
           </Button>
         </div>
       </div>
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }
@@ -366,7 +373,8 @@ function PlotRotationSection({
   plotName: string;
   crops: Crop[];
   rotations: RotationEntry[];
-  onRotationsChange: (rotations: RotationEntry[]) => void;
+  // byUser: an edit by the user, not the plot's existing rotations being loaded
+  onRotationsChange: (rotations: RotationEntry[], byUser?: boolean) => void;
 }) {
   const { t } = useTranslation();
   const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
@@ -397,15 +405,15 @@ function PlotRotationSection({
 
   function handleDialogSave(data: { cropId: string; fromDate: Date; toDate: Date; recurrence?: RecurrenceRule }) {
     if (editingEntry) {
-      onRotationsChange(rotations.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)));
+      onRotationsChange(rotations.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)), true);
     } else {
-      onRotationsChange([...rotations, { entryId: `new-${Date.now()}`, isNew: true, ...data }]);
+      onRotationsChange([...rotations, { entryId: `new-${Date.now()}`, isNew: true, ...data }], true);
     }
     setDialogOpen(false);
   }
 
   function handleDialogDelete(entryId: string) {
-    onRotationsChange(rotations.filter((r) => r.entryId !== entryId));
+    onRotationsChange(rotations.filter((r) => r.entryId !== entryId), true);
     setDialogOpen(false);
   }
 

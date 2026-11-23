@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface SponsorshipProgramFormData {
   name: string;
@@ -25,7 +26,7 @@ export function SponsorshipProgramForm({
 }: SponsorshipProgramFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit } = useForm<SponsorshipProgramFormData>({
+  const { register, handleSubmit, formState: { isDirty } } = useForm<SponsorshipProgramFormData>({
     defaultValues: sponsorshipProgram
       ? {
           name: sponsorshipProgram.name,
@@ -86,6 +87,7 @@ export function SponsorshipProgramForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

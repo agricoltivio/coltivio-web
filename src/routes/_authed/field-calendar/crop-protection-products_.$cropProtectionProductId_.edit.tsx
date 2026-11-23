@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-protection-products_/$cropProtectionProductId_/edit",
@@ -49,7 +50,7 @@ function EditCropProtectionProductPage() {
     cropProtectionProductQueryOptions(cropProtectionProductId),
   ).data!;
 
-  const { register, handleSubmit, setValue, watch } = useForm<ProductFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<ProductFormData>({
     defaultValues: {
       name: product.name,
       unit: product.unit,
@@ -158,6 +159,7 @@ function EditCropProtectionProductPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

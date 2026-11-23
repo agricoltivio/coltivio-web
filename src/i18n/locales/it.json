@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Scarta",
+    "discardChangesTitle": "Scartare le modifiche?",
+    "discardChangesMessage": "Le tue modifiche non sono ancora salvate e andranno perse.",
+    "deleteConfirmTitle": "Eliminare davvero?",
+    "deleteConfirmMessage": "Questa azione non può essere annullata.",
     "loading": "Caricamento...",
     "error": "Errore",
     "save": "Salva",

@@ -43,6 +43,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { wikiCategoriesQueryOptions, wikiTagsQueryOptions } from "@/api/wiki.queries";
 import { apiClient } from "@/api/client";
 import type { WikiEntry, WikiCategory, WikiTag } from "@/api/types";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const LOCALES = ["de", "en", "it", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
@@ -130,7 +131,7 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
   // Use the existing entry ID or pre-generate one so images can be uploaded before save
   const entryId = entry?.id ?? crypto.randomUUID();
 
-  const { register, handleSubmit, control, watch, setValue } = useForm<WikiEntryFormData>({
+  const { register, handleSubmit, control, watch, setValue, formState: { isDirty } } = useForm<WikiEntryFormData>({
     defaultValues: {
       entryId,
       categoryId: entry?.categoryId ?? "",
@@ -373,6 +374,7 @@ export function WikiEntryForm({ entry, onSubmit, isSubmitting = false }: WikiEnt
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

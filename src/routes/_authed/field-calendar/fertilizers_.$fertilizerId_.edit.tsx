@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/fertilizers_/$fertilizerId_/edit",
@@ -51,7 +52,7 @@ function EditFertilizerPage() {
 
   const fertilizer = useQuery(fertilizerQueryOptions(fertilizerId)).data!;
 
-  const { register, handleSubmit, setValue, watch } =
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } =
     useForm<FertilizerFormData>({
       defaultValues: {
         name: fertilizer.name,
@@ -178,6 +179,7 @@ function EditFertilizerPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

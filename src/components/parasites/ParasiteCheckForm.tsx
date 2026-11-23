@@ -31,6 +31,7 @@ import {
   ParasiteResultsEditor,
   type ParasiteResultDraft,
 } from "./ParasiteResultsEditor";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const DEFAULT_RECHECK_DAYS = 14;
 const METHODS: ParasiteCheckMethod[] = ["fecal_egg_count", "famacha"];
@@ -146,6 +147,10 @@ export function ParasiteCheckForm({
     addDays(toLocalDateString(new Date()), DEFAULT_RECHECK_DAYS),
   );
   const [followUpDateTouched, setFollowUpDateTouched] = useState(false);
+  // Set by the user's own changes, not by filling the form (edit, re-check defaults): asks
+  // before leaving with unsaved changes
+  const [hasUserChanges, setHasUserChanges] = useState(false);
+  const markChanged = () => setHasUserChanges(true);
   // Re-check date follows the check date until the user picks one
   useEffect(() => {
     if (!followUpDateTouched)
@@ -289,7 +294,10 @@ export function ParasiteCheckForm({
             key={methodOption}
             type="button"
             disabled={isEditing || !!baseCheck}
-            onClick={() => setMethod(methodOption)}
+            onClick={() => {
+              markChanged();
+              setMethod(methodOption);
+            }}
             className={cn(
               "rounded-md px-4 py-1.5 text-sm font-medium disabled:cursor-not-allowed",
               method === methodOption
@@ -314,7 +322,10 @@ export function ParasiteCheckForm({
         <Input
           id="name"
           value={name}
-          onChange={(event) => setName(event.target.value)}
+          onChange={(event) => {
+            markChanged();
+            setName(event.target.value);
+          }}
         />
       </Field>
 
@@ -329,7 +340,10 @@ export function ParasiteCheckForm({
             min={baseCheck ? baseCheck.date.slice(0, 10) : undefined}
             max={earliestRecheckDate}
             value={date}
-            onChange={(event) => setDate(event.target.value)}
+            onChange={(event) => {
+              markChanged();
+              setDate(event.target.value);
+            }}
           />
         </Field>
         {canBeRecheck && (
@@ -341,7 +355,10 @@ export function ParasiteCheckForm({
               id="previousCheckId"
               className={selectClass}
               value={previousCheckId}
-              onChange={(event) => setPreviousCheckId(event.target.value)}
+              onChange={(event) => {
+                markChanged();
+                setPreviousCheckId(event.target.value);
+              }}
             >
               <option value="">-</option>
               {previousCheckOptions.map((otherCheck) => (
@@ -372,7 +389,10 @@ export function ParasiteCheckForm({
             animals={animals}
             herds={herds}
             value={animalIds}
-            onValueChange={setAnimalIds}
+            onValueChange={(ids) => {
+              markChanged();
+              setAnimalIds(ids);
+            }}
             singleAnimalType
             placeholder={t("parasiteChecks.selectAnimals")}
           />
@@ -409,12 +429,13 @@ export function ParasiteCheckForm({
                   <TableCell className="w-56">
                     <FamachaScoreButtons
                       value={famachaScores[animalId] ?? null}
-                      onChange={(score) =>
+                      onChange={(score) => {
+                        markChanged();
                         setFamachaScores((current) => ({
                           ...current,
                           [animalId]: score,
-                        }))
-                      }
+                        }));
+                      }}
                     />
                   </TableCell>
                 </TableRow>
@@ -435,7 +456,10 @@ export function ParasiteCheckForm({
                   <button
                     key={modeOption}
                     type="button"
-                    onClick={() => setSampleMode(modeOption)}
+                    onClick={() => {
+                  markChanged();
+                  setSampleMode(modeOption);
+                }}
                     className={cn(
                       "rounded-md px-3 py-1 text-sm",
                       sampleMode === modeOption
@@ -455,7 +479,10 @@ export function ParasiteCheckForm({
               <Input
                 id="labName"
                 value={labName}
-                onChange={(event) => setLabName(event.target.value)}
+                onChange={(event) => {
+                  markChanged();
+                  setLabName(event.target.value);
+                }}
               />
             </Field>
             {sampleMode === "pooled" && (
@@ -466,7 +493,10 @@ export function ParasiteCheckForm({
                 <Input
                   id="pooledLabel"
                   value={pooledLabel}
-                  onChange={(event) => setPooledLabel(event.target.value)}
+                  onChange={(event) => {
+                    markChanged();
+                    setPooledLabel(event.target.value);
+                  }}
                 />
               </Field>
             )}
@@ -484,7 +514,10 @@ export function ParasiteCheckForm({
               </p>
               <ParasiteResultsEditor
                 results={pooledResults}
-                onChange={setPooledResults}
+                onChange={(rows) => {
+                  markChanged();
+                  setPooledResults(rows);
+                }}
               />
             </div>
           ) : (
@@ -497,12 +530,13 @@ export function ParasiteCheckForm({
                   </p>
                   <ParasiteResultsEditor
                     results={animalResultRows(animalId)}
-                    onChange={(rows) =>
+                    onChange={(rows) => {
+                      markChanged();
                       setIndividualResults((current) => ({
                         ...current,
                         [animalId]: rows,
-                      }))
-                    }
+                      }));
+                    }}
                   />
                 </div>
               ))}
@@ -520,7 +554,10 @@ export function ParasiteCheckForm({
             id="treatmentId"
             className={selectClass}
             value={treatmentId}
-            onChange={(event) => setTreatmentId(event.target.value)}
+            onChange={(event) => {
+              markChanged();
+              setTreatmentId(event.target.value);
+            }}
           >
             <option value="">-</option>
             {sortedTreatments.map((treatment) => (
@@ -536,7 +573,10 @@ export function ParasiteCheckForm({
             id="notes"
             rows={3}
             value={notes}
-            onChange={(event) => setNotes(event.target.value)}
+            onChange={(event) => {
+              markChanged();
+              setNotes(event.target.value);
+            }}
           />
         </Field>
       </FieldGroup>
@@ -548,9 +588,10 @@ export function ParasiteCheckForm({
             <Checkbox
               id="followUp"
               checked={followUpEnabled}
-              onCheckedChange={(checked) =>
-                setFollowUpEnabled(checked === true)
-              }
+              onCheckedChange={(checked) => {
+                markChanged();
+                setFollowUpEnabled(checked === true);
+              }}
             />
             <Label htmlFor="followUp">
               {t("parasiteChecks.createFollowUpTask")}
@@ -563,6 +604,7 @@ export function ParasiteCheckForm({
               min={date}
               value={followUpDate}
               onChange={(event) => {
+                markChanged();
                 setFollowUpDateTouched(true);
                 setFollowUpDate(event.target.value);
               }}
@@ -584,6 +626,7 @@ export function ParasiteCheckForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={hasUserChanges} isSubmitting={isSubmitting} />
     </form>
   );
 }

@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { X, Plus, Sparkles } from "lucide-react";
 import { ChecklistGenerationDialog } from "@/components/ChecklistGenerationDialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface TaskFormData {
   name: string;
@@ -49,8 +50,7 @@ export function TaskForm({
     handleSubmit,
     control,
     watch,
-    setValue,
-  } = useForm<TaskFormData>({
+    setValue, formState: { isDirty } } = useForm<TaskFormData>({
     defaultValues: task
       ? {
           name: task.name,
@@ -312,6 +312,7 @@ export function TaskForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

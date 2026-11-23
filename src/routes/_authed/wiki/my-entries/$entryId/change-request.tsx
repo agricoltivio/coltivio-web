@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const LOCALES = ["de", "en", "it", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
@@ -55,7 +56,7 @@ function ChangeRequestForm() {
   const entryQuery = useQuery(wikiEntryByIdQueryOptions(entryId));
   const entry = entryQuery.data;
 
-  const { register, handleSubmit, control } = useForm<ChangeRequestFormData>({
+  const { register, handleSubmit, control, formState: { isDirty } } = useForm<ChangeRequestFormData>({
     defaultValues: {
       translations: LOCALES.map((locale) => {
         const existing = entry?.translations.find((tr) => tr.locale === locale);
@@ -171,6 +172,7 @@ function ChangeRequestForm() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

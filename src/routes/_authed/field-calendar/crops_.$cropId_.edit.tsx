@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/field-calendar/crops_/$cropId_/edit")({
   loader: ({ params, context: { queryClient } }) => {
@@ -46,7 +47,7 @@ function EditCropPage() {
   const crop = useQuery(cropQueryOptions(cropId)).data!;
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
-  const { register, handleSubmit, setValue, watch } = useForm<CropFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<CropFormData>({
     defaultValues: {
       name: crop.name,
       category: crop.category,
@@ -164,6 +165,7 @@ function EditCropPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

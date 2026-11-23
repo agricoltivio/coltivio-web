@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Abandonner",
+    "discardChangesTitle": "Abandonner les modifications ?",
+    "discardChangesMessage": "Tes modifications ne sont pas encore enregistrées et seront perdues.",
+    "deleteConfirmTitle": "Vraiment supprimer ?",
+    "deleteConfirmMessage": "Cette action est irréversible.",
     "loading": "Chargement...",
     "error": "Erreur",
     "save": "Enregistrer",

@@ -43,6 +43,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // Radix Select doesn't allow an empty item value
 const NO_SEED = "none";
@@ -102,7 +103,7 @@ function SowingDetail() {
     watch,
     reset,
     getValues,
-    formState: { errors },
+    formState: { isDirty, errors },
   } = useForm<FormData>({
     defaultValues: {
       date: "",
@@ -436,6 +437,7 @@ function SowingDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

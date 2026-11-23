@@ -39,6 +39,7 @@ import {
   stringToColor,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // --- Domain types scoped to this module ---
 
@@ -198,6 +199,8 @@ export const Route = createFileRoute(
 // --- Main planning component ---
 
 function PlanDraftCropRotations() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -401,10 +404,12 @@ function PlanDraftCropRotations() {
     recurrence?: RecurrenceRule;
   }) {
     if (editingEntry) {
+      setHasUserChanges(true);
       setRotations((prev) =>
         prev.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)),
       );
     } else {
+      setHasUserChanges(true);
       setRotations((prev) => [
         ...prev,
         { entryId: `new-${Date.now()}`, isNew: true, ...data },
@@ -414,6 +419,7 @@ function PlanDraftCropRotations() {
   }
 
   function handleDialogDelete(entryId: string) {
+    setHasUserChanges(true);
     setRotations((prev) => prev.filter((r) => r.entryId !== entryId));
     setDialogOpen(false);
   }
@@ -645,6 +651,7 @@ function PlanDraftCropRotations() {
         onDelete={handleDialogDelete}
         onClose={() => setDialogOpen(false)}
       />
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }

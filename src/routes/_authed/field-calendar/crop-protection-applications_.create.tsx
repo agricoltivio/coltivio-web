@@ -41,6 +41,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type CropProtectionMethod = NonNullable<CropProtectionApplication["method"]>;
 // Reuse the unit type from fertilizer since they share the same enum.
@@ -108,6 +110,7 @@ type ProductModalFormData = {
 
 function CreateCropProtectionApplication() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId, returnTo } = Route.useSearch();
@@ -138,7 +141,7 @@ function CreateCropProtectionApplication() {
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
   const presetsQuery = useQuery(cropProtectionApplicationPresetsQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       productId: "",
@@ -770,7 +773,7 @@ function CreateCropProtectionApplication() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => deletePresetMutation.mutate(preset.id)}
+                    onClick={() => confirmDelete(() => deletePresetMutation.mutate(preset.id))}
                     disabled={deletePresetMutation.isPending}
                   >
                     <Trash2Icon className="size-4 text-destructive" />
@@ -853,6 +856,8 @@ function CreateCropProtectionApplication() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

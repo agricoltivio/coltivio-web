@@ -47,6 +47,7 @@ import {
   isPerAreaUnit,
   unitsForQuantityKind,
 } from "@/lib/sowingUnits";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const ALL_STEPS = ["crop", "config", "plots", "divide", "summary"] as const;
 type WizardStep = (typeof ALL_STEPS)[number];
@@ -116,7 +117,7 @@ function CreateSowing() {
   const presetsQuery = useQuery(sowingPresetsQueryOptions());
   const unitsQuery = useQuery(sowingUnitsQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       cropId: "",
@@ -767,6 +768,7 @@ function CreateSowing() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

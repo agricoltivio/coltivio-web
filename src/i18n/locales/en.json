@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Discard",
+    "discardChangesTitle": "Discard changes?",
+    "discardChangesMessage": "Your changes haven't been saved and will be lost.",
+    "deleteConfirmTitle": "Really delete?",
+    "deleteConfirmMessage": "This can't be undone.",
     "loading": "Loading...",
     "error": "Error",
     "save": "Save",

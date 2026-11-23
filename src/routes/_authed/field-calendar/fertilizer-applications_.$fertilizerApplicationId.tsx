@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type FertilizerApplicationUnit = FertilizerApplication["unit"];
 type FertilizerMethod = NonNullable<FertilizerApplication["method"]>;
@@ -77,7 +78,7 @@ function FertilizerApplicationDetail() {
   const fertilizersQuery = useQuery(fertilizersQueryOptions());
   const fertilizers = fertilizersQuery.data?.result ?? [];
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       date: "",
       fertilizerId: "",
@@ -359,6 +360,7 @@ function FertilizerApplicationDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type HarvestUnit = Harvest["unit"];
 type ConservationMethod = NonNullable<Harvest["conservationMethod"]>;
@@ -83,7 +84,7 @@ function HarvestDetail() {
   const cropsQuery = useQuery(cropsQueryOptions());
   const crops = cropsQuery.data?.result ?? [];
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       date: "",
       cropId: "",
@@ -345,6 +346,7 @@ function HarvestDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }
