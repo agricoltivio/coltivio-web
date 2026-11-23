@@ -222,6 +222,13 @@ export type OutdoorJournalMeadowEntry = NonNullable<
 export type OutdoorSchedule = Herd["outdoorSchedules"][number];
 export type OutdoorScheduleInput =
   components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorSchedulesRequestBody"];
+// A date range in which the herd did something else than its schedules say; takes precedence
+// over the schedules on those days (e.g. stable for two days)
+export type OutdoorScheduleOverride = NonNullable<
+  Herd["outdoorScheduleOverrides"]
+>[number];
+export type OutdoorScheduleOverrideInput =
+  components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesRequestBody"];
 
 // Meadow types
 export type Meadow =

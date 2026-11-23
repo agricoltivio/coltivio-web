@@ -8,7 +8,12 @@ import { useTranslation } from "react-i18next";
 import { earliestHerdChangeDatesQueryOptions, herdQueryOptions } from "@/api/herds.queries";
 import { animalsQueryOptions } from "@/api/animals.queries";
 import { formatDateOnly, toLocalDateString } from "@/lib/utils";
-import type { OutdoorSchedule } from "@/api/types";
+import type { OutdoorSchedule, OutdoorScheduleOverride } from "@/api/types";
+import {
+  DeleteOverrideDialog,
+  OverrideFormDialog,
+} from "@/components/OutdoorScheduleOverrideDialogs";
+import { HerdScheduleTimeline } from "@/components/HerdScheduleTimeline";
 import { apiClient } from "@/api/client";
 import { PageContent } from "@/components/PageContent";
 import {
@@ -71,6 +76,12 @@ function HerdDetailPage() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [editSchedule, setEditSchedule] = useState<OutdoorSchedule | null>(null);
   const [deleteSchedule, setDeleteSchedule] = useState<OutdoorSchedule | null>(null);
+  // Exceptions: undefined = dialog closed, null = new exception
+  const [editOverride, setEditOverride] = useState<
+    OutdoorScheduleOverride | null | undefined
+  >(undefined);
+  const [deleteOverride, setDeleteOverride] =
+    useState<OutdoorScheduleOverride | null>(null);
   const [editHerdOpen, setEditHerdOpen] = useState(false);
   const [restoredScheduleValues, setRestoredScheduleValues] =
     useState<ScheduleFormValues | null>(null);
@@ -190,7 +201,26 @@ function HerdDetailPage() {
               </div>
             )}
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Year view of the schedules with the exceptions applied */}
+            {(herd.outdoorSchedules.length > 0 ||
+              (herd.outdoorScheduleOverrides ?? []).length > 0) && (
+              <HerdScheduleTimeline
+                schedules={herd.outdoorSchedules}
+                overrides={herd.outdoorScheduleOverrides ?? []}
+                onScheduleClick={
+                  canWriteAnimals
+                    ? (schedule) => {
+                        setEditSchedule(schedule);
+                        setScheduleDialogOpen(true);
+                      }
+                    : undefined
+                }
+                onOverrideClick={
+                  canWriteAnimals ? (override) => setEditOverride(override) : undefined
+                }
+              />
+            )}
             {herd.outdoorSchedules.length === 0 ? (
               <div className="py-4 text-center text-muted-foreground">
                 {t("herds.noSchedules")}
@@ -246,6 +276,80 @@ function HerdDetailPage() {
                               size="icon"
                               className="text-destructive hover:text-destructive hover:bg-destructive/10"
                               onClick={() => setDeleteSchedule(schedule)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Exceptions card: days on which the herd did something else than the schedules say */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("herds.overrides.title")}</CardTitle>
+            {canWriteAnimals && (
+              <div className="flex justify-end">
+                <Button size="sm" onClick={() => setEditOverride(null)}>
+                  {t("herds.overrides.add")}
+                </Button>
+              </div>
+            )}
+          </CardHeader>
+          <CardContent>
+            {(herd.outdoorScheduleOverrides ?? []).length === 0 ? (
+              <div className="py-4 text-center text-muted-foreground">
+                {t("herds.overrides.hint")}
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("herds.scheduleType")}</TableHead>
+                    <TableHead>{t("herds.meadow")}</TableHead>
+                    <TableHead>{t("herds.startDate")}</TableHead>
+                    <TableHead>{t("herds.endDate")}</TableHead>
+                    <TableHead>{t("herds.notes")}</TableHead>
+                    <TableHead className="w-20"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(herd.outdoorScheduleOverrides ?? []).map((override) => (
+                    <TableRow key={override.id}>
+                      <TableCell>
+                        {t(`herds.scheduleTypes.${override.type}`)}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {override.meadow?.name ?? "-"}
+                      </TableCell>
+                      <TableCell>{formatDate(override.startDate)}</TableCell>
+                      <TableCell>{formatDate(override.endDate)}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {override.notes || "-"}
+                      </TableCell>
+                      {canWriteAnimals && (
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={t("herds.overrides.edit")}
+                              onClick={() => setEditOverride(override)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={t("common.delete")}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => setDeleteOverride(override)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -341,6 +445,23 @@ function HerdDetailPage() {
           onOpenChange={setEditHerdOpen}
         />
       )}
+
+      {editOverride !== undefined && (
+        <OverrideFormDialog
+          herdId={herdId}
+          override={editOverride}
+          onOpenChange={(open) => {
+            if (!open) setEditOverride(undefined);
+          }}
+        />
+      )}
+
+      <DeleteOverrideDialog
+        override={deleteOverride}
+        onOpenChange={(open) => {
+          if (!open) setDeleteOverride(null);
+        }}
+      />
 
       <DeleteScheduleDialog
         schedule={deleteSchedule}

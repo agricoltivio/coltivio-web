@@ -625,7 +625,8 @@
     "scheduleType": "Typ",
     "scheduleTypes": {
       "pasture": "Weide",
-      "exercise_yard": "Laufhof"
+      "exercise_yard": "Laufhof",
+      "stable": "Stall"
     },
     "startDate": "Von",
     "endDate": "Bis",
@@ -646,7 +647,19 @@
     "endBeforeStart": "Das Datum darf nicht vor dem Startdatum liegen.",
     "changesApplyFrom": "Änderungen gelten ab",
     "changesSummary": "{{added}} hinzugefügt, {{removed}} entfernt. Ab welchem Datum gilt das?",
-    "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum."
+    "membershipDateTooEarly": "Das Datum liegt vor dem Eintritt eines Tieres in seine aktuelle Herde. Bitte wähle ein späteres Datum.",
+    "overrides": {
+      "title": "Ausnahmen",
+      "add": "Ausnahme hinzufügen",
+      "edit": "Ausnahme bearbeiten",
+      "hint": "Tage, an denen die Herde etwas anderes machte als geplant, z.B. wegen Unwetter im Stall. Eine Ausnahme geht dem Auslauf an diesen Tagen vor.",
+      "overlap": "Die Ausnahme überschneidet sich mit einer anderen Ausnahme dieser Herde.",
+      "deleteConfirm": "Diese Ausnahme wirklich löschen?",
+      "single": "Ausnahme"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Der Zeitplan überschneidet sich mit einem anderen Zeitplan dieser Herde."
+    }
   },
   "turnoutJournal": {
     "title": "Auslaufjournal",
@@ -680,7 +693,8 @@
       "description": "Auslaufjournal als Excel-Datei herunterladen."
     },
     "viewCategories": "Kategorien",
-    "viewMeadows": "Weideflächen"
+    "viewMeadows": "Weideflächen",
+    "viewHerds": "Herden"
   },
   "landing": {
     "nav": {
