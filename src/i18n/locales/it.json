@@ -230,6 +230,7 @@
     "importReason": "Motivo",
     "importPreview": "Anteprima",
     "importSelectType": "Seleziona la specie animale",
+    "importAsType": "Importato come: {{type}}",
     "importPreviewTitle": "Anteprima importazione",
     "importPreviewDesc": "Controlla gli animali prima dell'importazione. Puoi modificare le righe o rimuoverle dall'importazione.",
     "importPreviewHasErrors": "Alcune righe contengono errori. Modificale o rimuovile dall'importazione.",

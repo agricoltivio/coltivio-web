@@ -420,6 +420,18 @@ function ImportAnimals() {
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">{t("animals.importPreviewDesc")}</p>
 
+        {/* The chosen type, so a wrong pick is noticed before importing */}
+        {animalType && (
+          <div className="flex items-center gap-2 text-sm">
+            <span>
+              {t("animals.importAsType", { type: t(`animals.types.${animalType}`) })}
+            </span>
+            <Button variant="link" size="sm" className="h-auto p-0" onClick={() => setStep("upload")}>
+              {t("common.edit")}
+            </Button>
+          </div>
+        )}
+
         {hasBlockingErrors && (
           <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3">
             {t("animals.importPreviewHasErrors")}
