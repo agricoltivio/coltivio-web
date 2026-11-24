@@ -1208,6 +1208,8 @@
       "repeatEveryPrefix": "Alle",
       "repeatEverySuffix": "Jahre",
       "repeatUntil": "Bis",
+      "endBeforeStart": "Das Enddatum liegt vor dem Startdatum.",
+      "untilBeforeEnd": "Das Wiederholungsende liegt vor dem Enddatum.",
       "planFor": "Planung: {{name}}",
       "addRotation": "Rotation hinzufügen",
       "editRotation": "Rotation bearbeiten",

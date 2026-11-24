@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import type { Crop, CropRotation, Plot } from "@/api/types";
 
 // Minimal rotation shape required by the timeline — a subset of CropRotation.
@@ -301,7 +302,7 @@ export function getAllGridLines(
         x,
         label: isYearStart
           ? cursor.getFullYear().toString()
-          : cursor.toLocaleString("default", { month: "short" }),
+          : cursor.toLocaleString(i18n.language, { month: "short" }),
         isMajor: isYearStart,
       });
       cursor.setMonth(cursor.getMonth() + 1);
@@ -314,7 +315,8 @@ export function getAllGridLines(
       const x = daysBetween(start, monthCursor) * pxPerDay;
       lines.push({
         x,
-        label: monthCursor.toLocaleString("default", { month: "short", year: "numeric" }),
+        // Month names in the app language, not the browser's
+        label: monthCursor.toLocaleString(i18n.language, { month: "short", year: "numeric" }),
         isMajor: true,
       });
       // Emit minor week lines inside this month (days 8, 15, 22)
@@ -340,7 +342,7 @@ export function getAllGridLines(
       lines.push({
         x,
         label: isWeekStart
-          ? cursor.toLocaleString("default", { day: "2-digit", month: "short" })
+          ? cursor.toLocaleString(i18n.language, { day: "2-digit", month: "short" })
           : "",
         isMajor: isWeekStart,
       });

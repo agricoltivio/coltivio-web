@@ -702,8 +702,25 @@ function RotationDialog({
     }
   }, [open, entry]);
 
+  // Moving the start past the end moves the end along, and the end past the recurrence end that one too.
+  // The browser's min only limits its picker, a typed or earlier value can still be out of order.
+  function changeFromDate(value: string) {
+    setFromDate(value);
+    if (value && toDate && toDate < value) changeToDate(value);
+  }
+  function changeToDate(value: string) {
+    setToDate(value);
+    if (value && untilDate && untilDate < value) setUntilDate(value);
+  }
+  const dateOrderError =
+    fromDate && toDate && toDate < fromDate
+      ? t("fieldCalendar.cropRotations.endBeforeStart")
+      : hasRecurrence && hasUntil && untilDate && toDate && untilDate < toDate
+        ? t("fieldCalendar.cropRotations.untilBeforeEnd")
+        : null;
+
   function handleSave() {
-    if (!cropId || !fromDate || !toDate) return;
+    if (!cropId || !fromDate || !toDate || dateOrderError) return;
     const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
     onSave({
       cropId,
@@ -768,7 +785,7 @@ function RotationDialog({
               <Input
                 type="date"
                 value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e) => changeFromDate(e.target.value)}
               />
             </div>
             <div className="space-y-1.5">
@@ -777,10 +794,12 @@ function RotationDialog({
                 type="date"
                 value={toDate}
                 min={fromDate}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e) => changeToDate(e.target.value)}
               />
             </div>
           </div>
+
+          {dateOrderError && <p className="text-sm text-destructive">{dateOrderError}</p>}
 
           {/* Optional recurrence */}
           <div>
@@ -877,7 +896,7 @@ function RotationDialog({
           <Button
             className="flex-1"
             onClick={handleSave}
-            disabled={!cropId || !fromDate || !toDate}
+            disabled={!cropId || !fromDate || !toDate || !!dateOrderError}
           >
             {t("common.save")}
           </Button>
