@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const searchSchema = z.object({ returnTo: z.string().optional() });
 
@@ -48,7 +49,7 @@ function CreateFertilizerPage() {
   const queryClient = useQueryClient();
   const { returnTo } = Route.useSearch();
 
-  const { register, handleSubmit, setValue, watch } =
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } =
     useForm<FertilizerFormData>({
       defaultValues: {
         name: "",
@@ -106,7 +107,7 @@ function CreateFertilizerPage() {
           <Label>{t("fertilizers.type")} *</Label>
           <Select
             value={watch("type")}
-            onValueChange={(val) => setValue("type", val as FertilizerType)}
+            onValueChange={(val) => setValue("type", val as FertilizerType, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -125,7 +126,7 @@ function CreateFertilizerPage() {
           <Label>{t("fertilizers.unit")} *</Label>
           <Select
             value={watch("unit")}
-            onValueChange={(val) => setValue("unit", val as FertilizerUnit)}
+            onValueChange={(val) => setValue("unit", val as FertilizerUnit, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -163,6 +164,7 @@ function CreateFertilizerPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

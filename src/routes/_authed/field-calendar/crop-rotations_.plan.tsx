@@ -1,3 +1,4 @@
+import { useRotationDateOrder } from "@/lib/useRotationDateOrder";
 import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -33,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { TimelineRotation, ZoomLevel } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // --- Domain types ---
 
@@ -220,6 +222,8 @@ export const Route = createFileRoute(
 // --- Main component ---
 
 function PlanMultipleCropRotations() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -320,7 +324,10 @@ function PlanMultipleCropRotations() {
               plotName={plot?.name ?? plotId}
               crops={crops}
               rotations={plotRotations[plotId] ?? []}
-              onRotationsChange={(rotations) => updatePlotRotations(plotId, rotations)}
+              onRotationsChange={(rotations, byUser) => {
+                if (byUser) setHasUserChanges(true);
+                updatePlotRotations(plotId, rotations);
+              }}
             />
           );
         })}
@@ -349,6 +356,7 @@ function PlanMultipleCropRotations() {
           </Button>
         </div>
       </div>
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }
@@ -366,7 +374,8 @@ function PlotRotationSection({
   plotName: string;
   crops: Crop[];
   rotations: RotationEntry[];
-  onRotationsChange: (rotations: RotationEntry[]) => void;
+  // byUser: an edit by the user, not the plot's existing rotations being loaded
+  onRotationsChange: (rotations: RotationEntry[], byUser?: boolean) => void;
 }) {
   const { t } = useTranslation();
   const rotationsQuery = useQuery(plotPlanCropRotationsQueryOptions(plotId));
@@ -397,15 +406,15 @@ function PlotRotationSection({
 
   function handleDialogSave(data: { cropId: string; fromDate: Date; toDate: Date; recurrence?: RecurrenceRule }) {
     if (editingEntry) {
-      onRotationsChange(rotations.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)));
+      onRotationsChange(rotations.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)), true);
     } else {
-      onRotationsChange([...rotations, { entryId: `new-${Date.now()}`, isNew: true, ...data }]);
+      onRotationsChange([...rotations, { entryId: `new-${Date.now()}`, isNew: true, ...data }], true);
     }
     setDialogOpen(false);
   }
 
   function handleDialogDelete(entryId: string) {
-    onRotationsChange(rotations.filter((r) => r.entryId !== entryId));
+    onRotationsChange(rotations.filter((r) => r.entryId !== entryId), true);
     setDialogOpen(false);
   }
 
@@ -577,8 +586,20 @@ function RotationDialog({
     }
   }, [open, entry]);
 
+  // Dates stay in order (see useRotationDateOrder)
+  const { changeFromDate, changeToDate, dateOrderError } = useRotationDateOrder({
+    fromDate,
+    toDate,
+    untilDate,
+    hasRecurrence,
+    hasUntil,
+    setFromDate,
+    setToDate,
+    setUntilDate,
+  });
+
   function handleSave() {
-    if (!cropId || !fromDate || !toDate) return;
+    if (!cropId || !fromDate || !toDate || dateOrderError) return;
     const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
     onSave({
       cropId,
@@ -620,13 +641,15 @@ function RotationDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.fromDate")}</Label>
-              <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+              <Input type="date" value={fromDate} onChange={(e) => changeFromDate(e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.toDate")}</Label>
-              <Input type="date" value={toDate} min={fromDate} onChange={(e) => setToDate(e.target.value)} />
+              <Input type="date" value={toDate} min={fromDate} onChange={(e) => changeToDate(e.target.value)} />
             </div>
           </div>
+
+          {dateOrderError && <p className="text-sm text-destructive">{dateOrderError}</p>}
 
           <div>
             {!hasRecurrence ? (
@@ -673,7 +696,7 @@ function RotationDialog({
             </Button>
           )}
           <Button variant="outline" className="flex-1" onClick={onClose}>{t("common.cancel")}</Button>
-          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate}>{t("common.save")}</Button>
+          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate || !!dateOrderError}>{t("common.save")}</Button>
         </div>
       </DialogContent>
 

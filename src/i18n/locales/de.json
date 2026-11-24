@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Verwerfen",
+    "discardChangesTitle": "Änderungen verwerfen?",
+    "discardChangesMessage": "Deine Änderungen sind noch nicht gespeichert und gehen verloren.",
+    "deleteConfirmTitle": "Wirklich löschen?",
+    "deleteConfirmMessage": "Das kann nicht rückgängig gemacht werden.",
     "viewAll": "Alle anzeigen",
     "loading": "Laden...",
     "uploadImage": "Bild hochladen",
@@ -1227,6 +1232,8 @@
       "repeatEveryPrefix": "Alle",
       "repeatEverySuffix": "Jahre",
       "repeatUntil": "Bis",
+      "endBeforeStart": "Das Enddatum liegt vor dem Startdatum.",
+      "untilBeforeEnd": "Das Wiederholungsende liegt vor dem Enddatum.",
       "planFor": "Planung: {{name}}",
       "addRotation": "Rotation hinzufügen",
       "editRotation": "Rotation bearbeiten",

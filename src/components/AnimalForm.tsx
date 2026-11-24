@@ -32,6 +32,7 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface AnimalFormData {
   name: string;
@@ -84,7 +85,7 @@ export function AnimalForm({
 }: AnimalFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control, watch, setValue } =
+  const { register, handleSubmit, control, watch, setValue, formState: { isDirty } } =
     useForm<AnimalFormData>({
       defaultValues: animal
         ? {
@@ -423,6 +424,7 @@ export function AnimalForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

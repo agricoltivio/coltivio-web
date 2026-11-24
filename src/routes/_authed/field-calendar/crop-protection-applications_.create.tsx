@@ -42,6 +42,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type CropProtectionMethod = NonNullable<CropProtectionApplication["method"]>;
 // Reuse the unit type from fertilizer since they share the same enum.
@@ -109,6 +111,7 @@ type ProductModalFormData = {
 
 function CreateCropProtectionApplication() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId, returnTo } = Route.useSearch();
@@ -141,7 +144,7 @@ function CreateCropProtectionApplication() {
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
   const presetsQuery = useQuery(cropProtectionApplicationPresetsQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       productId: "",
@@ -290,7 +293,7 @@ function CreateCropProtectionApplication() {
         },
       );
       queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
-      setValue("productId", newProduct.id);
+      setValue("productId", newProduct.id, { shouldDirty: true });
       setCreateProductOpen(false);
       productForm.reset();
     },
@@ -391,9 +394,9 @@ function CreateCropProtectionApplication() {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
     setSelectedPresetId(presetId);
-    setValue("method", preset.method ?? "spraying");
-    setValue("unit", preset.unit);
-    setValue("amountPerUnit", preset.amountPerUnit.toString());
+    setValue("method", preset.method ?? "spraying", { shouldDirty: true });
+    setValue("unit", preset.unit, { shouldDirty: true });
+    setValue("amountPerUnit", preset.amountPerUnit.toString(), { shouldDirty: true });
   }
 
   // Label for the "amount per unit" input, matching the RN app: "l / Fuder",
@@ -432,7 +435,7 @@ function CreateCropProtectionApplication() {
                   <Select
                     value={watchedProductId}
                     onValueChange={(v) => {
-                      if (v) setValue("productId", v);
+                      if (v) setValue("productId", v, { shouldDirty: true });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -533,7 +536,7 @@ function CreateCropProtectionApplication() {
                   <Select
                     value={watchedUnit}
                     onValueChange={(v) =>
-                      setValue("unit", v as ApplicationUnit)
+                      setValue("unit", v as ApplicationUnit, { shouldDirty: true })
                     }
                   >
                     <SelectTrigger>
@@ -559,7 +562,7 @@ function CreateCropProtectionApplication() {
                 <Select
                   value={watchedMethod}
                   onValueChange={(v) =>
-                    setValue("method", v as CropProtectionMethod)
+                    setValue("method", v as CropProtectionMethod, { shouldDirty: true })
                   }
                 >
                   <SelectTrigger>
@@ -621,7 +624,7 @@ function CreateCropProtectionApplication() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
               drawnAreas={drawnAreas}
               onDrawnAreasChange={setDrawnAreas}
             />
@@ -779,7 +782,7 @@ function CreateCropProtectionApplication() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => deletePresetMutation.mutate(preset.id)}
+                    onClick={() => confirmDelete(() => deletePresetMutation.mutate(preset.id))}
                     disabled={deletePresetMutation.isPending}
                   >
                     <Trash2Icon className="size-4 text-destructive" />
@@ -862,6 +865,8 @@ function CreateCropProtectionApplication() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

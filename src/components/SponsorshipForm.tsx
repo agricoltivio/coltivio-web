@@ -24,6 +24,7 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from "@/components/ui/combobox";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface SponsorshipFormData {
   contactId: string;
@@ -59,7 +60,7 @@ export function SponsorshipForm({
 }: SponsorshipFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control } = useForm<SponsorshipFormData>({
+  const { register, handleSubmit, control, formState: { isDirty } } = useForm<SponsorshipFormData>({
     defaultValues: sponsorship
       ? {
           contactId: sponsorship.contactId,
@@ -255,6 +256,7 @@ export function SponsorshipForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

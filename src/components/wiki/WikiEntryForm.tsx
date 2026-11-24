@@ -44,6 +44,7 @@ import {
 } from "@/api/wiki.queries";
 import { apiClient } from "@/api/client";
 import type { WikiEntry, WikiCategory, WikiTag } from "@/api/types";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const LOCALES = ["de", "en", "it", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
@@ -90,15 +91,21 @@ export function WikiEntryForm({
   // Use the existing entry ID or pre-generate one so images can be uploaded before save
   const entryId = entry?.id ?? crypto.randomUUID();
 
-  const { register, handleSubmit, control, watch, setValue } =
-    useForm<WikiEntryFormData>({
-      defaultValues: {
-        entryId,
-        categoryId: entry?.categoryId ?? "",
-        tagIds: entry?.tags.map((t) => t.tagId) ?? [],
-        translations: defaultTranslations,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { isDirty },
+  } = useForm<WikiEntryFormData>({
+    defaultValues: {
+      entryId,
+      categoryId: entry?.categoryId ?? "",
+      tagIds: entry?.tags.map((t) => t.tagId) ?? [],
+      translations: defaultTranslations,
+    },
+  });
 
   // file is already processed (HEIC converted, resized, compressed) by the caller
   async function handleImageUpload(file: File): Promise<string> {
@@ -139,7 +146,7 @@ export function WikiEntryForm({
     },
     onSuccess: (newTag) => {
       queryClient.invalidateQueries({ queryKey: ["wiki", "tags"] });
-      setValue("tagIds", [...tagIds, newTag.id]);
+      setValue("tagIds", [...tagIds, newTag.id], { shouldDirty: true });
       setNewTagName("");
     },
   });
@@ -149,9 +156,10 @@ export function WikiEntryForm({
       setValue(
         "tagIds",
         tagIds.filter((id) => id !== tagId),
+        { shouldDirty: true },
       );
     } else {
-      setValue("tagIds", [...tagIds, tagId]);
+      setValue("tagIds", [...tagIds, tagId], { shouldDirty: true });
     }
   }
 
@@ -163,7 +171,7 @@ export function WikiEntryForm({
     );
     if (existing) {
       if (!tagIds.includes(existing.id)) {
-        setValue("tagIds", [...tagIds, existing.id]);
+        setValue("tagIds", [...tagIds, existing.id], { shouldDirty: true });
       }
       setNewTagName("");
     } else {
@@ -358,6 +366,7 @@ export function WikiEntryForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

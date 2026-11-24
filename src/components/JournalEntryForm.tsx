@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, Loader2, X } from "lucide-react";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export type JournalEntryFormData = {
   title: string;
@@ -42,6 +44,7 @@ export function JournalEntryForm({
   isSubmitting?: boolean;
 }) {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Pending files only used in create mode (when onUploadImage is not provided)
@@ -51,7 +54,7 @@ export function JournalEntryForm({
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [imageError, setImageError] = useState<string | null>(null);
 
-  const { register, handleSubmit } = useForm<JournalEntryFormData>({
+  const { register, handleSubmit, formState: { isDirty } } = useForm<JournalEntryFormData>({
     defaultValues: entry
       ? {
           title: entry.title,
@@ -166,7 +169,7 @@ export function JournalEntryForm({
               {onDeleteImage && (
                 <button
                   type="button"
-                  onClick={() => handleDeleteImage(img.id)}
+                  onClick={() => confirmDelete(() => handleDeleteImage(img.id))}
                   disabled={deletingIds.has(img.id)}
                   className="absolute top-1 right-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80 disabled:opacity-50"
                 >
@@ -239,6 +242,8 @@ export function JournalEntryForm({
           {entry ? t("common.save") : t("common.create")}
         </Button>
       </div>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty || pendingFiles.length > 0} isSubmitting={isSubmitting} />
     </form>
   );
 }

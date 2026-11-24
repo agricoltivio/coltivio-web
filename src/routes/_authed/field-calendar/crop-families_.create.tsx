@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-families_/create",
@@ -26,7 +27,7 @@ function CreateCropFamilyPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit } = useForm<CropFamilyFormData>({
+  const { register, handleSubmit, formState: { isDirty } } = useForm<CropFamilyFormData>({
     defaultValues: { name: "", waitingTimeInYears: "0", additionalNotes: "" },
   });
 
@@ -97,6 +98,7 @@ function CreateCropFamilyPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

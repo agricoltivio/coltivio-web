@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { InvoicePreview } from "@/components/InvoicePreview";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/orders/invoice-settings/$settingsId")({
   loader: ({ params, context: { queryClient } }) => {
@@ -37,6 +39,7 @@ interface InvoiceSettingsFormData {
 
 function InvoiceSettingDetailPage() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const { settingsId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -45,7 +48,7 @@ function InvoiceSettingDetailPage() {
   const settingsQuery = useQuery(invoiceSettingQueryOptions(settingsId));
   const settings = settingsQuery.data;
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } =
+  const { register, handleSubmit, reset, watch, formState: { isDirty, errors } } =
     useForm<InvoiceSettingsFormData>({
       defaultValues: {
         name: "",
@@ -190,7 +193,7 @@ function InvoiceSettingDetailPage() {
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => deleteLogoMutation.mutate()}
+                  onClick={() => confirmDelete(() => deleteLogoMutation.mutate())}
                   disabled={deleteLogoMutation.isPending}
                 >
                   {t("common.delete")}
@@ -316,6 +319,8 @@ function InvoiceSettingDetailPage() {
           </div>
         </div>
       </div>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

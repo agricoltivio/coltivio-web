@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/crop-families_/$familyId_/edit",
@@ -33,7 +34,7 @@ function EditCropFamilyPage() {
 
   const family = useQuery(cropFamilyQueryOptions(familyId)).data!;
 
-  const { register, handleSubmit } = useForm<CropFamilyFormData>({
+  const { register, handleSubmit, formState: { isDirty } } = useForm<CropFamilyFormData>({
     defaultValues: {
       name: family.name,
       waitingTimeInYears: family.waitingTimeInYears.toString(),
@@ -125,6 +126,7 @@ function EditCropFamilyPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

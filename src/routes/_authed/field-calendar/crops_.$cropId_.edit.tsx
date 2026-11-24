@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/field-calendar/crops_/$cropId_/edit")({
   loader: ({ params, context: { queryClient } }) => {
@@ -46,7 +47,7 @@ function EditCropPage() {
   const crop = useQuery(cropQueryOptions(cropId)).data!;
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
-  const { register, handleSubmit, setValue, watch } = useForm<CropFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<CropFormData>({
     defaultValues: {
       name: crop.name,
       category: crop.category,
@@ -101,7 +102,7 @@ function EditCropPage() {
           <Label>{t("crops.category")} *</Label>
           <Select
             value={watch("category")}
-            onValueChange={(val) => setValue("category", val as CropCategory)}
+            onValueChange={(val) => setValue("category", val as CropCategory, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -125,7 +126,7 @@ function EditCropPage() {
           <Label>{t("crops.family")}</Label>
           <Select
             value={watch("familyId") || "__none__"}
-            onValueChange={(val) => setValue("familyId", val === "__none__" ? "" : val)}
+            onValueChange={(val) => setValue("familyId", val === "__none__" ? "" : val, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue placeholder={t("common.noSelection")} />
@@ -164,6 +165,7 @@ function EditCropPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type FertilizerApplicationUnit = FertilizerApplication["unit"];
 type FertilizerMethod = NonNullable<FertilizerApplication["method"]>;
@@ -77,7 +78,7 @@ function FertilizerApplicationDetail() {
   const fertilizersQuery = useQuery(fertilizersQueryOptions());
   const fertilizers = fertilizersQuery.data?.result ?? [];
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       date: "",
       fertilizerId: "",
@@ -238,7 +239,7 @@ function FertilizerApplicationDetail() {
             <Select
               value={watchedFertilizerId}
               onValueChange={(v) => {
-                if (v) setValue("fertilizerId", v);
+                if (v) setValue("fertilizerId", v, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -278,7 +279,7 @@ function FertilizerApplicationDetail() {
                   const unit = FERTILIZER_APPLICATION_UNITS.find(
                     (applicationUnit) => applicationUnit === v,
                   );
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -319,7 +320,7 @@ function FertilizerApplicationDetail() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = FERTILIZER_METHODS.find((fertilizerMethod) => fertilizerMethod === v);
-                if (method) setValue("method", method);
+                if (method) setValue("method", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -359,6 +360,7 @@ function FertilizerApplicationDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

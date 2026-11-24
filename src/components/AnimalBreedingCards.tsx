@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
 
 const LINE_COLOR = "#0f766e";
 
@@ -215,6 +216,7 @@ function WeightEntryDialog({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const invalidate = useInvalidateBreeding();
   const [date, setDate] = useState(weight ? weight.date.slice(0, 10) : toLocalDateString(new Date()));
   const [weightInput, setWeightInput] = useState(weight ? String(weight.weightKg) : "");
@@ -297,13 +299,16 @@ function WeightEntryDialog({
         )}
         <DialogFooter className="sm:justify-between">
           {weight ? (
-            <Button
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-              onClick={() => deleteMutation.mutate(weight.id)}
-            >
-              {t("common.delete")}
-            </Button>
+            <>
+              <Button
+                variant="destructive"
+                disabled={deleteMutation.isPending}
+                onClick={() => confirmDelete(() => deleteMutation.mutate(weight.id))}
+              >
+                {t("common.delete")}
+              </Button>
+              {confirmDeleteDialog}
+            </>
           ) : (
             <span />
           )}
@@ -409,6 +414,7 @@ export function HeatEntryDialog({
   onClose: () => void;
 }) {
   const { t, i18n } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const invalidate = useInvalidateBreeding();
   // All animals, so a sire that died since the mating can still be shown
   const allAnimalsQuery = useQuery(animalsQueryOptions(false));
@@ -603,13 +609,16 @@ export function HeatEntryDialog({
         )}
         <DialogFooter className="sm:justify-between">
           {heat ? (
-            <Button
-              variant="destructive"
-              disabled={deleteMutation.isPending}
-              onClick={() => deleteMutation.mutate(heat.id)}
-            >
-              {t("common.delete")}
-            </Button>
+            <>
+              <Button
+                variant="destructive"
+                disabled={deleteMutation.isPending}
+                onClick={() => confirmDelete(() => deleteMutation.mutate(heat.id))}
+              >
+                {t("common.delete")}
+              </Button>
+              {confirmDeleteDialog}
+            </>
           ) : (
             <span />
           )}

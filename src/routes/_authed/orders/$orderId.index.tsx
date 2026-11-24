@@ -40,6 +40,7 @@ import {
   ComboboxEmpty,
 } from "@/components/ui/combobox";
 import type { OrderStatus } from "@/api/types";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
 
 export const Route = createFileRoute("/_authed/orders/$orderId/")({
   validateSearch: z.object({ returnTo: z.string().optional() }),
@@ -70,6 +71,7 @@ type ComboboxOption = { value: string; label: string };
 
 function OrderDetailPage() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const { canWrite: canWriteOrders } = useFeatureAccess("commerce");
   const { orderId } = Route.useParams();
   const { returnTo } = Route.useSearch();
@@ -484,7 +486,7 @@ function OrderDetailPage() {
                             variant="ghost"
                             size="icon"
                             disabled={deleteItemMutation.isPending}
-                            onClick={() => deleteItemMutation.mutate(item.id)}
+                            onClick={() => confirmDelete(() => deleteItemMutation.mutate(item.id))}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </Button>
@@ -693,6 +695,7 @@ function OrderDetailPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {confirmDeleteDialog}
     </PageContent>
   );
 }

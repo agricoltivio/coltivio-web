@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { WikiChangeRequestNote } from "@/api/types";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const LOCALES = ["de", "en", "it", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
@@ -303,6 +304,7 @@ function EditChangeRequestDraft() {
           )}
         </div>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

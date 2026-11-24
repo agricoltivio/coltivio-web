@@ -1,5 +1,10 @@
 {
   "common": {
+    "discard": "Abandonner",
+    "discardChangesTitle": "Abandonner les modifications ?",
+    "discardChangesMessage": "Tes modifications ne sont pas encore enregistrées et seront perdues.",
+    "deleteConfirmTitle": "Vraiment supprimer ?",
+    "deleteConfirmMessage": "Cette action est irréversible.",
     "viewAll": "Voir tout",
     "loading": "Chargement...",
     "uploadImage": "Télécharger une image",
@@ -1227,6 +1232,8 @@
       "repeatEveryPrefix": "Répéter tous les",
       "repeatEverySuffix": "ans",
       "repeatUntil": "Jusqu'au",
+      "endBeforeStart": "La date de fin est antérieure à la date de début.",
+      "untilBeforeEnd": "La fin de la répétition est antérieure à la date de fin.",
       "planFor": "Planification: {{name}}",
       "addRotation": "Ajouter une rotation",
       "editRotation": "Modifier la rotation",

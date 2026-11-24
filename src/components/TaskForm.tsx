@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { X, Plus, Sparkles } from "lucide-react";
 import { ChecklistGenerationDialog } from "@/components/ChecklistGenerationDialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface TaskFormData {
   name: string;
@@ -50,6 +51,7 @@ export function TaskForm({
     control,
     watch,
     setValue,
+    formState: { isDirty },
   } = useForm<TaskFormData>({
     defaultValues: task
       ? {
@@ -109,7 +111,7 @@ export function TaskForm({
   function addLabel() {
     const trimmed = labelInput.trim();
     if (trimmed && !watchedLabels.includes(trimmed)) {
-      setValue("labels", [...watchedLabels, trimmed]);
+      setValue("labels", [...watchedLabels, trimmed], { shouldDirty: true });
     }
     setLabelInput("");
   }
@@ -118,6 +120,7 @@ export function TaskForm({
     setValue(
       "labels",
       watchedLabels.filter((l) => l !== label),
+      { shouldDirty: true },
     );
   }
 
@@ -312,6 +315,7 @@ export function TaskForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

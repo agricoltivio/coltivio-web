@@ -48,6 +48,7 @@ import {
   isPerAreaUnit,
   unitsForQuantityKind,
 } from "@/lib/sowingUnits";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const ALL_STEPS = ["crop", "config", "plots", "divide", "summary"] as const;
 type WizardStep = (typeof ALL_STEPS)[number];
@@ -119,7 +120,7 @@ function CreateSowing() {
   const presetsQuery = useQuery(sowingPresetsQueryOptions());
   const unitsQuery = useQuery(sowingUnitsQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       cropId: "",
@@ -190,11 +191,11 @@ function CreateSowing() {
     Math.abs(sumDivided(amountsByPlot, watchedPlotIds) - roundedTotal) > 0.01;
 
   function selectSeed(seedId: string) {
-    setValue("seedId", seedId);
+    setValue("seedId", seedId, { shouldDirty: true });
     const seed = seeds.find((candidate) => candidate.id === seedId);
     if (!seed) return;
     // the crop always comes from the seed
-    setValue("cropId", seed.cropId);
+    setValue("cropId", seed.cropId, { shouldDirty: true });
     setSelectedPresetId(null);
     // The seed's default unit is preselected, otherwise the current unit stays if it
     // fits the seed. When the unit changes kind, the old amount would mean something
@@ -207,11 +208,11 @@ function CreateSowing() {
     const nextUnit =
       seed.defaultUnit ?? (keepsUnit ? previousUnit : fittingUnits[0]?.unit);
     if (!nextUnit) return;
-    setValue("unit", nextUnit);
+    setValue("unit", nextUnit, { shouldDirty: true });
     if (seed.defaultAmount != null) {
-      setValue("amount", seed.defaultAmount.toString());
+      setValue("amount", seed.defaultAmount.toString(), { shouldDirty: true });
     } else if (!keepsUnit) {
-      setValue("amount", "");
+      setValue("amount", "", { shouldDirty: true });
     }
   }
 
@@ -294,9 +295,9 @@ function CreateSowing() {
     if (!preset) return;
     setSelectedPresetId(presetId);
     // a preset without a seed keeps the seed chosen in step 1
-    if (preset.seedId) setValue("seedId", preset.seedId);
-    setValue("unit", preset.unit);
-    setValue("amount", preset.amount.toString());
+    if (preset.seedId) setValue("seedId", preset.seedId, { shouldDirty: true });
+    setValue("unit", preset.unit, { shouldDirty: true });
+    setValue("amount", preset.amount.toString(), { shouldDirty: true });
   }
 
   // --- Wizard step machinery ---
@@ -354,7 +355,7 @@ function CreateSowing() {
               <Select
                 value={watchedSeedId || NO_SEED}
                 onValueChange={(value) => {
-                  if (value === NO_SEED) setValue("seedId", "");
+                  if (value === NO_SEED) setValue("seedId", "", { shouldDirty: true });
                   else if (value) selectSeed(value);
                 }}
               >
@@ -386,7 +387,7 @@ function CreateSowing() {
                 disabled={!!selectedSeed}
                 onValueChange={(value) => {
                   if (!value) return;
-                  setValue("cropId", value);
+                  setValue("cropId", value, { shouldDirty: true });
                   setSelectedPresetId(null);
                 }}
               >
@@ -429,7 +430,7 @@ function CreateSowing() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
               drawnAreas={drawnAreas}
               onDrawnAreasChange={setDrawnAreas}
             />
@@ -505,7 +506,7 @@ function CreateSowing() {
                       const unitInfo = availableUnits.find(
                         (info) => info.unit === value,
                       );
-                      if (unitInfo) setValue("unit", unitInfo.unit);
+                      if (unitInfo) setValue("unit", unitInfo.unit, { shouldDirty: true });
                     }}
                   >
                     <SelectTrigger id="sowing-unit">
@@ -774,6 +775,7 @@ function CreateSowing() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

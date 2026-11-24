@@ -1,3 +1,4 @@
+import { useRotationDateOrder } from "@/lib/useRotationDateOrder";
 import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -41,6 +42,7 @@ import {
   type WaitingTimeViolation,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // --- Constants ---
 
@@ -71,6 +73,8 @@ export const Route = createFileRoute(
 // --- Main component ---
 
 function EditDraftPlots() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -206,7 +210,10 @@ function EditDraftPlots() {
               crops={crops}
               rotations={plotRotations[plotId] ?? []}
               onRotationsChange={(rotations) =>
-                setPlotRotations((prev) => ({ ...prev, [plotId]: rotations }))
+                {
+                  setHasUserChanges(true);
+                  setPlotRotations((prev) => ({ ...prev, [plotId]: rotations }));
+                }
               }
             />
           );
@@ -236,6 +243,7 @@ function EditDraftPlots() {
           </Button>
         </div>
       </div>
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }
@@ -455,8 +463,20 @@ function RotationDialog({
     }
   }, [open, entry]);
 
+  // Dates stay in order (see useRotationDateOrder)
+  const { changeFromDate, changeToDate, dateOrderError } = useRotationDateOrder({
+    fromDate,
+    toDate,
+    untilDate,
+    hasRecurrence,
+    hasUntil,
+    setFromDate,
+    setToDate,
+    setUntilDate,
+  });
+
   function handleSave() {
-    if (!cropId || !fromDate || !toDate) return;
+    if (!cropId || !fromDate || !toDate || dateOrderError) return;
     const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
     onSave({
       cropId,
@@ -502,13 +522,15 @@ function RotationDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.fromDate")}</Label>
-              <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+              <Input type="date" value={fromDate} onChange={(e) => changeFromDate(e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.toDate")}</Label>
-              <Input type="date" value={toDate} min={fromDate} onChange={(e) => setToDate(e.target.value)} />
+              <Input type="date" value={toDate} min={fromDate} onChange={(e) => changeToDate(e.target.value)} />
             </div>
           </div>
+
+          {dateOrderError && <p className="text-sm text-destructive">{dateOrderError}</p>}
 
           <div>
             {!hasRecurrence ? (
@@ -567,7 +589,7 @@ function RotationDialog({
             </Button>
           )}
           <Button variant="outline" className="flex-1" onClick={onClose}>{t("common.cancel")}</Button>
-          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate}>
+          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate || !!dateOrderError}>
             {t("common.save")}
           </Button>
         </div>

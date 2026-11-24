@@ -43,6 +43,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // Radix Select doesn't allow an empty item value
 const NO_SEED = "none";
@@ -102,7 +103,7 @@ function SowingDetail() {
     watch,
     reset,
     getValues,
-    formState: { errors },
+    formState: { isDirty, errors },
   } = useForm<FormData>({
     defaultValues: {
       date: "",
@@ -194,19 +195,19 @@ function SowingDetail() {
   );
 
   function selectSeed(seedId: string) {
-    setValue("seedId", seedId);
+    setValue("seedId", seedId, { shouldDirty: true });
     const seed = seeds.find((candidate) => candidate.id === seedId);
     if (!seed) return;
     // the crop always comes from the seed
-    setValue("cropId", seed.cropId);
+    setValue("cropId", seed.cropId, { shouldDirty: true });
     // A seed of another kind brings its own default unit and amount, the old
     // number would mean something else in the new unit
     const fittingUnits = unitsForQuantityKind(units, seed.quantityKind);
     if (fittingUnits.some((unitInfo) => unitInfo.unit === getValues("unit")))
       return;
     const nextUnit = seed.defaultUnit ?? fittingUnits[0]?.unit;
-    if (nextUnit) setValue("unit", nextUnit);
-    setValue("amount", seed.defaultAmount?.toString() ?? "");
+    if (nextUnit) setValue("unit", nextUnit, { shouldDirty: true });
+    setValue("amount", seed.defaultAmount?.toString() ?? "", { shouldDirty: true });
   }
 
   return (
@@ -281,7 +282,7 @@ function SowingDetail() {
             <Select
               value={watchedSeedId || NO_SEED}
               onValueChange={(value) => {
-                if (value === NO_SEED) setValue("seedId", "");
+                if (value === NO_SEED) setValue("seedId", "", { shouldDirty: true });
                 else if (value) selectSeed(value);
               }}
               disabled={!canWrite}
@@ -313,7 +314,7 @@ function SowingDetail() {
             <Select
               value={watchedCropId}
               onValueChange={(value) => {
-                if (value) setValue("cropId", value);
+                if (value) setValue("cropId", value, { shouldDirty: true });
               }}
               disabled={!canWrite || !!selectedSeed}
             >
@@ -378,7 +379,7 @@ function SowingDetail() {
                   const unitInfo = availableUnits.find(
                     (info) => info.unit === value,
                   );
-                  if (unitInfo) setValue("unit", unitInfo.unit);
+                  if (unitInfo) setValue("unit", unitInfo.unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -436,6 +437,7 @@ function SowingDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }
