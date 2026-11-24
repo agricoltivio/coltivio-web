@@ -1,5 +1,6 @@
 "use client"
 
+import i18n from "@/i18n"
 import * as React from "react"
 import {
   ChevronDownIcon,
@@ -41,7 +42,8 @@ function Calendar({
       captionLayout={captionLayout}
       formatters={{
         formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
+          // Month names in the app language, not the browser's
+          date.toLocaleString(i18n.language, { month: "short" }),
         ...formatters,
       }}
       classNames={{

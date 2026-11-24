@@ -1225,6 +1225,8 @@
       "repeatEveryPrefix": "Repeats every",
       "repeatEverySuffix": "years",
       "repeatUntil": "Until",
+      "endBeforeStart": "The end date is before the start date.",
+      "untilBeforeEnd": "The repeat end is before the end date.",
       "planFor": "Plan: {{name}}",
       "addRotation": "Add rotation",
       "editRotation": "Edit rotation",

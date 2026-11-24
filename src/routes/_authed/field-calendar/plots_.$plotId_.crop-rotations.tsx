@@ -1,3 +1,4 @@
+import { useRotationDateOrder } from "@/lib/useRotationDateOrder";
 import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
@@ -132,7 +133,7 @@ export const Route = createFileRoute(
 function PlanCropRotations() {
   // Set by the user's own plan changes (not by loading the plan): asks before leaving
   const [hasUserChanges, setHasUserChanges] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { plotId } = Route.useParams();
@@ -232,7 +233,8 @@ function PlanCropRotations() {
 
   const gridLines = useMemo(
     () => getAllGridLines(zoom, TIMELINE_START, TIMELINE_END, pxPerDay),
-    [zoom, pxPerDay],
+    // The labels are in the app language
+    [zoom, pxPerDay, i18n.language],
   );
   const totalWidth = Math.ceil(
     ((TIMELINE_END.getTime() - TIMELINE_START.getTime()) / MS_PER_DAY) * pxPerDay,
@@ -709,8 +711,20 @@ function RotationDialog({
     }
   }, [open, entry]);
 
+  // Dates stay in order (see useRotationDateOrder)
+  const { changeFromDate, changeToDate, dateOrderError } = useRotationDateOrder({
+    fromDate,
+    toDate,
+    untilDate,
+    hasRecurrence,
+    hasUntil,
+    setFromDate,
+    setToDate,
+    setUntilDate,
+  });
+
   function handleSave() {
-    if (!cropId || !fromDate || !toDate) return;
+    if (!cropId || !fromDate || !toDate || dateOrderError) return;
     const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
     onSave({
       cropId,
@@ -775,7 +789,7 @@ function RotationDialog({
               <Input
                 type="date"
                 value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e) => changeFromDate(e.target.value)}
               />
             </div>
             <div className="space-y-1.5">
@@ -784,10 +798,12 @@ function RotationDialog({
                 type="date"
                 value={toDate}
                 min={fromDate}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e) => changeToDate(e.target.value)}
               />
             </div>
           </div>
+
+          {dateOrderError && <p className="text-sm text-destructive">{dateOrderError}</p>}
 
           {/* Optional recurrence */}
           <div>
@@ -884,7 +900,7 @@ function RotationDialog({
           <Button
             className="flex-1"
             onClick={handleSave}
-            disabled={!cropId || !fromDate || !toDate}
+            disabled={!cropId || !fromDate || !toDate || !!dateOrderError}
           >
             {t("common.save")}
           </Button>
