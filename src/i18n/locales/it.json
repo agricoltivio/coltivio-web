@@ -1,6 +1,9 @@
 {
   "common": {
+    "viewAll": "Vedi tutto",
     "loading": "Caricamento...",
+    "uploadImage": "Carica immagine",
+    "imageUploadFailed": "Non è stato possibile caricare l'immagine.",
     "error": "Errore",
     "save": "Salva",
     "cancel": "Annulla",
@@ -45,7 +48,11 @@
     "title": "Titolo",
     "date": "Data",
     "done": "Fatto",
-    "wizardStepOf": "Passo {{current}} di {{total}}"
+    "wizardStepOf": "Passo {{current}} di {{total}}",
+    "saveFailed": "Non ha funzionato. Riprova.",
+    "required": "Obbligatorio",
+    "registrationNumber": "Numero di omologazione",
+    "registrationNumberOptional": "Numero di omologazione (facoltativo)"
   },
   "nav": {
     "groups": {
@@ -71,7 +78,7 @@
       "health": "Salute"
     },
     "animalsExport": "Export",
-    "tvdImport": "Import TVD",
+    "tvdImport": "Import BDTA",
     "dashboard": "Dashboard",
     "animals": "Animali",
     "earTags": "Marche auricolari",
@@ -102,14 +109,16 @@
     "wiki": "Wiki",
     "wikiMyEntries": "Le mie voci",
     "wikiMySubmissions": "Le mie proposte",
-    "wikiAdmin": "Wiki Admin",
+    "wikiAdmin": "Wiki admin",
     "tasks": "Compiti",
     "farmJournal": "Diario aziendale",
     "membership": "Abbonamento",
     "treffpunkt": "Comunità",
     "myFarm": "La mia azienda",
     "invoiceSettings": "Impostazioni fattura",
-    "users": "Utenti"
+    "users": "Utenti",
+    "sowings": "Semina",
+    "seeds": "Sementi"
   },
   "animals": {
     "title": "Animali",
@@ -117,11 +126,11 @@
       "title": "Esporta dati animali",
       "description": "Scarica il registro dei trattamenti e delle uscite come file Excel."
     },
-    "importOnboardingBody": "Per l'importazione è necessario un file Excel della TVD. Procedi come segue:",
+    "importOnboardingBody": "Per l'importazione è necessario un file Excel della BDTA. Procedi come segue:",
     "importOnboardingStepSelectType": "Seleziona la specie animale desiderata",
     "importOnboardingStepExport": "Esporta l'effettivo tramite «Esportare i dati» sotto la tabella",
     "importOnboardingPedigree": "Se vuoi aggiungere l'ascendenza dei tuoi animali, importa in aggiunta la lista della vista «ascendenza».",
-    "importOnboardingSync": "Puoi importare le liste della TVD in qualsiasi momento per aggiornare i tuoi animali nell'app.",
+    "importOnboardingSync": "Puoi importare le liste della BDTA in qualsiasi momento per aggiornare i tuoi animali nell'app.",
     "importOnboardingSyncMergeHint": "Gli animali vengono aggiornati in base al marchio auricolare. Confermalo ogni volta nell'anteprima unendo gli animali.",
     "importOnboardingLearnMore": "Scopri di più",
     "createAnimal": "Crea animale",
@@ -150,6 +159,12 @@
     "noMother": "Sconosciuta",
     "noFather": "Sconosciuto",
     "noChildren": "Nessun discendente",
+    "color": "Colore",
+    "notes": "Note",
+    "addOffspring": "Aggiungi prole",
+    "selectOffspring": "Seleziona prole",
+    "createNewOffspring": "Crea nuovo animale",
+    "removeOffspring": "Rimuovi prole",
     "selectTypeToView": "Seleziona un tipo di animale per visualizzare l'albero genealogico",
     "noAnimalsOfType": "Nessun animale di questo tipo trovato",
     "hideDeadAnimals": "Nascondi deceduti",
@@ -217,6 +232,8 @@
     "importRow": "Riga",
     "importReason": "Motivo",
     "importPreview": "Anteprima",
+    "importSelectType": "Seleziona la specie animale",
+    "importAs": "Importa come",
     "importPreviewTitle": "Anteprima importazione",
     "importPreviewDesc": "Controlla gli animali prima dell'importazione. Puoi modificare le righe o rimuoverle dall'importazione.",
     "importPreviewHasErrors": "Alcune righe contengono errori. Modificale o rimuovile dall'importazione.",
@@ -240,9 +257,19 @@
     "importNoRows": "Tutte le righe rimosse.",
     "importPreviewError": "Impossibile caricare l'anteprima. Controlla il file e riprova.",
     "importCommitError": "Importazione fallita. Riprova.",
-    "importStatus": "Stato"
+    "importStatus": "Stato",
+    "colorOptional": "Colore (facoltativo)",
+    "notesOptional": "Note (facoltativo)",
+    "removeOffspringConfirm": "{{child}} non sarà più registrato come discendente di {{parent}}. L'animale stesso viene mantenuto.",
+    "addOffspringFailed": "Non è stato possibile aggiungere i discendenti."
   },
   "earTags": {
+    "prefix": "Prefisso",
+    "prefixPlaceholder": "p.es. CH o CH 120.",
+    "invalidDigits": "Solo cifre, lettere e caratteri vanno nel prefisso",
+    "editEarTag": "Modifica marca auricolare",
+    "assignedTo": "Assegnata a {{name}}",
+    "numberTaken": "Questo numero esiste già.",
     "title": "Marchi auricolari",
     "addRange": "Aggiungi intervallo",
     "deleteRange": "Elimina intervallo",
@@ -250,12 +277,36 @@
     "status": "Stato",
     "assigned": "Assegnato",
     "available": "Disponibile",
-    "prefix": "Prefisso",
-    "fromNumber": "Dal numero",
-    "toNumber": "Al numero",
+    "invalidNumber": "Inserisci un numero, eventualmente con lettere davanti (es. CH001)",
+    "confirmCreateTitle": "Creare marche auricolari?",
+    "confirmCreateMessage": "Da {{from}} a {{to}}\nTotale: {{total}} marche auricolari",
+    "rangeConflictServer": "Alcune di queste marche auricolari esistono già. Non è stata creata nessuna marca auricolare.",
     "deleteConfirm": "Sei sicuro di voler eliminare questo marchio?",
     "deleteWarning": "I marchi assegnati agli animali verranno saltati.",
-    "skippedAssigned": "{{count}} marchi sono stati saltati perché assegnati ad animali."
+    "skippedAssigned": "{{count}} marchi sono stati saltati perché assegnati ad animali.",
+    "firstNumber": "Primo numero",
+    "amount": "Numero di marche auricolari",
+    "rangePreviewTitle": "Verranno create",
+    "rangePreviewRange": "{{from}} – {{to}}",
+    "rangePreviewTotal": "{{total}} marche auricolari",
+    "rangeConflict": "Queste marche auricolari esistono già: {{numbers}}. Modifica il primo numero o la quantità.",
+    "rangeConflictMore": "Queste marche auricolari esistono già: {{numbers}} e altre {{remaining}}. Modifica il primo numero o la quantità.",
+    "rangeTooLarge": "Al massimo {{max}} marche auricolari alla volta",
+    "confirmDeleteRangeTitle": "Eliminare le marche auricolari?",
+    "confirmDeleteRangeMessage_one": "{{count}} marca auricolare nell'intervallo da {{from}} a {{to}} verrà eliminata. Le marche assegnate restano.",
+    "confirmDeleteRangeMessage_other": "{{count}} marche auricolari nell'intervallo da {{from}} a {{to}} verranno eliminate. Le marche assegnate restano.",
+    "deleteRangeDoneTitle": "Marche auricolari eliminate",
+    "deleteRangeDone_one": "{{count}} marca auricolare eliminata.",
+    "deleteRangeDone_other": "{{count}} marche auricolari eliminate.",
+    "deleteRangeDoneSkipped_one": "{{count}} marca auricolare eliminata, {{skipped}} assegnate mantenute.",
+    "deleteRangeDoneSkipped_other": "{{count}} marche auricolari eliminate, {{skipped}} assegnate mantenute.",
+    "deleteRangePreviewCount_one": "{{count}} marca auricolare verrà eliminata",
+    "deleteRangePreviewCount_other": "{{count}} marche auricolari verranno eliminate",
+    "deleteRangePreviewNone": "Nessuna marca auricolare libera in questo intervallo",
+    "deleteRangeKept": "Assegnate, restano: {{numbers}}",
+    "deleteRangeKeptMore": "Assegnate, restano: {{numbers}} e altre {{remaining}}",
+    "deleteFailed": "Non è stato possibile eliminare la marca auricolare.",
+    "deleteAssignedServer": "La marca auricolare è stata nel frattempo assegnata a un animale e non può essere eliminata."
   },
   "auth": {
     "signIn": "Accedi",
@@ -295,6 +346,17 @@
     "privacyPolicy": "Informativa sulla privacy"
   },
   "dashboard": {
+    "animalsByType": "Animali per specie",
+    "cropProtection": "Trattamenti fitosanitari",
+    "cropRotations": "Rotazioni colturali attive",
+    "fertilizerApplications": "Concimazione",
+    "fieldworkMap": "Lavori nei campi",
+    "harvestByCrop": "Raccolto per coltura",
+    "mineral": "Minerale",
+    "organic": "Organico",
+    "plotsByCrop": "Campi per coltura",
+    "topCropByArea": "Coltura più estesa",
+    "topHarvestedCrop": "Più raccolta",
     "welcome": "Ciao {{name}}, {{farmName}}",
     "animalsBorn": "Nati",
     "animalsDied": "Morti",
@@ -503,9 +565,11 @@
     "endDate": "Al",
     "name": "Nome",
     "reason": "Motivo",
-    "drug": "Farmaco",
+    "drug": "Medicinale",
     "notes": "Note",
     "milkUsableDate": "Latte utilizzabile dal",
+    "mixedAnimalTypes": "Un trattamento può contenere solo animali di una sola specie.",
+    "drugNotDefinedForType": "Per questa specie ({{type}}) il medicinale non ha dosaggio né periodi di attesa. Inseriscili manualmente.",
     "meatUsableDate": "Carne utilizzabile dal",
     "organsUsableDate": "Organi utilizzabili dal",
     "waitingDates": "Periodi di attesa",
@@ -517,7 +581,7 @@
     "exportDialog": {
       "title": "Esporta trattamenti",
       "description": "Scarica il diario dei trattamenti come file Excel.",
-      "filterByAnimalType": "Filtra per tipo di animale (opzionale)"
+      "filterByAnimalType": "Filtra per tipo di animale (facoltativo)"
     },
     "drugDoseValue": "Dose",
     "drugDoseUnit": "Unità",
@@ -525,10 +589,10 @@
     "drugReceivedFrom": "Ricevuto da"
   },
   "drugs": {
-    "title": "Farmaci",
-    "createDrug": "Crea farmaco",
-    "editDrug": "Modifica farmaco",
-    "drugDetails": "Dettagli farmaco",
+    "title": "Medicinali",
+    "createDrug": "Crea medicinale",
+    "editDrug": "Modifica medicinale",
+    "drugDetails": "Dettagli medicinale",
     "name": "Nome",
     "notes": "Note",
     "dosing": "Dosaggio",
@@ -539,13 +603,13 @@
     "doseValue": "Dose",
     "doseUnit": "Unità",
     "dosePerUnit": "Per",
-    "milkWaitingDays": "Giorni attesa latte",
-    "meatWaitingDays": "Giorni attesa carne",
-    "organsWaitingDays": "Giorni attesa organi",
+    "milkWaitingDays": "Periodo di attesa latte (giorni)",
+    "meatWaitingDays": "Periodo di attesa carne (giorni)",
+    "organsWaitingDays": "Periodo di attesa organi (giorni)",
     "isAntibiotic": "Antibiotico",
     "criticalAntibiotic": "Antibiotico critico",
     "receivedFrom": "Ricevuto da",
-    "deleteConfirm": "Sei sicuro di voler eliminare questo farmaco?",
+    "deleteConfirm": "Vuoi davvero eliminare questo medicinale?",
     "doseUnits": {
       "tablet": "Compressa",
       "capsule": "Capsula",
@@ -581,7 +645,8 @@
     "scheduleType": "Tipo",
     "scheduleTypes": {
       "pasture": "Pascolo",
-      "exercise_yard": "Paddock"
+      "exercise_yard": "Paddock",
+      "stable": "Stalla"
     },
     "startDate": "Dal",
     "endDate": "Al",
@@ -600,9 +665,21 @@
     "weekdaysRequired": "Seleziona almeno un giorno della settimana.",
     "untilOptional": "Ripeti fino al",
     "endBeforeStart": "La data non può precedere la data di inizio.",
-    "changesApplyFrom": "Le modifiche valgono dal",
+    "changesApplyFrom": "Modifiche valide dal",
     "changesSummary": "{{added}} aggiunti, {{removed}} rimossi. Da quale data vale?",
-    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva."
+    "membershipDateTooEarly": "La data è precedente all'ingresso di un animale nella sua mandria attuale. Scegli una data successiva.",
+    "overrides": {
+      "title": "Eccezioni",
+      "add": "Aggiungi eccezione",
+      "edit": "Modifica eccezione",
+      "hint": "Giorni in cui la mandria ha fatto altro rispetto al previsto, p. es. in stalla a causa di un temporale. Un'eccezione prevale sul programma di uscita in quei giorni.",
+      "overlap": "L'eccezione si sovrappone a un'altra eccezione di questa mandria.",
+      "deleteConfirm": "Eliminare davvero questa eccezione?",
+      "single": "Eccezione"
+    },
+    "errors": {
+      "outdoor_schedule_overlap": "Il piano si sovrappone a un altro piano di questa mandria."
+    }
   },
   "turnoutJournal": {
     "title": "Giornale di pascolo",
@@ -636,18 +713,19 @@
       "description": "Scarica il diario di uscita come file Excel."
     },
     "viewCategories": "Categorie",
-    "viewMeadows": "Aree di pascolo"
+    "viewMeadows": "Aree di pascolo",
+    "viewHerds": "Mandrie"
   },
   "landing": {
     "nav": {
-      "openApp": "Apri App"
+      "openApp": "Apri app"
     },
     "hero": {
       "headline": "Gestione agricola,\nfatta da agricoltori.",
       "sub": "Software open source e senza scopo di lucro per piccole e medie aziende agricole. Nessun investitore, nessun lock-in — solo strumenti che funzionano davvero.",
       "testPhase": "L'app è attualmente in fase di test — provala e condividi il tuo feedback.",
       "ctaIos": "iOS TestFlight ↗",
-      "ctaAndroid": "Android Beta"
+      "ctaAndroid": "Android beta"
     },
     "story": {
       "headline": "Burocrazia? Caos Excel? Aggiornare tutto la sera?",
@@ -660,9 +738,9 @@
       "funding": "Invece di costose licenze, ci affidiamo a un finanziamento comunitario tramite contributi volontari. Ogni sostegno aiuta a far crescere Coltivio e a mantenerlo liberamente accessibile a tutti gli agricoltori."
     },
     "mission": {
-      "title": "La Nostra Missione",
+      "title": "La nostra missione",
       "independent": {
-        "title": "Indipendente & Non-Profit",
+        "title": "Indipendente & non-profit",
         "body": "Nessun investitore, nessun capitale di rischio. Costruito per servire gli agricoltori, non gli azionisti."
       },
       "community": {
@@ -670,19 +748,19 @@
         "body": "Fatto da agricoltori, per agricoltori. Ogni funzione nasce dall'esperienza sul campo."
       },
       "openSource": {
-        "title": "Open Source",
+        "title": "Open source",
         "body": "Trasparente, verificabile e duplicabile. I tuoi dati, il tuo software."
       }
     },
     "fieldwork": {
-      "title": "Lavoro in Campo",
+      "title": "Lavoro in campo",
       "sub": "Il tuo podere in tasca — L'App Mobile",
       "plots": {
         "title": "Gestione delle superfici",
         "desc": "Acquisizione automatica delle tue superfici. Adattale alle tue esigenze — dividile, uniscile o disegnane di nuove, esattamente come ti serve."
       },
       "calendar": {
-        "title": "Calendario di campo",
+        "title": "Calendario dei campi",
         "desc": "Una panoramica unificata di tutte le attività di campo pianificate e completate."
       },
       "protection": {
@@ -703,14 +781,14 @@
       "sub": "Tracciamento completo del bestiame in tasca.",
       "import": {
         "title": "Patrimonio zootecnico",
-        "desc": "Tutto il tuo bestiame a colpo d'occhio. Crea mandrie con uscite e tempi di pascolo definiti. Importa gli animali tramite l'esportazione delle liste animali da TVD."
+        "desc": "Tutto il tuo bestiame a colpo d'occhio. Crea mandrie con uscite e tempi di pascolo definiti. Importa gli animali tramite l'esportazione delle liste animali dalla BDTA."
       },
       "treatments": {
         "title": "Giornale trattamenti",
-        "desc": "Registro completo dei farmaci per animale: prodotto, dose, motivo e veterinario. I periodi di attesa (Absetzfristen) per latte e carne vengono calcolati automaticamente con avvisi prima della scadenza."
+        "desc": "Registro completo dei medicinali per animale: prodotto, dose, motivo e veterinario. I periodi di attesa per latte e carne vengono calcolati automaticamente con avvisi prima della scadenza."
       },
       "herds": {
-        "title": "Mandrie & Piani",
+        "title": "Mandrie & piani",
         "desc": "Organizza gli animali in gruppi flessibili per alimentazione, riproduzione o pascolo. Tieni traccia di cicli riproduttivi, parti attesi e piani di alimentazione per l'intera mandria."
       },
       "turnout": {
@@ -755,7 +833,7 @@
     },
     "webapp": {
       "label": "Quando il telefono non è lo strumento giusto — L'app Web",
-      "title": "Il Compagno Desktop",
+      "title": "Il compagno desktop",
       "body": "Stessi dati, schermo più grande.",
       "contacts": {
         "title": "Gestione contatti",
@@ -771,16 +849,16 @@
       }
     },
     "oss": {
-      "title": "Open Source",
+      "title": "Open source",
       "body": "Costruito all'aperto. Contribuisci, forkalo o usalo. Senza vincoli.",
       "github": "Vedi su GitHub"
     },
     "footer": {
       "tagline": "Gestione agricola open source",
-      "openApp": "Apri App",
+      "openApp": "Apri app",
       "github": "GitHub",
-      "iosBeta": "iOS Beta",
-      "androidBeta": "Android Beta"
+      "iosBeta": "iOS beta",
+      "androidBeta": "Android beta"
     }
   },
   "fieldCalendar": {
@@ -1045,31 +1123,31 @@
         "998": "Altre superfici fuori dall'azienda agricola e dai pascoli d'alpeggio"
       },
       "import": {
-        "title": "Importa particelle",
+        "title": "Importa campi",
         "previewTitle": "Anteprima importazione",
         "summaryTitle": "Riepilogo",
-        "onboardingHeading": "Importa particelle da uno shapefile",
+        "onboardingHeading": "Importa campi da uno shapefile",
         "onboardingBody": "Esporta le tue superfici dal sistema cantonale (ad es. Acorda, LAWIS) come shapefile e carica qui lo ZIP.",
         "onboardingFilesHint": "Lo ZIP deve contenere esattamente un file .shp e il relativo file .dbf (.prj, .shx e .cpg sono facoltativi).",
         "file": "File ZIP",
         "preview": "Anteprima",
         "previewError": "Impossibile leggere il file.",
         "commitError": "Importazione non riuscita.",
-        "previewDesc": "Controlla le particelle sulla mappa e nell'elenco. Clicca su una particella per modificarla. Le particelle sovrapposte non possono essere importate.",
+        "previewDesc": "Controlla i campi sulla mappa e nell'elenco. Clicca su un campo per modificarlo. I campi sovrapposti non possono essere importati.",
         "selectedCount": "{{selected}} di {{total}} verranno importate",
         "selectAll": "Seleziona tutto",
         "deselectAll": "Deseleziona tutto",
         "unnamed": "(senza nome)",
-        "editRow": "Modifica particella",
-        "noRows": "Nessuna particella.",
+        "editRow": "Modifica campo",
+        "noRows": "Nessun campo.",
         "noGeometry": "Nessuna geometria – non importabile.",
-        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. Le particelle sovrapposte non possono essere importate.",
+        "conflictWarning": "Si sovrappone a: <bold>{{plots}}</bold>. I campi sovrapposti non possono essere importati.",
         "name": "Nome",
-        "summaryDesc": "Verranno importate {{count}} particelle ({{size}}).",
+        "summaryDesc": "Verranno importati {{count}} campi ({{size}}).",
         "total": "Totale",
-        "cuttingDateHint": "Le date di sfalcio non vengono importate e possono essere impostate più tardi per ogni particella.",
-        "commit_one": "Importa {{count}} particella",
-        "commit_other": "Importa {{count}} particelle",
+        "cuttingDateHint": "Le date di sfalcio non vengono importate e possono essere impostate più tardi per ogni campo.",
+        "commit_one": "Importa {{count}} campo",
+        "commit_other": "Importa {{count}} campi",
         "status": {
           "conflict": "Sovrapposizione"
         },
@@ -1084,7 +1162,7 @@
         "includeInImport": "Importa",
         "completeness": {
           "partial": "Non tutti gli attributi sono stati letti dal file. Controlla nomi, numeri di particella e utilizzazioni.",
-          "geometries_only": "Dal file sono stati letti solo i contorni delle particelle – mancano nomi, numeri di particella e utilizzazioni. Completali dove necessario.",
+          "geometries_only": "Dal file sono stati letti solo i contorni dei campi – mancano nomi, numeri di particella e utilizzazioni. Completali dove necessario.",
           "defaultUsage": "Le utilizzazioni mancanti vengono impostate su «Altri prati permanenti»."
         },
         "supportHint": "Problemi con l'importazione? Contatta <mail>support@coltivio.ch</mail>.",
@@ -1114,10 +1192,10 @@
         "summaryOverlays": "Superfici sovrapposte: {{count}} verranno salvate, {{present}} già presenti."
       },
       "delete": {
-        "button": "Elimina particella",
+        "button": "Elimina campo",
         "title": "Eliminare «{{name}}»?",
-        "confirm": "La particella e tutti i dati associati, come rotazioni e voci del diario, verranno eliminati definitivamente. L'operazione non può essere annullata.",
-        "error": "Impossibile eliminare la particella."
+        "confirm": "Il campo e tutti i dati associati, come rotazioni e voci del diario, verranno eliminati definitivamente. L'operazione non può essere annullata.",
+        "error": "Impossibile eliminare il campo."
       },
       "importButton": "Importa",
       "emptyState": {
@@ -1125,9 +1203,9 @@
         "body": "Importali dal sistema cantonale (ad es. Acorda, LAWIS) o disegnali sulla mappa."
       },
       "errors": {
-        "selfIntersecting": "I bordi della particella non devono incrociarsi.",
-        "invalid_geometry": "La particella non ha superficie. Disegna almeno tre punti distinti.",
-        "saveFailed": "Non è stato possibile salvare la particella."
+        "selfIntersecting": "I bordi del campo non devono incrociarsi.",
+        "invalid_geometry": "Il campo non ha superficie. Disegna almeno tre punti distinti.",
+        "saveFailed": "Non è stato possibile salvare il campo."
       },
       "drawArea": "Disegna superficie",
       "drawHint": "Posiziona i punti sulla mappa e trascinali per spostarli. I piccoli punti intermedi aggiungono un punto. Conferma con almeno 3 punti.",
@@ -1168,18 +1246,58 @@
       "drafts": "Bozze",
       "createDraft": "Nuova bozza",
       "draftName": "Nome della bozza",
-      "selectPlots": "Seleziona appezzamenti",
+      "selectPlots": "Seleziona campi",
       "selectPlotsHint": "Le rotazioni attuali verranno copiate nella bozza",
       "noDrafts": "Nessuna bozza ancora",
       "applyDraft": "Applica bozza",
-      "applyDraftConfirm": "Applicare questa bozza in produzione? Gli appezzamenti con voci in questa bozza verranno sovrascritti.",
+      "applyDraftConfirm": "Applicare questa bozza in produzione? I campi con voci in questa bozza verranno sovrascritti.",
       "deleteDraft": "Elimina bozza",
       "deleteDraftConfirm": "Sei sicuro di voler eliminare questa bozza?",
-      "editPlots": "Modifica appezzamenti",
+      "editPlots": "Modifica campi",
       "editSelected": "Modifica selezionati",
       "selectAll": "Seleziona tutto",
       "deselectAll": "Deseleziona tutto",
       "entries": "{{count}} voci"
+    },
+    "sowings": {
+      "title": "Semina",
+      "create": "Registra semina",
+      "date": "Data",
+      "crop": "Coltura",
+      "selectCrop": "Seleziona coltura",
+      "seed": "Semente",
+      "noSeed": "Nessuna semente",
+      "amount": "Quantità",
+      "unit": "Unità",
+      "total": "Totale",
+      "rate": "Densità di semina",
+      "computedTotal": "Corrisponde a {{amount}} {{unit}} su {{area}}",
+      "computedRate": "Corrisponde a {{amount}} {{unit}} su {{area}}",
+      "deleteConfirm": "Vuoi davvero eliminare questa semina?",
+      "wizard": {
+        "steps": {
+          "crop": "Semente, coltura & data",
+          "plots": "Campi",
+          "config": "Configura semina",
+          "divide": "Suddividi",
+          "summary": "Riepilogo"
+        }
+      },
+      "units": {
+        "kg_per_ha": "kg/ha",
+        "g_per_m2": "g/m²",
+        "seeds_per_ha": "semi/ha",
+        "seeds_per_m2": "semi/m²",
+        "plants_per_ha": "piante/ha",
+        "plants_per_m2": "piante/m²",
+        "kg": "kg",
+        "g": "g",
+        "seeds": "semi",
+        "plants": "piante"
+      },
+      "seedOptional": "Semente (facoltativo)",
+      "cropFromSeed": "La coltura è presa dalla semente.",
+      "amountInvalid": "La quantità deve essere maggiore di 0"
     },
     "tillages": {
       "title": "Lavorazione del suolo",
@@ -1282,7 +1400,7 @@
       "deleteConfirm": "Vuoi davvero eliminare questa concimazione?",
       "wizard": {
         "steps": {
-          "fertilizer": "Concime e data",
+          "fertilizer": "Fertilizzante e data",
           "config": "Configurazione",
           "quantity": "Quantità",
           "plots": "Campi",
@@ -1375,6 +1493,32 @@
       "mineral": "Minerale",
       "organic": "Organico"
     }
+  },
+  "seeds": {
+    "title": "Sementi",
+    "createSeed": "Crea semente",
+    "editSeed": "Modifica semente",
+    "seedDetails": "Dettagli semente",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa semente? Anche i modelli con questa semente verranno eliminati.",
+    "name": "Nome",
+    "crop": "Coltura",
+    "quantityKind": "Misurato per",
+    "quantityKinds": {
+      "weight": "peso (kg, g)",
+      "count": "numero (semi, piante)"
+    },
+    "quantityKindHint": "Peso per sementi in kg/g, numero per semi o piantine.",
+    "quantityKindPermanent": "Non può essere modificato in seguito.",
+    "quantityKindLockedHint": "Il modo di misurazione non può essere modificato affinché le quantità restino sommabili. Crea una nuova semente.",
+    "defaultValuesDescription": "Precompilati quando si registra una nuova semina con questa semente e modificabili in quel momento.",
+    "defaultAmountOptional": "Quantità predefinita (facoltativo)",
+    "defaultUnit": "Unità predefinita",
+    "defaultRate": "Densità di semina predefinita",
+    "description": "Descrizione",
+    "selectCrop": "Seleziona coltura",
+    "descriptionOptional": "Descrizione (facoltativo)",
+    "defaultValuesOptional": "Valori predefiniti (facoltativo)",
+    "deleteFailed": "La semente non può essere eliminata. Potrebbe essere ancora in uso."
   },
   "wiki": {
     "title": "Wiki",
@@ -1505,14 +1649,14 @@
       "itemName": "Nome elemento",
       "itemDueDate": "Data di scadenza",
       "generate": "Genera lista di controllo",
-      "generateHint": "Genera una lista di controllo da animali, mandrie o appezzamenti.",
+      "generateHint": "Genera una lista di controllo da animali, mandrie o campi.",
       "entityTypes": {
         "animal": "Animale",
         "animalPlural": "Animali",
         "herd": "Mandria",
         "herdPlural": "Mandrie",
-        "plot": "Appezzamento",
-        "plotPlural": "Appezzamenti"
+        "plot": "Campo",
+        "plotPlural": "Campi"
       }
     },
     "pin": "Fissa",
@@ -1548,8 +1692,8 @@
         "placeholder": "Cerca indirizzo..."
       },
       "federal_id": {
-        "heading": "Il tuo codice azienda agricola",
-        "label": "Codice azienda agricola",
+        "heading": "Il tuo numero d'azienda",
+        "label": "Numero d'azienda",
         "skip": "Salta"
       },
       "confirm": {
@@ -1557,7 +1701,7 @@
         "submit": "Crea azienda",
         "farm_name": "Nome dell'azienda",
         "location": "Posizione",
-        "federal_id": "Codice azienda agricola",
+        "federal_id": "Numero d'azienda",
         "none": "Nessuno"
       }
     }
@@ -1734,7 +1878,14 @@
     "addComment": "Aggiungi un commento",
     "subscribe": "Iscriviti",
     "unsubscribe": "Annulla iscrizione",
-    "subscribeHint": "Ricevi un'e-mail quando qualcuno risponde a questo post."
+    "subscribeHint": "Ricevi un'e-mail quando qualcuno risponde a questo post.",
+    "image": "Immagine",
+    "errors": {
+      "saveFailed": "Non è stato possibile salvare il post.",
+      "invalid_image": "Il file non è un'immagine supportata (JPEG, PNG, WebP, GIF, HEIC) o supera i 15 MB.",
+      "invalid_image_reference": "Le immagini devono essere caricate con il pulsante immagine. Immagini da altri siti web o da altri post non sono possibili.",
+      "too_many_pending_images": "Hai caricato molte immagini che non sono ancora in nessun post. Salva prima un post o riprova domani."
+    }
   },
   "journal": {
     "title": "Diario",
@@ -1773,10 +1924,10 @@
   "meadows": {
     "newMeadow": "Nuova area di pascolo",
     "editMeadow": "Modifica area di pascolo",
-    "selectPlots": "Seleziona particelle",
+    "selectPlots": "Seleziona campi",
     "drawInstead": "Disegna",
-    "selectPlotsInstruction": "Clicca sulle particelle che fanno parte dell'area di pascolo",
-    "noPlotsSelected": "Nessuna particella selezionata",
+    "selectPlotsInstruction": "Clicca sui campi che fanno parte dell'area di pascolo",
+    "noPlotsSelected": "Nessun campo selezionato",
     "fenceLength": "Lunghezza recinzione (ca.)",
     "currentAnimals": "Animali attuali",
     "currentHerds": "Mandrie attuali",
@@ -1797,7 +1948,7 @@
       "title": "Livelli",
       "satellite": "Satellite",
       "map": "Carta",
-      "plots": "Particelle",
+      "plots": "Campi",
       "meadows": "Aree di pascolo",
       "parcels": "Particelle catastali"
     }
@@ -1810,14 +1961,14 @@
     "archivedSince": "In archivio dal {{date}}",
     "archivedInfo": "Non più visibile sulla mappa né per le nuove registrazioni. Tutti i dati vengono mantenuti.",
     "plotConfirmTitle": "Archiviare «{{name}}»?",
-    "plotInfo": "Le particelle archiviate non vengono più mostrate sulla mappa né per le nuove registrazioni. Tutte le registrazioni esistenti vengono mantenute e puoi ripristinare la particella in qualsiasi momento.",
-    "plotDeleteHint": "Se non coltivi più questa particella, puoi anche semplicemente archiviarla: così tutte le registrazioni vengono mantenute.",
+    "plotInfo": "I campi archiviati non vengono più mostrati sulla mappa né per le nuove registrazioni. Tutte le registrazioni esistenti vengono mantenute e puoi ripristinare il campo in qualsiasi momento.",
+    "plotDeleteHint": "Se non coltivi più questo campo, puoi anche semplicemente archiviarlo: così tutte le registrazioni vengono mantenute.",
     "meadowConfirmTitle": "Archiviare l'area di pascolo «{{name}}»?",
     "meadowInfo": "Le aree di pascolo archiviate non vengono più mostrate sulla mappa né per i nuovi periodi all'aperto. Tutti i dati vengono mantenuti e puoi ripristinare l'area di pascolo in qualsiasi momento.",
     "meadowDeleteHint": "Se non usi più quest'area di pascolo, puoi anche semplicemente archiviarla: così tutti i dati vengono mantenuti.",
     "layer": "Archiviati",
     "plotRestoreTitle": "Ripristinare «{{name}}»?",
-    "plotRestoreWarning": "La particella riappare sulla mappa e nelle nuove registrazioni. Se dall'archiviazione sono state registrate nuove particelle su questa superficie, possono sovrapporsi.",
+    "plotRestoreWarning": "Il campo riappare sulla mappa e nelle nuove registrazioni. Se dall'archiviazione sono stati registrati nuovi campi su questa superficie, possono sovrapporsi.",
     "meadowRestoreTitle": "Ripristinare l'area di pascolo «{{name}}»?",
     "meadowRestoreWarning": "L'area di pascolo riappare sulla mappa e nei nuovi periodi all'aperto. Se dall'archiviazione sono state registrate nuove aree di pascolo su questa superficie, possono sovrapporsi.",
     "meadowActiveSchedulesTitle": "Archiviazione non possibile",
@@ -1935,5 +2086,56 @@
     "selectAll": "Seleziona tutti ({{count}})",
     "confirm": "Applica ({{count}})",
     "herd": "Gregge"
+  },
+  "breeding": {
+    "weight": "Peso",
+    "weightKg": "Peso (kg)",
+    "noWeight": "Nessun peso registrato",
+    "editWeight": "Modifica peso attuale",
+    "addWeightEntry": "Aggiungi nuova pesata",
+    "weightHistory": "Andamento del peso",
+    "notes": "Note",
+    "weightPerAnimal": "Quantità effettiva per animale",
+    "heats": "Gravidanza",
+    "heat": "In calore",
+    "noHeats": "Nessuna voce",
+    "addHeat": "Aggiungi voce",
+    "editHeat": "Modifica voce",
+    "heatDate": "{{heat}} il",
+    "mated": "Coperta",
+    "sire": "Padre",
+    "sireExternal": "Padre esterno (nome)",
+    "expectedBirth": "Parto previsto",
+    "event": "Evento",
+    "calendarTitle": "Calendario gravidanze",
+    "noEntriesMonth": "Nessuna voce in questo mese",
+    "gestationDays": "Durata della gravidanza (giorni)",
+    "gestationDescription": "Vale per tutta l'azienda. Un campo vuoto ripristina il valore predefinito.",
+    "onlyOwnerCanEdit": "Solo la direzione dell'azienda può modificare la durata della gravidanza.",
+    "default": "predefinito",
+    "effectiveAmount": "Quantità effettiva",
+    "heatByType": {
+      "goat": "In calore",
+      "sheep": "In calore",
+      "cow": "In calore",
+      "horse": "In calore",
+      "donkey": "In calore",
+      "pig": "In calore",
+      "deer": "In calore"
+    },
+    "amount": "Quantità",
+    "conceptionFailed": "Non rimasta gravida",
+    "sireOptional": "Padre (facoltativo)",
+    "sireExternalOptional": "Padre esterno (facoltativo)",
+    "notesOptional": "Note (facoltativo)",
+    "saveFailed": "Salvataggio non riuscito",
+    "settingsTitle": "Impostazioni",
+    "gestationDaysInvalid": "La durata della gravidanza deve essere tra 1 e 500 giorni.",
+    "saved": "Salvato",
+    "previousMonth": "Mese precedente",
+    "nextMonth": "Mese successivo",
+    "weightLoadFailed": "Non è stato possibile caricare il peso",
+    "amountInvalid": "La quantità deve essere un numero maggiore o uguale a 0.",
+    "calendarLoadFailed": "Non è stato possibile caricare il calendario."
   }
 }

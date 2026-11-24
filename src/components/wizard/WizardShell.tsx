@@ -73,3 +73,13 @@ export function WizardNav({
     </div>
   );
 }
+
+/** One label / value line of a wizard's summary step, inside a <dl>. */
+export function SummaryRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-3 py-2">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="text-right">{value}</dd>
+    </div>
+  );
+}

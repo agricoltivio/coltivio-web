@@ -44,6 +44,18 @@ export interface DrugFormProps {
   isSubmitting?: boolean;
 }
 
+// Request body for creating a drug from the form data
+export function drugFormDataToApiBody(data: DrugFormData) {
+  return {
+    name: data.name,
+    notes: data.notes || undefined,
+    isAntibiotic: data.isAntibiotic,
+    criticalAntibiotic: data.criticalAntibiotic,
+    receivedFrom: data.receivedFrom,
+    drugTreatment: data.drugTreatment,
+  };
+}
+
 const DOSE_UNITS: DoseUnit[] = ["tablet", "capsule", "patch", "dose", "mg", "mcg", "g", "ml", "drop"];
 const DOSE_PER_UNITS: DosePerUnit[] = ["kg", "animal", "day", "total_amount"];
 

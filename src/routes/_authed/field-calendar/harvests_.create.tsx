@@ -1,4 +1,4 @@
-import { toLocalDateString } from "@/lib/utils";
+import { toLocalDateString, round2 } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
-import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
+import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -107,9 +107,6 @@ type CropModalFormData = {
   additionalNotes: string;
 };
 
-function round2(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
 
 function CreateHarvest() {
   const { t } = useTranslation();
@@ -829,20 +826,5 @@ function CreateHarvest() {
         </DialogContent>
       </Dialog>
     </PageContent>
-  );
-}
-
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start justify-between gap-4 px-3 py-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{value}</dd>
-    </div>
   );
 }

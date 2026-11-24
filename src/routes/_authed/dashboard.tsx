@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatFertilizerUnit } from "@/api/types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
@@ -220,7 +221,7 @@ function RouteComponent() {
           position: "right",
           formatter: (params: { dataIndex: number }) => {
             const f = fertilizerApplications.byFertilizer[params.dataIndex];
-            return `${f.totalAmount} ${f.unit}`;
+            return `${f.totalAmount} ${formatFertilizerUnit(f.unit)}`;
           },
           fontSize: 11,
         },
@@ -324,14 +325,14 @@ function RouteComponent() {
         />
         {topCropByArea && (
           <StatCard
-            label={t("dashboard.topCropByArea", { defaultValue: "Grösste Kultur" })}
+            label={t("dashboard.topCropByArea")}
             value={topCropByArea.cropName}
             sub={`${(topCropByArea.totalAreaM2 / 10000).toFixed(2)} ha`}
           />
         )}
         {topHarvestedCrop && (
           <StatCard
-            label={t("dashboard.topHarvestedCrop", { defaultValue: "Meiste Ernte" })}
+            label={t("dashboard.topHarvestedCrop")}
             value={topHarvestedCrop.cropName}
             sub={`${topHarvestedCrop.totalKilos.toLocaleString()} kg`}
           />
@@ -344,7 +345,7 @@ function RouteComponent() {
           <div className="flex items-center justify-between border-b px-4 py-3">
             <p className="text-sm font-semibold">{t("nav.tasks")}</p>
             <Link to="/tasks" className="text-xs text-muted-foreground hover:text-foreground">
-              {t("common.viewAll", { defaultValue: "Alle anzeigen" })}
+              {t("common.viewAll")}
             </Link>
           </div>
           {upcomingTasks.length === 0 ? (
@@ -400,11 +401,11 @@ function RouteComponent() {
         <div className="bg-card rounded-xl border">
           <div className="flex items-center justify-between border-b px-4 py-3">
             <p className="text-sm font-semibold">
-              {t("dashboard.recentTreffpunkt", { defaultValue: "Treffpunkt" })}
+              {t("dashboard.recentTreffpunkt")}
             </p>
             {isMember && (
               <Link to="/treffpunkt" className="text-xs text-muted-foreground hover:text-foreground">
-                {t("common.viewAll", { defaultValue: "Alle anzeigen" })}
+                {t("common.viewAll")}
               </Link>
             )}
           </div>
@@ -470,14 +471,14 @@ function RouteComponent() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.animalsByType", { defaultValue: "Tiere nach Typ" })}
+            {t("dashboard.animalsByType")}
           </p>
           <ReactECharts option={animalsByTypeOption} style={{ height: 220 }} />
         </div>
         {cropRotations.active.length > 0 && (
           <div className="bg-card rounded-xl border p-4">
             <p className="text-sm font-semibold mb-2">
-              {t("dashboard.plotsByCrop", { defaultValue: "Schläge nach Kultur" })}
+              {t("dashboard.plotsByCrop")}
             </p>
             <ReactECharts option={plotsByCropOption} style={{ height: 220 }} />
           </div>
@@ -488,7 +489,7 @@ function RouteComponent() {
       {harvests.byCrop.length > 0 && (
         <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.harvestByCrop", { defaultValue: "Ernte nach Kultur" })}
+            {t("dashboard.harvestByCrop")}
           </p>
           <ReactECharts option={harvestByCropOption} style={{ height: harvestByCropHeight }} />
         </div>
@@ -498,7 +499,7 @@ function RouteComponent() {
       {fertilizerApplications.byFertilizer.length > 0 && (
         <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.fertilizerApplications", { defaultValue: "Düngung" })}
+            {t("dashboard.fertilizerApplications")}
           </p>
           <div className="flex gap-4 text-xs text-muted-foreground mb-2">
             <span className="flex items-center gap-1">
@@ -506,14 +507,14 @@ function RouteComponent() {
                 className="inline-block w-3 h-3 rounded-sm"
                 style={{ backgroundColor: FERTILIZER_COLORS.mineral }}
               />
-              {t("dashboard.mineral", { defaultValue: "Mineral" })}
+              {t("dashboard.mineral")}
             </span>
             <span className="flex items-center gap-1">
               <span
                 className="inline-block w-3 h-3 rounded-sm"
                 style={{ backgroundColor: FERTILIZER_COLORS.organic }}
               />
-              {t("dashboard.organic", { defaultValue: "Organisch" })}
+              {t("dashboard.organic")}
             </span>
           </div>
           <ReactECharts option={fertilizerOption} style={{ height: fertilizerHeight }} />
@@ -524,7 +525,7 @@ function RouteComponent() {
       {cropProtectionApplications.byProduct.length > 0 && (
         <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.cropProtection", { defaultValue: "Pflanzenschutz" })}
+            {t("dashboard.cropProtection")}
           </p>
           <ReactECharts option={cropProtectionOption} style={{ height: cropProtectionHeight }} />
         </div>
@@ -534,7 +535,7 @@ function RouteComponent() {
       {cropRotations.active.length > 0 && (
         <div className="bg-card rounded-xl border p-4">
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.cropRotations", { defaultValue: "Aktive Fruchtfolgen" })}
+            {t("dashboard.cropRotations")}
           </p>
           <ReactECharts option={cropRotationsOption} style={{ height: 220 }} />
         </div>
@@ -544,7 +545,7 @@ function RouteComponent() {
       {fieldEventsQuery.data && fieldEventsQuery.data.length > 0 && (
         <div>
           <p className="text-sm font-semibold mb-2">
-            {t("dashboard.fieldworkMap", { defaultValue: "Feldarbeit" })}
+            {t("dashboard.fieldworkMap")}
           </p>
           <div className="relative">
             <FieldworkMap

@@ -5,7 +5,9 @@ import { apiClient } from "@/api/client";
 import { taskQueryOptions } from "@/api/tasks.queries";
 import { farmUsersQueryOptions } from "@/api/user.queries";
 import { PageContent } from "@/components/PageContent";
+import type { TaskDetail } from "@/api/types";
 import { TaskForm, type TaskFormData } from "@/components/TaskForm";
+import { keptRecurrenceExtras, monthlyAnchorDay } from "@/lib/taskRecurrence";
 
 export const Route = createFileRoute("/_authed/tasks/$taskId/edit")({
   loader: ({ params, context: { queryClient } }) => {
@@ -15,7 +17,15 @@ export const Route = createFileRoute("/_authed/tasks/$taskId/edit")({
   component: EditTask,
 });
 
-function buildApiBody(data: TaskFormData) {
+function buildApiBody(data: TaskFormData, task: TaskDetail) {
+  const loadedRecurrence = task.recurrence && {
+    frequency: task.recurrence.frequency,
+    dueDate:
+      typeof task.dueDate === "string" ? task.dueDate.split("T")[0] : null,
+    byWeekday: task.recurrence.byWeekday,
+    byMonthDay: task.recurrence.byMonthDay,
+    count: task.recurrence.count,
+  };
   return {
     name: data.name,
     description: data.description || undefined,
@@ -29,6 +39,16 @@ function buildApiBody(data: TaskFormData) {
           until: data.recurrence.until
             ? data.recurrence.until
             : undefined,
+          ...keptRecurrenceExtras(
+            data.recurrence.frequency,
+            data.recurrence.until,
+            loadedRecurrence,
+          ),
+          byMonthDay: monthlyAnchorDay(
+            data.recurrence.frequency,
+            data.dueDate,
+            loadedRecurrence,
+          ),
         }
       : null,
     checklistItems: data.checklistItems.map((ci) => ({
@@ -52,7 +72,7 @@ function EditTask() {
     mutationFn: async (data: TaskFormData) => {
       const response = await apiClient.PATCH("/v1/tasks/byId/{taskId}", {
         params: { path: { taskId } },
-        body: buildApiBody(data),
+        body: buildApiBody(data, task),
       });
       if (response.error) throw new Error("Failed to update task");
       return response.data.data;

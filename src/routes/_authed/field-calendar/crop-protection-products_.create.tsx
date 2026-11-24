@@ -34,6 +34,7 @@ type ProductFormData = {
   name: string;
   unit: CropProtectionProductUnit;
   description: string;
+  registrationNumber: string;
 };
 
 function CreateCropProtectionProductPage() {
@@ -44,7 +45,7 @@ function CreateCropProtectionProductPage() {
   const { returnTo } = Route.useSearch();
 
   const { register, handleSubmit, setValue, watch } = useForm<ProductFormData>({
-    defaultValues: { name: "", unit: "ml", description: "" },
+    defaultValues: { name: "", unit: "ml", description: "", registrationNumber: "" },
   });
 
   const createMutation = useMutation({
@@ -54,6 +55,8 @@ function CreateCropProtectionProductPage() {
           name: data.name,
           unit: data.unit,
           description: data.description || undefined,
+          // An emptied field clears the number
+          registrationNumber: data.registrationNumber.trim() || null,
         },
       });
       if (response.error) {
@@ -116,6 +119,11 @@ function CreateCropProtectionProductPage() {
             {t("cropProtectionProducts.description")}
           </Label>
           <Textarea id="description" {...register("description")} />
+        </div>
+
+        <div className="space-y-1">
+          <Label htmlFor="registrationNumber">{t("common.registrationNumberOptional")}</Label>
+          <Input id="registrationNumber" placeholder="W-1234" {...register("registrationNumber")} />
         </div>
 
         <div className="flex gap-2 pt-2">

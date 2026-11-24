@@ -17,7 +17,8 @@ type FieldCalendarSection =
   | "tillages"
   | "fertilizerApplications"
   | "cropProtectionApplications"
-  | "harvests";
+  | "harvests"
+  | "sowings";
 
 const SECTIONS: { key: FieldCalendarSection; labelKey: string }[] = [
   { key: "cropRotations", labelKey: "nav.cropRotations" },
@@ -25,6 +26,7 @@ const SECTIONS: { key: FieldCalendarSection; labelKey: string }[] = [
   { key: "fertilizerApplications", labelKey: "fieldCalendar.fertilizerApplications.title" },
   { key: "cropProtectionApplications", labelKey: "fieldCalendar.cropProtectionApplications.title" },
   { key: "harvests", labelKey: "fieldCalendar.harvests.title" },
+  { key: "sowings", labelKey: "fieldCalendar.sowings.title" },
 ];
 
 function FieldCalendarExport() {
@@ -34,7 +36,7 @@ function FieldCalendarExport() {
   const [fromDate, setFromDate] = useState(`${currentYear}-01-01`);
   const [toDate, setToDate] = useState(`${currentYear}-12-31`);
   const [sections, setSections] = useState<Set<FieldCalendarSection>>(
-    new Set(["cropRotations", "tillages", "fertilizerApplications", "cropProtectionApplications", "harvests"]),
+    new Set(["cropRotations", "tillages", "fertilizerApplications", "cropProtectionApplications", "harvests", "sowings"]),
   );
   const [exporting, setExporting] = useState(false);
 
@@ -62,6 +64,7 @@ function FieldCalendarExport() {
           generateFertilizerApplications: sections.has("fertilizerApplications"),
           generateCropProtectionApplications: sections.has("cropProtectionApplications"),
           generateHarvests: sections.has("harvests"),
+          generateSowings: sections.has("sowings"),
         },
       });
       if (response.error || !response.data) throw new Error("Export failed");

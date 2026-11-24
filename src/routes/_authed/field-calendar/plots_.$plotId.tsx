@@ -14,6 +14,7 @@ import {
   Layers,
   RefreshCw,
   Shield,
+  Sprout,
   Wheat,
 } from "lucide-react";
 
@@ -48,6 +49,12 @@ function PlotDetail() {
       icon: Wheat,
       label: t("fieldCalendar.harvests.title"),
       to: "/field-calendar/harvests" as const,
+      search: { plotId },
+    },
+    {
+      icon: Sprout,
+      label: t("fieldCalendar.sowings.title"),
+      to: "/field-calendar/sowings" as const,
       search: { plotId },
     },
     {

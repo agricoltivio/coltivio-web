@@ -176,7 +176,12 @@ export type FertilizerType = Fertilizer["type"];
 export type FertilizerUnit = Fertilizer["unit"];
 
 export const FERTILIZER_TYPES: FertilizerType[] = ["mineral", "organic"];
-export const FERTILIZER_UNITS: FertilizerUnit[] = ["l", "kg", "dt", "t"];
+export const FERTILIZER_UNITS: FertilizerUnit[] = ["l", "kg", "dt", "t", "m3"];
+
+// Fertilizer units are shown as stored, except cubic metres
+export function formatFertilizerUnit(unit: string): string {
+  return unit === "m3" ? "m³" : unit;
+}
 
 export type CropProtectionProduct =
   components["schemas"]["GetV1CropProtectionProductsPositiveResponse"]["data"]["result"][number];
@@ -217,6 +222,13 @@ export type OutdoorJournalMeadowEntry = NonNullable<
 export type OutdoorSchedule = Herd["outdoorSchedules"][number];
 export type OutdoorScheduleInput =
   components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorSchedulesRequestBody"];
+// A date range in which the herd did something else than its schedules say; takes precedence
+// over the schedules on those days (e.g. stable for two days)
+export type OutdoorScheduleOverride = NonNullable<
+  Herd["outdoorScheduleOverrides"]
+>[number];
+export type OutdoorScheduleOverrideInput =
+  components["schemas"]["PostV1AnimalsHerdsByIdHerdIdOutdoorScheduleOverridesRequestBody"];
 
 // Meadow types
 export type Meadow =
@@ -357,3 +369,31 @@ export const PARASITE_TYPES: ParasiteType[] = [
   "lungworm",
   "other",
 ];
+
+export type Seed =
+  components["schemas"]["GetV1SeedsPositiveResponse"]["data"]["result"][number];
+
+export type SeedQuantityKind = Seed["quantityKind"];
+
+export const SEED_QUANTITY_KINDS: SeedQuantityKind[] = ["weight", "count"];
+
+export type Sowing =
+  components["schemas"]["GetV1SowingsPositiveResponse"]["data"]["result"][number];
+
+export type SowingUnit = Sowing["unit"];
+
+export type SowingUnitInfo =
+  components["schemas"]["GetV1SowingsUnitsPositiveResponse"]["data"]["result"][number];
+
+export type SowingPreset =
+  components["schemas"]["GetV1SowingsPresetsPositiveResponse"]["data"]["result"][number];
+
+// Weights and breeding
+export type AnimalWeight =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdWeightsPositiveResponse"]["data"]["result"][number];
+export type AnimalHeat =
+  components["schemas"]["GetV1AnimalsByIdAnimalIdHeatsPositiveResponse"]["data"]["result"][number];
+export type BreedingCalendarEntry =
+  components["schemas"]["GetV1AnimalsBreedingCalendarPositiveResponse"]["data"]["result"][number];
+export type GestationSetting =
+  components["schemas"]["GetV1AnimalsBreedingCalendarGestationSettingsPositiveResponse"]["data"]["result"][number];

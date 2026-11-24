@@ -1,5 +1,7 @@
-import { toLocalDateString } from "@/lib/utils";
-import { useEffect } from "react";
+import { formatDateOnly, toLocalDateString } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { animalWeightsQueryOptions } from "@/api/breeding.queries";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import type { Treatment, Drug, Animal, DrugTreatment } from "@/api/types";
@@ -10,6 +12,10 @@ import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { SelectAnimalsField } from "@/components/SelectAnimalsDialog";
+import { CreateDrugDialog } from "@/components/CreateDrugDialog";
+import { useFeatureAccess } from "@/lib/useFeatureAccess";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Plus, TriangleAlert } from "lucide-react";
 import {
   Combobox,
   ComboboxInput,
@@ -36,6 +42,9 @@ export interface TreatmentFormData {
   drugDoseUnit: DrugTreatment["doseUnit"] | null;
   drugDosePerUnit: DrugTreatment["dosePerUnit"] | null;
   drugReceivedFrom: string | null;
+  // Weight and amount of every animal for per-kg doses (empty otherwise), stored by the server as sent
+  animalWeights?: { animalId: string; weightKg: number | null }[];
+  effectiveDoseOverrides?: { animalId: string; effectiveDoseValue: number | null }[];
 }
 
 type ComboboxOption = { value: string; label: string };
@@ -63,7 +72,9 @@ export function TreatmentForm({
   isSubmitting = false,
   defaultValues: initialDefaults,
 }: TreatmentFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { canWrite: canWriteAnimals } = useFeatureAccess("animals");
+  const [createDrugOpen, setCreateDrugOpen] = useState(false);
 
   const {
     register,
@@ -71,6 +82,7 @@ export function TreatmentForm({
     control,
     watch,
     setValue,
+    getValues,
     formState: { dirtyFields },
   } = useForm<TreatmentFormData>({
     defaultValues: treatment
@@ -113,16 +125,180 @@ export function TreatmentForm({
   });
 
   const watchedAnimalIds = watch("animalIds");
+  const watchedDoseValue = watch("drugDoseValue");
+  const watchedDoseUnit = watch("drugDoseUnit");
+  const watchedDosePerUnit = watch("drugDosePerUnit");
+  // Effective amounts the user typed, keyed by animal id
+  const [effectiveDoseInputs, setEffectiveDoseInputs] = useState<Record<string, string>>({});
+
+  function computeEffectiveDoseValue(weightKg: number | null, doseValue: number | string | null | undefined) {
+    const parsedDoseValue = typeof doseValue === "number" ? doseValue : parseFloat(doseValue ?? "");
+    if (weightKg == null || !Number.isFinite(parsedDoseValue)) return null;
+    return Math.round(weightKg * parsedDoseValue * 1000) / 1000;
+  }
+
+  // Same weight the server uses (resolveAnimalDoses): the weight stored at treatment time as long as the
+  // start date is unchanged, else the latest weight entry on or before the start date (not the newest
+  // overall). Not editable here. An amount that differs from stored dose × weight was entered by hand and
+  // stays until it is changed.
+  function doseInfo(animalId: string) {
+    const animal = animals.find((candidate) => candidate.id === animalId);
+    const storedDose = treatment?.animalDoses?.find((animalDose) => animalDose.animalId === animalId);
+    const startDateChanged = !treatment || watchedStartDate !== treatment.startDate.split("T")[0];
+    const storedWeightKg = startDateChanged ? null : (storedDose?.animalWeightKg ?? null);
+    const weightOnDay = weightOnStartDateByAnimalId.get(animalId) ?? null;
+    const weightKg = storedWeightKg ?? weightOnDay?.weightKg ?? null;
+    // Date of the weight entry, none for a weight stored on the treatment
+    const weightDate = storedWeightKg != null ? null : (weightOnDay?.date ?? null);
+    // A stored weight needs no lookup
+    const weightStatus =
+      storedWeightKg != null || weightOnStartDateByAnimalId.has(animalId)
+        ? "ready"
+        : weightsFailed
+          ? "error"
+          : "loading";
+    const storedEffectiveDoseValue = storedDose?.effectiveDoseValue ?? null;
+    const isManual =
+      storedEffectiveDoseValue != null &&
+      storedEffectiveDoseValue !==
+        computeEffectiveDoseValue(storedDose?.animalWeightKg ?? null, treatment?.drugDoseValue);
+    return {
+      animal,
+      weightKg,
+      weightDate,
+      weightStatus,
+      // Amounts entered by hand belong to the saved drug and per-kg dose, after a change they no longer apply
+      manualEffectiveDoseValue:
+        isManual &&
+        (watchedDrugId || null) === (treatment?.drugId || null) &&
+        watchedDosePerUnit === treatment?.drugDosePerUnit
+          ? storedEffectiveDoseValue
+          : null,
+    };
+  }
+
+  // Typed amounts that aren't a number of at least 0 block saving, they'd otherwise clear the amount
+  const invalidAmountAnimalIds = new Set(
+    Object.entries(effectiveDoseInputs)
+      .filter(([, typedInput]) => {
+        if (typedInput.trim() === "") return false;
+        const typedValue = parseFloat(typedInput);
+        return !Number.isFinite(typedValue) || typedValue < 0;
+      })
+      .map(([animalId]) => animalId),
+  );
+  const [showAmountErrors, setShowAmountErrors] = useState(false);
+
+  function submitWithDoses(data: TreatmentFormData) {
+    if (
+      data.drugDosePerUnit === "kg" &&
+      data.animalIds.some((animalId) => invalidAmountAnimalIds.has(animalId))
+    ) {
+      setShowAmountErrors(true);
+      return;
+    }
+    // Weight and amount of every animal for per-kg doses, the API stores them as sent and derives nothing.
+    // The amount is the typed one, else one entered by hand earlier, else dose × weight (also for a cleared input).
+    const perKgDose = data.drugDosePerUnit === "kg";
+    onSubmit({
+      ...data,
+      animalWeights: perKgDose
+        ? data.animalIds.map((animalId) => ({ animalId, weightKg: doseInfo(animalId).weightKg }))
+        : [],
+      effectiveDoseOverrides: perKgDose
+        ? data.animalIds.map((animalId) => {
+            const typedInput = effectiveDoseInputs[animalId];
+            if (typedInput !== undefined && typedInput.trim() !== "") {
+              // Validated above
+              return { animalId, effectiveDoseValue: parseFloat(typedInput) };
+            }
+            const { weightKg, manualEffectiveDoseValue } = doseInfo(animalId);
+            if (typedInput === undefined && manualEffectiveDoseValue != null) {
+              return { animalId, effectiveDoseValue: manualEffectiveDoseValue };
+            }
+            return { animalId, effectiveDoseValue: computeEffectiveDoseValue(weightKg, data.drugDoseValue) };
+          })
+        : [],
+    });
+  }
   const watchedDrugId = watch("drugId");
   const watchedStartDate = watch("startDate");
+
+  // Typed amounts belong to the drug and per-kg dose they were entered for. Without this they'd come back
+  // and be sent after switching to "per animal" and back, or to another drug
+  useEffect(() => {
+    setEffectiveDoseInputs({});
+  }, [watchedDosePerUnit, watchedDrugId]);
+
+  // Weight history of the selected animals, for the weight on the start date (cached per animal)
+  // One request per animal, so only for per-kg doses
+  const weightQueries = useQueries({
+    queries: watchedAnimalIds.map((animalId) => ({
+      ...animalWeightsQueryOptions(animalId),
+      enabled: watchedDosePerUnit === "kg",
+    })),
+  });
+  const weightsFailed = weightQueries.some((query) => query.isError);
+  const weightOnStartDateByAnimalId = new Map<string, { weightKg: number; date: string } | null>();
+  watchedAnimalIds.forEach((animalId, index) => {
+    const weights = weightQueries[index]?.data;
+    if (!weights) return;
+    // Sorted oldest first by date and creation, so the last one on or before the start date wins
+    const weightsOnOrBefore = weights.filter((weight) => weight.date.slice(0, 10) <= watchedStartDate);
+    weightOnStartDateByAnimalId.set(animalId, weightsOnOrBefore[weightsOnOrBefore.length - 1] ?? null);
+  });
   const watchedEndDate = watch("endDate");
 
-  // Sync drug-derived fields when the user explicitly changes the drug (guarded by dirtyFields.drugId)
-  useEffect(() => {
-    if (!dirtyFields.drugId) return;
+  // One treatment covers one animal type (older ones may mix types, then the first animal's type counts)
+  const selectedDrug = drugs.find((drug) => drug.id === watchedDrugId);
+  // The animal list only has living animals, a saved treatment also knows its animals that died since
+  const animalTypeById = new Map(
+    [...(treatment?.animals ?? []), ...animals].map((animal) => [animal.id, animal.type]),
+  );
+  const animalType = animalTypeById.get(watchedAnimalIds[0]);
+  const drugTreatmentForType =
+    selectedDrug && animalType
+      ? selectedDrug.drugTreatment.find((drugTreatment) => drugTreatment.animalType === animalType)
+      : undefined;
+  // The drug has no dose and waiting times for the animal type, the user enters them by hand
+  const drugNotDefinedForType = selectedDrug && animalType && !drugTreatmentForType ? animalType : null;
 
-    if (!watchedDrugId) {
-      // Drug was cleared — reset all drug-derived fields
+  // Proposes the drug's values when the user picks a drug or animals of another type, and shifts the
+  // proposed dates when the end date changes. Runs only on these changes, so values entered by hand
+  // (e.g. for a drug without values for the animal type) survive other edits, and a saved treatment
+  // opens with its saved values.
+  const previousProposalInputs = useRef<{
+    drugId: string | null;
+    animalType: string | undefined;
+    endDate: string;
+  } | null>(null);
+  useEffect(() => {
+    const drugId = watchedDrugId || null;
+    // Drug list still loading, propose once it's there
+    if (drugId && !selectedDrug) return;
+    const previous = previousProposalInputs.current;
+    previousProposalInputs.current = { drugId, animalType, endDate: watchedEndDate };
+    if (!previous) return;
+    const drugChanged = previous.drugId !== drugId;
+    // Animals finishing loading is no change, picking animals after the drug is
+    // An older treatment may mix types: removing animals there switches between types it already had, which
+    // keeps its saved values instead of replacing them with the drug's values for the remaining type
+    const savedAnimalTypes = new Set<string>(treatment?.animals.map((animal) => animal.type) ?? []);
+    const switchedWithinSavedTypes =
+      previous.animalType !== undefined &&
+      animalType !== undefined &&
+      savedAnimalTypes.has(previous.animalType) &&
+      savedAnimalTypes.has(animalType);
+    const animalTypeChanged =
+      previous.animalType !== animalType &&
+      (previous.animalType !== undefined || !!dirtyFields.drugId) &&
+      !switchedWithinSavedTypes;
+    const endDateChanged = previous.endDate !== watchedEndDate;
+    if (!drugChanged && !animalTypeChanged && !endDateChanged) return;
+
+    if (!selectedDrug) {
+      if (!drugChanged) return;
+      // Drug removed: no antibiotic flags, dose or withdrawal period
       setValue("isAntibiotic", false);
       setValue("criticalAntibiotic", false);
       setValue("drugReceivedFrom", null);
@@ -134,84 +310,66 @@ export function TreatmentForm({
       setValue("organsUsableDate", null);
       return;
     }
-
-    const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
-    if (!selectedDrug) return;
-
-    setValue("isAntibiotic", selectedDrug.isAntibiotic);
-    setValue("criticalAntibiotic", selectedDrug.criticalAntibiotic);
-    setValue("drugReceivedFrom", selectedDrug.receivedFrom ?? null);
-
-    // Use first selected animal's type for dosing lookup
-    const firstAnimal = animals.find((a) => a.id === watchedAnimalIds[0]);
-    if (!firstAnimal) return;
-
-    const drugTreatment = selectedDrug.drugTreatment.find(
-      (dt) => dt.animalType === firstAnimal.type,
-    );
-    if (!drugTreatment) return;
-
-    setValue("drugDoseValue", String(drugTreatment.doseValue));
-    setValue("drugDoseUnit", drugTreatment.doseUnit);
-    setValue("drugDosePerUnit", drugTreatment.dosePerUnit);
-
-    const endDate = new Date(watchedEndDate);
-    if (drugTreatment.milkWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
-      setValue("milkUsableDate", toLocalDateString(d));
+    if (drugChanged) {
+      setValue("isAntibiotic", selectedDrug.isAntibiotic);
+      setValue("criticalAntibiotic", selectedDrug.criticalAntibiotic);
+      setValue("drugReceivedFrom", selectedDrug.receivedFrom ?? null);
     }
-    if (drugTreatment.meatWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
-      setValue("meatUsableDate", toLocalDateString(d));
+    if (drugTreatmentForType) {
+      // The dose only on a new drug or animal type, an end date change keeps a dose changed by hand
+      if (drugChanged || animalTypeChanged) {
+        setValue("drugDoseValue", String(drugTreatmentForType.doseValue));
+        setValue("drugDoseUnit", drugTreatmentForType.doseUnit);
+        setValue("drugDosePerUnit", drugTreatmentForType.dosePerUnit);
+      }
+      // Usable from end date + waiting days, so the end date itself without waiting time (same as the app)
+      const usableDate = (endDate: string, waitingDays: number) => {
+        const date = new Date(endDate);
+        date.setDate(date.getDate() + waitingDays);
+        return toLocalDateString(date);
+      };
+      const waitingDaysByField = [
+        ["milkUsableDate", drugTreatmentForType.milkWaitingDays],
+        ["meatUsableDate", drugTreatmentForType.meatWaitingDays],
+        ["organsUsableDate", drugTreatmentForType.organsWaitingDays],
+      ] as const;
+      for (const [field, waitingDays] of waitingDaysByField) {
+        // On an end date change only the dates still at their proposal move along. A date changed by hand
+        // (e.g. a longer withdrawal on vet instruction) or cleared stays.
+        if (drugChanged || animalTypeChanged || getValues(field) === usableDate(previous.endDate, waitingDays)) {
+          setValue(field, usableDate(watchedEndDate, waitingDays));
+        }
+      }
+    } else if (animalType && (drugChanged || animalTypeChanged)) {
+      // Nothing to propose, don't keep the values of a previously selected drug or animal type
+      setValue("drugDoseValue", null);
+      setValue("drugDoseUnit", null);
+      setValue("drugDosePerUnit", null);
+      setValue("milkUsableDate", null);
+      setValue("meatUsableDate", null);
+      setValue("organsUsableDate", null);
     }
-    if (drugTreatment.organsWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
-      setValue("organsUsableDate", toLocalDateString(d));
-    }
-  }, [watchedDrugId, dirtyFields.drugId, watchedAnimalIds, watchedEndDate, drugs, animals, setValue]);
-
-  // Recalculate waiting dates when endDate changes (drug already selected, doesn't touch dose/antibiotic fields)
-  useEffect(() => {
-    if (!watchedDrugId || !watchedEndDate || watchedAnimalIds.length === 0) return;
-    // Skip if the drug field itself was just dirtied — the drug-sync effect handles dates too
-    if (dirtyFields.drugId) return;
-
-    const selectedDrug = drugs.find((d) => d.id === watchedDrugId);
-    if (!selectedDrug) return;
-
-    const firstAnimal = animals.find((a) => a.id === watchedAnimalIds[0]);
-    if (!firstAnimal) return;
-
-    const drugTreatment = selectedDrug.drugTreatment.find(
-      (dt) => dt.animalType === firstAnimal.type,
-    );
-    if (!drugTreatment) return;
-
-    const endDate = new Date(watchedEndDate);
-    if (drugTreatment.milkWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.milkWaitingDays);
-      setValue("milkUsableDate", toLocalDateString(d));
-    }
-    if (drugTreatment.meatWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.meatWaitingDays);
-      setValue("meatUsableDate", toLocalDateString(d));
-    }
-    if (drugTreatment.organsWaitingDays > 0) {
-      const d = new Date(endDate);
-      d.setDate(d.getDate() + drugTreatment.organsWaitingDays);
-      setValue("organsUsableDate", toLocalDateString(d));
-    }
-  }, [watchedEndDate, watchedDrugId, watchedAnimalIds, dirtyFields.drugId, drugs, animals, setValue]);
+  }, [watchedDrugId, selectedDrug, drugTreatmentForType, animalType, watchedEndDate, dirtyFields.drugId, treatment, getValues, setValue]);
 
   const showWaitingDates = !!watchedDrugId;
 
+
+  // One treatment covers one animal type. Older treatments with mixed types stay editable as long as
+  // their animals are unchanged, so the journal entry isn't altered
+  const initialAnimalIds = treatment?.animals.map((animal) => animal.id) ?? [];
+  const animalsChanged =
+    !treatment ||
+    watchedAnimalIds.length !== initialAnimalIds.length ||
+    watchedAnimalIds.some((animalId) => !initialAnimalIds.includes(animalId));
+  const mixedAnimalTypes =
+    animalsChanged &&
+    new Set(
+      watchedAnimalIds.map((animalId) => animalTypeById.get(animalId)).filter(Boolean),
+    ).size > 1;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg">
+    <>
+    <form onSubmit={handleSubmit(submitWithDoses)} className="max-w-2xl">
       {/* Animals multi-select */}
       <FieldGroup>
         <Field>
@@ -226,14 +384,17 @@ export function TreatmentForm({
                 value={field.value}
                 onValueChange={field.onChange}
                 placeholder={t("treatments.selectAnimals")}
+                // One treatment covers one animal type, so the drug's dose and waiting times apply to all of them
+                singleAnimalType
               />
             )}
           />
+          {mixedAnimalTypes && <p className="text-sm text-destructive">{t("treatments.mixedAnimalTypes")}</p>}
         </Field>
       </FieldGroup>
 
       {/* Date range */}
-      <FieldGroup className="flex-row mt-7">
+      <FieldGroup className="flex-row items-end mt-7">
         <Field className="max-w-48">
           <FieldLabel htmlFor="startDate">{t("treatments.startDate")} *</FieldLabel>
           <Input
@@ -265,8 +426,8 @@ export function TreatmentForm({
       </FieldGroup>
 
       {/* Drug */}
-      <FieldGroup className="mt-7">
-        <Field>
+      <FieldGroup className="mt-7 flex-row items-end gap-2">
+        <Field className="flex-1">
           <FieldLabel htmlFor="drugId">{t("treatments.drug")}</FieldLabel>
           <Controller
             name="drugId"
@@ -299,12 +460,37 @@ export function TreatmentForm({
             )}
           />
         </Field>
+        {canWriteAnimals && (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label={t("drugs.createDrug")}
+            title={t("drugs.createDrug")}
+            onClick={() => setCreateDrugOpen(true)}
+          >
+            <Plus />
+          </Button>
+        )}
       </FieldGroup>
+      {drugNotDefinedForType && (
+        <Alert className="mt-4">
+          <TriangleAlert />
+          <AlertDescription>
+            {t("treatments.drugNotDefinedForType", {
+              // Plural names are capitalized labels; only German keeps that mid-sentence
+              type: i18n.language.startsWith("de")
+                ? t(`animals.typesPlural.${drugNotDefinedForType}`)
+                : t(`animals.typesPlural.${drugNotDefinedForType}`).toLocaleLowerCase(i18n.language),
+            })}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Dose fields and waiting dates (shown when drug is selected) */}
       {showWaitingDates && (
         <>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="drugDoseValue">{t("treatments.drugDoseValue")}</FieldLabel>
               <Input id="drugDoseValue" type="number" step="any" {...register("drugDoseValue")} />
@@ -328,13 +514,75 @@ export function TreatmentForm({
               </select>
             </Field>
           </FieldGroup>
+          {watchedDosePerUnit === "kg" && watchedAnimalIds.length > 0 && (
+            <div className="mt-7 rounded-md border p-4">
+              <div className="mb-3 text-sm font-medium">{t("breeding.weightPerAnimal")}</div>
+              <div className="space-y-3">
+                {watchedAnimalIds.map((animalId) => {
+                  const { animal, weightKg, weightDate, weightStatus, manualEffectiveDoseValue } = doseInfo(animalId);
+                  if (!animal) return null;
+                  const computedEffectiveDoseValue = computeEffectiveDoseValue(weightKg, watchedDoseValue);
+                  const shownEffectiveDoseValue = manualEffectiveDoseValue ?? computedEffectiveDoseValue;
+                  const effectiveDoseInput =
+                    effectiveDoseInputs[animalId] ??
+                    (shownEffectiveDoseValue != null ? String(shownEffectiveDoseValue) : "");
+                  return (
+                    <div key={animalId} className="space-y-1">
+                      {/* Own line so long ear tags and names stay readable */}
+                      <div className="text-sm font-medium">
+                        {animal.earTag?.number ? `${animal.earTag.number} - ${animal.name}` : animal.name}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="flex-1 text-sm text-muted-foreground">
+                          {weightStatus === "loading"
+                            ? "…"
+                            : weightStatus === "error"
+                              ? t("breeding.weightLoadFailed")
+                              : weightKg == null
+                            ? t("breeding.noWeight")
+                            : weightDate
+                              ? `${weightKg} kg · ${formatDateOnly(weightDate, i18n.language)}`
+                              : `${weightKg} kg`}
+                        </span>
+                        <div className="flex w-44 items-center gap-1">
+                          <Input
+                            type="number"
+                            step="any"
+                            min="0"
+                            aria-label={t("breeding.amount")}
+                            aria-invalid={showAmountErrors && invalidAmountAnimalIds.has(animalId)}
+                            // A cleared input falls back to dose × weight
+                            placeholder={
+                              computedEffectiveDoseValue != null
+                                ? String(computedEffectiveDoseValue)
+                                : t("breeding.amount")
+                            }
+                            value={effectiveDoseInput}
+                            onChange={(event) =>
+                              setEffectiveDoseInputs((inputs) => ({ ...inputs, [animalId]: event.target.value }))
+                            }
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {watchedDoseUnit ? t(`drugs.doseUnits.${watchedDoseUnit}`) : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {showAmountErrors && watchedAnimalIds.some((animalId) => invalidAmountAnimalIds.has(animalId)) && (
+                <p className="mt-3 text-sm text-destructive">{t("breeding.amountInvalid")}</p>
+              )}
+            </div>
+          )}
           <FieldGroup className="mt-7">
             <Field>
               <FieldLabel htmlFor="drugReceivedFrom">{t("treatments.drugReceivedFrom")}</FieldLabel>
               <Input id="drugReceivedFrom" type="text" {...register("drugReceivedFrom")} />
             </Field>
           </FieldGroup>
-          <FieldGroup className="flex-row mt-7">
+          <FieldGroup className="flex-row items-end mt-7">
             <Field>
               <FieldLabel htmlFor="milkUsableDate">
                 {t("treatments.milkUsableDate")}
@@ -425,10 +673,27 @@ export function TreatmentForm({
 
       {/* Actions */}
       <div className="flex justify-end gap-3 pt-6">
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          // Weights still loading or failed to load would be stored as missing, the server no longer looks them up
+          disabled={
+            isSubmitting ||
+            mixedAnimalTypes ||
+            (watchedDosePerUnit === "kg" &&
+              watchedAnimalIds.some((animalId) => doseInfo(animalId).weightStatus !== "ready"))
+          }
+        >
           {t("common.save")}
         </Button>
       </div>
     </form>
+    {/* Outside the form: the drug form's submit would otherwise also submit the treatment */}
+    <CreateDrugDialog
+      open={createDrugOpen}
+      onOpenChange={setCreateDrugOpen}
+      // Selected like a pick in the list, its values are proposed once it's in the drug list
+      onCreated={(drugId) => setValue("drugId", drugId, { shouldDirty: true })}
+    />
+    </>
   );
 }

@@ -20,8 +20,11 @@ import { cn } from "@/lib/utils";
 // with the current chart's title in the header and dots below
 export function ChartCarouselCard({
   pages,
+  className,
 }: {
   pages: { key: string; title: string; content: ReactNode }[];
+  // e.g. without border and padding when it sits inside another card
+  className?: string;
 }) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -41,7 +44,7 @@ export function ChartCarouselCard({
   const hasSeveralPages = pages.length > 1;
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle className="text-base">
           {pages[currentIndex]?.title}

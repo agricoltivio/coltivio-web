@@ -20,13 +20,14 @@ import {
   FERTILIZER_UNITS,
   type FertilizerType,
   type FertilizerUnit,
+  formatFertilizerUnit,
 } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
 import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
-import { WizardNav, WizardProgress } from "@/components/wizard/WizardShell";
+import { WizardNav, WizardProgress, SummaryRow } from "@/components/wizard/WizardShell";
 import {
   Dialog,
   DialogContent,
@@ -300,7 +301,7 @@ function CreateFertilizerApplication() {
   }, [plotIdsKey]);
 
   const selectedFertilizer = fertilizers.find((f) => f.id === watchedFertilizerId);
-  const fertilizerUnitLabel = selectedFertilizer?.unit ?? "";
+  const fertilizerUnitLabel = formatFertilizerUnit(selectedFertilizer?.unit ?? "");
 
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((p) => p.id === plotId))
@@ -386,7 +387,7 @@ function CreateFertilizerApplication() {
 
   // Label for the "amount per unit" input, matching the RN app: "l / Fuder",
   // "Gesamtmenge (l)" for total_amount, "l / ha" for amount_per_hectare.
-  const fertilizerUnit = selectedFertilizer?.unit ?? "kg";
+  const fertilizerUnit = formatFertilizerUnit(selectedFertilizer?.unit ?? "kg");
   const amountPerUnitLabel =
     watchedUnit === "total_amount"
       ? `${t("fieldCalendar.fertilizerApplications.units.total_amount")} (${fertilizerUnit})`
@@ -811,7 +812,7 @@ function CreateFertilizerApplication() {
                 <SelectContent>
                   {FERTILIZER_UNITS.map((unit) => (
                     <SelectItem key={unit} value={unit}>
-                      {unit}
+                      {formatFertilizerUnit(unit)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -844,20 +845,5 @@ function CreateFertilizerApplication() {
         </DialogContent>
       </Dialog>
     </PageContent>
-  );
-}
-
-function SummaryRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start justify-between gap-4 px-3 py-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{value}</dd>
-    </div>
   );
 }
