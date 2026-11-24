@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type HarvestUnit = Harvest["unit"];
 type ConservationMethod = NonNullable<Harvest["conservationMethod"]>;
@@ -83,7 +84,7 @@ function HarvestDetail() {
   const cropsQuery = useQuery(cropsQueryOptions());
   const crops = cropsQuery.data?.result ?? [];
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       date: "",
       cropId: "",
@@ -227,7 +228,7 @@ function HarvestDetail() {
             <Select
               value={watchedCropId}
               onValueChange={(v) => {
-                if (v) setValue("cropId", v);
+                if (v) setValue("cropId", v, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -256,7 +257,7 @@ function HarvestDetail() {
                 value={watchedUnit}
                 onValueChange={(v) => {
                   const unit = HARVEST_UNITS.find((harvestUnit) => harvestUnit === v);
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -307,7 +308,7 @@ function HarvestDetail() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = CONSERVATION_METHODS.find((conservationMethod) => conservationMethod === v);
-                if (method) setValue("conservationMethod", method);
+                if (method) setValue("conservationMethod", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -345,6 +346,7 @@ function HarvestDetail() {
           </div>
         )}
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

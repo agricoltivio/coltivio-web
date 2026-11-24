@@ -39,6 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type HarvestUnit = Harvest["unit"];
 type ConservationMethod = NonNullable<Harvest["conservationMethod"]>;
@@ -109,6 +111,7 @@ type CropModalFormData = {
 
 function CreateHarvest() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId, returnTo } = Route.useSearch();
@@ -136,7 +139,7 @@ function CreateHarvest() {
   const presetsQuery = useQuery(harvestPresetsQueryOptions());
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       cropId: "",
@@ -268,7 +271,7 @@ function CreateHarvest() {
         if (!old) return old;
         return { ...old, result: [...old.result, newCrop] };
       });
-      setValue("cropId", newCrop.id);
+      setValue("cropId", newCrop.id, { shouldDirty: true });
       setCreateCropOpen(false);
       cropForm.reset();
     },
@@ -353,9 +356,9 @@ function CreateHarvest() {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
     setSelectedPresetId(presetId);
-    setValue("unit", preset.unit);
-    setValue("kilosPerUnit", preset.kilosPerUnit.toString());
-    setValue("conservationMethod", preset.conservationMethod ?? "");
+    setValue("unit", preset.unit, { shouldDirty: true });
+    setValue("kilosPerUnit", preset.kilosPerUnit.toString(), { shouldDirty: true });
+    setValue("conservationMethod", preset.conservationMethod ?? "", { shouldDirty: true });
   }
 
   const kilosPerUnitLabel =
@@ -386,7 +389,7 @@ function CreateHarvest() {
                   <Select
                     value={watchedCropId}
                     onValueChange={(v) => {
-                      if (v) setValue("cropId", v);
+                      if (v) setValue("cropId", v, { shouldDirty: true });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -475,7 +478,7 @@ function CreateHarvest() {
                   <Label>{t("fieldCalendar.harvests.unit")}</Label>
                   <Select
                     value={watchedUnit}
-                    onValueChange={(v) => setValue("unit", v as HarvestUnit)}
+                    onValueChange={(v) => setValue("unit", v as HarvestUnit, { shouldDirty: true })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -496,7 +499,7 @@ function CreateHarvest() {
                 <Select
                   value={watchedConservation}
                   onValueChange={(v) =>
-                    setValue("conservationMethod", v as ConservationMethod | "")
+                    setValue("conservationMethod", v as ConservationMethod | "", { shouldDirty: true })
                   }
                 >
                   <SelectTrigger>
@@ -550,7 +553,7 @@ function CreateHarvest() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
             />
           </div>
         )}
@@ -701,7 +704,7 @@ function CreateHarvest() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => deletePresetMutation.mutate(preset.id)}
+                    onClick={() => confirmDelete(() => deletePresetMutation.mutate(preset.id))}
                     disabled={deletePresetMutation.isPending}
                   >
                     <Trash2Icon className="size-4 text-destructive" />
@@ -816,6 +819,8 @@ function CreateHarvest() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

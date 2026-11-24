@@ -42,6 +42,7 @@ import {
   type WaitingTimeViolation,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 // --- Constants ---
 
@@ -72,6 +73,8 @@ export const Route = createFileRoute(
 // --- Main component ---
 
 function EditDraftPlots() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -207,7 +210,10 @@ function EditDraftPlots() {
               crops={crops}
               rotations={plotRotations[plotId] ?? []}
               onRotationsChange={(rotations) =>
-                setPlotRotations((prev) => ({ ...prev, [plotId]: rotations }))
+                {
+                  setHasUserChanges(true);
+                  setPlotRotations((prev) => ({ ...prev, [plotId]: rotations }));
+                }
               }
             />
           );
@@ -237,6 +243,7 @@ function EditDraftPlots() {
           </Button>
         </div>
       </div>
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }

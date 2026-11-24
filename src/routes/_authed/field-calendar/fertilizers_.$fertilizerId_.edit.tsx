@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute(
   "/_authed/field-calendar/fertilizers_/$fertilizerId_/edit",
@@ -51,7 +52,7 @@ function EditFertilizerPage() {
 
   const fertilizer = useQuery(fertilizerQueryOptions(fertilizerId)).data!;
 
-  const { register, handleSubmit, setValue, watch } =
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } =
     useForm<FertilizerFormData>({
       defaultValues: {
         name: fertilizer.name,
@@ -116,7 +117,7 @@ function EditFertilizerPage() {
           <Label>{t("fertilizers.type")} *</Label>
           <Select
             value={watch("type")}
-            onValueChange={(val) => setValue("type", val as FertilizerType)}
+            onValueChange={(val) => setValue("type", val as FertilizerType, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -135,7 +136,7 @@ function EditFertilizerPage() {
           <Label>{t("fertilizers.unit")} *</Label>
           <Select
             value={watch("unit")}
-            onValueChange={(val) => setValue("unit", val as FertilizerUnit)}
+            onValueChange={(val) => setValue("unit", val as FertilizerUnit, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -178,6 +179,7 @@ function EditFertilizerPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

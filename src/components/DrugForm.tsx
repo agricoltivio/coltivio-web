@@ -15,6 +15,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Trash2 } from "lucide-react";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type DoseUnit = "tablet" | "capsule" | "patch" | "dose" | "mg" | "mcg" | "g" | "ml" | "drop";
 type DosePerUnit = "kg" | "animal" | "day" | "total_amount";
@@ -62,7 +63,7 @@ const DOSE_PER_UNITS: DosePerUnit[] = ["kg", "animal", "day", "total_amount"];
 export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control, watch } = useForm<DrugFormData>({
+  const { register, handleSubmit, control, watch, formState: { isDirty } } = useForm<DrugFormData>({
     defaultValues: drug
       ? {
           name: drug.name,
@@ -372,6 +373,7 @@ export function DrugForm({ drug, onSubmit, isSubmitting = false }: DrugFormProps
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

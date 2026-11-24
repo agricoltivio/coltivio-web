@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
 
 export const Route = createFileRoute("/_authed/orders/invoice-settings/")({
   loader: ({ context: { queryClient } }) => {
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/_authed/orders/invoice-settings/")({
 
 function InvoiceSettingsPage() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { canWrite } = useFeatureAccess("commerce");
@@ -105,7 +107,7 @@ function InvoiceSettingsPage() {
                         disabled={deleteMutation.isPending}
                         onClick={(e) => {
                           e.stopPropagation();
-                          deleteMutation.mutate(s.id);
+                          confirmDelete(() => deleteMutation.mutate(s.id));
                         }}
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -118,6 +120,7 @@ function InvoiceSettingsPage() {
           </TableBody>
         </Table>
       )}
+      {confirmDeleteDialog}
     </PageContent>
   );
 }

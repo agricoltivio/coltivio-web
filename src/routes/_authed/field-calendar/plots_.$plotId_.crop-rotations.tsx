@@ -47,6 +47,7 @@ import {
   type WaitingTimeViolation,
   type ZoomLevel,
 } from "@/lib/cropRotationTimelineUtils";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type PlanTimelineBar = {
   entryId: string;
@@ -130,6 +131,8 @@ export const Route = createFileRoute(
 // --- Main planning component ---
 
 function PlanCropRotations() {
+  // Set by the user's own plan changes (not by loading the plan): asks before leaving
+  const [hasUserChanges, setHasUserChanges] = useState(false);
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -297,7 +300,9 @@ function PlanCropRotations() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cropRotations"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      router.history.back();
+      // back() pops later, when the mutation has settled: without ignoreBlocker the discard
+      // prompt would ask about the changes that were just saved
+      router.history.back({ ignoreBlocker: true });
     },
   });
 
@@ -318,10 +323,12 @@ function PlanCropRotations() {
     recurrence?: RecurrenceRule;
   }) {
     if (editingEntry) {
+      setHasUserChanges(true);
       setRotations((prev) =>
         prev.map((r) => (r.entryId === editingEntry.entryId ? { ...r, ...data } : r)),
       );
     } else {
+      setHasUserChanges(true);
       setRotations((prev) => [
         ...prev,
         { entryId: `new-${Date.now()}`, isNew: true, ...data },
@@ -331,6 +338,7 @@ function PlanCropRotations() {
   }
 
   function handleDialogDelete(entryId: string) {
+    setHasUserChanges(true);
     setRotations((prev) => prev.filter((r) => r.entryId !== entryId));
     setDialogOpen(false);
   }
@@ -579,6 +587,7 @@ function PlanCropRotations() {
         onDelete={handleDialogDelete}
         onClose={() => setDialogOpen(false)}
       />
+      <DiscardChangesPrompt when={hasUserChanges} />
     </PageContent>
   );
 }

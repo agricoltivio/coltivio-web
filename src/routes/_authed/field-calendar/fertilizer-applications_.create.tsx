@@ -44,6 +44,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useConfirmDelete } from "@/components/useConfirmDelete";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type FertilizerApplicationUnit = FertilizerApplication["unit"];
 type FertilizerMethod = NonNullable<FertilizerApplication["method"]>;
@@ -105,6 +107,7 @@ type FertilizerModalFormData = {
 
 function CreateFertilizerApplication() {
   const { t } = useTranslation();
+  const { confirmDelete, confirmDeleteDialog } = useConfirmDelete();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { plotId: defaultPlotId, returnTo } = Route.useSearch();
@@ -135,7 +138,7 @@ function CreateFertilizerApplication() {
   const fertilizersQuery = useQuery(fertilizersQueryOptions());
   const presetsQuery = useQuery(fertilizerApplicationPresetsQueryOptions());
 
-  const { register, setValue, watch, getValues } = useForm<FormData>({
+  const { register, setValue, watch, getValues, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       plotIds: defaultPlotId ? [defaultPlotId] : [],
       fertilizerId: "",
@@ -269,7 +272,7 @@ function CreateFertilizerApplication() {
         return { ...old, result: [...old.result, newFertilizer] };
       });
       queryClient.invalidateQueries({ queryKey: ["fertilizers"] });
-      setValue("fertilizerId", newFertilizer.id);
+      setValue("fertilizerId", newFertilizer.id, { shouldDirty: true });
       setCreateFertilizerOpen(false);
       fertilizerForm.reset();
     },
@@ -372,10 +375,10 @@ function CreateFertilizerApplication() {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
     setSelectedPresetId(presetId);
-    setValue("fertilizerId", preset.fertilizerId);
-    setValue("unit", preset.unit);
-    setValue("method", preset.method ?? "");
-    setValue("amountPerUnit", preset.amountPerUnit.toString());
+    setValue("fertilizerId", preset.fertilizerId, { shouldDirty: true });
+    setValue("unit", preset.unit, { shouldDirty: true });
+    setValue("method", preset.method ?? "", { shouldDirty: true });
+    setValue("amountPerUnit", preset.amountPerUnit.toString(), { shouldDirty: true });
   }
 
   // Label for the "amount per unit" input, matching the RN app: "l / Fuder",
@@ -413,7 +416,7 @@ function CreateFertilizerApplication() {
                   <Select
                     value={watchedFertilizerId}
                     onValueChange={(v) => {
-                      if (v) setValue("fertilizerId", v);
+                      if (v) setValue("fertilizerId", v, { shouldDirty: true });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -505,7 +508,7 @@ function CreateFertilizerApplication() {
                   <Select
                     value={watchedUnit}
                     onValueChange={(v) =>
-                      setValue("unit", v as FertilizerApplicationUnit)
+                      setValue("unit", v as FertilizerApplicationUnit, { shouldDirty: true })
                     }
                   >
                     <SelectTrigger>
@@ -526,7 +529,7 @@ function CreateFertilizerApplication() {
                 <Label>{t("fieldCalendar.fertilizerApplications.method")}</Label>
                 <Select
                   value={watchedMethod}
-                  onValueChange={(v) => setValue("method", v as FertilizerMethod | "")}
+                  onValueChange={(v) => setValue("method", v as FertilizerMethod | "", { shouldDirty: true })}
                 >
                   <SelectTrigger>
                     <SelectValue
@@ -582,7 +585,7 @@ function CreateFertilizerApplication() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
             />
           </div>
         )}
@@ -735,7 +738,7 @@ function CreateFertilizerApplication() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    onClick={() => deletePresetMutation.mutate(preset.id)}
+                    onClick={() => confirmDelete(() => deletePresetMutation.mutate(preset.id))}
                     disabled={deletePresetMutation.isPending}
                   >
                     <Trash2Icon className="size-4 text-destructive" />
@@ -835,6 +838,8 @@ function CreateFertilizerApplication() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {confirmDeleteDialog}
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

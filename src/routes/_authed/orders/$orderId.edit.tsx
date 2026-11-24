@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/orders/$orderId/edit")({
   loader: ({ params, context: { queryClient } }) => {
@@ -30,7 +31,7 @@ function EditOrder() {
 
   const order = useQuery(orderQueryOptions(orderId)).data!;
 
-  const { register, handleSubmit } = useForm<EditOrderFormData>({
+  const { register, handleSubmit, formState: { isDirty } } = useForm<EditOrderFormData>({
     defaultValues: {
       shippingDate: order.shippingDate?.split("T")[0] || null,
       notes: order.notes,
@@ -91,6 +92,7 @@ function EditOrder() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

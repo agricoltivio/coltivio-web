@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldGroup } from "@/components/ui/field";
 import { InvoicePreview } from "@/components/InvoicePreview";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/orders/invoice-settings/create")({
   component: InvoiceSettingsCreatePage,
@@ -35,7 +36,7 @@ function InvoiceSettingsCreatePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, watch, formState: { errors } } =
+  const { register, handleSubmit, watch, formState: { isDirty, errors } } =
     useForm<CreateFormData>({
       defaultValues: {
         name: "",
@@ -203,6 +204,7 @@ function InvoiceSettingsCreatePage() {
           </div>
         </div>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export const Route = createFileRoute("/_authed/treffpunkt/create")({
   component: CreateThread,
@@ -47,7 +48,7 @@ function CreateThread() {
   const queryClient = useQueryClient();
   const [bodyMarkdown, setBodyMarkdown] = useState("");
 
-  const { register, handleSubmit, control } = useForm<ThreadFormData>({
+  const { register, handleSubmit, control, formState: { isDirty } } = useForm<ThreadFormData>({
     defaultValues: { title: "", type: "general", body: "" },
   });
 
@@ -138,6 +139,7 @@ function CreateThread() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

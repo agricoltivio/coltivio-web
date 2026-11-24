@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface ProductFormData {
   name: string;
@@ -43,7 +44,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, control } = useForm<ProductFormData>({
+  const { register, handleSubmit, control, formState: { isDirty } } = useForm<ProductFormData>({
     defaultValues: product
       ? {
           name: product.name,
@@ -175,6 +176,7 @@ export function ProductForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

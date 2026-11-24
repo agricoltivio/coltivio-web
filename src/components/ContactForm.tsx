@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 export interface ContactFormData {
   firstName: string;
@@ -45,7 +46,7 @@ export function ContactForm({
   const { t } = useTranslation();
   const [labelInput, setLabelInput] = useState("");
 
-  const { register, handleSubmit, control, watch, setValue } =
+  const { register, handleSubmit, control, watch, setValue, formState: { isDirty } } =
     useForm<ContactFormData>({
       defaultValues: contact
         ? {
@@ -77,7 +78,7 @@ export function ContactForm({
   function addLabel() {
     const trimmed = labelInput.trim();
     if (trimmed && !labels.includes(trimmed)) {
-      setValue("labels", [...labels, trimmed]);
+      setValue("labels", [...labels, trimmed], { shouldDirty: true });
       setLabelInput("");
     }
   }
@@ -86,6 +87,7 @@ export function ContactForm({
     setValue(
       "labels",
       labels.filter((l) => l !== labelToRemove),
+      { shouldDirty: true },
     );
   }
 
@@ -224,6 +226,7 @@ export function ContactForm({
           {t("common.save")}
         </Button>
       </div>
+      <DiscardChangesPrompt when={isDirty} />
     </form>
   );
 }

@@ -66,18 +66,22 @@ function CreateParasiteCheckPage() {
           to: "/parasite-checks/$checkId",
           params: { checkId: createdCheck.previousCheckId },
           replace: true,
+          ignoreBlocker: true,
         });
         return;
       }
+      // Leaving after the save: back() pops later, when the mutation has settled, so without
+      // ignoreBlocker the discard prompt would ask about the changes that were just saved.
       // Opened from an animal's page: back there
       if (animalId) {
         if (router.history.canGoBack()) {
-          router.history.back();
+          router.history.back({ ignoreBlocker: true });
         } else {
           navigate({
             to: "/animals/$animalId",
             params: { animalId },
             replace: true,
+            ignoreBlocker: true,
           });
         }
         return;
@@ -88,6 +92,8 @@ function CreateParasiteCheckPage() {
           to: "/animals/parasite-checks",
           search: { animalType: createdCheck.animalType ?? undefined },
           replace: true,
+          // runs from the history subscriber while the form is still mounted
+          ignoreBlocker: true,
         });
       if (!router.history.canGoBack()) {
         showOverview();
@@ -99,7 +105,7 @@ function CreateParasiteCheckPage() {
         unsubscribe();
         showOverview();
       });
-      router.history.back();
+      router.history.back({ ignoreBlocker: true });
     },
   });
 

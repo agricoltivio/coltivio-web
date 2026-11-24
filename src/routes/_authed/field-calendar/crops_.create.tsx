@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 const searchSchema = z.object({ returnTo: z.string().optional() });
 
@@ -46,7 +47,7 @@ function CreateCropPage() {
   const { returnTo } = Route.useSearch();
   const familiesQuery = useQuery(cropFamiliesQueryOptions());
 
-  const { register, handleSubmit, setValue, watch } = useForm<CropFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { isDirty } } = useForm<CropFormData>({
     defaultValues: {
       name: "",
       category: "grain",
@@ -108,7 +109,7 @@ function CreateCropPage() {
           <Label>{t("crops.category")} *</Label>
           <Select
             value={watch("category")}
-            onValueChange={(val) => setValue("category", val as CropCategory)}
+            onValueChange={(val) => setValue("category", val as CropCategory, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -132,7 +133,7 @@ function CreateCropPage() {
           <Label>{t("crops.family")}</Label>
           <Select
             value={watch("familyId") || "__none__"}
-            onValueChange={(val) => setValue("familyId", val === "__none__" ? "" : val)}
+            onValueChange={(val) => setValue("familyId", val === "__none__" ? "" : val, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue placeholder={t("common.noSelection")} />
@@ -178,6 +179,7 @@ function CreateCropPage() {
           </Button>
         </div>
       </form>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }

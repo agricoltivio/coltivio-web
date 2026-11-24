@@ -46,6 +46,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DiscardChangesPrompt } from "@/components/DiscardChangesPrompt";
 
 type CropProtectionMethod = NonNullable<CropProtectionApplication["method"]>;
 type ApplicationUnit = FertilizerApplication["unit"];
@@ -105,7 +106,7 @@ function EditCropProtectionApplication() {
   const productsQuery = useQuery(cropProtectionProductsQueryOptions());
   const app = appQuery.data;
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isDirty } } = useForm<FormData>({
     defaultValues: {
       productId: "",
       dateTime: "",
@@ -203,7 +204,7 @@ function EditCropProtectionApplication() {
         },
       );
       queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
-      setValue("productId", newProduct.id);
+      setValue("productId", newProduct.id, { shouldDirty: true });
       setCreateProductOpen(false);
       productForm.reset();
     },
@@ -301,7 +302,7 @@ function EditCropProtectionApplication() {
               <div className="flex-1 min-w-0">
               <Select
                 value={watchedProductId}
-                onValueChange={(v) => { if (v) setValue("productId", v); }}
+                onValueChange={(v) => { if (v) setValue("productId", v, { shouldDirty: true }); }}
                 disabled={!canWrite}
               >
                 <SelectTrigger className="w-full">
@@ -342,7 +343,7 @@ function EditCropProtectionApplication() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = CROP_PROTECTION_METHODS.find((cropProtectionMethod) => cropProtectionMethod === v);
-                if (method) setValue("method", method);
+                if (method) setValue("method", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -370,7 +371,7 @@ function EditCropProtectionApplication() {
                   const unit = APPLICATION_UNITS.find(
                     (applicationUnit) => applicationUnit === v,
                   );
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -503,6 +504,7 @@ function EditCropProtectionApplication() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <DiscardChangesPrompt when={isDirty} />
     </PageContent>
   );
 }
