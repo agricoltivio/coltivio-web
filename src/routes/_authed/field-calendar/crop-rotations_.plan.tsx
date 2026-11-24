@@ -1,3 +1,4 @@
+import { useRotationDateOrder } from "@/lib/useRotationDateOrder";
 import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -577,22 +578,17 @@ function RotationDialog({
     }
   }, [open, entry]);
 
-  // Moving the start past the end moves the end along, and the end past the recurrence end that one too.
-  // The browser's min only limits its picker, a typed or earlier value can still be out of order.
-  function changeFromDate(value: string) {
-    setFromDate(value);
-    if (value && toDate && toDate < value) changeToDate(value);
-  }
-  function changeToDate(value: string) {
-    setToDate(value);
-    if (value && untilDate && untilDate < value) setUntilDate(value);
-  }
-  const dateOrderError =
-    fromDate && toDate && toDate < fromDate
-      ? t("fieldCalendar.cropRotations.endBeforeStart")
-      : hasRecurrence && hasUntil && untilDate && toDate && untilDate < toDate
-        ? t("fieldCalendar.cropRotations.untilBeforeEnd")
-        : null;
+  // Dates stay in order (see useRotationDateOrder)
+  const { changeFromDate, changeToDate, dateOrderError } = useRotationDateOrder({
+    fromDate,
+    toDate,
+    untilDate,
+    hasRecurrence,
+    hasUntil,
+    setFromDate,
+    setToDate,
+    setUntilDate,
+  });
 
   function handleSave() {
     if (!cropId || !fromDate || !toDate || dateOrderError) return;
