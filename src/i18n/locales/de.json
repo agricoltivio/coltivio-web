@@ -346,7 +346,7 @@
     "privacyPolicy": "Datenschutzerklärung"
   },
   "dashboard": {
-    "animalsByType": "Tiere nach Typ",
+    "animalsByType": "Tiere nach Art",
     "cropProtection": "Pflanzenschutz",
     "cropRotations": "Aktive Fruchtfolgen",
     "fertilizerApplications": "Düngung",

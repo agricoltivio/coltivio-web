@@ -1,6 +1,6 @@
 {
   "common": {
-    "viewAll": "Tout afficher",
+    "viewAll": "Voir tout",
     "loading": "Chargement...",
     "uploadImage": "Télécharger une image",
     "imageUploadFailed": "L'image n'a pas pu être téléchargée.",
