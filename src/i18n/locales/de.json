@@ -1208,10 +1208,12 @@
         "saveFailed": "Der Schlag konnte nicht gespeichert werden."
       },
       "drawArea": "Fläche zeichnen",
-      "drawHint": "Punkte auf die Karte setzen und zum Verschieben ziehen. Die kleinen Punkte dazwischen fügen einen Punkt ein. Ab 3 Punkten übernehmen.",
-      "undoPoint": "Letzter Punkt",
+      "drawHint": "Punkte auf die Karte setzen und zum Verschieben ziehen. Die kleinen Punkte dazwischen fügen einen Punkt ein. Ab 3 Punkten übernehmen. Eine weitere Zeichnung auf demselben Schlag kommt zur Fläche dazu.",
+      "undoPoint": "Rückgängig",
       "finishDrawing": "Fläche übernehmen",
-      "editDrawingHint": "Gezeichnete Fläche anklicken, um sie zu bearbeiten."
+      "editDrawingHint": "Gezeichnete Fläche anklicken, um sie zu bearbeiten.",
+      "drawTouchesNoPlot": "Die Zeichnung berührt keinen Schlag.",
+      "drawSelfCrossing": "Die Kanten der Zeichnung dürfen sich nicht kreuzen."
     },
     "cropRotations": {
       "title": "Fruchtfolge",

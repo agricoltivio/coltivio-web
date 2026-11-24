@@ -16,7 +16,12 @@ import { PlotColorModeToggle } from "@/components/PlotColorModeToggle";
 import { resolvePlotColor, type PlotColorMode } from "@/lib/plotColor";
 import { mapAttribution } from "@/lib/mapAttribution";
 import type { Plot } from "@/api/types";
-import { NO_DRAWN_AREAS, type DrawnArea } from "@/lib/drawnAreas";
+import {
+  drawnRingAt,
+  isSelfCrossing,
+  NO_DRAWN_AREAS,
+  type DrawnArea,
+} from "@/lib/drawnAreas";
 import { insertVertexAfter, ringMidpoints } from "@/lib/ringMidpoints";
 import { MidpointMarker } from "@/components/MidpointMarker";
 import { useTranslation } from "react-i18next";
@@ -34,7 +39,10 @@ const SWISS_PIXELKARTE =
 
 type BaseLayer = "satellite" | "pixelkarte";
 
-const EMPTY_COLLECTION: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
+const EMPTY_COLLECTION: GeoJSON.FeatureCollection = {
+  type: "FeatureCollection",
+  features: [],
+};
 
 function toFeatureCollection(
   plots: Plot[],
@@ -60,7 +68,9 @@ function toFeatureCollection(
   };
 }
 
-function drawnAreasCollection(drawnAreas: Record<string, DrawnArea>): GeoJSON.FeatureCollection {
+function drawnAreasCollection(
+  drawnAreas: Record<string, DrawnArea>,
+): GeoJSON.FeatureCollection {
   return {
     type: "FeatureCollection",
     features: Object.entries(drawnAreas).map(([plotId, area]) => ({
@@ -72,12 +82,20 @@ function drawnAreasCollection(drawnAreas: Record<string, DrawnArea>): GeoJSON.Fe
 }
 
 // In-progress drawing outline; its points are draggable markers
-function drawingCollection(vertices: [number, number][]): GeoJSON.FeatureCollection {
+function drawingCollection(
+  vertices: [number, number][],
+): GeoJSON.FeatureCollection {
   if (vertices.length < 2) return EMPTY_COLLECTION;
   const outline = vertices.length >= 3 ? [...vertices, vertices[0]] : vertices;
   return {
     type: "FeatureCollection",
-    features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: outline } }],
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: { type: "LineString", coordinates: outline },
+      },
+    ],
   };
 }
 
@@ -99,8 +117,12 @@ export function PlotPickerMap({
   selectedIds: string[];
   onPick: (plotId: string) => void;
   drawnAreas?: Record<string, DrawnArea>;
-  // editedRing: the drawing that was reopened and changed, null for a new one
-  onDrawComplete?: (drawnRing: [number, number][], editedRing: [number, number][] | null) => void;
+  // editedRing: the drawing that was reopened and changed, null for a new one. Returns false
+  // when the drawing touches no plot: the drawing stays open with a message.
+  onDrawComplete?: (
+    drawnRing: [number, number][],
+    editedRing: [number, number][] | null,
+  ) => boolean;
 }) {
   const { t, i18n } = useTranslation();
   const mapRef = useRef<MapRef>(null);
@@ -116,11 +138,29 @@ export function PlotPickerMap({
   const [drawing, setDrawing] = useState(false);
   const [drawnVertices, setDrawnVertices] = useState<[number, number][]>([]);
   const [editedRing, setEditedRing] = useState<[number, number][] | null>(null);
+  // Earlier states of the drawing, so "undo" reverts the last action (added, inserted or moved point)
+  const [vertexHistory, setVertexHistory] = useState<[number, number][][]>([]);
+  const [touchesNoPlot, setTouchesNoPlot] = useState(false);
+  function changeVertices(nextVertices: [number, number][]) {
+    setVertexHistory((history) => [...history, drawnVertices]);
+    setDrawnVertices(nextVertices);
+    setTouchesNoPlot(false);
+  }
+  function undoVertexChange() {
+    const previous = vertexHistory[vertexHistory.length - 1];
+    if (!previous) return;
+    setDrawnVertices(previous);
+    setVertexHistory((history) => history.slice(0, -1));
+    setTouchesNoPlot(false);
+  }
   function moveVertex(index: number, lngLat: { lng: number; lat: number }) {
     setDrawnVertices((prev) =>
-      prev.map((vertex, vertexIndex) => (vertexIndex === index ? [lngLat.lng, lngLat.lat] : vertex)),
+      prev.map((vertex, vertexIndex) =>
+        vertexIndex === index ? [lngLat.lng, lngLat.lat] : vertex,
+      ),
     );
   }
+  const drawingSelfCrosses = drawing && isSelfCrossing(drawnVertices);
 
   const farm = useQuery(farmQueryOptions()).data;
 
@@ -140,7 +180,8 @@ export function PlotPickerMap({
         type: "raster",
         source: "satellite",
         layout: {
-          visibility: activeLayerRef.current === "satellite" ? "visible" : "none",
+          visibility:
+            activeLayerRef.current === "satellite" ? "visible" : "none",
         },
       });
       map.addSource("pixelkarte", {
@@ -154,7 +195,8 @@ export function PlotPickerMap({
         type: "raster",
         source: "pixelkarte",
         layout: {
-          visibility: activeLayerRef.current === "pixelkarte" ? "visible" : "none",
+          visibility:
+            activeLayerRef.current === "pixelkarte" ? "visible" : "none",
         },
       });
 
@@ -189,7 +231,10 @@ export function PlotPickerMap({
           "line-width": ["case", ["get", "selected"], 2.5, 1.5],
         },
       });
-      map.addSource("drawn-areas", { type: "geojson", data: drawnAreasCollection(drawnAreas) });
+      map.addSource("drawn-areas", {
+        type: "geojson",
+        data: drawnAreasCollection(drawnAreas),
+      });
       map.addLayer({
         id: "drawn-areas-fill",
         type: "fill",
@@ -208,7 +253,11 @@ export function PlotPickerMap({
         type: "line",
         source: "drawing",
         filter: ["==", ["geometry-type"], "LineString"],
-        paint: { "line-color": "#db751d", "line-width": 2.5, "line-dasharray": [2, 1] },
+        paint: {
+          "line-color": "#db751d",
+          "line-width": 2.5,
+          "line-dasharray": [2, 1],
+        },
       });
       map.addLayer({
         id: "plots-label",
@@ -242,11 +291,17 @@ export function PlotPickerMap({
       const [minX, minY, maxX, maxY] = turf.bbox(
         toFeatureCollection(plots, [], colorMode),
       );
-      map.fitBounds([[minX, minY], [maxX, maxY]], {
-        padding: 48,
-        duration: 0,
-        maxZoom: 17,
-      });
+      map.fitBounds(
+        [
+          [minX, minY],
+          [maxX, maxY],
+        ],
+        {
+          padding: 48,
+          duration: 0,
+          maxZoom: 17,
+        },
+      );
     }
   }, [mapReady, farm, plots]);
 
@@ -256,7 +311,9 @@ export function PlotPickerMap({
     const map = mapRef.current?.getMap();
     const plotSource = map?.getSource("plots");
     if (plotSource instanceof maplibregl.GeoJSONSource) {
-      plotSource.setData(toFeatureCollection(plots, selectedIds, colorMode, drawnAreas));
+      plotSource.setData(
+        toFeatureCollection(plots, selectedIds, colorMode, drawnAreas),
+      );
     }
     const drawnAreasSource = map?.getSource("drawn-areas");
     if (drawnAreasSource instanceof maplibregl.GeoJSONSource) {
@@ -275,20 +332,29 @@ export function PlotPickerMap({
     setDrawing(false);
     setDrawnVertices([]);
     setEditedRing(null);
+    setVertexHistory([]);
+    setTouchesNoPlot(false);
   }
 
   function finishDrawing() {
-    if (drawnVertices.length < 3) return;
-    onDrawComplete?.(drawnVertices, editedRing);
+    if (drawnVertices.length < 3 || drawingSelfCrosses || !onDrawComplete)
+      return;
+    if (!onDrawComplete(drawnVertices, editedRing)) {
+      setTouchesNoPlot(true);
+      return;
+    }
     stopDrawing();
   }
 
-  // reopens the drawing a drawn area was cut from
-  function editDrawing(plotId: string) {
+  // reopens the drawing (of the clicked spot) a drawn area was cut from
+  function editDrawing(plotId: string, lngLat: [number, number]) {
     const drawnArea = drawnAreas[plotId];
     if (!drawnArea || !onDrawComplete) return;
-    setDrawnVertices(drawnArea.drawnRing);
-    setEditedRing(drawnArea.drawnRing);
+    const drawnRing = drawnRingAt(drawnArea, lngLat);
+    setDrawnVertices(drawnRing);
+    setEditedRing(drawnRing);
+    setVertexHistory([]);
+    setTouchesNoPlot(false);
     setDrawing(true);
   }
 
@@ -312,13 +378,20 @@ export function PlotPickerMap({
     const map = mapRef.current?.getMap();
     if (!map) return;
     if (hoveredIdRef.current) {
-      map.setFeatureState({ source: "plots", id: hoveredIdRef.current }, { hover: false });
+      map.setFeatureState(
+        { source: "plots", id: hoveredIdRef.current },
+        { hover: false },
+      );
     }
     hoveredIdRef.current = plotId;
     if (plotId) {
       map.setFeatureState({ source: "plots", id: plotId }, { hover: true });
     }
-    map.getCanvas().style.cursor = drawing ? "crosshair" : plotId || overDrawnArea ? "pointer" : "";
+    map.getCanvas().style.cursor = drawing
+      ? "crosshair"
+      : plotId || overDrawnArea
+        ? "pointer"
+        : "";
   }
 
   return (
@@ -336,19 +409,38 @@ export function PlotPickerMap({
             setHover(null, true);
             return;
           }
-          setHover(feature?.properties?.id ? String(feature.properties.id) : null);
+          setHover(
+            feature?.properties?.id ? String(feature.properties.id) : null,
+          );
         }}
         onMouseLeave={() => setHover(null)}
         // a double click would otherwise zoom while points are being placed
         doubleClickZoom={!drawing}
         onClick={(event) => {
+          // markers sit inside the map container: a click on a point or midpoint handle also
+          // reaches the map, it must not add a point as well
+          const clickTarget = event.originalEvent.target;
+          if (
+            clickTarget instanceof Element &&
+            clickTarget.closest(".maplibregl-marker")
+          )
+            return;
           if (drawing) {
-            setDrawnVertices((prev) => [...prev, [event.lngLat.lng, event.lngLat.lat]]);
+            changeVertices([
+              ...drawnVertices,
+              [event.lngLat.lng, event.lngLat.lat],
+            ]);
             return;
           }
           const feature = event.features?.[0];
-          if (feature?.layer.id === "drawn-areas-fill" && feature.properties?.plotId) {
-            editDrawing(String(feature.properties.plotId));
+          if (
+            feature?.layer.id === "drawn-areas-fill" &&
+            feature.properties?.plotId
+          ) {
+            editDrawing(String(feature.properties.plotId), [
+              event.lngLat.lng,
+              event.lngLat.lat,
+            ]);
             return;
           }
           if (feature?.properties?.id) onPick(String(feature.properties.id));
@@ -365,9 +457,16 @@ export function PlotPickerMap({
               latitude={lat}
               anchor="center"
               draggable
+              onDragStart={() => {
+                setVertexHistory((history) => [...history, drawnVertices]);
+                setTouchesNoPlot(false);
+              }}
               onDrag={(event) => moveVertex(index, event.lngLat)}
             >
-              <div className="size-3 cursor-move rounded-full border-2 border-[#db751d] bg-white" />
+              {/* larger transparent hit area around the visible point, easier to grab on a tablet */}
+              <div className="flex size-7 cursor-move items-center justify-center">
+                <div className="size-3 rounded-full border-2 border-[#db751d] bg-white" />
+              </div>
             </Marker>
           ))}
         {drawing &&
@@ -377,7 +476,9 @@ export function PlotPickerMap({
               lngLat={lngLat}
               className="border-[#db751d]"
               onInsert={(insertedLngLat) =>
-                setDrawnVertices((prev) => insertVertexAfter(prev, afterIndex, insertedLngLat))
+                changeVertices(
+                  insertVertexAfter(drawnVertices, afterIndex, insertedLngLat),
+                )
               }
             />
           ))}
@@ -400,7 +501,9 @@ export function PlotPickerMap({
           variant="outline"
           size="icon"
           onClick={() =>
-            setActiveLayer((prev) => (prev === "satellite" ? "pixelkarte" : "satellite"))
+            setActiveLayer((prev) =>
+              prev === "satellite" ? "pixelkarte" : "satellite",
+            )
           }
         >
           <Layers className="size-4" />
@@ -412,24 +515,41 @@ export function PlotPickerMap({
         <div className="absolute bottom-8 left-2 z-10 flex max-w-[calc(100%-1rem)] flex-wrap items-center gap-2 rounded-md border bg-background/95 p-2 shadow-md">
           {drawing ? (
             <>
-              <span className="text-sm text-muted-foreground">{t("fieldCalendar.plots.drawHint")}</span>
+              {drawingSelfCrosses ? (
+                <span className="text-sm text-destructive">
+                  {t("fieldCalendar.plots.drawSelfCrossing")}
+                </span>
+              ) : touchesNoPlot ? (
+                <span className="text-sm text-destructive">
+                  {t("fieldCalendar.plots.drawTouchesNoPlot")}
+                </span>
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  {t("fieldCalendar.plots.drawHint")}
+                </span>
+              )}
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={drawnVertices.length === 0}
-                onClick={() => setDrawnVertices((prev) => prev.slice(0, -1))}
+                disabled={vertexHistory.length === 0}
+                onClick={undoVertexChange}
               >
                 <Undo2Icon className="size-4" />
                 {t("fieldCalendar.plots.undoPoint")}
               </Button>
-              <Button type="button" variant="outline" size="sm" onClick={stopDrawing}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={stopDrawing}
+              >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="button"
                 size="sm"
-                disabled={drawnVertices.length < 3}
+                disabled={drawnVertices.length < 3 || drawingSelfCrosses}
                 onClick={finishDrawing}
               >
                 {t("fieldCalendar.plots.finishDrawing")}
@@ -437,7 +557,12 @@ export function PlotPickerMap({
             </>
           ) : (
             <>
-              <Button type="button" variant="outline" size="sm" onClick={() => setDrawing(true)}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setDrawing(true)}
+              >
                 <PencilIcon className="size-4" />
                 {t("fieldCalendar.plots.drawArea")}
               </Button>

@@ -107,11 +107,22 @@ export function MultiPlotPicker({
     onChange(value.filter((existingId) => existingId !== plotId));
     clearDrawnArea(plotId);
   }
-  function handleDrawComplete(drawnRing: [number, number][], editedRing: [number, number][] | null) {
-    if (!onDrawnAreasChange) return;
-    const next = applyDrawing({ plots, plotIds: value, drawnAreas, drawnRing, editedRing });
+  function handleDrawComplete(
+    drawnRing: [number, number][],
+    editedRing: [number, number][] | null,
+  ) {
+    if (!onDrawnAreasChange) return false;
+    const next = applyDrawing({
+      plots,
+      plotIds: value,
+      drawnAreas,
+      drawnRing,
+      editedRing,
+    });
+    if (!next.applied) return false;
     onChange(next.plotIds);
     onDrawnAreasChange(next.drawnAreas);
+    return true;
   }
   function toggle(plotId: string) {
     // clicking the rest of a partly drawn plot takes the whole plot, a second click deselects it
@@ -129,7 +140,9 @@ export function MultiPlotPicker({
               key={plot.id}
               className="inline-flex items-center gap-1 rounded-full border bg-muted/40 py-1 pl-2.5 pr-1 text-sm"
             >
-              {drawnAreas[plot.id] && <PencilIcon className="size-3 text-muted-foreground" />}
+              {drawnAreas[plot.id] && (
+                <PencilIcon className="size-3 text-muted-foreground" />
+              )}
               {plot.name}
               {drawnAreas[plot.id] && (
                 <span className="text-muted-foreground">

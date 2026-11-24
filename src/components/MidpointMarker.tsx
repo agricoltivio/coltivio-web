@@ -33,12 +33,23 @@ export function MidpointMarker({
           draggedRef.current = false;
         }, 0);
       }}
-      onClick={() => {
+      onClick={(event) => {
+        // the handle sits inside the map container: without this the map's click handler
+        // would also add a point at the end of the outline
+        event.originalEvent.stopPropagation();
         if (draggedRef.current) return;
         onInsert(lngLat);
       }}
     >
-      <div className={cn("size-2.5 cursor-copy rounded-full border-2 bg-white/70 shadow", className)} />
+      {/* larger transparent hit area around the visible handle, easier to hit on a tablet */}
+      <div className="flex size-6 cursor-copy items-center justify-center">
+        <div
+          className={cn(
+            "size-2.5 rounded-full border-2 bg-white/70 shadow",
+            className,
+          )}
+        />
+      </div>
     </Marker>
   );
 }

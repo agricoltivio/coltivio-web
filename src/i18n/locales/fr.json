@@ -1208,10 +1208,12 @@
         "saveFailed": "Le champ n'a pas pu être enregistré."
       },
       "drawArea": "Dessiner une surface",
-      "drawHint": "Placez des points sur la carte et faites-les glisser pour les déplacer. Les petits points intermédiaires ajoutent un point. Validez à partir de 3 points.",
-      "undoPoint": "Dernier point",
+      "drawHint": "Place des points sur la carte et fais-les glisser pour les déplacer. Les petits points intermédiaires ajoutent un point. Valide à partir de 3 points. Un autre dessin sur le même champ s'ajoute à sa surface.",
+      "undoPoint": "Défaire",
       "finishDrawing": "Utiliser la surface",
-      "editDrawingHint": "Cliquez sur une surface dessinée pour la modifier."
+      "editDrawingHint": "Clique sur une surface dessinée pour la modifier.",
+      "drawTouchesNoPlot": "Le dessin ne touche aucun champ.",
+      "drawSelfCrossing": "Les bords du dessin ne doivent pas se croiser."
     },
     "cropRotations": {
       "title": "Rotation des cultures",

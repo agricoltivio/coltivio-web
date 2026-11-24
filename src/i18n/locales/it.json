@@ -1208,10 +1208,12 @@
         "saveFailed": "Non è stato possibile salvare il campo."
       },
       "drawArea": "Disegna superficie",
-      "drawHint": "Posiziona i punti sulla mappa e trascinali per spostarli. I piccoli punti intermedi aggiungono un punto. Conferma con almeno 3 punti.",
-      "undoPoint": "Ultimo punto",
+      "drawHint": "Posiziona i punti sulla mappa e trascinali per spostarli. I piccoli punti intermedi aggiungono un punto. Conferma con almeno 3 punti. Un altro disegno sullo stesso campo si aggiunge alla sua superficie.",
+      "undoPoint": "Annulla ultima modifica",
       "finishDrawing": "Usa superficie",
-      "editDrawingHint": "Clicca su una superficie disegnata per modificarla."
+      "editDrawingHint": "Clicca su una superficie disegnata per modificarla.",
+      "drawTouchesNoPlot": "Il disegno non tocca nessun campo.",
+      "drawSelfCrossing": "I bordi del disegno non devono incrociarsi."
     },
     "cropRotations": {
       "title": "Rotazione colturale",
