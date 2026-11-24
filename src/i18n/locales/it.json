@@ -1,5 +1,6 @@
 {
   "common": {
+    "viewAll": "Vedi tutto",
     "loading": "Caricamento...",
     "uploadImage": "Carica immagine",
     "imageUploadFailed": "Non è stato possibile caricare l'immagine.",
@@ -345,6 +346,17 @@
     "privacyPolicy": "Informativa sulla privacy"
   },
   "dashboard": {
+    "animalsByType": "Animali per specie",
+    "cropProtection": "Trattamenti fitosanitari",
+    "cropRotations": "Rotazioni colturali attive",
+    "fertilizerApplications": "Concimazione",
+    "fieldworkMap": "Lavori nei campi",
+    "harvestByCrop": "Raccolto per coltura",
+    "mineral": "Minerale",
+    "organic": "Organico",
+    "plotsByCrop": "Campi per coltura",
+    "topCropByArea": "Coltura più estesa",
+    "topHarvestedCrop": "Più raccolta",
     "welcome": "Ciao {{name}}, {{farmName}}",
     "animalsBorn": "Nati",
     "animalsDied": "Morti",

@@ -1,5 +1,6 @@
 {
   "common": {
+    "viewAll": "View all",
     "loading": "Loading...",
     "uploadImage": "Upload image",
     "imageUploadFailed": "The image could not be uploaded.",
@@ -345,6 +346,17 @@
     "privacyPolicy": "Privacy policy"
   },
   "dashboard": {
+    "animalsByType": "Animals by type",
+    "cropProtection": "Crop protection",
+    "cropRotations": "Active crop rotations",
+    "fertilizerApplications": "Fertilization",
+    "fieldworkMap": "Fieldwork",
+    "harvestByCrop": "Harvest by crop",
+    "mineral": "Mineral",
+    "organic": "Organic",
+    "plotsByCrop": "Plots by crop",
+    "topCropByArea": "Largest crop",
+    "topHarvestedCrop": "Most harvested",
     "welcome": "Hello {{name}}, {{farmName}}",
     "animalsBorn": "Born",
     "animalsDied": "Died",
