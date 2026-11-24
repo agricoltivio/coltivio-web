@@ -1,3 +1,4 @@
+import { useRotationDateOrder } from "@/lib/useRotationDateOrder";
 import { toLocalDateString } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -577,8 +578,20 @@ function RotationDialog({
     }
   }, [open, entry]);
 
+  // Dates stay in order (see useRotationDateOrder)
+  const { changeFromDate, changeToDate, dateOrderError } = useRotationDateOrder({
+    fromDate,
+    toDate,
+    untilDate,
+    hasRecurrence,
+    hasUntil,
+    setFromDate,
+    setToDate,
+    setUntilDate,
+  });
+
   function handleSave() {
-    if (!cropId || !fromDate || !toDate) return;
+    if (!cropId || !fromDate || !toDate || dateOrderError) return;
     const intervalNum = Math.max(1, parseInt(recurrenceInterval) || 1);
     onSave({
       cropId,
@@ -620,13 +633,15 @@ function RotationDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.fromDate")}</Label>
-              <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+              <Input type="date" value={fromDate} onChange={(e) => changeFromDate(e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label>{t("fieldCalendar.cropRotations.toDate")}</Label>
-              <Input type="date" value={toDate} min={fromDate} onChange={(e) => setToDate(e.target.value)} />
+              <Input type="date" value={toDate} min={fromDate} onChange={(e) => changeToDate(e.target.value)} />
             </div>
           </div>
+
+          {dateOrderError && <p className="text-sm text-destructive">{dateOrderError}</p>}
 
           <div>
             {!hasRecurrence ? (
@@ -673,7 +688,7 @@ function RotationDialog({
             </Button>
           )}
           <Button variant="outline" className="flex-1" onClick={onClose}>{t("common.cancel")}</Button>
-          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate}>{t("common.save")}</Button>
+          <Button className="flex-1" onClick={handleSave} disabled={!cropId || !fromDate || !toDate || !!dateOrderError}>{t("common.save")}</Button>
         </div>
       </DialogContent>
 
