@@ -300,7 +300,9 @@ function PlanCropRotations() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cropRotations"] });
       queryClient.invalidateQueries({ queryKey: ["plots"] });
-      router.history.back();
+      // back() pops later, when the mutation has settled: without ignoreBlocker the discard
+      // prompt would ask about the changes that were just saved
+      router.history.back({ ignoreBlocker: true });
     },
   });
 

@@ -146,7 +146,7 @@ export function WikiEntryForm({
     },
     onSuccess: (newTag) => {
       queryClient.invalidateQueries({ queryKey: ["wiki", "tags"] });
-      setValue("tagIds", [...tagIds, newTag.id]);
+      setValue("tagIds", [...tagIds, newTag.id], { shouldDirty: true });
       setNewTagName("");
     },
   });
@@ -156,9 +156,10 @@ export function WikiEntryForm({
       setValue(
         "tagIds",
         tagIds.filter((id) => id !== tagId),
+        { shouldDirty: true },
       );
     } else {
-      setValue("tagIds", [...tagIds, tagId]);
+      setValue("tagIds", [...tagIds, tagId], { shouldDirty: true });
     }
   }
 
@@ -170,7 +171,7 @@ export function WikiEntryForm({
     );
     if (existing) {
       if (!tagIds.includes(existing.id)) {
-        setValue("tagIds", [...tagIds, existing.id]);
+        setValue("tagIds", [...tagIds, existing.id], { shouldDirty: true });
       }
       setNewTagName("");
     } else {

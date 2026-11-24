@@ -239,7 +239,7 @@ function FertilizerApplicationDetail() {
             <Select
               value={watchedFertilizerId}
               onValueChange={(v) => {
-                if (v) setValue("fertilizerId", v);
+                if (v) setValue("fertilizerId", v, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -279,7 +279,7 @@ function FertilizerApplicationDetail() {
                   const unit = FERTILIZER_APPLICATION_UNITS.find(
                     (applicationUnit) => applicationUnit === v,
                   );
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -320,7 +320,7 @@ function FertilizerApplicationDetail() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = FERTILIZER_METHODS.find((fertilizerMethod) => fertilizerMethod === v);
-                if (method) setValue("method", method);
+                if (method) setValue("method", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >

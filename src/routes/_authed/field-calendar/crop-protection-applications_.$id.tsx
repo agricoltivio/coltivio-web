@@ -204,7 +204,7 @@ function EditCropProtectionApplication() {
         },
       );
       queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
-      setValue("productId", newProduct.id);
+      setValue("productId", newProduct.id, { shouldDirty: true });
       setCreateProductOpen(false);
       productForm.reset();
     },
@@ -302,7 +302,7 @@ function EditCropProtectionApplication() {
               <div className="flex-1 min-w-0">
               <Select
                 value={watchedProductId}
-                onValueChange={(v) => { if (v) setValue("productId", v); }}
+                onValueChange={(v) => { if (v) setValue("productId", v, { shouldDirty: true }); }}
                 disabled={!canWrite}
               >
                 <SelectTrigger className="w-full">
@@ -343,7 +343,7 @@ function EditCropProtectionApplication() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = CROP_PROTECTION_METHODS.find((cropProtectionMethod) => cropProtectionMethod === v);
-                if (method) setValue("method", method);
+                if (method) setValue("method", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -371,7 +371,7 @@ function EditCropProtectionApplication() {
                   const unit = APPLICATION_UNITS.find(
                     (applicationUnit) => applicationUnit === v,
                   );
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >

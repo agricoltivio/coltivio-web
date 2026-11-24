@@ -50,7 +50,9 @@ export function TaskForm({
     handleSubmit,
     control,
     watch,
-    setValue, formState: { isDirty } } = useForm<TaskFormData>({
+    setValue,
+    formState: { isDirty },
+  } = useForm<TaskFormData>({
     defaultValues: task
       ? {
           name: task.name,
@@ -109,7 +111,7 @@ export function TaskForm({
   function addLabel() {
     const trimmed = labelInput.trim();
     if (trimmed && !watchedLabels.includes(trimmed)) {
-      setValue("labels", [...watchedLabels, trimmed]);
+      setValue("labels", [...watchedLabels, trimmed], { shouldDirty: true });
     }
     setLabelInput("");
   }
@@ -118,6 +120,7 @@ export function TaskForm({
     setValue(
       "labels",
       watchedLabels.filter((l) => l !== label),
+      { shouldDirty: true },
     );
   }
 

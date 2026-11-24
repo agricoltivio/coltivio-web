@@ -113,7 +113,7 @@ function EditCropProtectionProductPage() {
           <Select
             value={watch("unit")}
             onValueChange={(val) =>
-              setValue("unit", val as CropProtectionProductUnit)
+              setValue("unit", val as CropProtectionProductUnit, { shouldDirty: true })
             }
           >
             <SelectTrigger>

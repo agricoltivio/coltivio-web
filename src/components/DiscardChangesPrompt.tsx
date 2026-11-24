@@ -16,6 +16,9 @@ import {
 // dialog, closing or reloading the tab the browser's own warning. Leaving while a save or delete is
 // running doesn't ask: pages navigate away from their success callbacks, while the form is still
 // "dirty". isSubmitting: for saves that don't run through a mutation.
+// This only covers navigating synchronously from the mutation's own onSuccess (navigate()). A save
+// that leaves with router.history.back(), or navigates after the mutation settled, needs
+// { ignoreBlocker: true } on that call.
 export function DiscardChangesPrompt({
   when,
   isSubmitting = false,

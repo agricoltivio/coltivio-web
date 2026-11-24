@@ -228,7 +228,7 @@ function HarvestDetail() {
             <Select
               value={watchedCropId}
               onValueChange={(v) => {
-                if (v) setValue("cropId", v);
+                if (v) setValue("cropId", v, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >
@@ -257,7 +257,7 @@ function HarvestDetail() {
                 value={watchedUnit}
                 onValueChange={(v) => {
                   const unit = HARVEST_UNITS.find((harvestUnit) => harvestUnit === v);
-                  if (unit) setValue("unit", unit);
+                  if (unit) setValue("unit", unit, { shouldDirty: true });
                 }}
                 disabled={!canWrite}
               >
@@ -308,7 +308,7 @@ function HarvestDetail() {
               onValueChange={(v) => {
                 // Radix fires onValueChange("") spuriously, ignore unknown values
                 const method = CONSERVATION_METHODS.find((conservationMethod) => conservationMethod === v);
-                if (method) setValue("conservationMethod", method);
+                if (method) setValue("conservationMethod", method, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >

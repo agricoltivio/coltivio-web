@@ -460,9 +460,9 @@ export function ParasiteCheckForm({
                     key={modeOption}
                     type="button"
                     onClick={() => {
-                  markChanged();
-                  setSampleMode(modeOption);
-                }}
+                      markChanged();
+                      setSampleMode(modeOption);
+                    }}
                     className={cn(
                       "rounded-md px-3 py-1 text-sm",
                       sampleMode === modeOption

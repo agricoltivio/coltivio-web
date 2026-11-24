@@ -94,7 +94,7 @@ export function SeedForm({
             <Select
               value={watch("cropId")}
               onValueChange={(value) => {
-                if (value) setValue("cropId", value, { shouldValidate: true });
+                if (value) setValue("cropId", value, { shouldValidate: true, shouldDirty: true });
               }}
             >
               <SelectTrigger id="seed-crop" className="w-full">
@@ -122,13 +122,13 @@ export function SeedForm({
                   (kind) => kind === value,
                 );
                 if (!quantityKind) return;
-                setValue("quantityKind", quantityKind);
+                setValue("quantityKind", quantityKind, { shouldDirty: true });
                 // drop a default unit that doesn't fit the new kind
                 const stillValid = unitsForQuantityKind(
                   unitsQuery.data ?? [],
                   quantityKind,
                 ).some((unitInfo) => unitInfo.unit === watchedDefaultUnit);
-                if (!stillValid) setValue("defaultUnit", NONE);
+                if (!stillValid) setValue("defaultUnit", NONE, { shouldDirty: true });
               }}
             >
               <SelectTrigger id="seed-quantityKind" className="w-full">
@@ -175,14 +175,14 @@ export function SeedForm({
               onValueChange={(value) => {
                 if (value === NONE) {
                   // an amount without a unit means nothing
-                  setValue("defaultUnit", NONE);
-                  setValue("defaultAmount", "");
+                  setValue("defaultUnit", NONE, { shouldDirty: true });
+                  setValue("defaultAmount", "", { shouldDirty: true });
                   return;
                 }
                 const unitInfo = availableUnits.find(
                   (info) => info.unit === value,
                 );
-                if (unitInfo) setValue("defaultUnit", unitInfo.unit);
+                if (unitInfo) setValue("defaultUnit", unitInfo.unit, { shouldDirty: true });
               }}
             >
               <SelectTrigger id="seed-defaultUnit" className="w-full">

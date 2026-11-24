@@ -156,7 +156,7 @@ function CreateTillage() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
             />
           </div>
         )}
@@ -167,7 +167,7 @@ function CreateTillage() {
               <Label>{t("fieldCalendar.tillages.action")}</Label>
               <Select
                 value={watchedAction}
-                onValueChange={(v) => setValue("action", v as TillageAction)}
+                onValueChange={(v) => setValue("action", v as TillageAction, { shouldDirty: true })}
               >
                 <SelectTrigger>
                   <SelectValue />

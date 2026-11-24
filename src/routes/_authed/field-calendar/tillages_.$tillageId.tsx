@@ -183,7 +183,7 @@ function TillageDetail() {
               value={watchedAction}
               onValueChange={(v) => {
                 const action = TILLAGE_ACTIONS.find((tillageAction) => tillageAction === v);
-                if (action) setValue("action", action);
+                if (action) setValue("action", action, { shouldDirty: true });
               }}
               disabled={!canWrite}
             >

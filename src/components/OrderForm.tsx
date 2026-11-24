@@ -189,7 +189,7 @@ export function OrderForm({
                           if (item) {
                             const price = productPriceMap.get(item.value);
                             if (price !== undefined) {
-                              setValue(`items.${index}.unitPrice`, String(price));
+                              setValue(`items.${index}.unitPrice`, String(price), { shouldDirty: true });
                             }
                           }
                         }}

@@ -107,7 +107,7 @@ function CreateFertilizerPage() {
           <Label>{t("fertilizers.type")} *</Label>
           <Select
             value={watch("type")}
-            onValueChange={(val) => setValue("type", val as FertilizerType)}
+            onValueChange={(val) => setValue("type", val as FertilizerType, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -126,7 +126,7 @@ function CreateFertilizerPage() {
           <Label>{t("fertilizers.unit")} *</Label>
           <Select
             value={watch("unit")}
-            onValueChange={(val) => setValue("unit", val as FertilizerUnit)}
+            onValueChange={(val) => setValue("unit", val as FertilizerUnit, { shouldDirty: true })}
           >
             <SelectTrigger>
               <SelectValue />

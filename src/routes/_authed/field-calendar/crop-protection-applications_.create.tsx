@@ -288,7 +288,7 @@ function CreateCropProtectionApplication() {
         },
       );
       queryClient.invalidateQueries({ queryKey: ["cropProtectionProducts"] });
-      setValue("productId", newProduct.id);
+      setValue("productId", newProduct.id, { shouldDirty: true });
       setCreateProductOpen(false);
       productForm.reset();
     },
@@ -387,9 +387,9 @@ function CreateCropProtectionApplication() {
     const preset = presets.find((p) => p.id === presetId);
     if (!preset) return;
     setSelectedPresetId(presetId);
-    setValue("method", preset.method ?? "spraying");
-    setValue("unit", preset.unit);
-    setValue("amountPerUnit", preset.amountPerUnit.toString());
+    setValue("method", preset.method ?? "spraying", { shouldDirty: true });
+    setValue("unit", preset.unit, { shouldDirty: true });
+    setValue("amountPerUnit", preset.amountPerUnit.toString(), { shouldDirty: true });
   }
 
   // Label for the "amount per unit" input, matching the RN app: "l / Fuder",
@@ -428,7 +428,7 @@ function CreateCropProtectionApplication() {
                   <Select
                     value={watchedProductId}
                     onValueChange={(v) => {
-                      if (v) setValue("productId", v);
+                      if (v) setValue("productId", v, { shouldDirty: true });
                     }}
                   >
                     <SelectTrigger className="w-full">
@@ -529,7 +529,7 @@ function CreateCropProtectionApplication() {
                   <Select
                     value={watchedUnit}
                     onValueChange={(v) =>
-                      setValue("unit", v as ApplicationUnit)
+                      setValue("unit", v as ApplicationUnit, { shouldDirty: true })
                     }
                   >
                     <SelectTrigger>
@@ -555,7 +555,7 @@ function CreateCropProtectionApplication() {
                 <Select
                   value={watchedMethod}
                   onValueChange={(v) =>
-                    setValue("method", v as CropProtectionMethod)
+                    setValue("method", v as CropProtectionMethod, { shouldDirty: true })
                   }
                 >
                   <SelectTrigger>
@@ -617,7 +617,7 @@ function CreateCropProtectionApplication() {
             <MultiPlotPicker
               plots={plots}
               value={watchedPlotIds}
-              onChange={(ids) => setValue("plotIds", ids)}
+              onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
             />
           </div>
         )}

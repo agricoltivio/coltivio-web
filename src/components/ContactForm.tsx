@@ -78,7 +78,7 @@ export function ContactForm({
   function addLabel() {
     const trimmed = labelInput.trim();
     if (trimmed && !labels.includes(trimmed)) {
-      setValue("labels", [...labels, trimmed]);
+      setValue("labels", [...labels, trimmed], { shouldDirty: true });
       setLabelInput("");
     }
   }
@@ -87,6 +87,7 @@ export function ContactForm({
     setValue(
       "labels",
       labels.filter((l) => l !== labelToRemove),
+      { shouldDirty: true },
     );
   }
 
