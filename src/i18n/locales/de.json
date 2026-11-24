@@ -1,5 +1,6 @@
 {
   "common": {
+    "viewAll": "Alle anzeigen",
     "loading": "Laden...",
     "uploadImage": "Bild hochladen",
     "imageUploadFailed": "Das Bild konnte nicht hochgeladen werden.",
@@ -345,6 +346,17 @@
     "privacyPolicy": "Datenschutzerklärung"
   },
   "dashboard": {
+    "animalsByType": "Tiere nach Typ",
+    "cropProtection": "Pflanzenschutz",
+    "cropRotations": "Aktive Fruchtfolgen",
+    "fertilizerApplications": "Düngung",
+    "fieldworkMap": "Feldarbeit",
+    "harvestByCrop": "Ernte nach Kultur",
+    "mineral": "Mineral",
+    "organic": "Organisch",
+    "plotsByCrop": "Schläge nach Kultur",
+    "topCropByArea": "Grösste Kultur",
+    "topHarvestedCrop": "Meiste Ernte",
     "welcome": "Hallo {{name}}, {{farmName}}",
     "animalsBorn": "Geboren",
     "animalsDied": "Gestorben",

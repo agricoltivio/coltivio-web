@@ -1,5 +1,6 @@
 {
   "common": {
+    "viewAll": "Tout afficher",
     "loading": "Chargement...",
     "uploadImage": "Télécharger une image",
     "imageUploadFailed": "L'image n'a pas pu être téléchargée.",
@@ -345,6 +346,17 @@
     "privacyPolicy": "Déclaration de protection des données"
   },
   "dashboard": {
+    "animalsByType": "Animaux par espèce",
+    "cropProtection": "Protection des cultures",
+    "cropRotations": "Rotations culturales actives",
+    "fertilizerApplications": "Fertilisation",
+    "fieldworkMap": "Travaux des champs",
+    "harvestByCrop": "Récolte par culture",
+    "mineral": "Minéral",
+    "organic": "Organique",
+    "plotsByCrop": "Champs par culture",
+    "topCropByArea": "Plus grande culture",
+    "topHarvestedCrop": "Plus récoltée",
     "welcome": "Bonjour {{name}}, {{farmName}}",
     "animalsBorn": "Nés",
     "animalsDied": "Décédés",
