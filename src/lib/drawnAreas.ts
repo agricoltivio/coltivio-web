@@ -18,15 +18,46 @@ export const NO_DRAWN_AREAS: Record<string, DrawnArea> = {};
 // A drawing covering at least this share of a plot counts as the whole plot,
 // so a slightly too large drawing doesn't leave a separate partial area behind
 const WHOLE_PLOT_SHARE = 0.995;
-// A drawing covering less than this share of a plot leaves it out: a drawing traced along a
-// shared boundary always overlaps the neighbours by a few m²
+// An overlap smaller than this share of the plot AND of the drawing leaves the plot out: a
+// drawing traced along a shared boundary always overlaps the neighbours by a few m², which is
+// a small share of both. A small spot drawn inside a large plot is a small share of the plot,
+// but (nearly) all of the drawing, so it stays.
 const MIN_PLOT_SHARE = 0.01;
+const MIN_DRAWING_SHARE = 0.05;
+
+function samePoint(first: [number, number], second: [number, number]) {
+  return first[0] === second[0] && first[1] === second[1];
+}
+
+// The same point twice in a row (e.g. a double click, or the first point clicked again to
+// close the outline) isn't a corner: without this, turf.kinks reports it as a self-crossing
+function withoutRepeatedPoints(drawnRing: Ring): Ring {
+  const points: Ring = [];
+  for (const point of drawnRing) {
+    if (points.length === 0 || !samePoint(points[points.length - 1], point)) {
+      points.push(point);
+    }
+  }
+  while (points.length > 1 && samePoint(points[0], points[points.length - 1])) {
+    points.pop();
+  }
+  return points;
+}
 
 /** A drawing whose outline crosses itself has no well-defined area and is rejected. */
 export function isSelfCrossing(drawnRing: Ring): boolean {
-  if (drawnRing.length < 3) return false;
-  return (
-    turf.kinks(turf.polygon([[...drawnRing, drawnRing[0]]])).features.length > 0
+  const ring = withoutRepeatedPoints(drawnRing);
+  if (ring.length < 3) return false;
+  return turf.kinks(turf.polygon([[...ring, ring[0]]])).features.length > 0;
+}
+
+function drawingArea(drawnRings: Ring[]): number {
+  return drawnRings.reduce(
+    (sum, drawnRing) =>
+      drawnRing.length < 3
+        ? sum
+        : sum + turf.area(turf.polygon([[...drawnRing, drawnRing[0]]])),
+    0,
   );
 }
 
@@ -66,7 +97,10 @@ function coveredPart(plot: Plot, drawnRings: Ring[]): DrawnArea | null {
   if (!merged) return null;
   const plotArea = turf.area(plotFeature);
   const size = Math.round(turf.area(merged));
-  if (size === 0 || size < plotArea * MIN_PLOT_SHARE) return null;
+  const isSliver =
+    size < plotArea * MIN_PLOT_SHARE &&
+    size < drawingArea(drawnRings) * MIN_DRAWING_SHARE;
+  if (size === 0 || isSliver) return null;
   // fully covered plots keep the drawings too, so editing them can deselect the plot again
   if (size >= plotArea * WHOLE_PLOT_SHARE) {
     return { geometry: plot.geometry, size: plot.size, drawnRings };
@@ -109,8 +143,9 @@ function sameRing(first: Ring, second: Ring): boolean {
  * area. Plots already selected as a whole stay whole. When an existing drawing
  * (`editedRing`) was changed, it is replaced in every plot it covered, and plots
  * that no drawing covers any more are deselected again.
- * `applied` is false when a new drawing touches no plot (or crosses itself), so the
- * caller can tell the user instead of closing the drawing silently.
+ * `outcome` tells the caller when a new drawing changed nothing, so it can tell the user
+ * instead of closing the drawing silently: it touches no plot (or crosses itself), or only
+ * plots that are already selected as a whole.
  */
 export function applyDrawing({
   plots,
@@ -127,10 +162,10 @@ export function applyDrawing({
 }): {
   plotIds: string[];
   drawnAreas: Record<string, DrawnArea>;
-  applied: boolean;
+  outcome: DrawingOutcome;
 } {
   if (drawnRing.length < 3 || isSelfCrossing(drawnRing)) {
-    return { plotIds, drawnAreas, applied: false };
+    return { plotIds, drawnAreas, outcome: "touches_no_plot" };
   }
   const selectedAsWhole = new Set(
     plotIds.filter((plotId) => !drawnAreas[plotId]),
@@ -138,10 +173,12 @@ export function applyDrawing({
   const nextAreas = { ...drawnAreas };
   let nextPlotIds = [...plotIds];
   let touchesAnyPlot = false;
+  let touchesPlotNotSelectedAsWhole = false;
   for (const plot of plots) {
     const touchesPlot = coveredPart(plot, [drawnRing]) !== null;
     if (touchesPlot) touchesAnyPlot = true;
     if (selectedAsWhole.has(plot.id)) continue;
+    if (touchesPlot) touchesPlotNotSelectedAsWhole = true;
 
     const existingRings = drawnAreas[plot.id]?.drawnRings ?? [];
     const otherRings = editedRing
@@ -162,13 +199,17 @@ export function applyDrawing({
       nextPlotIds = nextPlotIds.filter((selectedId) => selectedId !== plot.id);
     }
   }
-  // editing a drawing away from every plot is a valid change (it removes the drawing)
-  return {
-    plotIds: nextPlotIds,
-    drawnAreas: nextAreas,
-    applied: touchesAnyPlot || editedRing !== null,
-  };
+  // Editing a drawing away from every plot is a valid change (it removes the drawing)
+  if (editedRing === null && !touchesAnyPlot) {
+    return { plotIds, drawnAreas, outcome: "touches_no_plot" };
+  }
+  if (editedRing === null && !touchesPlotNotSelectedAsWhole) {
+    return { plotIds, drawnAreas, outcome: "only_whole_plots" };
+  }
+  return { plotIds: nextPlotIds, drawnAreas: nextAreas, outcome: "applied" };
 }
+
+export type DrawingOutcome = "applied" | "touches_no_plot" | "only_whole_plots";
 
 /** The drawing of a plot's drawn area that contains the point, else its first drawing. */
 export function drawnRingAt(

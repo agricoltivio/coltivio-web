@@ -21,6 +21,7 @@ import {
   isSelfCrossing,
   NO_DRAWN_AREAS,
   type DrawnArea,
+  type DrawingOutcome,
 } from "@/lib/drawnAreas";
 import { insertVertexAfter, ringMidpoints } from "@/lib/ringMidpoints";
 import { MidpointMarker } from "@/components/MidpointMarker";
@@ -38,6 +39,9 @@ const SWISS_PIXELKARTE =
   "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg";
 
 type BaseLayer = "satellite" | "pixelkarte";
+
+// Clicks closer than this to the last point count as the same point
+const SAME_POINT_DISTANCE_PX = 6;
 
 const EMPTY_COLLECTION: GeoJSON.FeatureCollection = {
   type: "FeatureCollection",
@@ -122,7 +126,7 @@ export function PlotPickerMap({
   onDrawComplete?: (
     drawnRing: [number, number][],
     editedRing: [number, number][] | null,
-  ) => boolean;
+  ) => DrawingOutcome;
 }) {
   const { t, i18n } = useTranslation();
   const mapRef = useRef<MapRef>(null);
@@ -140,18 +144,22 @@ export function PlotPickerMap({
   const [editedRing, setEditedRing] = useState<[number, number][] | null>(null);
   // Earlier states of the drawing, so "undo" reverts the last action (added, inserted or moved point)
   const [vertexHistory, setVertexHistory] = useState<[number, number][][]>([]);
-  const [touchesNoPlot, setTouchesNoPlot] = useState(false);
+  // Why the last "apply" changed nothing, shown until the drawing changes
+  const [drawingProblem, setDrawingProblem] = useState<Exclude<
+    DrawingOutcome,
+    "applied"
+  > | null>(null);
   function changeVertices(nextVertices: [number, number][]) {
     setVertexHistory((history) => [...history, drawnVertices]);
     setDrawnVertices(nextVertices);
-    setTouchesNoPlot(false);
+    setDrawingProblem(null);
   }
   function undoVertexChange() {
     const previous = vertexHistory[vertexHistory.length - 1];
     if (!previous) return;
     setDrawnVertices(previous);
     setVertexHistory((history) => history.slice(0, -1));
-    setTouchesNoPlot(false);
+    setDrawingProblem(null);
   }
   function moveVertex(index: number, lngLat: { lng: number; lat: number }) {
     setDrawnVertices((prev) =>
@@ -333,14 +341,15 @@ export function PlotPickerMap({
     setDrawnVertices([]);
     setEditedRing(null);
     setVertexHistory([]);
-    setTouchesNoPlot(false);
+    setDrawingProblem(null);
   }
 
   function finishDrawing() {
     if (drawnVertices.length < 3 || drawingSelfCrosses || !onDrawComplete)
       return;
-    if (!onDrawComplete(drawnVertices, editedRing)) {
-      setTouchesNoPlot(true);
+    const outcome = onDrawComplete(drawnVertices, editedRing);
+    if (outcome !== "applied") {
+      setDrawingProblem(outcome);
       return;
     }
     stopDrawing();
@@ -354,7 +363,7 @@ export function PlotPickerMap({
     setDrawnVertices(drawnRing);
     setEditedRing(drawnRing);
     setVertexHistory([]);
-    setTouchesNoPlot(false);
+    setDrawingProblem(null);
     setDrawing(true);
   }
 
@@ -426,6 +435,20 @@ export function PlotPickerMap({
           )
             return;
           if (drawing) {
+            // A double click (or a second click on the same spot) adds no second point there
+            const lastVertex = drawnVertices[drawnVertices.length - 1];
+            const map = mapRef.current;
+            if (lastVertex && map) {
+              const lastPoint = map.project(lastVertex);
+              if (
+                Math.hypot(
+                  lastPoint.x - event.point.x,
+                  lastPoint.y - event.point.y,
+                ) < SAME_POINT_DISTANCE_PX
+              ) {
+                return;
+              }
+            }
             changeVertices([
               ...drawnVertices,
               [event.lngLat.lng, event.lngLat.lat],
@@ -459,7 +482,7 @@ export function PlotPickerMap({
               draggable
               onDragStart={() => {
                 setVertexHistory((history) => [...history, drawnVertices]);
-                setTouchesNoPlot(false);
+                setDrawingProblem(null);
               }}
               onDrag={(event) => moveVertex(index, event.lngLat)}
             >
@@ -519,9 +542,13 @@ export function PlotPickerMap({
                 <span className="text-sm text-destructive">
                   {t("fieldCalendar.plots.drawSelfCrossing")}
                 </span>
-              ) : touchesNoPlot ? (
+              ) : drawingProblem === "touches_no_plot" ? (
                 <span className="text-sm text-destructive">
                   {t("fieldCalendar.plots.drawTouchesNoPlot")}
+                </span>
+              ) : drawingProblem === "only_whole_plots" ? (
+                <span className="text-sm text-destructive">
+                  {t("fieldCalendar.plots.drawOnlyWholePlots")}
                 </span>
               ) : (
                 <span className="text-sm text-muted-foreground">

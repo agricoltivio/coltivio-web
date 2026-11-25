@@ -1218,6 +1218,7 @@
       "finishDrawing": "Usa superficie",
       "editDrawingHint": "Clicca su una superficie disegnata per modificarla.",
       "drawTouchesNoPlot": "Il disegno non tocca nessun campo.",
+      "drawOnlyWholePlots": "Il disegno tocca solo campi già selezionati per intero. Deselezionali prima per disegnare una superficie parziale.",
       "drawSelfCrossing": "I bordi del disegno non devono incrociarsi."
     },
     "cropRotations": {

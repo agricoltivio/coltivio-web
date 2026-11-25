@@ -20,7 +20,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PlotPickerMap } from "@/components/PlotPickerMap";
-import { applyDrawing, NO_DRAWN_AREAS, type DrawnArea } from "@/lib/drawnAreas";
+import {
+  applyDrawing,
+  NO_DRAWN_AREAS,
+  type DrawingOutcome,
+  type DrawnArea,
+} from "@/lib/drawnAreas";
 
 type PlotOption = {
   value: string;
@@ -110,8 +115,8 @@ export function MultiPlotPicker({
   function handleDrawComplete(
     drawnRing: [number, number][],
     editedRing: [number, number][] | null,
-  ) {
-    if (!onDrawnAreasChange) return false;
+  ): DrawingOutcome {
+    if (!onDrawnAreasChange) return "touches_no_plot";
     const next = applyDrawing({
       plots,
       plotIds: value,
@@ -119,10 +124,10 @@ export function MultiPlotPicker({
       drawnRing,
       editedRing,
     });
-    if (!next.applied) return false;
+    if (next.outcome !== "applied") return next.outcome;
     onChange(next.plotIds);
     onDrawnAreasChange(next.drawnAreas);
-    return true;
+    return next.outcome;
   }
   function toggle(plotId: string) {
     // clicking the rest of a partly drawn plot takes the whole plot, a second click deselects it

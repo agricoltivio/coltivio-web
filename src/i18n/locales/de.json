@@ -1218,6 +1218,7 @@
       "finishDrawing": "Fläche übernehmen",
       "editDrawingHint": "Gezeichnete Fläche anklicken, um sie zu bearbeiten.",
       "drawTouchesNoPlot": "Die Zeichnung berührt keinen Schlag.",
+      "drawOnlyWholePlots": "Die Zeichnung liegt nur auf Schlägen, die schon ganz ausgewählt sind. Hebe deren Auswahl zuerst auf, um eine Teilfläche zu zeichnen.",
       "drawSelfCrossing": "Die Kanten der Zeichnung dürfen sich nicht kreuzen."
     },
     "cropRotations": {

@@ -108,6 +108,49 @@ describe("intersectDrawing", () => {
     expect(intersectDrawing([plot("a")], bowTie)).toEqual([]);
   });
 
+  test("keeps a small spot drawn inside a large plot", () => {
+    // about 154 m x 167 m (2.6 ha); the spot is about 15 m x 15 m, under 1 % of the plot
+    const largePlot = plot("large", [
+      [
+        [
+          [8, 47],
+          [8.002, 47],
+          [8.002, 47.0015],
+          [8, 47.0015],
+          [8, 47],
+        ],
+      ],
+    ]);
+    const spot: [number, number][] = [
+      [8.001, 47.0007],
+      [8.0012, 47.0007],
+      [8.0012, 47.000835],
+      [8.001, 47.000835],
+    ];
+    const [touched] = intersectDrawing([largePlot], spot);
+    expect(touched.plotId).toBe("large");
+    expect(touched.area.size / largePlot.size).toBeLessThan(0.01);
+  });
+
+  test("a point placed twice (double click, first point clicked again) isn't a self-crossing", () => {
+    expect(
+      isSelfCrossing([
+        [8, 47],
+        [8.001, 47],
+        [8.001, 47],
+        [8.001, 47.001],
+      ]),
+    ).toBe(false);
+    expect(
+      isSelfCrossing([
+        [8, 47],
+        [8.001, 47],
+        [8.001, 47.001],
+        [8, 47],
+      ]),
+    ).toBe(false);
+  });
+
   test("leaves out a neighbour the drawing only overlaps by a sliver", () => {
     // the left half, reaching 0.5 m into the neighbour to the right
     const overlappingEdge: [number, number][] = [
@@ -183,7 +226,7 @@ describe("applyDrawing", () => {
       drawnRing: leftHalf,
       editedRing: null,
     });
-    expect(next.applied).toBe(true);
+    expect(next.outcome).toBe("applied");
     expect(next.plotIds).toEqual(["a"]);
     expect(next.drawnAreas.a.drawnRings).toEqual([leftHalf]);
   });
@@ -197,7 +240,7 @@ describe("applyDrawing", () => {
         drawnRing,
         editedRing: null,
       });
-      expect(next.applied).toBe(false);
+      expect(next.outcome).toBe("touches_no_plot");
       expect(next.plotIds).toEqual([]);
       expect(next.drawnAreas).toEqual({});
     }
@@ -211,7 +254,8 @@ describe("applyDrawing", () => {
       drawnRing: leftHalf,
       editedRing: null,
     });
-    expect(next.applied).toBe(true);
+    // nothing changed: the caller tells the user to deselect the plot first
+    expect(next.outcome).toBe("only_whole_plots");
     expect(next.plotIds).toEqual(["a"]);
     expect(next.drawnAreas).toEqual({});
   });
@@ -246,7 +290,7 @@ describe("applyDrawing", () => {
       drawnRing: farAway,
       editedRing: rightQuarter,
     });
-    expect(edited.applied).toBe(true);
+    expect(edited.outcome).toBe("applied");
     expect(edited.plotIds).toEqual(["a"]);
     expect(edited.drawnAreas.a.drawnRings).toEqual([leftHalf]);
     expect(edited.drawnAreas.a.size / squareSize).toBeCloseTo(0.5, 2);
