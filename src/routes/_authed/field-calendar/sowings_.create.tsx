@@ -18,6 +18,7 @@ import type { Plot, SowingPreset, SowingUnit } from "@/api/types";
 import { PageContent } from "@/components/PageContent";
 import { Button } from "@/components/ui/button";
 import { MultiPlotPicker } from "@/components/MultiPlotPicker";
+import { withDrawnArea, type DrawnArea } from "@/lib/drawnAreas";
 import { PlotDivideSection, sumDivided } from "@/components/PlotDivideSection";
 import {
   WizardNav,
@@ -110,6 +111,8 @@ function CreateSowing() {
     {},
   );
   const [divideByArea, setDivideByArea] = useState(true);
+  // parts of plots selected by drawing on the map, keyed by plot id
+  const [drawnAreas, setDrawnAreas] = useState<Record<string, DrawnArea>>({});
 
   const plotsQuery = useQuery(plotsQueryOptions());
   const cropsQuery = useQuery(cropsQueryOptions());
@@ -164,7 +167,9 @@ function CreateSowing() {
 
   const selectedPlots = watchedPlotIds
     .map((plotId) => plots.find((plot) => plot.id === plotId))
-    .filter((plot): plot is Plot => plot != null);
+    .filter((plot): plot is Plot => plot != null)
+    // drawn areas replace the geometry and size of partly covered plots
+    .map((plot) => withDrawnArea(plot, drawnAreas));
   const isMultiPlot = selectedPlots.length > 1;
   const selectedSize = selectedPlots.reduce((sum, plot) => sum + plot.size, 0);
 
@@ -426,6 +431,8 @@ function CreateSowing() {
               plots={plots}
               value={watchedPlotIds}
               onChange={(ids) => setValue("plotIds", ids, { shouldDirty: true })}
+              drawnAreas={drawnAreas}
+              onDrawnAreasChange={setDrawnAreas}
             />
           </div>
         )}

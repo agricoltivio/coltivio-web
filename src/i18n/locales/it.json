@@ -1211,7 +1211,15 @@
         "selfIntersecting": "I bordi del campo non devono incrociarsi.",
         "invalid_geometry": "Il campo non ha superficie. Disegna almeno tre punti distinti.",
         "saveFailed": "Non è stato possibile salvare il campo."
-      }
+      },
+      "drawArea": "Disegna superficie",
+      "drawHint": "Posiziona i punti sulla mappa e trascinali per spostarli. I piccoli punti intermedi aggiungono un punto. Conferma con almeno 3 punti. Un altro disegno sullo stesso campo si aggiunge alla sua superficie.",
+      "undoPoint": "Annulla ultima modifica",
+      "finishDrawing": "Usa superficie",
+      "editDrawingHint": "Clicca su una superficie disegnata per modificarla.",
+      "drawTouchesNoPlot": "Il disegno non tocca nessun campo.",
+      "drawOnlyWholePlots": "Il disegno tocca solo campi già selezionati per intero. Deselezionali prima per disegnare una superficie parziale.",
+      "drawSelfCrossing": "I bordi del disegno non devono incrociarsi."
     },
     "cropRotations": {
       "title": "Rotazione colturale",

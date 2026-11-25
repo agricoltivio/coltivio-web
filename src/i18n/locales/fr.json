@@ -1211,7 +1211,15 @@
         "selfIntersecting": "Les bords du champ ne doivent pas se croiser.",
         "invalid_geometry": "Le champ n'a pas de surface. Dessine au moins trois points distincts.",
         "saveFailed": "Le champ n'a pas pu être enregistré."
-      }
+      },
+      "drawArea": "Dessiner une surface",
+      "drawHint": "Place des points sur la carte et fais-les glisser pour les déplacer. Les petits points intermédiaires ajoutent un point. Valide à partir de 3 points. Un autre dessin sur le même champ s'ajoute à sa surface.",
+      "undoPoint": "Défaire",
+      "finishDrawing": "Utiliser la surface",
+      "editDrawingHint": "Clique sur une surface dessinée pour la modifier.",
+      "drawTouchesNoPlot": "Le dessin ne touche aucun champ.",
+      "drawOnlyWholePlots": "Le dessin ne touche que des champs déjà sélectionnés en entier. Désélectionne-les d'abord pour dessiner une surface partielle.",
+      "drawSelfCrossing": "Les bords du dessin ne doivent pas se croiser."
     },
     "cropRotations": {
       "title": "Rotation des cultures",
